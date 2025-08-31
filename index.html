@@ -1444,16 +1444,31 @@
 
         // Initialize Application
         async function init() {
+            const fragment = window.location.hash.substring(1);
+            if (fragment) {
+                const [guid, keyBase64] = fragment.split(':');
+                if (guid && keyBase64) {
+                    state.baseKey = Uint8Array.from(atob(keyBase64), c => c.charCodeAt(0));
+                    state.currentGUID = guid;
+                    await loadPublicData();
+                    displayEmergencyInfo();
+
+                    // Setup keyboard listeners for PIN entry
+                    setupKeyboardListeners();
+                    return;
+                }
+            }
+
             // Check if first time user
             const hasGUID = localStorage.getItem('ikey_guid');
-            
+
             if (!hasGUID) {
                 state.isFirstTime = true;
                 showSetupWizard();
             } else {
                 await loadExistingUser();
             }
-            
+
             // Setup keyboard listeners for PIN entry
             setupKeyboardListeners();
         }
