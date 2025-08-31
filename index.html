@@ -753,6 +753,37 @@
             border: 1px solid var(--danger);
         }
 
+        .status-info {
+            background: rgba(79, 70, 229, 0.1);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .sync-indicator {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .pin-reset-link {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 0.875rem;
+        }
+
+        .pin-reset-link a {
+            color: var(--primary);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .pin-reset-link a:hover {
+            text-decoration: underline;
+        }
+
         .qr-container {
             text-align: center;
             padding: 20px;
@@ -967,6 +998,7 @@
                     
                     <div class="info-box">
                         <strong>Remember:</strong> This PIN cannot be recovered. Write it down and store it safely.
+                        <br><strong>Tip:</strong> You can also use your keyboard number keys to enter the PIN.
                     </div>
                 </div>
                 
@@ -1200,6 +1232,16 @@
             </div>
             
             <div class="mb-4">
+                <h3>PIN Management</h3>
+                <button class="btn btn-outline" onclick="requestPINReset()">
+                    🔄 Reset PIN
+                </button>
+                <p style="color: var(--text-secondary); margin-top: 8px; font-size: 0.875rem;">
+                    Use recovery codes or answer security questions to reset your PIN
+                </p>
+            </div>
+            
+            <div class="mb-4">
                 <h3>Recovery Codes</h3>
                 <p style="color: var(--text-secondary); margin-bottom: 12px;">
                     Use these codes if you forget your PIN. Each code works once.
@@ -1291,7 +1333,7 @@
     <!-- PIN Modal -->
     <div id="pin-modal" class="modal-overlay">
         <div class="modal-container">
-            <h3 class="modal-title">Enter 6-Digit PIN</h3>
+            <h3 class="modal-title" id="pin-modal-title">Enter 6-Digit PIN</h3>
             
             <div class="pin-display" id="pinDisplay">
                 <div class="pin-dot"></div>
@@ -1315,6 +1357,10 @@
                 <button class="pin-key special-clear" onclick="clearPin()">Clear</button>
                 <button class="pin-key" onclick="addPinDigit(0)">0</button>
                 <button class="pin-key special-cancel" onclick="closePinPad()">Cancel</button>
+            </div>
+            
+            <div class="pin-reset-link">
+                <a onclick="requestPINResetFromModal()">Forgot PIN? Use recovery code</a>
             </div>
         </div>
     </div>
@@ -1365,6 +1411,8 @@
     <script>
         // Global State Management
         const APP_VERSION = '2.0.0';
+        const WEBHOOK_URL = 'https://n8n.intelechia.com/webhook/d5e99c29-2cf1-44c1-b5b4-95a1ca048441';
+        
         const state = {
             currentGUID: null,
             baseKey: null,
@@ -1376,6 +1424,7 @@
             isFirstTime: false,
             setupPIN: '',
             autoSaveTimer: null,
+            lastSync: null,
             
             publicData: {
                 emergency: {}
@@ -1402,6 +1451,190 @@
                 showSetupWizard();
             } else {
                 await loadExistingUser();
+            }
+            
+            // Setup keyboard listeners for PIN entry
+            setupKeyboardListeners();
+        }
+
+        // Keyboard Support for PIN Entry
+        function setupKeyboardListeners() {
+            document.addEventListener('keydown', function(e) {
+                // Check if PIN modal is active
+                const pinModal = document.getElementById('pin-modal');
+                const setupWizard = document.getElementById('setup-wizard');
+                const isSetupPinStep = !setupWizard.classList.contains('hidden') && 
+                                       document.querySelector('.wizard-step.active[data-step="3"]');
+                
+                if (pinModal.classList.contains('active') || isSetupPinStep) {
+                    // Handle number keys 0-9
+                    if (e.key >= '0' && e.key <= '9') {
+                        e.preventDefault();
+                        const digit = parseInt(e.key);
+                        
+                        if (isSetupPinStep) {
+                            addSetupPinDigit(digit);
+                        } else {
+                            addPinDigit(digit);
+                        }
+                    }
+                    // Handle backspace/delete
+                    else if (e.key === 'Backspace' || e.key === 'Delete') {
+                        e.preventDefault();
+                        
+                        if (isSetupPinStep) {
+                            clearSetupPin();
+                        } else {
+                            clearPin();
+                        }
+                    }
+                    // Handle Enter
+                    else if (e.key === 'Enter') {
+                        e.preventDefault();
+                        
+                        if (isSetupPinStep && setupPIN.length === 6) {
+                            wizardNext();
+                        } else if (!isSetupPinStep && pinEntry.length === 6) {
+                            verifyPIN();
+                        }
+                    }
+                    // Handle Escape
+                    else if (e.key === 'Escape' && !isSetupPinStep) {
+                        e.preventDefault();
+                        closePinPad();
+                    }
+                }
+            });
+        }
+
+        // Webhook Functions
+        async function syncToCloud(showIndicator = true) {
+            if (showIndicator) {
+                const syncIndicator = document.getElementById('syncIndicator');
+                syncIndicator.style.display = 'flex';
+                syncIndicator.classList.add('sync-indicator');
+                document.getElementById('syncText').textContent = 'Syncing...';
+            }
+            
+            try {
+                // Prepare data for sync
+                const syncData = {
+                    guid: state.currentGUID,
+                    version: APP_VERSION,
+                    timestamp: new Date().toISOString(),
+                    publicData: state.publicData,
+                    protectedData: state.pinKey ? state.protectedData : null,
+                    secureData: state.passwordKey ? state.secureData : null,
+                    encrypted: {
+                        public: localStorage.getItem(`ikey_${state.currentGUID}_public`),
+                        protected: localStorage.getItem(`ikey_${state.currentGUID}_protected`),
+                        secure: localStorage.getItem(`ikey_${state.currentGUID}_secure`)
+                    }
+                };
+                
+                // Determine if this is a new record or update
+                const method = state.lastSync ? 'PUT' : 'POST';
+                
+                const response = await fetch(WEBHOOK_URL, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(syncData)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Sync failed: ${response.status}`);
+                }
+                
+                state.lastSync = new Date().toISOString();
+                localStorage.setItem(`ikey_${state.currentGUID}_lastSync`, state.lastSync);
+                
+                if (showIndicator) {
+                    document.getElementById('syncText').textContent = 'Synced';
+                    setTimeout(() => {
+                        document.getElementById('syncIndicator').style.display = 'none';
+                    }, 2000);
+                }
+                
+                showStatus('Data synced to cloud', 'success');
+                
+            } catch (error) {
+                console.error('Sync failed:', error);
+                
+                if (showIndicator) {
+                    document.getElementById('syncText').textContent = 'Sync Failed';
+                    setTimeout(() => {
+                        document.getElementById('syncIndicator').style.display = 'none';
+                    }, 3000);
+                }
+                
+                showStatus('Cloud sync failed - data saved locally', 'error');
+            }
+        }
+
+        // PIN Reset Functions
+        function requestPINReset() {
+            const modal = document.getElementById('pin-modal');
+            modal.classList.add('active');
+            document.getElementById('pin-modal-title').textContent = 'Enter Recovery Code or New PIN';
+            
+            // Show recovery code input
+            const input = prompt('Enter a recovery code to reset your PIN:');
+            if (input) {
+                verifyRecoveryCode(input);
+            } else {
+                modal.classList.remove('active');
+            }
+        }
+
+        function requestPINResetFromModal() {
+            closePinPad();
+            requestPINReset();
+        }
+
+        function verifyRecoveryCode(code) {
+            const codes = state.protectedData.recoveryCodes || [];
+            const validCode = codes.find(c => !c.used && c.code === code.toUpperCase());
+            
+            if (validCode) {
+                validCode.used = true;
+                
+                // Allow setting new PIN
+                const newPIN = prompt('Enter your new 6-digit PIN:');
+                if (newPIN && newPIN.length === 6 && /^\d{6}$/.test(newPIN)) {
+                    resetPIN(newPIN);
+                } else {
+                    alert('Invalid PIN format. Please use 6 digits.');
+                }
+            } else {
+                alert('Invalid or already used recovery code.');
+            }
+        }
+
+        async function resetPIN(newPIN) {
+            try {
+                // Derive new key from new PIN
+                const newKey = await deriveKeyFromPIN(newPIN);
+                
+                // Re-encrypt protected data with new key
+                const tempData = state.protectedData;
+                state.pinKey = newKey;
+                
+                // Save with new encryption
+                await saveProtectedData();
+                
+                state.pinUnlocked = true;
+                unlockPINLevel();
+                
+                showStatus('PIN reset successfully', 'success');
+                
+                // Sync to cloud
+                await syncToCloud();
+                
+            } catch (error) {
+                console.error('Failed to reset PIN:', error);
+                showStatus('Failed to reset PIN', 'error');
             }
         }
 
@@ -1476,6 +1709,13 @@
             if (setupPIN.length < 6) {
                 setupPIN += digit;
                 updateSetupPinDisplay();
+                
+                if (setupPIN.length === 6) {
+                    // Auto-confirm when 6 digits entered
+                    setTimeout(() => {
+                        document.querySelector('.wizard-step.active .pin-key.special-cancel').click();
+                    }, 300);
+                }
             }
         }
 
@@ -1530,6 +1770,9 @@
             
             await saveAllData();
             
+            // Initial sync to cloud
+            await syncToCloud();
+            
             // Hide wizard and show main app
             document.getElementById('setup-wizard').classList.add('hidden');
             await loadExistingUser();
@@ -1567,6 +1810,7 @@
         // Load existing user
         async function loadExistingUser() {
             state.currentGUID = localStorage.getItem('ikey_guid');
+            state.lastSync = localStorage.getItem(`ikey_${state.currentGUID}_lastSync`);
             
             const baseKeyStr = localStorage.getItem(`ikey_basekey_${state.currentGUID}`);
             if (baseKeyStr) {
@@ -1742,6 +1986,9 @@
             if (state.pinKey) await saveProtectedData();
             if (state.passwordKey) await saveSecureData();
             showStatus('All data saved', 'success');
+            
+            // Trigger cloud sync
+            await syncToCloud(false);
         }
 
         // Auto-save function
@@ -1821,6 +2068,7 @@
             
             pinCallback = action;
             document.getElementById('pin-modal').classList.add('active');
+            document.getElementById('pin-modal-title').textContent = 'Enter 6-Digit PIN';
             pinEntry = '';
             updatePinDisplay();
         }
@@ -2536,12 +2784,6 @@
                 document.getElementById('securityTab').classList.remove('locked');
                 document.getElementById('passwordBtn').style.display = 'inline-flex';
             }
-        }
-
-        async function syncToCloud() {
-            await saveAllData();
-            // Add actual cloud sync here when webhooks are configured
-            showStatus('Data saved locally', 'success');
         }
 
         async function exportData() {
