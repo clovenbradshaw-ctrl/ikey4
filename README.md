@@ -19,7 +19,7 @@ The system implements a progressive disclosure model with three security levels:
 2. **PIN-Protected Tier (Health Records)**
    - Requires 6-digit PIN authentication
    - Contains medical history, surgeries, family history, health notes
-   - Includes share functionality and recovery code management
+   - Includes recovery code management
    - PIN serves as encryption key derivation source (PBKDF2, 100,000 iterations)
 
 3. **Password-Protected Tier (Full EHR)**
@@ -90,9 +90,8 @@ state = {
             familyHistory,
             notes
         },
-        shares: [],
         recoveryCodes: [{ code, used }]
-    },
+        },
     secureData: {
         ehr: {
             identity: { 
@@ -133,9 +132,8 @@ state = {
             "contactName": "Jane Doe"
         }
     },
-    "protectedData": { 
+    "protectedData": {
         "health": {},
-        "shares": [],
         "recoveryCodes": []
     },
     "secureData": { 
@@ -187,7 +185,6 @@ https://example.com/ikey.html#a1b2c3d4-e5f6-7890-abcd-ef1234567890:SGVsbG9Xb3JsZ
 1. **Emergency Access**: First responders scan QR to access emergency information
 2. **Device Transfer**: User scans their QR on new device to restore access
 3. **Backup Recovery**: QR contains keys needed to decrypt cloud-backed data
-4. **Share Link**: Temporary access links with expiration times
 
 ## Recovery Mechanisms
 
@@ -410,14 +407,14 @@ const WEBHOOK_URL = 'https://n8n.intelechia.com/webhook/d5e99c29-2cf1-44c1-b5b4-
 4. **Multi-language**: i18n support
 5. **FHIR Format**: Healthcare data interoperability
 6. **Backup Reminders**: Notification system for regular backups
-7. **Encrypted Sharing**: Time-limited access tokens
+7. **Encrypted Access Links**: Time-limited tokens
 
 ### Integration Opportunities
 
 - **Health Apps**: Apple Health, Google Fit
 - **EHR Systems**: Epic, Cerner via FHIR
 - **Wearables**: Import vitals data
-- **Telemedicine**: Share records with providers
+- **Telemedicine**: Provide records to providers
 - **Insurance**: Controlled data sharing
 
 ## License and Attribution
