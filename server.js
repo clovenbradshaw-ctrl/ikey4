@@ -5,10 +5,7 @@ const path = require('path');
 // In-memory store of encrypted public payloads
 // In production, replace with a database or persistent storage
 const emergencyStore = {
-  'demo-guid': JSON.stringify({
-    iv: 'demoiv==',
-    data: 'demodata=='
-  })
+  'demo-guid': 'demoiv==.demodata=='
 };
 
 const indexHtml = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
@@ -28,7 +25,7 @@ const server = http.createServer((req, res) => {
       return res.end(JSON.stringify({ error: 'Not found' }));
     }
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    return res.end(JSON.stringify({ public: payload }));
+    return res.end(JSON.stringify({ data: payload }));
   }
 
   res.writeHead(404, { 'Content-Type': 'application/json' });

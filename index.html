@@ -1504,6 +1504,7 @@
             state.passwordKey = null;
             state.currentDoubleHash = null;  // Clear from memory
             pinEntry = '';
+            setupPIN = '';
             updateSecurityUI();
             showStatus('Session expired for security', 'warning');
             showTab('emergency');
@@ -1519,7 +1520,7 @@
                 try {
                     const stored = localStorage.getItem(`ikey_hash_${state.currentGUID}`);
                     if (stored) {
-                        const decrypted = await decrypt(JSON.parse(stored), state.baseKey);
+                        const decrypted = await decrypt(stored, state.baseKey);
                         state.currentDoubleHash = decrypted.hash;
                     }
                 } catch (e) {
@@ -1562,7 +1563,7 @@
                     guid: state.currentGUID,
                     currentHash: state.currentDoubleHash,
                     nextHash: newDoubleHash,
-                    data: JSON.stringify(encryptedPayload),
+                    data: encryptedPayload,
                     timestamp: new Date().toISOString(),
                     method: state.lastSync ? 'update' : 'create'
                 };
@@ -1585,7 +1586,7 @@
                 // Success - rotate to new hash
                 state.currentDoubleHash = newDoubleHash;
                 const encryptedHash = await encrypt({ hash: newDoubleHash }, state.baseKey);
-                localStorage.setItem(`ikey_hash_${state.currentGUID}`, JSON.stringify(encryptedHash));
+                localStorage.setItem(`ikey_hash_${state.currentGUID}`, encryptedHash);
                 
                 state.lastSync = new Date().toISOString();
                 localStorage.setItem(`ikey_${state.currentGUID}_lastSync`, state.lastSync);
@@ -1680,7 +1681,7 @@
                 // Generate new double hash
                 state.currentDoubleHash = await generateDoubleHash(state.baseKey, newPIN);
                 const encryptedHash = await encrypt({ hash: state.currentDoubleHash }, state.baseKey);
-                localStorage.setItem(`ikey_hash_${state.currentGUID}`, JSON.stringify(encryptedHash));
+                localStorage.setItem(`ikey_hash_${state.currentGUID}`, encryptedHash);
 
                 // Save with new encryption
                 await saveProtectedData();
@@ -1813,10 +1814,10 @@
                 state.pinUnlocked = true;
 
                 // Generate initial double hash
-                state.currentDoubleHash = await generateDoubleHash(state.baseKey, setupPIN);
-                const encryptedHash = await encrypt({ hash: state.currentDoubleHash }, state.baseKey);
-                localStorage.setItem(`ikey_hash_${state.currentGUID}`, JSON.stringify(encryptedHash));
-            }
+                  state.currentDoubleHash = await generateDoubleHash(state.baseKey, setupPIN);
+                  const encryptedHash = await encrypt({ hash: state.currentDoubleHash }, state.baseKey);
+                  localStorage.setItem(`ikey_hash_${state.currentGUID}`, encryptedHash);
+              }
             
             // Set password if provided
             const password = document.getElementById('setup-password').value;
@@ -1883,7 +1884,7 @@
             try {
                 const storedHash = localStorage.getItem(`ikey_hash_${state.currentGUID}`);
                 if (storedHash && state.baseKey) {
-                    const decrypted = await decrypt(JSON.parse(storedHash), state.baseKey);
+                    const decrypted = await decrypt(storedHash, state.baseKey);
                     state.currentDoubleHash = decrypted.hash;
                 }
             } catch (e) {
@@ -1974,33 +1975,33 @@
         async function encrypt(data, key) {
             const iv = crypto.getRandomValues(new Uint8Array(12));
             const encoded = new TextEncoder().encode(JSON.stringify(data));
-            
+
             const cryptoKey = await crypto.subtle.importKey(
                 'raw', key, { name: 'AES-GCM' }, false, ['encrypt']
             );
-            
+
             const encrypted = await crypto.subtle.encrypt(
                 { name: 'AES-GCM', iv }, cryptoKey, encoded
             );
-            
-            return {
-                iv: btoa(String.fromCharCode(...iv)),
-                data: btoa(String.fromCharCode(...new Uint8Array(encrypted)))
-            };
+
+            const ivStr = btoa(String.fromCharCode(...iv));
+            const dataStr = btoa(String.fromCharCode(...new Uint8Array(encrypted)));
+            return `${ivStr}.${dataStr}`;
         }
 
-        async function decrypt(encrypted, key) {
-            const iv = Uint8Array.from(atob(encrypted.iv), c => c.charCodeAt(0));
-            const data = Uint8Array.from(atob(encrypted.data), c => c.charCodeAt(0));
-            
+        async function decrypt(combined, key) {
+            const [ivStr, dataStr] = combined.split('.');
+            const iv = Uint8Array.from(atob(ivStr), c => c.charCodeAt(0));
+            const data = Uint8Array.from(atob(dataStr), c => c.charCodeAt(0));
+
             const cryptoKey = await crypto.subtle.importKey(
                 'raw', key, { name: 'AES-GCM' }, false, ['decrypt']
             );
-            
+
             const decrypted = await crypto.subtle.decrypt(
                 { name: 'AES-GCM', iv }, cryptoKey, data
             );
-            
+
             return JSON.parse(new TextDecoder().decode(decrypted));
         }
 
@@ -2011,8 +2012,7 @@
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const { data } = await response.json();
                 if (!data) throw new Error('Invalid payload');
-                const encryptedPayload = JSON.parse(data);
-                const allData = await decrypt(encryptedPayload, baseKey);
+                const allData = await decrypt(data, baseKey);
 
                 state.publicData = allData.public || {};
                 await savePublicData();
@@ -2039,7 +2039,7 @@
             try {
                 const stored = localStorage.getItem(`ikey_${state.currentGUID}_public`);
                 if (stored && state.baseKey) {
-                    state.publicData = await decrypt(JSON.parse(stored), state.baseKey);
+                    state.publicData = await decrypt(stored, state.baseKey);
                 }
             } catch (error) {
                 console.error('Failed to load public data:', error);
@@ -2050,7 +2050,7 @@
             try {
                 const stored = localStorage.getItem(`ikey_${state.currentGUID}_protected`);
                 if (stored && state.pinKey) {
-                    state.protectedData = await decrypt(JSON.parse(stored), state.pinKey);
+                    state.protectedData = await decrypt(stored, state.pinKey);
                     loadHealthInfo();
                 }
             } catch (error) {
@@ -2062,7 +2062,7 @@
             try {
                 const stored = localStorage.getItem(`ikey_${state.currentGUID}_secure`);
                 if (stored && state.passwordKey) {
-                    state.secureData = await decrypt(JSON.parse(stored), state.passwordKey);
+                    state.secureData = await decrypt(stored, state.passwordKey);
                     if (!state.secureData.ehr) {
                         state.secureData.ehr = initializeEHR();
                     }
@@ -2077,19 +2077,19 @@
         async function savePublicData() {
             if (!state.baseKey) return;
             const encrypted = await encrypt(state.publicData, state.baseKey);
-            localStorage.setItem(`ikey_${state.currentGUID}_public`, JSON.stringify(encrypted));
+            localStorage.setItem(`ikey_${state.currentGUID}_public`, encrypted);
         }
 
         async function saveProtectedData() {
             if (!state.pinKey) return;
             const encrypted = await encrypt(state.protectedData, state.pinKey);
-            localStorage.setItem(`ikey_${state.currentGUID}_protected`, JSON.stringify(encrypted));
+            localStorage.setItem(`ikey_${state.currentGUID}_protected`, encrypted);
         }
 
         async function saveSecureData() {
             if (!state.passwordKey) return;
             const encrypted = await encrypt(state.secureData, state.passwordKey);
-            localStorage.setItem(`ikey_${state.currentGUID}_secure`, JSON.stringify(encrypted));
+            localStorage.setItem(`ikey_${state.currentGUID}_secure`, encrypted);
         }
 
         async function saveAllData() {
@@ -2237,7 +2237,7 @@
                 }
                 
                 // Try to decrypt
-                const decrypted = await decrypt(JSON.parse(stored), derivedKey);
+                const decrypted = await decrypt(stored, derivedKey);
                 state.pinKey = derivedKey;
                 state.protectedData = decrypted;
                 state.pinUnlocked = true;
@@ -2245,7 +2245,7 @@
                 // Regenerate and store double hash with verified PIN
                 state.currentDoubleHash = await generateDoubleHash(state.baseKey, pinEntry);
                 const encryptedHash = await encrypt({ hash: state.currentDoubleHash }, state.baseKey);
-                localStorage.setItem(`ikey_hash_${state.currentGUID}`, JSON.stringify(encryptedHash));
+                localStorage.setItem(`ikey_hash_${state.currentGUID}`, encryptedHash);
 
                 unlockPINLevel();
                 closePinPad();
@@ -2328,7 +2328,7 @@
                     // Try to decrypt
                     const stored = localStorage.getItem(`ikey_${state.currentGUID}_secure`);
                     if (stored) {
-                        const decrypted = await decrypt(JSON.parse(stored), derivedKey);
+                        const decrypted = await decrypt(stored, derivedKey);
                         state.passwordKey = derivedKey;
                         state.secureData = decrypted;
                         state.passwordUnlocked = true;
@@ -3060,7 +3060,9 @@
         window.addEventListener('beforeunload', function() {
             state.pinKey = null;
             state.passwordKey = null;
+            state.currentDoubleHash = null;
             pinEntry = '';
+            setupPIN = '';
             sessionStorage.removeItem('ikey_session_active');
         });
     </script>
