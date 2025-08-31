@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'none';">
     <title>iKey Health - Secure Medical System</title>
     <style>
         * {
@@ -35,16 +39,6 @@
             min-height: 100vh;
             color: var(--text);
             position: relative;
-        }
-
-        body.share-mode {
-            background: repeating-linear-gradient(
-                45deg,
-                #f0f0f0,
-                #f0f0f0 10px,
-                #f8f8f8 10px,
-                #f8f8f8 20px
-            );
         }
 
         .container {
@@ -1106,9 +1100,6 @@
             <button class="nav-tab locked" onclick="showTab('health')" data-tab="health" id="healthTab">
                 🏥 Health Info
             </button>
-            <button class="nav-tab locked" onclick="showTab('share')" data-tab="share" id="shareTab">
-                🔗 Share
-            </button>
             <button class="nav-tab locked" onclick="showTab('security')" data-tab="security" id="securityTab">
                 🔒 Security
             </button>
@@ -1178,50 +1169,6 @@
                         🔐 Set Password for Full EHR
                     </button>
                 </div>
-            </div>
-        </div>
-
-        <!-- Share Section (PIN Tier) -->
-        <div class="content-section" id="share-section">
-            <div class="section-header">
-                <h2>Share Medical Information</h2>
-            </div>
-            
-            <div class="mb-4">
-                <h3>Create Share Link</h3>
-                <div class="form-group">
-                    <label>What to share:</label>
-                    <div class="checkbox-group">
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="share-emergency" checked>
-                            <label for="share-emergency">Emergency Information</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="share-health">
-                            <label for="share-health">Health Records</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="share-full" disabled>
-                            <label for="share-full">Full EHR (requires password)</label>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label>Share for how long:</label>
-                    <select id="share-duration">
-                        <option value="3600000">1 hour</option>
-                        <option value="86400000" selected>24 hours</option>
-                        <option value="604800000">7 days</option>
-                        <option value="2592000000">30 days</option>
-                    </select>
-                </div>
-                
-                <button class="btn btn-success" onclick="createShareLink()">
-                    🔗 Generate Share Link
-                </button>
-                
-                <div id="share-link-display" class="hidden mt-4"></div>
             </div>
         </div>
 
@@ -1412,27 +1359,28 @@
         // Global State Management
         const APP_VERSION = '2.0.0';
         const WEBHOOK_URL = 'https://n8n.intelechia.com/webhook/d5e99c29-2cf1-44c1-b5b4-95a1ca048441';
+        const AUTO_LOGOUT_MS = 45 * 60 * 1000;
         
         const state = {
             currentGUID: null,
             baseKey: null,
             pinKey: null,
             passwordKey: null,
-            isShareMode: false,
             pinUnlocked: false,
             passwordUnlocked: false,
             isFirstTime: false,
             setupPIN: '',
             autoSaveTimer: null,
             lastSync: null,
-            
+            lastActivity: Date.now(),
+            logoutTimer: null,
+
             publicData: {
                 emergency: {}
             },
-            
+
             protectedData: {
                 health: {},
-                shares: [],
                 recoveryCodes: []
             },
             
@@ -1455,6 +1403,10 @@
             
             // Setup keyboard listeners for PIN entry
             setupKeyboardListeners();
+            ['mousemove','keypress','click','touchstart','scroll'].forEach(evt => {
+                document.addEventListener(evt, trackActivity, { passive: true });
+            });
+            trackActivity();
         }
 
         // Keyboard Support for PIN Entry
@@ -1505,6 +1457,32 @@
                     }
                 }
             });
+        }
+
+        function trackActivity() {
+            state.lastActivity = Date.now();
+            resetLogoutTimer();
+        }
+
+        function resetLogoutTimer() {
+            clearTimeout(state.logoutTimer);
+            state.logoutTimer = setTimeout(() => {
+                if (Date.now() - state.lastActivity > AUTO_LOGOUT_MS) {
+                    autoLogout();
+                }
+            }, AUTO_LOGOUT_MS);
+        }
+
+        function autoLogout() {
+            state.pinUnlocked = false;
+            state.passwordUnlocked = false;
+            state.pinKey = null;
+            state.passwordKey = null;
+            pinEntry = '';
+            updateSecurityUI();
+            showStatus('Session expired for security', 'warning');
+            showTab('emergency');
+            trackActivity();
         }
 
         // Webhook Functions
@@ -2116,7 +2094,6 @@
                     state.pinUnlocked = true;
                     state.protectedData = {
                         health: {},
-                        shares: [],
                         recoveryCodes: generateRecoveryCodes()
                     };
                     await saveProtectedData();
@@ -2152,7 +2129,6 @@
 
         function unlockPINLevel() {
             document.getElementById('healthTab').classList.remove('locked');
-            document.getElementById('shareTab').classList.remove('locked');
             document.getElementById('securityTab').classList.remove('locked');
             
             document.getElementById('lockIcon').textContent = '🔐';
@@ -2246,7 +2222,6 @@
             document.getElementById('lockIcon').textContent = '🔒';
             document.getElementById('lockText').textContent = 'Fully Secured';
             document.getElementById('securityBadge').className = 'security-badge badge-password';
-            document.getElementById('share-full').disabled = false;
             loadEHRData();
         }
 
@@ -2404,7 +2379,7 @@
 
         // Tab Navigation
         function showTab(tabName) {
-            if (!state.pinUnlocked && (tabName === 'health' || tabName === 'share' || tabName === 'security')) {
+            if (!state.pinUnlocked && (tabName === 'health' || tabName === 'security')) {
                 requestPIN('unlock');
                 return;
             }
@@ -2780,9 +2755,17 @@
                 document.getElementById('lockText').textContent = 'PIN Protected';
                 document.getElementById('securityBadge').className = 'security-badge badge-pin';
                 document.getElementById('healthTab').classList.remove('locked');
-                document.getElementById('shareTab').classList.remove('locked');
                 document.getElementById('securityTab').classList.remove('locked');
                 document.getElementById('passwordBtn').style.display = 'inline-flex';
+            } else {
+                document.getElementById('lockIcon').textContent = '🔓';
+                document.getElementById('lockText').textContent = 'Public Access';
+                document.getElementById('securityBadge').className = 'security-badge badge-public';
+                document.getElementById('healthTab').classList.add('locked');
+                document.getElementById('securityTab').classList.add('locked');
+                document.getElementById('ehrTab').classList.add('locked');
+                document.getElementById('ehrTab').classList.add('hidden');
+                document.getElementById('passwordBtn').style.display = 'none';
             }
         }
 
@@ -2899,7 +2882,7 @@
 
         // Auto-save on input
         document.addEventListener('input', function(e) {
-            if (e.target.classList.contains('protected-data') || 
+            if (e.target.classList.contains('protected-data') ||
                 e.target.classList.contains('ehr-data') ||
                 e.target.classList.contains('provider-field') ||
                 e.target.classList.contains('med-field') ||
@@ -2909,8 +2892,39 @@
             }
         });
 
-        // Initialize on load
-        window.addEventListener('DOMContentLoaded', init);
+        // Clipboard cleanup after copy operations
+        document.addEventListener('copy', () => {
+            setTimeout(() => navigator.clipboard.writeText('').catch(() => {}), 100);
+        });
+
+        // Periodic memory cleanup
+        function memoryCleanup() {
+            if (!state.pinUnlocked) state.pinKey = null;
+            if (!state.passwordUnlocked) state.passwordKey = null;
+        }
+        setInterval(memoryCleanup, 5 * 60 * 1000);
+
+        // Initialize on load with session warning and input hardening
+        window.addEventListener('DOMContentLoaded', () => {
+            if (sessionStorage.getItem('ikey_session_active')) {
+                alert('Another tab might be open - warn user');
+            }
+            sessionStorage.setItem('ikey_session_active', 'true');
+            document.querySelectorAll('input').forEach(input => {
+                input.setAttribute('autocomplete', 'off');
+                input.setAttribute('autocorrect', 'off');
+                input.setAttribute('autocapitalize', 'off');
+                input.setAttribute('spellcheck', 'false');
+            });
+            init();
+        });
+
+        window.addEventListener('beforeunload', function() {
+            state.pinKey = null;
+            state.passwordKey = null;
+            pinEntry = '';
+            sessionStorage.removeItem('ikey_session_active');
+        });
     </script>
 </body>
 </html>
