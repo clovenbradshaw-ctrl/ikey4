@@ -1411,6 +1411,7 @@
     <script>
         // Global State Management
         const APP_VERSION = '2.0.0';
+        const APP_URL = 'https://clovenbradshaw-ctrl.github.io/ikey4/';
         const WEBHOOK_URL = 'https://n8n.intelechia.com/webhook/d5e99c29-2cf1-44c1-b5b4-95a1ca048441';
         
         const state = {
@@ -1469,6 +1470,18 @@
                         showStatus('Unable to load emergency data', 'error');
                         return;
                     }
+            const fragment = window.location.hash.substring(1);
+            if (fragment) {
+                const [guid, keyBase64] = fragment.split(':');
+                if (guid && keyBase64) {
+                    state.baseKey = Uint8Array.from(atob(keyBase64), c => c.charCodeAt(0));
+                    state.currentGUID = guid;
+                    await loadPublicData();
+                    displayEmergencyInfo();
+
+                    // Setup keyboard listeners for PIN entry
+                    setupKeyboardListeners();
+                    return;
                 }
             }
 
@@ -1813,7 +1826,7 @@
                 return;
             }
             
-            const qrData = `${window.location.origin}${window.location.pathname}#${state.currentGUID}:${btoa(String.fromCharCode(...state.baseKey))}`;
+            const qrData = `${APP_URL}#${state.currentGUID}:${encodeURIComponent(btoa(String.fromCharCode(...state.baseKey)))}`;
             
             const container = document.getElementById('setup-qrcode');
             container.innerHTML = '';
@@ -2418,7 +2431,7 @@
                 return;
             }
             
-            const qrData = `${window.location.origin}${window.location.pathname}#${state.currentGUID}:${btoa(String.fromCharCode(...state.baseKey))}`;
+            const qrData = `${APP_URL}#${state.currentGUID}:${encodeURIComponent(btoa(String.fromCharCode(...state.baseKey)))}`;
             
             document.getElementById('qr-display').classList.remove('hidden');
             const container = document.getElementById('main-qrcode');
