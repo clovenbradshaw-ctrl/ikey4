@@ -1375,6 +1375,8 @@
             lastSync: null,
             lastActivity: Date.now(),
             logoutTimer: null,
+            currentDoubleHash: null,
+            saltValue: null,
 
             publicData: {
                 emergency: {}
@@ -1500,6 +1502,7 @@
             state.passwordUnlocked = false;
             state.pinKey = null;
             state.passwordKey = null;
+            state.currentDoubleHash = null;  // Clear from memory
             pinEntry = '';
             updateSecurityUI();
             showStatus('Session expired for security', 'warning');
@@ -1510,6 +1513,25 @@
         // Webhook Functions
         async function syncToCloud(showIndicator = true) {
             if (!state.baseKey) return;
+            
+            // Load encrypted hash if not in memory
+            if (!state.currentDoubleHash) {
+                try {
+                    const stored = localStorage.getItem(`ikey_hash_${state.currentGUID}`);
+                    if (stored) {
+                        const decrypted = await decrypt(JSON.parse(stored), state.baseKey);
+                        state.currentDoubleHash = decrypted.hash;
+                    }
+                } catch (e) {
+                    showStatus('Please enter PIN to enable sync', 'error');
+                    return;
+                }
+            }
+            
+            if (!state.currentDoubleHash) {
+                showStatus('Authentication required for sync', 'error');
+                return;
+            }
 
             if (showIndicator) {
                 const syncIndicator = document.getElementById('syncIndicator');
@@ -1530,10 +1552,16 @@
 
                 // Encrypt entire payload with base key
                 const encryptedPayload = await encrypt(allData, state.baseKey);
+                
+                // Generate new double hash for next update
+                const salt = Date.now().toString();
+                const newDoubleHash = await generateDoubleHash(state.baseKey, pinEntry || '', salt);
 
-                // Prepare minimal sync data
+                // Prepare sync data with both hashes
                 const syncData = {
                     guid: state.currentGUID,
+                    currentHash: state.currentDoubleHash,
+                    nextHash: newDoubleHash,
                     data: JSON.stringify(encryptedPayload),
                     timestamp: new Date().toISOString(),
                     method: state.lastSync ? 'update' : 'create'
@@ -1548,9 +1576,17 @@
                 });
 
                 if (!response.ok) {
+                    if (response.status === 403) {
+                        throw new Error('Authentication failed');
+                    }
                     throw new Error(`Sync failed: ${response.status}`);
                 }
 
+                // Success - rotate to new hash
+                state.currentDoubleHash = newDoubleHash;
+                const encryptedHash = await encrypt({ hash: newDoubleHash }, state.baseKey);
+                localStorage.setItem(`ikey_hash_${state.currentGUID}`, JSON.stringify(encryptedHash));
+                
                 state.lastSync = new Date().toISOString();
                 localStorage.setItem(`ikey_${state.currentGUID}_lastSync`, state.lastSync);
 
@@ -1573,7 +1609,23 @@
                     }, 3000);
                 }
 
-                showStatus('Cloud sync failed - data saved locally', 'error');
+                if (error.message.includes('Authentication failed')) {
+                    handleAuthFailure();
+                } else {
+                    showStatus('Cloud sync failed - data saved locally', 'error');
+                }
+            }
+        }
+
+        async function handleAuthFailure() {
+            const choice = confirm(
+                'Sync authentication failed.\n\n' +
+                'This can happen if the cloud data is out of sync.\n' +
+                'Would you like to reset authentication?'
+            );
+            
+            if (choice) {
+                requestPIN('recovery');
             }
         }
 
@@ -1620,22 +1672,27 @@
             try {
                 // Derive new key from new PIN
                 const newKey = await deriveKeyFromPIN(newPIN);
-                
+
                 // Re-encrypt protected data with new key
                 const tempData = state.protectedData;
                 state.pinKey = newKey;
-                
+
+                // Generate new double hash
+                state.currentDoubleHash = await generateDoubleHash(state.baseKey, newPIN);
+                const encryptedHash = await encrypt({ hash: state.currentDoubleHash }, state.baseKey);
+                localStorage.setItem(`ikey_hash_${state.currentGUID}`, JSON.stringify(encryptedHash));
+
                 // Save with new encryption
                 await saveProtectedData();
-                
+
                 state.pinUnlocked = true;
                 unlockPINLevel();
-                
+
                 showStatus('PIN reset successfully', 'success');
-                
-                // Sync to cloud
+
+                // Force sync with new hash
                 await syncToCloud();
-                
+
             } catch (error) {
                 console.error('Failed to reset PIN:', error);
                 showStatus('Failed to reset PIN', 'error');
@@ -1754,6 +1811,11 @@
             if (setupPIN.length === 6) {
                 state.pinKey = await deriveKeyFromPIN(setupPIN);
                 state.pinUnlocked = true;
+
+                // Generate initial double hash
+                state.currentDoubleHash = await generateDoubleHash(state.baseKey, setupPIN);
+                const encryptedHash = await encrypt({ hash: state.currentDoubleHash }, state.baseKey);
+                localStorage.setItem(`ikey_hash_${state.currentGUID}`, JSON.stringify(encryptedHash));
             }
             
             // Set password if provided
@@ -1811,15 +1873,26 @@
         async function loadExistingUser() {
             state.currentGUID = localStorage.getItem('ikey_guid');
             state.lastSync = localStorage.getItem(`ikey_${state.currentGUID}_lastSync`);
-            
+
             const baseKeyStr = localStorage.getItem(`ikey_basekey_${state.currentGUID}`);
             if (baseKeyStr) {
                 state.baseKey = Uint8Array.from(atob(baseKeyStr), c => c.charCodeAt(0));
             }
-            
+
+            // Load encrypted double hash
+            try {
+                const storedHash = localStorage.getItem(`ikey_hash_${state.currentGUID}`);
+                if (storedHash && state.baseKey) {
+                    const decrypted = await decrypt(JSON.parse(storedHash), state.baseKey);
+                    state.currentDoubleHash = decrypted.hash;
+                }
+            } catch (e) {
+                console.log('No stored hash found');
+            }
+
             await loadPublicData();
             displayEmergencyInfo();
-            
+
             // Update UI based on what's unlocked
             updateSecurityUI();
         }
@@ -1887,6 +1960,14 @@
             );
             
             return new Uint8Array(derivedBits);
+        }
+
+        async function generateDoubleHash(baseKey, pin, salt = '') {
+            const combined = btoa(String.fromCharCode(...baseKey)) + pin + salt;
+            const encoder = new TextEncoder();
+            const firstHash = await crypto.subtle.digest('SHA-256', encoder.encode(combined));
+            const secondHash = await crypto.subtle.digest('SHA-256', firstHash);
+            return btoa(String.fromCharCode(...new Uint8Array(secondHash)));
         }
 
         // Encryption/Decryption
@@ -2091,7 +2172,7 @@
         let pinCallback = null;
 
         function requestPIN(action) {
-            if (state.pinUnlocked && action !== 'change') {
+            if (state.pinUnlocked && action !== 'change' && action !== 'recovery') {
                 if (action === 'edit') editEmergencyInfo();
                 return;
             }
@@ -2160,11 +2241,16 @@
                 state.pinKey = derivedKey;
                 state.protectedData = decrypted;
                 state.pinUnlocked = true;
-                
+
+                // Regenerate and store double hash with verified PIN
+                state.currentDoubleHash = await generateDoubleHash(state.baseKey, pinEntry);
+                const encryptedHash = await encrypt({ hash: state.currentDoubleHash }, state.baseKey);
+                localStorage.setItem(`ikey_hash_${state.currentGUID}`, JSON.stringify(encryptedHash));
+
                 unlockPINLevel();
                 closePinPad();
                 await loadProtectedData();
-                
+
                 if (pinCallback === 'edit') {
                     editEmergencyInfo();
                 }
