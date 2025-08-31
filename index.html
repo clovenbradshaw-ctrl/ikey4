@@ -1392,9 +1392,9 @@
 
         // Initialize Application
         async function init() {
-            const hash = window.location.hash.slice(1);
-            if (hash) {
-                const [guid, keyB64] = hash.split(':');
+            const fragment = window.location.hash.slice(1);
+            if (fragment) {
+                const [guid, keyB64] = fragment.split(':');
                 if (guid && keyB64) {
                     try {
                         state.currentGUID = guid;
@@ -1402,15 +1402,7 @@
                         state.isShareMode = true;
                         document.body.classList.add('share-mode');
 
-                        let encrypted = localStorage.getItem(`ikey_${guid}_public`);
-                        if (!encrypted) {
-                            encrypted = await fetchPublicData(guid);
-                            if (!encrypted) return; // Error already shown
-                        } else {
-                            encrypted = JSON.parse(encrypted);
-                        }
-
-                        state.publicData = await decrypt(encrypted, state.baseKey);
+                        await restoreFromCloud(guid, state.baseKey);
                         displayEmergencyInfo();
                         return;
                     } catch (error) {
@@ -1418,18 +1410,6 @@
                         showStatus('Unable to load emergency data', 'error');
                         return;
                     }
-            const fragment = window.location.hash.substring(1);
-            if (fragment) {
-                const [guid, keyBase64] = fragment.split(':');
-                if (guid && keyBase64) {
-                    state.baseKey = Uint8Array.from(atob(keyBase64), c => c.charCodeAt(0));
-                    state.currentGUID = guid;
-                    await loadPublicData();
-                    displayEmergencyInfo();
-
-                    // Setup keyboard listeners for PIN entry
-                    setupKeyboardListeners();
-                    return;
                 }
             }
 
@@ -1529,66 +1509,70 @@
 
         // Webhook Functions
         async function syncToCloud(showIndicator = true) {
+            if (!state.baseKey) return;
+
             if (showIndicator) {
                 const syncIndicator = document.getElementById('syncIndicator');
                 syncIndicator.style.display = 'flex';
                 syncIndicator.classList.add('sync-indicator');
                 document.getElementById('syncText').textContent = 'Syncing...';
             }
-            
+
             try {
-                // Prepare data for sync
-                const syncData = {
-                    guid: state.currentGUID,
+                // Combine all tiers into a single payload
+                const allData = {
                     version: APP_VERSION,
                     timestamp: new Date().toISOString(),
-                    publicData: state.publicData,
-                    protectedData: state.pinKey ? state.protectedData : null,
-                    secureData: state.passwordKey ? state.secureData : null,
-                    encrypted: {
-                        public: localStorage.getItem(`ikey_${state.currentGUID}_public`),
-                        protected: localStorage.getItem(`ikey_${state.currentGUID}_protected`),
-                        secure: localStorage.getItem(`ikey_${state.currentGUID}_secure`)
-                    }
+                    public: state.publicData,
+                    protected: state.pinKey ? state.protectedData : null,
+                    secure: state.passwordKey ? state.secureData : null
                 };
-                
-                // Determine if this is a new record or update
+
+                // Encrypt entire payload with base key
+                const encryptedPayload = await encrypt(allData, state.baseKey);
+
+                // Prepare minimal sync data
+                const syncData = {
+                    guid: state.currentGUID,
+                    data: JSON.stringify(encryptedPayload),
+                    timestamp: new Date().toISOString(),
+                    method: state.lastSync ? 'update' : 'create'
+                };
+
                 const method = state.lastSync ? 'PUT' : 'POST';
-                
+
                 const response = await fetch(WEBHOOK_URL, {
-                    method: method,
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    method,
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(syncData)
                 });
-                
+
                 if (!response.ok) {
                     throw new Error(`Sync failed: ${response.status}`);
                 }
-                
+
                 state.lastSync = new Date().toISOString();
                 localStorage.setItem(`ikey_${state.currentGUID}_lastSync`, state.lastSync);
-                
+
                 if (showIndicator) {
                     document.getElementById('syncText').textContent = 'Synced';
                     setTimeout(() => {
                         document.getElementById('syncIndicator').style.display = 'none';
                     }, 2000);
                 }
-                
+
                 showStatus('Data synced to cloud', 'success');
-                
+
             } catch (error) {
                 console.error('Sync failed:', error);
-                
+
                 if (showIndicator) {
                     document.getElementById('syncText').textContent = 'Sync Failed';
                     setTimeout(() => {
                         document.getElementById('syncIndicator').style.display = 'none';
                     }, 3000);
                 }
-                
+
                 showStatus('Cloud sync failed - data saved locally', 'error');
             }
         }
@@ -1944,17 +1928,32 @@
         }
 
         // Data Loading/Saving
-        async function fetchPublicData(guid) {
+        async function restoreFromCloud(guid, baseKey) {
             try {
-                const response = await fetch(`${WEBHOOK_URL}/${guid}`);
+                const response = await fetch(`${WEBHOOK_URL}?guid=${guid}`);
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const payload = await response.json();
-                if (!payload || !payload.public) throw new Error('Invalid payload');
-                localStorage.setItem(`ikey_${guid}_public`, payload.public);
-                return JSON.parse(payload.public);
+                const { data } = await response.json();
+                if (!data) throw new Error('Invalid payload');
+                const encryptedPayload = JSON.parse(data);
+                const allData = await decrypt(encryptedPayload, baseKey);
+
+                state.publicData = allData.public || {};
+                await savePublicData();
+
+                if (state.pinKey && allData.protected) {
+                    state.protectedData = allData.protected;
+                    await saveProtectedData();
+                }
+
+                if (state.passwordKey && allData.secure) {
+                    state.secureData = allData.secure;
+                    await saveSecureData();
+                }
+
+                return allData;
             } catch (error) {
-                console.error('Failed to fetch public data:', error);
-                showStatus('Unable to retrieve emergency data', 'error');
+                console.error('Failed to restore data:', error);
+                showStatus('Unable to retrieve data', 'error');
                 return null;
             }
         }
@@ -2021,9 +2020,9 @@
             if (state.pinKey) await saveProtectedData();
             if (state.passwordKey) await saveSecureData();
             showStatus('All data saved', 'success');
-            
-            // Trigger cloud sync
-            await syncToCloud(false);
+
+            // Sync single encrypted blob to cloud
+            await syncToCloud();
         }
 
         // Auto-save function
