@@ -1406,9 +1406,14 @@
                         if (!encrypted) {
                             encrypted = await fetchPublicData(guid);
                             if (!encrypted) return; // Error already shown
+<<<<<<< codex/implement-fetchpublicdata-function-2hshlz
+                        }
+                        encrypted = JSON.parse(encrypted);
+=======
                         } else {
                             encrypted = JSON.parse(encrypted);
                         }
+>>>>>>> main
 
                         state.publicData = await decrypt(encrypted, state.baseKey);
                         displayEmergencyInfo();
@@ -1418,6 +1423,8 @@
                         showStatus('Unable to load emergency data', 'error');
                         return;
                     }
+<<<<<<< codex/implement-fetchpublicdata-function-2hshlz
+=======
             const fragment = window.location.hash.substring(1);
             if (fragment) {
                 const [guid, keyBase64] = fragment.split(':');
@@ -1430,6 +1437,7 @@
                     // Setup keyboard listeners for PIN entry
                     setupKeyboardListeners();
                     return;
+>>>>>>> main
                 }
             }
 
@@ -1951,7 +1959,11 @@
                 const payload = await response.json();
                 if (!payload || !payload.public) throw new Error('Invalid payload');
                 localStorage.setItem(`ikey_${guid}_public`, payload.public);
+<<<<<<< codex/implement-fetchpublicdata-function-2hshlz
+                return payload.public;
+=======
                 return JSON.parse(payload.public);
+>>>>>>> main
             } catch (error) {
                 console.error('Failed to fetch public data:', error);
                 showStatus('Unable to retrieve emergency data', 'error');
