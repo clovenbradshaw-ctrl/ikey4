@@ -1444,6 +1444,32 @@
 
         // Initialize Application
         async function init() {
+            const hash = window.location.hash.slice(1);
+            if (hash) {
+                const [guid, keyB64] = hash.split(':');
+                if (guid && keyB64) {
+                    try {
+                        state.currentGUID = guid;
+                        state.baseKey = Uint8Array.from(atob(keyB64), c => c.charCodeAt(0));
+                        state.isShareMode = true;
+                        document.body.classList.add('share-mode');
+
+                        let encrypted = localStorage.getItem(`ikey_${guid}_public`);
+                        if (!encrypted) {
+                            encrypted = await fetchPublicData(guid);
+                            if (!encrypted) return; // Error already shown
+                        } else {
+                            encrypted = JSON.parse(encrypted);
+                        }
+
+                        state.publicData = await decrypt(encrypted, state.baseKey);
+                        displayEmergencyInfo();
+                        return;
+                    } catch (error) {
+                        console.error('Hash access failed:', error);
+                        showStatus('Unable to load emergency data', 'error');
+                        return;
+                    }
             const fragment = window.location.hash.substring(1);
             if (fragment) {
                 const [guid, keyBase64] = fragment.split(':');
@@ -1940,6 +1966,21 @@
         }
 
         // Data Loading/Saving
+        async function fetchPublicData(guid) {
+            try {
+                const response = await fetch(`${WEBHOOK_URL}/${guid}`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const payload = await response.json();
+                if (!payload || !payload.public) throw new Error('Invalid payload');
+                localStorage.setItem(`ikey_${guid}_public`, payload.public);
+                return JSON.parse(payload.public);
+            } catch (error) {
+                console.error('Failed to fetch public data:', error);
+                showStatus('Unable to retrieve emergency data', 'error');
+                return null;
+            }
+        }
+
         async function loadPublicData() {
             try {
                 const stored = localStorage.getItem(`ikey_${state.currentGUID}_public`);
