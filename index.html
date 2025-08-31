@@ -1402,28 +1402,7 @@
                         state.isShareMode = true;
                         document.body.classList.add('share-mode');
 
-<<<<<<< codex/refactor-to-single-encrypted-payload
                         await restoreFromCloud(guid, state.baseKey);
-=======
-<<<<<<< codex/refactor-to-single-encrypted-payload
-                        await restoreFromCloud(guid, state.baseKey);
-=======
-                        let encrypted = localStorage.getItem(`ikey_${guid}_public`);
-                        if (!encrypted) {
-                            encrypted = await fetchPublicData(guid);
-                            if (!encrypted) return; // Error already shown
-<<<<<<< codex/implement-fetchpublicdata-function-2hshlz
-                        }
-                        encrypted = JSON.parse(encrypted);
-=======
-                        } else {
-                            encrypted = JSON.parse(encrypted);
-                        }
->>>>>>> main
-
-                        state.publicData = await decrypt(encrypted, state.baseKey);
->>>>>>> main
->>>>>>> main
                         displayEmergencyInfo();
                         return;
                     } catch (error) {
@@ -1431,27 +1410,6 @@
                         showStatus('Unable to load emergency data', 'error');
                         return;
                     }
-<<<<<<< codex/refactor-to-single-encrypted-payload
-=======
-<<<<<<< codex/refactor-to-single-encrypted-payload
-=======
-<<<<<<< codex/implement-fetchpublicdata-function-2hshlz
-=======
-            const fragment = window.location.hash.substring(1);
-            if (fragment) {
-                const [guid, keyBase64] = fragment.split(':');
-                if (guid && keyBase64) {
-                    state.baseKey = Uint8Array.from(atob(keyBase64), c => c.charCodeAt(0));
-                    state.currentGUID = guid;
-                    await loadPublicData();
-                    displayEmergencyInfo();
-
-                    // Setup keyboard listeners for PIN entry
-                    setupKeyboardListeners();
-                    return;
->>>>>>> main
->>>>>>> main
->>>>>>> main
                 }
             }
 
@@ -1970,10 +1928,6 @@
             try {
                 const response = await fetch(`${WEBHOOK_URL}?guid=${guid}`);
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
-<<<<<<< codex/refactor-to-single-encrypted-payload
-=======
-<<<<<<< codex/refactor-to-single-encrypted-payload
->>>>>>> main
                 const { data } = await response.json();
                 if (!data) throw new Error('Invalid payload');
                 const encryptedPayload = JSON.parse(data);
@@ -1993,19 +1947,6 @@
                 }
 
                 return allData;
-<<<<<<< codex/refactor-to-single-encrypted-payload
-=======
-=======
-                const payload = await response.json();
-                if (!payload || !payload.public) throw new Error('Invalid payload');
-                localStorage.setItem(`ikey_${guid}_public`, payload.public);
-<<<<<<< codex/implement-fetchpublicdata-function-2hshlz
-                return payload.public;
-=======
-                return JSON.parse(payload.public);
->>>>>>> main
->>>>>>> main
->>>>>>> main
             } catch (error) {
                 console.error('Failed to restore data:', error);
                 showStatus('Unable to retrieve data', 'error');
