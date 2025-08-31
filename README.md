@@ -111,7 +111,7 @@ state = {
 
 ### Endpoint Configuration
 
-- **Base URL**: `/api` (served by `server.js`; update `WEBHOOK_URL` in `index.html` if using an external webhook)
+- **Base URL**: `https://n8n.intelechia.com/webhook/d5e99c29-2cf1-44c1-b5b4-95a1ca048441` (update `WEBHOOK_URL` in `index.html` if using a different webhook)
 - **POST Method**: Creates new record (first sync for new GUID)
 - **PUT Method**: Updates existing record (subsequent syncs for existing GUID)
 
@@ -396,7 +396,7 @@ Node server or hosted on any static platform:
 No server-side configuration required. Optional webhook endpoint can be modified in the code:
 
 ```javascript
-const WEBHOOK_URL = '/api';
+const WEBHOOK_URL = 'https://n8n.intelechia.com/webhook/d5e99c29-2cf1-44c1-b5b4-95a1ca048441';
 ```
 
 ## Future Enhancements

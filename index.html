@@ -1359,7 +1359,7 @@
         // Global State Management
         const APP_VERSION = '2.0.0';
         const APP_URL = window.location.origin + '/';
-        const WEBHOOK_URL = '/api';
+        const WEBHOOK_URL = 'https://n8n.intelechia.com/webhook/d5e99c29-2cf1-44c1-b5b4-95a1ca048441';
         const AUTO_LOGOUT_MS = 45 * 60 * 1000;
         
         const state = {
@@ -1370,7 +1370,6 @@
             pinUnlocked: false,
             passwordUnlocked: false,
             isFirstTime: false,
-            setupPIN: '',
             autoSaveTimer: null,
             lastSync: null,
             lastActivity: Date.now(),
@@ -1391,6 +1390,8 @@
                 ehr: null
             }
         };
+
+        let setupPIN = '';
 
         // Initialize Application
         async function init() {
@@ -1553,10 +1554,11 @@
 
                 // Encrypt entire payload with base key
                 const encryptedPayload = await encrypt(allData, state.baseKey);
-                
+
                 // Generate new double hash for next update
                 const salt = Date.now().toString();
-                const newDoubleHash = await generateDoubleHash(state.baseKey, pinEntry || '', salt);
+                const pinData = localStorage.getItem(`ikey_pin_temp_${state.currentGUID}`);
+                const newDoubleHash = await generateDoubleHash(state.baseKey, pinData || '', salt);
 
                 // Prepare sync data with both hashes
                 const syncData = {
@@ -1673,6 +1675,10 @@
             try {
                 // Derive new key from new PIN
                 const newKey = await deriveKeyFromPIN(newPIN);
+                localStorage.setItem(
+                    `ikey_pin_temp_${state.currentGUID}`,
+                    btoa(String.fromCharCode(...newKey))
+                );
 
                 // Re-encrypt protected data with new key
                 const tempData = state.protectedData;
@@ -1765,8 +1771,6 @@
             return true;
         }
 
-        let setupPIN = '';
-
         function addSetupPinDigit(digit) {
             if (setupPIN.length < 6) {
                 setupPIN += digit;
@@ -1814,10 +1818,14 @@
                 state.pinUnlocked = true;
 
                 // Generate initial double hash
-                  state.currentDoubleHash = await generateDoubleHash(state.baseKey, setupPIN);
-                  const encryptedHash = await encrypt({ hash: state.currentDoubleHash }, state.baseKey);
-                  localStorage.setItem(`ikey_hash_${state.currentGUID}`, encryptedHash);
-              }
+                state.currentDoubleHash = await generateDoubleHash(state.baseKey, setupPIN);
+                const encryptedHash = await encrypt({ hash: state.currentDoubleHash }, state.baseKey);
+                localStorage.setItem(`ikey_hash_${state.currentGUID}`, encryptedHash);
+                localStorage.setItem(
+                    `ikey_pin_temp_${state.currentGUID}`,
+                    btoa(String.fromCharCode(...state.pinKey))
+                );
+            }
             
             // Set password if provided
             const password = document.getElementById('setup-password').value;
@@ -1990,19 +1998,25 @@
         }
 
         async function decrypt(combined, key) {
-            const [ivStr, dataStr] = combined.split('.');
-            const iv = Uint8Array.from(atob(ivStr), c => c.charCodeAt(0));
-            const data = Uint8Array.from(atob(dataStr), c => c.charCodeAt(0));
+            try {
+                const [ivStr, dataStr] = combined.split('.');
+                if (!ivStr || !dataStr) throw new Error('Invalid encrypted format');
+                const iv = Uint8Array.from(atob(ivStr), c => c.charCodeAt(0));
+                const data = Uint8Array.from(atob(dataStr), c => c.charCodeAt(0));
 
-            const cryptoKey = await crypto.subtle.importKey(
-                'raw', key, { name: 'AES-GCM' }, false, ['decrypt']
-            );
+                const cryptoKey = await crypto.subtle.importKey(
+                    'raw', key, { name: 'AES-GCM' }, false, ['decrypt']
+                );
 
-            const decrypted = await crypto.subtle.decrypt(
-                { name: 'AES-GCM', iv }, cryptoKey, data
-            );
+                const decrypted = await crypto.subtle.decrypt(
+                    { name: 'AES-GCM', iv }, cryptoKey, data
+                );
 
-            return JSON.parse(new TextDecoder().decode(decrypted));
+                return JSON.parse(new TextDecoder().decode(decrypted));
+            } catch (error) {
+                console.error('Decryption failed:', error);
+                throw error;
+            }
         }
 
         // Data Loading/Saving
@@ -2076,18 +2090,21 @@
 
         async function savePublicData() {
             if (!state.baseKey) return;
+            // encrypt returns "IV.EncryptedData" format directly
             const encrypted = await encrypt(state.publicData, state.baseKey);
             localStorage.setItem(`ikey_${state.currentGUID}_public`, encrypted);
         }
 
         async function saveProtectedData() {
             if (!state.pinKey) return;
+            // encrypt returns "IV.EncryptedData" format directly
             const encrypted = await encrypt(state.protectedData, state.pinKey);
             localStorage.setItem(`ikey_${state.currentGUID}_protected`, encrypted);
         }
 
         async function saveSecureData() {
             if (!state.passwordKey) return;
+            // encrypt returns "IV.EncryptedData" format directly
             const encrypted = await encrypt(state.secureData, state.passwordKey);
             localStorage.setItem(`ikey_${state.currentGUID}_secure`, encrypted);
         }
@@ -2241,6 +2258,11 @@
                 state.pinKey = derivedKey;
                 state.protectedData = decrypted;
                 state.pinUnlocked = true;
+
+                localStorage.setItem(
+                    `ikey_pin_temp_${state.currentGUID}`,
+                    btoa(String.fromCharCode(...derivedKey))
+                );
 
                 // Regenerate and store double hash with verified PIN
                 state.currentDoubleHash = await generateDoubleHash(state.baseKey, pinEntry);
