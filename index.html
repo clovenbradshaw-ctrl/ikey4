@@ -1772,11 +1772,7 @@
             localStorage.setItem(`ikey_basekey_${state.currentGUID}`, 
                 btoa(String.fromCharCode(...state.baseKey)));
             
-            await saveAllData();
-            
-            // Initial sync to cloud
-            await syncToCloud();
-            
+            await saveAllData();            
             // Hide wizard and show main app
             document.getElementById('setup-wizard').classList.add('hidden');
             await loadExistingUser();
