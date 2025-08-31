@@ -111,7 +111,7 @@ state = {
 
 ### Endpoint Configuration
 
-- **Base URL**: `https://n8n.intelechia.com/webhook/d5e99c29-2cf1-44c1-b5b4-95a1ca048441`
+- **Base URL**: `/api` (served by `server.js`; update `WEBHOOK_URL` in `index.html` if using an external webhook)
 - **POST Method**: Creates new record (first sync for new GUID)
 - **PUT Method**: Updates existing record (subsequent syncs for existing GUID)
 
@@ -382,19 +382,21 @@ if (!window.crypto || !window.crypto.subtle) {
 
 ### Static Hosting
 
-The application is a single HTML file that can be:
-- Hosted on any static web server
-- Saved locally and run from file://
-- Deployed to GitHub Pages, Netlify, Vercel
-- Embedded in native apps via WebView
-- Distributed via IPFS for decentralization
+The application is a single HTML file that can be served directly by the bundled
+Node server or hosted on any static platform:
+- Run `node server.js` and visit `http://localhost:3000`
+- Serve from any static web server
+- Save locally and run from `file://`
+- Deploy to GitHub Pages, Netlify, Vercel
+- Embed in native apps via WebView
+- Distribute via IPFS for decentralization
 
 ### Configuration
 
 No server-side configuration required. Optional webhook endpoint can be modified in the code:
 
 ```javascript
-const WEBHOOK_URL = 'https://n8n.intelechia.com/webhook/d5e99c29-2cf1-44c1-b5b4-95a1ca048441';
+const WEBHOOK_URL = '/api';
 ```
 
 ## Future Enhancements
