@@ -28,8 +28,11 @@
         body.size-large { --text-scale: 1.125; --spacing-scale: 1.1; --element-scale: 1.05; }
         body.size-xlarge { --text-scale: 1.25; --spacing-scale: 1.2; --element-scale: 1.1; }
 
-        body {
+        html {
             font-size: calc(16px * var(--text-scale));
+        }
+
+        body {
             min-height: 100vh;
             color: var(--text);
             position: relative;
