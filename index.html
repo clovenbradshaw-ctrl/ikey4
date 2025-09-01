@@ -1110,6 +1110,12 @@
                 <button class="btn btn-outline" onclick="showPasswordManager()" id="passwordBtn" style="display: none; padding: 8px 16px; font-size: 0.875rem;">
                     🔑 Manage Password
                 </button>
+                <button class="btn btn-outline" onclick="switchInstance()" id="switchInstanceBtn" style="padding: 8px 16px; font-size: 0.875rem;">
+                    🔄 Switch Profile
+                </button>
+                <button class="btn btn-outline" onclick="createNewInstance()" id="newInstanceBtn" style="padding: 8px 16px; font-size: 0.875rem;">
+                    ➕ New Profile
+                </button>
                 <div class="security-badge" id="syncIndicator" style="display: none;">
                     <span>☁️</span>
                     <span id="syncText">Syncing...</span>
@@ -1414,33 +1420,93 @@
                         state.isShareMode = true;
                         document.body.classList.add('share-mode');
 
-                        await restoreFromCloud(guid, state.baseKey);
-                        displayEmergencyInfo();
-                        return;
-                    } catch (error) {
-                        console.error('Hash access failed:', error);
-                        showStatus('Unable to load emergency data', 'error');
-                        return;
+                await restoreFromCloud(guid, state.baseKey);
+                displayEmergencyInfo();
+                return; // STOP HERE - don't load localStorage
+            } catch (error) {
+                console.error('Hash access failed:', error);
+                showStatus('Unable to load emergency data', 'error');
+                window.location.hash = '';
+                showSetupWizard();
+                return;
+            }
+        }
+    }
+    
+    // Only check localStorage if NO hash in URL
+    const hasGUID = localStorage.getItem('ikey_guid');
+    
+    if (!hasGUID) {
+        // No saved instance and no hash - show wizard
+        state.isFirstTime = true;
+        showSetupWizard();
+    } else {
+        // Load the saved instance ONLY if no hash
+        await loadExistingUser();
+    }
+
+    // Setup keyboard listeners and activity tracking
+    setupKeyboardListeners();
+    ['mousemove','keypress','click','touchstart','scroll'].forEach(evt => {
+        document.addEventListener(evt, trackActivity, { passive: true });
+    });
+    trackActivity();
+}
+
+        function switchInstance() {
+            const instances = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('ikey_') && key.endsWith('_public')) {
+                    const guid = key.replace('ikey_', '').replace('_public', '');
+                    instances.push(guid);
+                }
+            }
+            if (instances.length > 1) {
+                const choice = confirm('Multiple medical profiles detected.\nWould you like to switch profiles?');
+                if (choice) {
+                    const selected = prompt(
+                        'Enter profile number:\n' +
+                        instances.map((g, i) => `${i + 1}: ${g.substring(0, 8)}...`).join('\n')
+                    );
+                    if (selected) {
+                        const idx = parseInt(selected) - 1;
+                        if (instances[idx]) {
+                            state.currentGUID = instances[idx];
+                            loadExistingUser();
+                        }
                     }
                 }
             }
+        }
 
-            // Check if first time user
-            const hasGUID = localStorage.getItem('ikey_guid');
-
-            if (!hasGUID) {
-                state.isFirstTime = true;
+        function createNewInstance() {
+            if (confirm('Create a new medical profile? Current data will be preserved.')) {
+                state.currentGUID = null;
+                state.baseKey = null;
+                state.pinKey = null;
+                state.passwordKey = null;
+                state.pinUnlocked = false;
+                state.passwordUnlocked = false;
+                window.location.hash = '';
                 showSetupWizard();
-            } else {
-                await loadExistingUser();
             }
+        }
 
-            // Setup keyboard listeners for PIN entry
-            setupKeyboardListeners();
-            ['mousemove','keypress','click','touchstart','scroll'].forEach(evt => {
-                document.addEventListener(evt, trackActivity, { passive: true });
-            });
-            trackActivity();
+        function clearCurrentInstance() {
+            if (state.currentGUID) {
+                if (confirm('Clear this profile from browser? (Cloud backup remains)')) {
+                    localStorage.removeItem(`ikey_guid`);
+                    localStorage.removeItem(`ikey_basekey_${state.currentGUID}`);
+                    localStorage.removeItem(`ikey_${state.currentGUID}_public`);
+                    localStorage.removeItem(`ikey_${state.currentGUID}_protected`);
+                    localStorage.removeItem(`ikey_${state.currentGUID}_secure`);
+                    localStorage.removeItem(`ikey_hash_${state.currentGUID}`);
+                    localStorage.removeItem(`ikey_pin_temp_${state.currentGUID}`);
+                    window.location.hash = '';
+                    location.reload();
+                }
+            }
         }
 
         // Keyboard Support for PIN Entry
@@ -3068,6 +3134,10 @@
                 input.setAttribute('spellcheck', 'false');
             });
             init();
+        });
+
+        window.addEventListener('hashchange', function() {
+            location.reload();
         });
 
         window.addEventListener('beforeunload', function() {
