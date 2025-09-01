@@ -866,14 +866,10 @@
                 </div>
                 <div class="progress-step" data-step="3">
                     <div class="progress-dot">3</div>
-                    <div class="progress-label">Set PIN</div>
+                    <div class="progress-label">Security Setup</div>
                 </div>
                 <div class="progress-step" data-step="4">
                     <div class="progress-dot">4</div>
-                    <div class="progress-label">Password (Optional)</div>
-                </div>
-                <div class="progress-step" data-step="5">
-                    <div class="progress-dot">5</div>
                     <div class="progress-label">Complete</div>
                 </div>
             </div>
@@ -961,69 +957,66 @@
                     </div>
                 </div>
                 
-                <!-- Step 3: Set PIN -->
+                <!-- Step 3: Security Setup -->
                 <div class="wizard-step" data-step="3">
-                    <h2>Set Your 6-Digit PIN</h2>
-                    <p style="margin-bottom: 20px;">This PIN encrypts your health records. Choose something memorable but not obvious:</p>
-                    
-                    <div class="pin-display" id="setupPinDisplay">
-                        <div class="pin-dot"></div>
-                        <div class="pin-dot"></div>
-                        <div class="pin-dot"></div>
-                        <div class="pin-dot"></div>
-                        <div class="pin-dot"></div>
-                        <div class="pin-dot"></div>
-                    </div>
-                    
-                    <div class="pin-keypad">
-                        <button class="pin-key" onclick="addSetupPinDigit(1)">1</button>
-                        <button class="pin-key" onclick="addSetupPinDigit(2)">2</button>
-                        <button class="pin-key" onclick="addSetupPinDigit(3)">3</button>
-                        <button class="pin-key" onclick="addSetupPinDigit(4)">4</button>
-                        <button class="pin-key" onclick="addSetupPinDigit(5)">5</button>
-                        <button class="pin-key" onclick="addSetupPinDigit(6)">6</button>
-                        <button class="pin-key" onclick="addSetupPinDigit(7)">7</button>
-                        <button class="pin-key" onclick="addSetupPinDigit(8)">8</button>
-                        <button class="pin-key" onclick="addSetupPinDigit(9)">9</button>
-                        <button class="pin-key special-clear" onclick="clearSetupPin()">Clear</button>
-                        <button class="pin-key" onclick="addSetupPinDigit(0)">0</button>
-                        <button class="pin-key special-cancel" style="font-size: 1rem;">Confirm</button>
-                    </div>
-                    
-                    <div class="info-box">
-                        <strong>Remember:</strong> This PIN cannot be recovered. Write it down and store it safely.
-                        <br><strong>Tip:</strong> You can also use your keyboard number keys to enter the PIN.
-                    </div>
-                </div>
-                
-                <!-- Step 4: Optional Password -->
-                <div class="wizard-step" data-step="4">
-                    <h2>Optional: Set Password for Full EHR</h2>
-                    <p style="margin-bottom: 20px;">Add a password to unlock comprehensive medical records, provider management, and sensitive information:</p>
-                    
-                    <div class="form-group">
-                        <label>Password (minimum 8 characters)</label>
-                        <input type="password" id="setup-password" placeholder="Enter a strong password">
-                        <div class="password-strength">
-                            <div class="strength-bar"></div>
-                            <div class="strength-bar"></div>
-                            <div class="strength-bar"></div>
-                            <div class="strength-bar"></div>
+                    <h2>Set Up Your Security Layers</h2>
+                    <p style="margin-bottom: 20px;">Your data is protected by multiple security layers. Set each one:</p>
+
+                    <!-- PIN for Demographics -->
+                    <div class="security-tier-card">
+                        <div class="tier-header">
+                            <span class="tier-icon">📝</span>
+                            <h3>Level 1: PIN (Demographics)</h3>
+                        </div>
+                        <div class="tier-info">
+                            <p><strong>Protects:</strong> Contact info, address, phone numbers, non-medical updates</p>
+                            <p><strong>Why PIN is OK here:</strong> Lower risk data, convenience for frequent updates</p>
+                        </div>
+                        <div class="form-group">
+                            <label>Enter 6-Digit PIN</label>
+                            <input type="password" 
+                                   id="setup-pin" 
+                                   pattern="[0-9]{6}" 
+                                   maxlength="6"
+                                   placeholder="6 digits"
+                                   class="pin-input">
+                            <small>Easy to remember, for non-sensitive updates</small>
                         </div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label>Confirm Password</label>
-                        <input type="password" id="setup-password-confirm" placeholder="Confirm your password">
+
+                    <!-- Password for Health Records -->
+                    <div class="security-tier-card">
+                        <div class="tier-header">
+                            <span class="tier-icon">🏥</span>
+                            <h3>Level 2: Password (Health Records)</h3>
+                        </div>
+                        <div class="tier-info">
+                            <p><strong>Protects:</strong> Medical history, conditions, medications, test results</p>
+                            <p><strong>Why password:</strong> Sensitive medical data needs strong protection</p>
+                        </div>
+                        <div class="form-group">
+                            <label>Enter Password (minimum 12 characters)</label>
+                            <input type="password" 
+                                   id="setup-health-password" 
+                                   minlength="12"
+                                   placeholder="Strong password">
+                            <div class="password-strength">
+                                <div class="strength-bar"></div>
+                                <div class="strength-bar"></div>
+                                <div class="strength-bar"></div>
+                                <div class="strength-bar"></div>
+                            </div>
+                            <small>This is your main medical records password</small>
+                        </div>
                     </div>
-                    
-                    <div class="info-box">
-                        You can skip this step and add a password later if you don't need full EHR features yet.
+
+                    <div class="warning-box">
+                        <strong>⚠️ Important:</strong> These cannot be recovered if forgotten. Write them down and store safely.
                     </div>
                 </div>
-                
-                <!-- Step 5: Complete -->
-                <div class="wizard-step" data-step="5">
+
+                <!-- Step 4: Complete -->
+                <div class="wizard-step" data-step="4">
                     <h2>🎉 Setup Complete!</h2>
                     
                     <div style="text-align: center; margin: 30px 0;">
@@ -1366,8 +1359,12 @@
             currentGUID: null,
             baseKey: null,
             pinKey: null,
+            healthKey: null,
+            ehrKey: null,
             passwordKey: null,
             pinUnlocked: false,
+            healthUnlocked: false,
+            ehrUnlocked: false,
             passwordUnlocked: false,
             isFirstTime: false,
             autoSaveTimer: null,
@@ -1377,21 +1374,10 @@
             currentDoubleHash: null,
             saltValue: null,
 
-            publicData: {
-                emergency: {}
-            },
-
-            protectedData: {
-                health: {},
-                recoveryCodes: []
-            },
-            
-            secureData: {
-                ehr: null
-            }
+            emergencyData: {},
+            encryptedBlob: null
         };
 
-        let setupPIN = '';
 
         // Initialize Application
         async function init() {
@@ -1437,46 +1423,19 @@
         // Keyboard Support for PIN Entry
         function setupKeyboardListeners() {
             document.addEventListener('keydown', function(e) {
-                // Check if PIN modal is active
                 const pinModal = document.getElementById('pin-modal');
-                const setupWizard = document.getElementById('setup-wizard');
-                const isSetupPinStep = !setupWizard.classList.contains('hidden') && 
-                                       document.querySelector('.wizard-step.active[data-step="3"]');
-                
-                if (pinModal.classList.contains('active') || isSetupPinStep) {
-                    // Handle number keys 0-9
+
+                if (pinModal.classList.contains('active')) {
                     if (e.key >= '0' && e.key <= '9') {
                         e.preventDefault();
-                        const digit = parseInt(e.key);
-                        
-                        if (isSetupPinStep) {
-                            addSetupPinDigit(digit);
-                        } else {
-                            addPinDigit(digit);
-                        }
-                    }
-                    // Handle backspace/delete
-                    else if (e.key === 'Backspace' || e.key === 'Delete') {
+                        addPinDigit(parseInt(e.key));
+                    } else if (e.key === 'Backspace' || e.key === 'Delete') {
                         e.preventDefault();
-                        
-                        if (isSetupPinStep) {
-                            clearSetupPin();
-                        } else {
-                            clearPin();
-                        }
-                    }
-                    // Handle Enter
-                    else if (e.key === 'Enter') {
+                        clearPin();
+                    } else if (e.key === 'Enter' && pinEntry.length === 6) {
                         e.preventDefault();
-                        
-                        if (isSetupPinStep && setupPIN.length === 6) {
-                            wizardNext();
-                        } else if (!isSetupPinStep && pinEntry.length === 6) {
-                            verifyPIN();
-                        }
-                    }
-                    // Handle Escape
-                    else if (e.key === 'Escape' && !isSetupPinStep) {
+                        verifyPIN();
+                    } else if (e.key === 'Escape') {
                         e.preventDefault();
                         closePinPad();
                     }
@@ -1500,123 +1459,32 @@
 
         function autoLogout() {
             state.pinUnlocked = false;
+            state.healthUnlocked = false;
+            state.ehrUnlocked = false;
             state.passwordUnlocked = false;
             state.pinKey = null;
+            state.healthKey = null;
+            state.ehrKey = null;
             state.passwordKey = null;
             state.currentDoubleHash = null;  // Clear from memory
             pinEntry = '';
-            setupPIN = '';
-            updateSecurityUI();
+            updateSecurityStatus();
             showStatus('Session expired for security', 'warning');
             showTab('emergency');
             trackActivity();
         }
 
         // Webhook Functions
-        async function syncToCloud(showIndicator = true) {
-            if (!state.baseKey) return;
-            
-            // Load encrypted hash if not in memory
-            if (!state.currentDoubleHash) {
-                try {
-                    const stored = localStorage.getItem(`ikey_hash_${state.currentGUID}`);
-                    if (stored) {
-                        const decrypted = await decrypt(stored, state.baseKey);
-                        state.currentDoubleHash = decrypted.hash;
-                    }
-                } catch (e) {
-                    showStatus('Please enter PIN to enable sync', 'error');
-                    return;
-                }
-            }
-            
-            if (!state.currentDoubleHash) {
-                showStatus('Authentication required for sync', 'error');
-                return;
-            }
-
-            if (showIndicator) {
-                const syncIndicator = document.getElementById('syncIndicator');
-                syncIndicator.style.display = 'flex';
-                syncIndicator.classList.add('sync-indicator');
-                document.getElementById('syncText').textContent = 'Syncing...';
-            }
-
+        async function syncToCloud(encryptedData) {
+            if (!encryptedData) return;
             try {
-                // Combine all tiers into a single payload
-                const allData = {
-                    version: APP_VERSION,
-                    timestamp: new Date().toISOString(),
-                    public: state.publicData,
-                    protected: state.pinKey ? state.protectedData : null,
-                    secure: state.passwordKey ? state.secureData : null
-                };
-
-                // Encrypt entire payload with base key
-                const encryptedPayload = await encrypt(allData, state.baseKey);
-
-                // Generate new double hash for next update
-                const salt = Date.now().toString();
-                const pinData = localStorage.getItem(`ikey_pin_temp_${state.currentGUID}`);
-                const newDoubleHash = await generateDoubleHash(state.baseKey, pinData || '', salt);
-
-                // Prepare sync data with both hashes
-                const syncData = {
-                    guid: state.currentGUID,
-                    currentHash: state.currentDoubleHash,
-                    nextHash: newDoubleHash,
-                    data: encryptedPayload,
-                    timestamp: new Date().toISOString(),
-                    method: state.lastSync ? 'update' : 'create'
-                };
-
-                const method = state.lastSync ? 'PUT' : 'POST';
-
-                const response = await fetch(WEBHOOK_URL, {
-                    method,
+                await fetch(WEBHOOK_URL, {
+                    method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(syncData)
+                    body: JSON.stringify({ guid: state.currentGUID, data: encryptedData, authType: 'password' })
                 });
-
-                if (!response.ok) {
-                    if (response.status === 403) {
-                        throw new Error('Authentication failed');
-                    }
-                    throw new Error(`Sync failed: ${response.status}`);
-                }
-
-                // Success - rotate to new hash
-                state.currentDoubleHash = newDoubleHash;
-                const encryptedHash = await encrypt({ hash: newDoubleHash }, state.baseKey);
-                localStorage.setItem(`ikey_hash_${state.currentGUID}`, encryptedHash);
-                
-                state.lastSync = new Date().toISOString();
-                localStorage.setItem(`ikey_${state.currentGUID}_lastSync`, state.lastSync);
-
-                if (showIndicator) {
-                    document.getElementById('syncText').textContent = 'Synced';
-                    setTimeout(() => {
-                        document.getElementById('syncIndicator').style.display = 'none';
-                    }, 2000);
-                }
-
-                showStatus('Data synced to cloud', 'success');
-
             } catch (error) {
                 console.error('Sync failed:', error);
-
-                if (showIndicator) {
-                    document.getElementById('syncText').textContent = 'Sync Failed';
-                    setTimeout(() => {
-                        document.getElementById('syncIndicator').style.display = 'none';
-                    }, 3000);
-                }
-
-                if (error.message.includes('Authentication failed')) {
-                    handleAuthFailure();
-                } else {
-                    showStatus('Cloud sync failed - data saved locally', 'error');
-                }
             }
         }
 
@@ -1731,23 +1599,31 @@
             
             // Update buttons
             document.getElementById('wizard-back').style.display = step === 1 ? 'none' : 'block';
-            document.getElementById('wizard-next').style.display = step === 5 ? 'none' : 'block';
-            document.getElementById('wizard-complete').classList.toggle('hidden', step !== 5);
+            document.getElementById('wizard-next').style.display = step === 4 ? 'none' : 'block';
+            document.getElementById('wizard-complete').classList.toggle('hidden', step !== 4);
         }
 
         let currentWizardStep = 1;
 
         function wizardNext() {
             if (validateWizardStep(currentWizardStep)) {
-                if (currentWizardStep === 3 && setupPIN.length !== 6) {
-                    alert('Please enter a 6-digit PIN');
-                    return;
+                if (currentWizardStep === 3) {
+                    const pin = document.getElementById('setup-pin').value;
+                    const pwd = document.getElementById('setup-health-password').value;
+                    if (!pin || pin.length !== 6) {
+                        alert('Please enter a 6-digit PIN');
+                        return;
+                    }
+                    if (!pwd || pwd.length < 12) {
+                        alert('Health password must be at least 12 characters');
+                        return;
+                    }
                 }
-                
+
                 currentWizardStep++;
                 updateWizardProgress(currentWizardStep);
-                
-                if (currentWizardStep === 5) {
+
+                if (currentWizardStep === 4) {
                     generateSetupQR();
                 }
             }
@@ -1771,80 +1647,70 @@
             return true;
         }
 
-        function addSetupPinDigit(digit) {
-            if (setupPIN.length < 6) {
-                setupPIN += digit;
-                updateSetupPinDisplay();
-                
-                if (setupPIN.length === 6) {
-                    // Auto-confirm when 6 digits entered
-                    setTimeout(() => {
-                        document.querySelector('.wizard-step.active .pin-key.special-cancel').click();
-                    }, 300);
-                }
-            }
-        }
-
-        function clearSetupPin() {
-            setupPIN = '';
-            updateSetupPinDisplay();
-        }
-
-        function updateSetupPinDisplay() {
-            const dots = document.querySelectorAll('#setupPinDisplay .pin-dot');
-            dots.forEach((dot, index) => {
-                dot.classList.toggle('filled', index < setupPIN.length);
-            });
-        }
-
         async function completeSetup() {
-            // Generate GUID and keys
+            const pin = document.getElementById('setup-pin').value;
+            const healthPassword = document.getElementById('setup-health-password').value;
+
+            if (!pin || pin.length !== 6) {
+                alert('Please enter a 6-digit PIN');
+                return;
+            }
+
+            if (!healthPassword || healthPassword.length < 12) {
+                alert('Health password must be at least 12 characters');
+                return;
+            }
+            try {
+                validatePasswordStrength(healthPassword, 'health');
+            } catch (e) {
+                alert(e.message);
+                return;
+            }
+
             state.currentGUID = generateGUID();
             state.baseKey = await generateKey();
-            
-            // Save emergency data
-            state.publicData.emergency = {
-                name: document.getElementById('setup-name').value,
-                bloodType: document.getElementById('setup-blood').value,
-                allergies: document.getElementById('setup-allergies').value,
-                medications: document.getElementById('setup-medications').value,
-                conditions: document.getElementById('setup-conditions').value,
-                contactName: document.getElementById('setup-contact').value
-            };
-            
-            // Derive PIN key
-            if (setupPIN.length === 6) {
-                state.pinKey = await deriveKeyFromPIN(setupPIN);
-                state.pinUnlocked = true;
 
-                // Generate initial double hash
-                state.currentDoubleHash = await generateDoubleHash(state.baseKey, setupPIN);
-                const encryptedHash = await encrypt({ hash: state.currentDoubleHash }, state.baseKey);
-                localStorage.setItem(`ikey_hash_${state.currentGUID}`, encryptedHash);
-                localStorage.setItem(
-                    `ikey_pin_temp_${state.currentGUID}`,
-                    btoa(String.fromCharCode(...state.pinKey))
-                );
-            }
-            
-            // Set password if provided
-            const password = document.getElementById('setup-password').value;
-            if (password && password.length >= 8) {
-                state.passwordKey = await deriveKeyFromPassword(password);
-                state.passwordUnlocked = true;
-                state.secureData.ehr = initializeEHR();
-            }
-            
-            // Generate recovery codes
-            state.protectedData.recoveryCodes = generateRecoveryCodes();
-            
-            // Save everything
+            const keys = await deriveSecurityKeys(pin, healthPassword);
+            state.pinKey = keys.pinKey;
+            state.healthKey = keys.healthKey;
+            state.passwordKey = state.healthKey;
+            state.ehrKey = keys.ehrKey;
+            state.pinUnlocked = true;
+            state.healthUnlocked = true;
+            state.passwordUnlocked = true;
+            state.ehrUnlocked = !!keys.ehrKey;
+
+            const userData = {
+                emergency: {
+                    name: document.getElementById('setup-name').value,
+                    bloodType: document.getElementById('setup-blood').value,
+                    allergies: document.getElementById('setup-allergies').value,
+                    medications: document.getElementById('setup-medications').value,
+                    conditions: document.getElementById('setup-conditions').value,
+                    contactName: document.getElementById('setup-contact').value
+                },
+                demographic: { phone: '', address: '', insurance: '' },
+                health: { conditions: '', surgeries: '', familyHistory: '' },
+                ehr: null
+            };
+
+            const encryptedBlob = await createNestedEncryptedBlob(userData, {
+                baseKey: state.baseKey,
+                pinKey: state.pinKey,
+                healthKey: state.healthKey,
+                ehrKey: state.ehrKey
+            });
+            state.emergencyData = userData.emergency;
+            state.encryptedBlob = encryptedBlob;
+
             localStorage.setItem('ikey_guid', state.currentGUID);
-            localStorage.setItem(`ikey_basekey_${state.currentGUID}`, 
+            localStorage.setItem(`ikey_basekey_${state.currentGUID}`,
                 btoa(String.fromCharCode(...state.baseKey)));
-            
-            await saveAllData();            
-            // Hide wizard and show main app
+            localStorage.setItem(`ikey_${state.currentGUID}_data`, encryptedBlob);
+
+            await syncToCloud(encryptedBlob);
+
+            showStatus('Setup complete! Your medical data is now protected.', 'success');
             document.getElementById('setup-wizard').classList.add('hidden');
             await loadExistingUser();
         }
@@ -1888,22 +1754,19 @@
                 state.baseKey = Uint8Array.from(atob(baseKeyStr), c => c.charCodeAt(0));
             }
 
-            // Load encrypted double hash
-            try {
-                const storedHash = localStorage.getItem(`ikey_hash_${state.currentGUID}`);
-                if (storedHash && state.baseKey) {
-                    const decrypted = await decrypt(storedHash, state.baseKey);
-                    state.currentDoubleHash = decrypted.hash;
+            const encryptedBlob = localStorage.getItem(`ikey_${state.currentGUID}_data`);
+            if (encryptedBlob && state.baseKey) {
+                state.encryptedBlob = encryptedBlob;
+                try {
+                    const decrypted = await decrypt(encryptedBlob, state.baseKey);
+                    state.emergencyData = decrypted.emergency;
+                } catch (e) {
+                    console.log('No stored data');
                 }
-            } catch (e) {
-                console.log('No stored hash found');
             }
 
-            await loadPublicData();
             displayEmergencyInfo();
-
-            // Update UI based on what's unlocked
-            updateSecurityUI();
+            updateSecurityStatus();
         }
 
         // Utility Functions
@@ -1948,7 +1811,7 @@
         async function deriveKeyFromPassword(password) {
             const encoder = new TextEncoder();
             const passwordData = encoder.encode(password + state.currentGUID);
-            
+
             const keyMaterial = await crypto.subtle.importKey(
                 'raw',
                 passwordData,
@@ -1956,19 +1819,67 @@
                 false,
                 ['deriveBits']
             );
-            
+
             const derivedBits = await crypto.subtle.deriveBits(
                 {
                     name: 'PBKDF2',
-                    salt: encoder.encode(state.currentGUID + 'secure'),
-                    iterations: 200000,
+                    salt: encoder.encode(state.currentGUID + 'ehr'),
+                    iterations: 1000000,
                     hash: 'SHA-256'
                 },
                 keyMaterial,
                 256
             );
-            
+
             return new Uint8Array(derivedBits);
+        }
+
+        async function deriveSecurityKeys(pin, healthPassword, ehrPassword = null) {
+            const encoder = new TextEncoder();
+
+            const pinKey = await crypto.subtle.importKey(
+                'raw',
+                encoder.encode(pin + state.currentGUID),
+                { name: 'PBKDF2' },
+                false,
+                ['deriveBits']
+            );
+
+            const pinDerivedBits = await crypto.subtle.deriveBits(
+                {
+                    name: 'PBKDF2',
+                    salt: encoder.encode(state.currentGUID + 'demo'),
+                    iterations: 100000,
+                    hash: 'SHA-256'
+                },
+                pinKey,
+                256
+            );
+
+            const healthKey = await crypto.subtle.importKey(
+                'raw',
+                encoder.encode(healthPassword + state.currentGUID),
+                { name: 'PBKDF2' },
+                false,
+                ['deriveBits']
+            );
+
+            const healthDerivedBits = await crypto.subtle.deriveBits(
+                {
+                    name: 'PBKDF2',
+                    salt: encoder.encode(state.currentGUID + 'health'),
+                    iterations: 500000,
+                    hash: 'SHA-256'
+                },
+                healthKey,
+                256
+            );
+
+            return {
+                pinKey: new Uint8Array(pinDerivedBits),
+                healthKey: new Uint8Array(healthDerivedBits),
+                ehrKey: ehrPassword ? await deriveKeyFromPassword(ehrPassword) : null
+            };
         }
 
         async function generateDoubleHash(baseKey, pin, salt = '') {
@@ -2017,6 +1928,158 @@
                 console.error('Decryption failed:', error);
                 throw error;
             }
+        }
+
+        async function createNestedEncryptedBlob(data, keys) {
+            let ehrLayer = null;
+            if (data.ehr && keys.ehrKey) {
+                ehrLayer = await encrypt(data.ehr, keys.ehrKey);
+            }
+
+            const healthData = {
+                medical: data.health,
+                ehr: ehrLayer
+            };
+            const healthLayer = await encrypt(healthData, keys.healthKey);
+
+            const demographicData = {
+                contact: data.demographic,
+                healthBlob: healthLayer
+            };
+            const demoLayer = await encrypt(demographicData, keys.pinKey);
+
+            const finalBlob = {
+                version: APP_VERSION,
+                emergency: data.emergency,
+                encryptedData: demoLayer
+            };
+
+            return await encrypt(finalBlob, keys.baseKey);
+        }
+
+        async function decryptNestedBlob(encryptedBlob, keys) {
+            const blob = await decrypt(encryptedBlob, keys.baseKey);
+
+            const result = {
+                emergency: blob.emergency,
+                demographic: null,
+                health: null,
+                ehr: null
+            };
+
+            if (blob.encryptedData && keys.pinKey) {
+                try {
+                    const demoLayer = await decrypt(blob.encryptedData, keys.pinKey);
+                    result.demographic = demoLayer.contact;
+
+                    if (demoLayer.healthBlob && keys.healthKey) {
+                        const healthLayer = await decrypt(demoLayer.healthBlob, keys.healthKey);
+                        result.health = healthLayer.medical;
+
+                        if (healthLayer.ehr && keys.ehrKey) {
+                            result.ehr = await decrypt(healthLayer.ehr, keys.ehrKey);
+                        }
+                    }
+                } catch (e) {
+                    console.log('Decryption stopped at:', e.message);
+                }
+            }
+
+            return result;
+        }
+
+        function getRequiredAuth(action) {
+            const authMap = {
+                'view_emergency': null,
+                'edit_contact': 'pin',
+                'edit_insurance': 'pin',
+                'edit_address': 'pin',
+                'view_health': 'health_password',
+                'edit_conditions': 'health_password',
+                'edit_medications': 'health_password',
+                'view_ehr': 'ehr_password',
+                'edit_ehr': 'ehr_password'
+            };
+            return authMap[action];
+        }
+
+        async function checkAccess(requiredLevel) {
+            switch(requiredLevel) {
+                case null:
+                    return true;
+                case 'pin':
+                    if (!state.pinUnlocked) {
+                        await requestAuth('pin');
+                    }
+                    return state.pinUnlocked;
+                case 'health_password':
+                    if (!state.healthUnlocked) {
+                        await requestAuth('health');
+                    }
+                    return state.healthUnlocked;
+                case 'ehr_password':
+                    if (!state.ehrUnlocked) {
+                        await requestAuth('ehr');
+                    }
+                    return state.ehrUnlocked;
+            }
+        }
+
+        function updateSecurityStatus() {
+            const indicators = {
+                emergency: { icon: '🔓', text: 'Public', class: 'public' },
+                pin: { icon: '📝', text: 'PIN Protected', class: 'pin' },
+                health: { icon: '🔐', text: 'Password Protected', class: 'password' },
+                ehr: { icon: '🔒', text: 'Maximum Security', class: 'ehr' }
+            };
+
+            let currentLevel = 'emergency';
+            if (state.ehrUnlocked) currentLevel = 'ehr';
+            else if (state.healthUnlocked) currentLevel = 'health';
+            else if (state.pinUnlocked) currentLevel = 'pin';
+
+            const indicator = indicators[currentLevel];
+            document.getElementById('lockIcon').textContent = indicator.icon;
+            document.getElementById('lockText').textContent = indicator.text;
+            document.getElementById('securityBadge').className = `security-badge badge-${indicator.class}`;
+        }
+
+        function validatePasswordStrength(password, tier) {
+            const requirements = {
+                health: {
+                    minLength: 12,
+                    requireUpper: true,
+                    requireLower: true,
+                    requireNumber: true
+                },
+                ehr: {
+                    minLength: 16,
+                    requireUpper: true,
+                    requireLower: true,
+                    requireNumber: true,
+                    requireSpecial: true
+                }
+            };
+
+            const req = requirements[tier];
+
+            if (password.length < req.minLength) {
+                throw new Error(`Password must be at least ${req.minLength} characters`);
+            }
+            if (req.requireUpper && !/[A-Z]/.test(password)) {
+                throw new Error('Password must include uppercase letters');
+            }
+            if (req.requireLower && !/[a-z]/.test(password)) {
+                throw new Error('Password must include lowercase letters');
+            }
+            if (req.requireNumber && !/[0-9]/.test(password)) {
+                throw new Error('Password must include numbers');
+            }
+            if (req.requireSpecial && !/[^a-zA-Z0-9]/.test(password)) {
+                throw new Error('Password must include special characters');
+            }
+
+            return true;
         }
 
         // Data Loading/Saving
@@ -2131,7 +2194,7 @@
         // Display Functions
         function displayEmergencyInfo() {
             const container = document.getElementById('emergency-display');
-            const data = state.publicData.emergency || {};
+            const data = state.emergencyData || {};
             
             container.innerHTML = `
                 <div class="info-card">
@@ -2903,32 +2966,6 @@
             }, 3000);
         }
 
-        function updateSecurityUI() {
-            if (state.passwordUnlocked) {
-                document.getElementById('lockIcon').textContent = '🔒';
-                document.getElementById('lockText').textContent = 'Fully Secured';
-                document.getElementById('securityBadge').className = 'security-badge badge-password';
-                document.getElementById('ehrTab').classList.remove('hidden', 'locked');
-                document.getElementById('passwordBtn').style.display = 'inline-flex';
-            } else if (state.pinUnlocked) {
-                document.getElementById('lockIcon').textContent = '🔐';
-                document.getElementById('lockText').textContent = 'PIN Protected';
-                document.getElementById('securityBadge').className = 'security-badge badge-pin';
-                document.getElementById('healthTab').classList.remove('locked');
-                document.getElementById('securityTab').classList.remove('locked');
-                document.getElementById('passwordBtn').style.display = 'inline-flex';
-            } else {
-                document.getElementById('lockIcon').textContent = '🔓';
-                document.getElementById('lockText').textContent = 'Public Access';
-                document.getElementById('securityBadge').className = 'security-badge badge-public';
-                document.getElementById('healthTab').classList.add('locked');
-                document.getElementById('securityTab').classList.add('locked');
-                document.getElementById('ehrTab').classList.add('locked');
-                document.getElementById('ehrTab').classList.add('hidden');
-                document.getElementById('passwordBtn').style.display = 'none';
-            }
-        }
-
         async function exportData() {
             const exportData = {
                 version: APP_VERSION,
@@ -3084,7 +3121,6 @@
             state.passwordKey = null;
             state.currentDoubleHash = null;
             pinEntry = '';
-            setupPIN = '';
             sessionStorage.removeItem('ikey_session_active');
         });
     </script>
