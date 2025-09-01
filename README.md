@@ -105,11 +105,18 @@ state = {
 }
 ```
 
-## Webhook Integration
+## Cloud Storage Endpoints
+
+The application synchronizes data across multiple services. Writes are sent to both the n8n webhook and a Xano cache for fast retrieval. Restores attempt to load from the Xano cache first, then Archive.org, and finally the n8n webhook as a fallback.
 
 ### Endpoint Configuration
 
-- **Base URL**: `https://n8n.intelechia.com/webhook/d5e99c29-2cf1-44c1-b5b4-95a1ca048441` (update `WEBHOOK_URL` in `index.html` if using a different webhook)
+- **n8n Webhook (Primary Write)**: `https://n8n.intelechia.com/webhook/d5e99c29-2cf1-44c1-b5b4-95a1ca048441`
+- **Xano Cache (Fast Read/Write)**: `https://xvkq-pq7i-idtl.n7d.xano.io/api:Hj4C6PGO/ikey_cache`
+- **Archive.org (Permanent Read)**: `https://archive.org/download/zuboff/{guid}.json`
+
+Update the constants (`WEBHOOK_URL`, `XANO_CACHE_URL`, `ARCHIVE_BASE_URL`) in `index.html` if using different endpoints.
+
 - **POST Method**: Creates new record (first sync for new GUID)
 - **PUT Method**: Updates existing record (subsequent syncs for existing GUID)
 

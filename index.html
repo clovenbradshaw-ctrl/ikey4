@@ -1621,6 +1621,8 @@
         const APP_VERSION = '2.0.0';
         const APP_URL = window.location.origin + '/';
         const WEBHOOK_URL = 'https://n8n.intelechia.com/webhook/d5e99c29-2cf1-44c1-b5b4-95a1ca048441';
+        const XANO_CACHE_URL = 'https://xvkq-pq7i-idtl.n7d.xano.io/api:Hj4C6PGO/ikey_cache';
+        const ARCHIVE_BASE_URL = 'https://archive.org/download/zuboff';
         const AUTO_LOGOUT_MS = 45 * 60 * 1000;
         let pinEntry = '';
 
@@ -1639,6 +1641,11 @@
             logoutWarningTimer: null,
             currentDoubleHash: null,
             saltValue: null,
+
+            telemetry: {
+                lastRestoreSource: null,
+                lastSyncResults: {}
+            },
 
             pinAttemptsRemaining: 5,
 
@@ -1927,7 +1934,7 @@
         // Webhook Functions
         async function syncToCloud(showIndicator = true) {
             if (!state.baseKey) return;
-            
+
             // Load encrypted hash if not in memory
             if (!state.currentDoubleHash) {
                 try {
@@ -1941,7 +1948,7 @@
                     return;
                 }
             }
-            
+
             if (!state.currentDoubleHash) {
                 showStatus('Authentication required for sync', 'error');
                 return;
@@ -1955,10 +1962,11 @@
             }
 
             try {
+                const timestamp = new Date().toISOString();
                 // Combine all tiers into a single payload
                 const allData = {
                     version: APP_VERSION,
-                    timestamp: new Date().toISOString(),
+                    timestamp,
                     public: state.publicData,
                     protected: state.pinKey ? state.protectedData : null,
                     secure: state.passwordKey ? state.secureData : null
@@ -1972,37 +1980,63 @@
                 const storedPin = localStorage.getItem(`ikey_pin_temp_${state.currentGUID}`) || '';
                 const newDoubleHash = await generateDoubleHash(state.baseKey, storedPin, salt);
 
-                // Prepare sync data with both hashes
+                // Prepare sync data with both hashes for webhook
                 const syncData = {
                     guid: state.currentGUID,
                     currentHash: state.currentDoubleHash,
                     nextHash: newDoubleHash,
                     data: encryptedPayload,
-                    timestamp: new Date().toISOString(),
+                    timestamp,
                     method: state.lastSync ? 'update' : 'create'
                 };
 
                 const method = state.lastSync ? 'PUT' : 'POST';
 
-                const response = await fetch(WEBHOOK_URL, {
+                const webhookRequest = fetch(WEBHOOK_URL, {
                     method,
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(syncData)
                 });
 
-                if (!response.ok) {
-                    if (response.status === 403) {
+                const cachePayload = {
+                    guid: state.currentGUID,
+                    ikey_cache: encryptedPayload,
+                    timestamp,
+                    version: APP_VERSION
+                };
+
+                const xanoRequest = fetch(XANO_CACHE_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(cachePayload)
+                });
+
+                const [webhookResult, xanoResult] = await Promise.allSettled([webhookRequest, xanoRequest]);
+
+                const results = { webhook: false, xano: false };
+
+                if (webhookResult.status === 'fulfilled') {
+                    if (webhookResult.value.ok) {
+                        results.webhook = true;
+                    } else if (webhookResult.value.status === 403) {
                         throw new Error('Authentication failed');
+                    } else {
+                        throw new Error(`Webhook HTTP ${webhookResult.value.status}`);
                     }
-                    throw new Error(`Sync failed: ${response.status}`);
+                } else {
+                    throw new Error('Webhook request failed');
+                }
+
+                if (xanoResult.status === 'fulfilled' && xanoResult.value.ok) {
+                    results.xano = true;
                 }
 
                 // Success - rotate to new hash
                 state.currentDoubleHash = newDoubleHash;
                 const encryptedHash = await encrypt({ hash: newDoubleHash }, state.baseKey);
                 localStorage.setItem(`ikey_hash_${state.currentGUID}`, encryptedHash);
-                
-                state.lastSync = new Date().toISOString();
+
+                state.lastSync = timestamp;
                 localStorage.setItem(`ikey_${state.currentGUID}_lastSync`, state.lastSync);
 
                 if (showIndicator) {
@@ -2012,7 +2046,13 @@
                     }, 2000);
                 }
 
-                showStatus('Data synced to cloud', 'success');
+                state.telemetry.lastSyncResults = results;
+
+                if (!results.xano) {
+                    showStatus('Synced (cache update failed)', 'warning');
+                } else {
+                    showStatus('Data synced to cloud', 'success');
+                }
 
             } catch (error) {
                 console.error('Sync failed:', error);
@@ -2343,34 +2383,69 @@
             }
         }
 
+        async function fetchWithRetry(url, options = {}, retries = 2, backoff = 500) {
+            for (let attempt = 0; attempt <= retries; attempt++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    return await response.json();
+                } catch (err) {
+                    if (attempt === retries) throw err;
+                    await new Promise(res => setTimeout(res, backoff * Math.pow(2, attempt)));
+                }
+            }
+        }
+
         // Data Loading/Saving
         async function restoreFromCloud(guid, baseKey) {
-            try {
-                const response = await fetch(`${WEBHOOK_URL}?guid=${guid}`);
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const { data } = await response.json();
-                if (!data) throw new Error('Invalid payload');
-                const allData = await decrypt(data, baseKey);
-
-                state.publicData = allData.public || {};
-                await savePublicData();
-
-                if (state.pinKey && allData.protected) {
-                    state.protectedData = allData.protected;
-                    await saveProtectedData();
+            const sources = [
+                {
+                    name: 'Xano',
+                    url: `${XANO_CACHE_URL}?guid=${guid}`,
+                    extract: r => r?.ikey_cache
+                },
+                {
+                    name: 'Archive.org',
+                    url: `${ARCHIVE_BASE_URL}/${guid}.json`,
+                    extract: r => r?.ikey_cache
+                },
+                {
+                    name: 'Webhook',
+                    url: `${WEBHOOK_URL}?guid=${guid}`,
+                    extract: r => r?.data
                 }
+            ];
 
-                if (state.passwordKey && allData.secure) {
-                    state.secureData = allData.secure;
-                    await saveSecureData();
+            for (const src of sources) {
+                try {
+                    const json = await fetchWithRetry(src.url);
+                    const payload = src.extract(json);
+                    if (!payload) throw new Error('Invalid payload');
+                    const allData = await decrypt(payload, baseKey);
+
+                    state.publicData = allData.public || {};
+                    await savePublicData();
+
+                    if (state.pinKey && allData.protected) {
+                        state.protectedData = allData.protected;
+                        await saveProtectedData();
+                    }
+
+                    if (state.passwordKey && allData.secure) {
+                        state.secureData = allData.secure;
+                        await saveSecureData();
+                    }
+
+                    state.telemetry.lastRestoreSource = src.name;
+                    showStatus(`Data restored from ${src.name}`, 'success');
+                    return allData;
+                } catch (err) {
+                    console.warn(`${src.name} retrieval failed`, err);
                 }
-
-                return allData;
-            } catch (error) {
-                console.error('Failed to restore data:', error);
-                showStatus('Unable to retrieve data', 'error');
-                return null;
             }
+
+            showStatus('Unable to retrieve data', 'error');
+            return null;
         }
 
         async function loadPublicData() {
