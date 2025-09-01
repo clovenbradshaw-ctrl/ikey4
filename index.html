@@ -407,6 +407,43 @@
             gap: 12px;
         }
 
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .processing-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            border-radius: 20px;
+            z-index: 100;
+        }
+
+        .processing-message {
+            margin-top: 20px;
+            font-size: 1.1rem;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
         .header {
             background: var(--surface);
             border-radius: calc(12px * var(--element-scale));
@@ -2166,51 +2203,112 @@
         }
 
         async function completeSetup() {
-            // Generate GUID and keys
-            state.currentGUID = generateGUID();
-            state.baseKey = await generateKey();
+            // Show processing overlay
+            const wizardContainer = document.querySelector('.wizard-container');
+            const processingOverlay = document.createElement('div');
+            processingOverlay.className = 'processing-overlay';
+            processingOverlay.innerHTML = `
+                <div style="text-align: center;">
+                    <div class="loading-spinner" style="width: 40px; height: 40px; border-width: 4px;"></div>
+                    <div class="processing-message">Setting up your secure vault...</div>
+                </div>
+            `;
+            wizardContainer.appendChild(processingOverlay);
             
-            // Save emergency data
-            state.publicData.emergency = {
-                name: document.getElementById('setup-name').value,
-                bloodType: document.getElementById('setup-blood').value,
-                allergies: document.getElementById('setup-allergies').value,
-                medications: document.getElementById('setup-medications').value,
-                conditions: document.getElementById('setup-conditions').value,
-                contactName: document.getElementById('setup-contact-name').value,
-                contactPhone: document.getElementById('setup-contact-phone').value,
-                contactRelationship: document.getElementById('setup-contact-relationship').value,
-                contactOther: document.getElementById('setup-contact-other').value
-            };
+            // Update button to show loading state
+            const completeBtn = document.getElementById('wizard-complete');
+            completeBtn.disabled = true;
+            completeBtn.innerHTML = '<span class="loading-spinner"></span>Processing...';
             
-            const pin = document.getElementById('setup-pin').value;
-            const healthPassword = document.getElementById('setup-health-password').value;
+            // Add small delay so user sees the animation
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            try {
+                // Update processing message
+                processingOverlay.querySelector('.processing-message').textContent = 'Generating encryption keys...';
+                
+                // Generate GUID and keys
+                state.currentGUID = generateGUID();
+                state.baseKey = await generateKey();
+                
+                // Update message
+                processingOverlay.querySelector('.processing-message').textContent = 'Encrypting your data...';
+                await new Promise(resolve => setTimeout(resolve, 300));
+                
+                // Save emergency data
+                state.publicData.emergency = {
+                    name: document.getElementById('setup-name').value,
+                    bloodType: document.getElementById('setup-blood').value,
+                    allergies: document.getElementById('setup-allergies').value,
+                    medications: document.getElementById('setup-medications').value,
+                    conditions: document.getElementById('setup-conditions').value,
+                    contactName: document.getElementById('setup-contact-name').value,
+                    contactPhone: document.getElementById('setup-contact-phone').value,
+                    contactRelationship: document.getElementById('setup-contact-relationship').value,
+                    contactOther: document.getElementById('setup-contact-other').value
+                };
+                
+                const pin = document.getElementById('setup-pin').value;
+                const healthPassword = document.getElementById('setup-health-password').value;
 
-            if (pin && pin.length === 6) {
-                state.pinKey = await deriveKeyFromPIN(pin);
-                state.pinUnlocked = true;
-                localStorage.setItem(`ikey_pin_temp_${state.currentGUID}`, pin);
+                if (pin && pin.length === 6) {
+                    state.pinKey = await deriveKeyFromPIN(pin);
+                    state.pinUnlocked = true;
+                    localStorage.setItem(`ikey_pin_temp_${state.currentGUID}`, pin);
 
-                state.currentDoubleHash = await generateDoubleHash(state.baseKey, pin);
-                const encryptedHash = await encrypt({ hash: state.currentDoubleHash }, state.baseKey);
-                localStorage.setItem(`ikey_hash_${state.currentGUID}`, encryptedHash);
+                    state.currentDoubleHash = await generateDoubleHash(state.baseKey, pin);
+                    const encryptedHash = await encrypt({ hash: state.currentDoubleHash }, state.baseKey);
+                    localStorage.setItem(`ikey_hash_${state.currentGUID}`, encryptedHash);
+                }
+
+                if (healthPassword && healthPassword.length >= 12) {
+                    state.passwordKey = await deriveKeyFromPassword(healthPassword);
+                    state.passwordUnlocked = true;
+                    state.secureData.ehr = initializeEHR();
+                }
+
+                // Update message
+                processingOverlay.querySelector('.processing-message').textContent = 'Generating recovery codes...';
+                await new Promise(resolve => setTimeout(resolve, 300));
+                
+                // Generate recovery codes
+                state.protectedData.recoveryCodes = generateRecoveryCodes();
+
+                // Save everything
+                localStorage.setItem('ikey_guid', state.currentGUID);
+                localStorage.setItem(`ikey_basekey_${state.currentGUID}`,
+                    btoa(String.fromCharCode(...state.baseKey)));
+
+                // Update message
+                processingOverlay.querySelector('.processing-message').textContent = 'Syncing to cloud...';
+                
+                await saveAllData();
+                
+                // Final message
+                processingOverlay.querySelector('.processing-message').textContent = '✓ Setup complete!';
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                // Hide wizard and show main app
+                document.getElementById('setup-wizard').classList.add('hidden');
+                await loadExistingUser();
+                
+            } catch (error) {
+                console.error('Setup failed:', error);
+                processingOverlay.innerHTML = `
+                    <div style="text-align: center; color: var(--danger);">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">⚠️</div>
+                        <div class="processing-message">Setup failed. Please try again.</div>
+                    </div>
+                `;
+                
+                // Re-enable button
+                completeBtn.disabled = false;
+                completeBtn.innerHTML = 'Start Using iKey';
+                
+                setTimeout(() => {
+                    processingOverlay.remove();
+                }, 3000);
             }
-
-            if (healthPassword && healthPassword.length >= 12) {
-                state.passwordKey = await deriveKeyFromPassword(healthPassword);
-                state.passwordUnlocked = true;
-                state.secureData.ehr = initializeEHR();
-            }
-
-            // Save everything
-            localStorage.setItem('ikey_guid', state.currentGUID);
-            localStorage.setItem(`ikey_basekey_${state.currentGUID}`,
-                btoa(String.fromCharCode(...state.baseKey)));
-
-            await saveAllData();
-            // Hide wizard and show main app
-            document.getElementById('setup-wizard').classList.add('hidden');
-            await loadExistingUser();
         }
 
         function generateSetupQR() {
@@ -2341,6 +2439,14 @@
             const firstHash = await crypto.subtle.digest('SHA-256', encoder.encode(combined));
             const secondHash = await crypto.subtle.digest('SHA-256', firstHash);
             return btoa(String.fromCharCode(...new Uint8Array(secondHash)));
+        }
+
+        function generateRecoveryCodes() {
+            const codes = [];
+            for (let i = 0; i < 6; i++) {
+                codes.push(Math.random().toString(36).substring(2, 8).toUpperCase());
+            }
+            return codes;
         }
 
         // Encryption/Decryption
