@@ -1478,66 +1478,7 @@
 
         <!-- EHR Section (Password Tier) -->
         <div class="content-section" id="ehr-section">
-            <div class="section-header">
-                <h2>📋 Comprehensive Electronic Health Record</h2>
-            </div>
-            
-            <div class="ehr-nav">
-                <button class="ehr-tab active" onclick="showEHRSection('identity')">Identity</button>
-                <button class="ehr-tab" onclick="showEHRSection('providers')">Providers</button>
-                <button class="ehr-tab" onclick="showEHRSection('medications')">Medications</button>
-                <button class="ehr-tab" onclick="showEHRSection('conditions')">Conditions</button>
-                <button class="ehr-tab" onclick="showEHRSection('notes')">Case Notes</button>
-            </div>
-            
-            <!-- Identity Section -->
-            <div class="ehr-section active" id="ehr-identity">
-                <h3>Identity & Safety Preferences</h3>
-                
-                <div class="grid-2">
-                    <div class="form-group">
-                        <label>Chosen Name</label>
-                        <input type="text" class="ehr-data" data-field="chosenName" />
-                    </div>
-                    <div class="form-group">
-                        <label>Pronouns</label>
-                        <input type="text" class="ehr-data" data-field="pronouns" />
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Providers Section -->
-            <div class="ehr-section" id="ehr-providers">
-                <h3>Healthcare Providers</h3>
-                <div id="providers-container"></div>
-                <button class="add-button" onclick="addProvider()">+ Add Provider</button>
-            </div>
-            
-            <!-- Medications Section -->
-            <div class="ehr-section" id="ehr-medications">
-                <h3>Current Medications</h3>
-                <div id="medications-container"></div>
-                <button class="add-button" onclick="addMedication()">+ Add Medication</button>
-            </div>
-            
-            <!-- Conditions Section -->
-            <div class="ehr-section" id="ehr-conditions">
-                <h3>Medical Conditions</h3>
-                <div id="conditions-container"></div>
-                <button class="add-button" onclick="addCondition()">+ Add Condition</button>
-            </div>
-            
-            <!-- Case Notes Section -->
-            <div class="ehr-section" id="ehr-notes">
-                <h3>Case Notes</h3>
-                <div id="case-notes-container"></div>
-                <button class="add-button" onclick="addCaseNote()">+ Add Note</button>
-            </div>
-            
-            <div class="btn-group mt-4">
-                <button class="btn btn-success" onclick="saveEHR()">💾 Save EHR</button>
-                <button class="btn btn-outline" onclick="exportEHR()">📄 Export Record</button>
-            </div>
+            <iframe src="ehr-demo.html" title="EHR Demo" style="width:100%;height:100vh;border:none;"></iframe>
         </div>
     </div>
 
