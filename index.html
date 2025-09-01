@@ -18,6 +18,24 @@
         }
 
         :root {
+            --text-scale: 1;
+            --spacing-scale: 1;
+            --element-scale: 1;
+        }
+
+        body.size-small { --text-scale: 0.875; --spacing-scale: 0.9; --element-scale: 0.95; }
+        body.size-normal { --text-scale: 1; --spacing-scale: 1; --element-scale: 1; }
+        body.size-large { --text-scale: 1.125; --spacing-scale: 1.1; --element-scale: 1.05; }
+        body.size-xlarge { --text-scale: 1.25; --spacing-scale: 1.2; --element-scale: 1.1; }
+
+        body {
+            font-size: calc(16px * var(--text-scale));
+            min-height: 100vh;
+            color: var(--text);
+            position: relative;
+        }
+
+        body.theme-default {
             --primary: #4F46E5;
             --primary-dark: #3730A3;
             --danger: #EF4444;
@@ -31,19 +49,235 @@
             --glass: rgba(255, 255, 255, 0.95);
             --glass-border: rgba(255, 255, 255, 0.2);
             --gac: #8B5CF6;
+
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
         }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: var(--text);
-            position: relative;
+        body.theme-topsecret {
+            --primary: #ff6b00;
+            --primary-dark: #cc5500;
+            --danger: #ff0000;
+            --success: #00ff00;
+            --warning: #ffff00;
+            --surface: #1a1a1a;
+            --surface-alt: #0d0d0d;
+            --text: #ff6b00;
+            --text-secondary: #cc5500;
+            --border: #ff6b00;
+            --glass: rgba(0, 0, 0, 0.95);
+            background: #000;
+            font-family: 'Courier New', monospace;
+        }
+
+        body.theme-topsecret::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(255, 107, 0, 0.03) 2px,
+                rgba(255, 107, 0, 0.03) 4px
+            );
+            pointer-events: none;
+            z-index: 9999;
+            animation: scanline 8s linear infinite;
+        }
+
+        @keyframes scanline {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(10px); }
+        }
+
+        body.theme-topsecret .nav-tab.locked::after {
+            content: '[CLASSIFIED]';
+            font-size: 0.6rem;
+            color: #ff0000;
+        }
+
+        body.theme-topsecret h1,
+        body.theme-topsecret h2 {
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 2px dashed #ff6b00;
+        }
+
+        body.theme-topsecret .status-message {
+            border: 3px double #ff6b00;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255, 107, 0, 0.1) 10px,
+                rgba(255, 107, 0, 0.1) 20px
+            );
+            text-transform: uppercase;
+        }
+
+        body.theme-hacker {
+            --primary: #00ff00;
+            --primary-dark: #00cc00;
+            --danger: #ff0000;
+            --success: #00ff00;
+            --surface: #000000;
+            --surface-alt: #0a0a0a;
+            --text: #00ff00;
+            --text-secondary: #00cc00;
+            --border: #00ff00;
+            background: #000;
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        body.theme-hacker::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><text x="0" y="20" fill="%2300ff00" font-family="Consolas" font-size="20">010101</text></svg>');
+            opacity: 0.1;
+            pointer-events: none;
+            animation: matrix-fall 20s linear infinite;
+        }
+
+        @keyframes matrix-fall {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+
+        body.theme-hacker input:focus::after {
+            content: '_';
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        body.theme-hacker .form-group label::before {
+            content: '> ';
+            color: #00ff00;
+        }
+
+        body.theme-hacker .btn {
+            text-shadow: 0 0 10px #00ff00;
+            border: 1px solid #00ff00;
+            background: transparent;
+        }
+
+        body.theme-wellness {
+            --primary: #7c9885;
+            --primary-dark: #5a7261;
+            --success: #a8c09a;
+            --surface: #faf8f3;
+            --surface-alt: #f0ede5;
+            --text: #3d4a3d;
+            --text-secondary: #6b7c6b;
+            --border: #d4cfc0;
+            background: linear-gradient(135deg, #faf8f3 0%, #e8e2d5 100%);
+            font-family: 'Segoe UI', 'San Francisco', sans-serif;
+        }
+
+        body.theme-wellness * {
+            border-radius: calc(var(--base-radius, 8px) * 1.5);
+        }
+
+        body.theme-wellness .btn {
+            animation: breathe 4s ease-in-out infinite;
+        }
+
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        body.theme-wellness .content-section {
+            background-image:
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 50px,
+                    rgba(124, 152, 133, 0.02) 50px,
+                    rgba(124, 152, 133, 0.02) 51px
+                );
+        }
+
+        body.theme-contrast {
+            --primary: #000000;
+            --danger: #000000;
+            --success: #000000;
+            --surface: #ffffff;
+            --surface-alt: #ffffff;
+            --text: #000000;
+            --text-secondary: #000000;
+            --border: #000000;
+        }
+
+        body.theme-contrast.dark-mode {
+            --primary: #ffffff;
+            --surface: #000000;
+            --surface-alt: #000000;
+            --text: #ffffff;
+            --border: #ffffff;
+        }
+
+        body.theme-contrast * {
+            border-width: 3px !important;
+            font-weight: bold !important;
+        }
+
+        body.theme-contrast *:focus {
+            outline: 4px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        body.theme-contrast::before,
+        body.theme-contrast::after {
+            display: none !important;
+        }
+
+        body.theme-retro {
+            --primary: #4a7c59;
+            --surface: #f4f1e8;
+            --surface-alt: #e8ddc7;
+            --text: #2d2d2d;
+            --border: #9b8f7e;
+            background: #f4f1e8;
+            font-family: 'American Typewriter', 'Courier', serif;
+        }
+
+        body.theme-retro .nav-tab {
+            background: linear-gradient(to bottom, #e8ddc7 0%, #d4c4a8 100%);
+            border: 1px solid #9b8f7e;
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.5);
+        }
+
+        body.theme-retro .content-section {
+            background-image:
+                linear-gradient(rgba(75, 124, 89, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(75, 124, 89, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        body.theme-retro .status-success {
+            transform: rotate(-5deg);
+            border: 3px double #4a7c59;
+            border-radius: 50%;
+            text-transform: uppercase;
         }
 
         .container {
             width: 100%;
-            padding: 12px;
+            padding: calc(12px * var(--spacing-scale));
             min-height: 100vh;
         }
 
@@ -175,9 +409,9 @@
 
         .header {
             background: var(--surface);
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 12px;
+            border-radius: calc(12px * var(--element-scale));
+            padding: calc(12px * var(--spacing-scale));
+            margin-bottom: calc(12px * var(--spacing-scale));
             box-shadow: 0 2px 12px rgba(0,0,0,0.08);
             display: flex;
             justify-content: space-between;
@@ -271,8 +505,8 @@
 
         .content-section {
             background: var(--surface);
-            border-radius: 12px;
-            padding: 16px;
+            border-radius: calc(12px * var(--element-scale));
+            padding: calc(16px * var(--spacing-scale));
             box-shadow: 0 2px 12px rgba(0,0,0,0.08);
             display: none;
         }
@@ -288,15 +522,15 @@
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: calc(20px * var(--spacing-scale));
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: calc(6px * var(--spacing-scale));
             font-weight: 500;
             color: var(--text);
-            font-size: 0.875rem;
+            font-size: calc(0.875rem * var(--text-scale));
         }
 
         .form-group label.required::after {
@@ -308,13 +542,13 @@
         .form-group textarea,
         .form-group select {
             width: 100%;
-            padding: 12px 14px;
+            padding: calc(12px * var(--spacing-scale)) calc(14px * var(--spacing-scale));
             border: 2px solid var(--border);
-            border-radius: 8px;
-            font-size: 1rem;
+            border-radius: calc(8px * var(--element-scale));
+            font-size: calc(1rem * var(--text-scale));
             transition: all 0.2s;
             background: var(--surface);
-            min-height: 48px;
+            min-height: calc(48px * var(--element-scale));
             touch-action: manipulation;
         }
 
@@ -326,26 +560,39 @@
             box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
         }
 
+        .size-controls {
+            display: flex;
+            gap: calc(8px * var(--spacing-scale));
+        }
+
+        .size-btn {
+            padding: calc(8px * var(--spacing-scale));
+            border: 1px solid var(--border);
+            background: var(--surface);
+            border-radius: calc(6px * var(--element-scale));
+            cursor: pointer;
+        }
+
         textarea {
             resize: vertical;
             min-height: 80px;
         }
 
         .btn {
-            padding: 14px 24px;
+            padding: calc(14px * var(--spacing-scale)) calc(24px * var(--spacing-scale));
             background: var(--primary);
             color: white;
             border: none;
-            border-radius: 10px;
-            font-size: 1rem;
+            border-radius: calc(10px * var(--element-scale));
+            font-size: calc(1rem * var(--text-scale));
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            min-height: 48px;
+            gap: calc(8px * var(--spacing-scale));
+            min-height: calc(48px * var(--element-scale));
             touch-action: manipulation;
         }
 
@@ -857,7 +1104,7 @@
         }
     </style>
 </head>
-<body>
+<body class="theme-default size-normal">
     <!-- Setup Wizard -->
     <div id="setup-wizard" class="setup-wizard hidden">
         <div class="wizard-container">
@@ -1399,6 +1646,104 @@
 
             secureData: {
                 ehr: null
+            }
+        };
+
+        const ThemeManager = {
+            themes: ['default', 'topsecret', 'hacker', 'wellness', 'contrast', 'retro'],
+            sizes: ['small', 'normal', 'large', 'xlarge'],
+
+            init() {
+                this.loadPreferences();
+                this.addControls();
+                this.bindEvents();
+            },
+
+            loadPreferences() {
+                const savedTheme = localStorage.getItem('ikey_theme') || 'default';
+                const savedSize = localStorage.getItem('ikey_text_size') || 'normal';
+                this.applyTheme(savedTheme);
+                this.applySize(savedSize);
+            },
+
+            applyTheme(theme) {
+                document.body.className = document.body.className
+                    .replace(/theme-\w+/, '')
+                    .trim() + ' theme-' + theme;
+                localStorage.setItem('ikey_theme', theme);
+                this.applyThemeSpecifics(theme);
+            },
+
+            applySize(size) {
+                document.body.className = document.body.className
+                    .replace(/size-\w+/, '')
+                    .trim() + ' size-' + size;
+                localStorage.setItem('ikey_text_size', size);
+            },
+
+            applyThemeSpecifics(theme) {
+                const lock = document.getElementById('lockText');
+                if (lock) lock.textContent = 'PIN Protected';
+                if (theme === 'topsecret') {
+                    document.querySelectorAll('.timestamp').forEach(el => {
+                        const date = new Date(el.textContent);
+                        el.textContent = date.toLocaleTimeString('en-US', {
+                            hour12: false,
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        }) + 'hrs';
+                    });
+                    if (lock) lock.textContent = 'CLEARANCE LEVEL: PUBLIC';
+                    document.querySelectorAll('.security-badge').forEach(badge => {
+                        badge.textContent = badge.textContent.replace('PIN Protected', 'LEVEL 2 CLEARANCE');
+                    });
+                }
+            },
+
+            addControls() {
+                const controlsHTML = `
+            <div class="theme-controls">
+                <h3>Appearance Settings</h3>
+
+                <div class="form-group">
+                    <label>Visual Theme</label>
+                    <select id="theme-selector" class="theme-select">
+                        <option value="default">Medical Professional</option>
+                        <option value="topsecret">Top Secret</option>
+                        <option value="hacker">Midnight Hacker</option>
+                        <option value="wellness">Zen Wellness</option>
+                        <option value="contrast">High Contrast</option>
+                        <option value="retro">Retro Medical</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Text Size</label>
+                    <div class="size-controls">
+                        <button class="size-btn" data-size="small">A-</button>
+                        <button class="size-btn" data-size="normal">A</button>
+                        <button class="size-btn" data-size="large">A+</button>
+                        <button class="size-btn" data-size="xlarge">A++</button>
+                    </div>
+                </div>
+            </div>
+        `;
+                const securitySection = document.getElementById('security-section');
+                if (securitySection) {
+                    securitySection.insertAdjacentHTML('beforeend', controlsHTML);
+                }
+            },
+
+            bindEvents() {
+                document.getElementById('theme-selector')?.addEventListener('change', (e) => {
+                    this.applyTheme(e.target.value);
+                });
+
+                document.querySelectorAll('.size-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        this.applySize(btn.dataset.size);
+                    });
+                });
             }
         };
 
@@ -3067,6 +3412,7 @@
                 input.setAttribute('autocapitalize', 'off');
                 input.setAttribute('spellcheck', 'false');
             });
+            ThemeManager.init();
             init();
         });
 
