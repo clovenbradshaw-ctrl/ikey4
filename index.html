@@ -973,12 +973,15 @@
                         </div>
                         <div class="form-group">
                             <label>Enter 6-Digit PIN</label>
-                            <input type="password"
-                                   id="setup-pin"
-                                   pattern="[0-9]{6}"
-                                   maxlength="6"
-                                   placeholder="6 digits"
-                                   class="pin-input">
+                        <input type="password"
+                               id="setup-pin"
+                               pattern="[0-9]{6}"
+                               maxlength="6"
+                               placeholder="6 digits"
+                               class="pin-input"
+                               inputmode="numeric"
+                               readonly
+                               onclick="requestPIN('setup')">
                             <small>Easy to remember, for non-sensitive updates</small>
                         </div>
                     </div>
@@ -1430,13 +1433,10 @@
         // Keyboard Support for PIN Entry
         function setupKeyboardListeners() {
             document.addEventListener('keydown', function(e) {
-                // Check if PIN modal is active
+                // Handle keyboard only when PIN modal is active
                 const pinModal = document.getElementById('pin-modal');
-                const setupWizard = document.getElementById('setup-wizard');
-                const isSetupPinStep = !setupWizard.classList.contains('hidden') && 
-                                       document.querySelector('.wizard-step.active[data-step="3"]');
-                
-                if (pinModal.classList.contains('active') || isSetupPinStep) {
+
+                if (pinModal.classList.contains('active')) {
                     // Handle number keys 0-9
                     if (e.key >= '0' && e.key <= '9') {
                         e.preventDefault();
@@ -2152,14 +2152,16 @@
         let pinCallback = null;
 
         function requestPIN(action) {
-            if (state.pinUnlocked && action !== 'change' && action !== 'recovery') {
+            if (state.pinUnlocked && action !== 'change' && action !== 'recovery' && action !== 'setup') {
                 if (action === 'edit') editEmergencyInfo();
                 return;
             }
-            
+
             pinCallback = action;
             document.getElementById('pin-modal').classList.add('active');
-            document.getElementById('pin-modal-title').textContent = 'Enter 6-Digit PIN';
+            document.getElementById('pin-modal-title').textContent = action === 'setup'
+                ? 'Set 6-Digit PIN'
+                : 'Enter 6-Digit PIN';
             pinEntry = '';
             updatePinDisplay();
         }
@@ -2168,9 +2170,14 @@
             if (pinEntry.length < 6) {
                 pinEntry += digit;
                 updatePinDisplay();
-                
+
                 if (pinEntry.length === 6) {
-                    setTimeout(verifyPIN, 100);
+                    if (pinCallback === 'setup') {
+                        document.getElementById('setup-pin').value = pinEntry;
+                        closePinPad();
+                    } else {
+                        setTimeout(verifyPIN, 100);
+                    }
                 }
             }
         }
