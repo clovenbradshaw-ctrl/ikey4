@@ -2156,7 +2156,7 @@
                 updateWizardProgress(currentWizardStep);
 
                 if (currentWizardStep === 4) {
-                    generateSetupQR();
+                    generateSetupQR(true);
                 }
             }
         }
@@ -2314,23 +2314,27 @@
             }
         }
 
-        function generateSetupQR() {
+        function generateSetupQR(autoDownload = false) {
             if (typeof QRCode === 'undefined') {
-                setTimeout(generateSetupQR, 100);
+                setTimeout(() => generateSetupQR(autoDownload), 100);
                 return;
             }
-            
+
             const qrData = `${APP_URL}#${state.currentGUID}:${encodeURIComponent(btoa(String.fromCharCode(...state.baseKey)))}`;
-            
+
             const container = document.getElementById('setup-qrcode');
             container.innerHTML = '';
-            
+
             new QRCode(container, {
                 text: qrData,
                 width: 256,
                 height: 256,
                 correctLevel: QRCode.CorrectLevel.M
             });
+
+            if (autoDownload) {
+                setTimeout(downloadSetupQR, 100);
+            }
         }
 
         function downloadSetupQR() {
