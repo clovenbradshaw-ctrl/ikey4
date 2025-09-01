@@ -1194,23 +1194,9 @@
             
             <div class="mb-4">
                 <h3>PIN Management</h3>
-                <button class="btn btn-outline" onclick="requestPINReset()">
-                    🔄 Reset PIN
-                </button>
                 <p style="color: var(--text-secondary); margin-top: 8px; font-size: 0.875rem;">
-                    Use recovery codes or answer security questions to reset your PIN
+                    Set and manage your PIN for accessing protected health data.
                 </p>
-            </div>
-            
-            <div class="mb-4">
-                <h3>Recovery Codes</h3>
-                <p style="color: var(--text-secondary); margin-bottom: 12px;">
-                    Use these codes if you forget your PIN. Each code works once.
-                </p>
-                <div id="recovery-codes-display"></div>
-                <button class="btn" onclick="showRecoveryCodes()">
-                    👁️ View Codes
-                </button>
             </div>
             
             <div class="mb-4">
@@ -1320,9 +1306,6 @@
                 <button class="pin-key special-cancel" onclick="closePinPad()">Cancel</button>
             </div>
             
-            <div class="pin-reset-link">
-                <a onclick="requestPINResetFromModal()">Forgot PIN? Use recovery code</a>
-            </div>
         </div>
     </div>
 
@@ -1400,8 +1383,7 @@
             },
 
             protectedData: {
-                health: {},
-                recoveryCodes: []
+                health: {}
             },
 
             secureData: {
@@ -1629,86 +1611,10 @@
         }
 
         async function handleAuthFailure() {
-            const choice = confirm(
+            alert(
                 'Sync authentication failed.\n\n' +
-                'This can happen if the cloud data is out of sync.\n' +
-                'Would you like to reset authentication?'
+                'Recovery is not available in this version.'
             );
-            
-            if (choice) {
-                requestPIN('recovery');
-            }
-        }
-
-        // PIN Reset Functions
-        function requestPINReset() {
-            const modal = document.getElementById('pin-modal');
-            modal.classList.add('active');
-            document.getElementById('pin-modal-title').textContent = 'Enter Recovery Code or New PIN';
-            
-            // Show recovery code input
-            const input = prompt('Enter a recovery code to reset your PIN:');
-            if (input) {
-                verifyRecoveryCode(input);
-            } else {
-                modal.classList.remove('active');
-            }
-        }
-
-        function requestPINResetFromModal() {
-            closePinPad();
-            requestPINReset();
-        }
-
-        function verifyRecoveryCode(code) {
-            const codes = state.protectedData.recoveryCodes || [];
-            const validCode = codes.find(c => !c.used && c.code === code.toUpperCase());
-            
-            if (validCode) {
-                validCode.used = true;
-                
-                // Allow setting new PIN
-                const newPIN = prompt('Enter your new 6-digit PIN:');
-                if (newPIN && newPIN.length === 6 && /^\d{6}$/.test(newPIN)) {
-                    resetPIN(newPIN);
-                } else {
-                    alert('Invalid PIN format. Please use 6 digits.');
-                }
-            } else {
-                alert('Invalid or already used recovery code.');
-            }
-        }
-
-        async function resetPIN(newPIN) {
-            try {
-                // Derive new key from new PIN
-                const newKey = await deriveKeyFromPIN(newPIN);
-
-                // Re-encrypt protected data with new key
-                const tempData = state.protectedData;
-                state.pinKey = newKey;
-                localStorage.setItem(`ikey_pin_temp_${state.currentGUID}`, newPIN);
-
-                // Generate new double hash
-                state.currentDoubleHash = await generateDoubleHash(state.baseKey, newPIN);
-                const encryptedHash = await encrypt({ hash: state.currentDoubleHash }, state.baseKey);
-                localStorage.setItem(`ikey_hash_${state.currentGUID}`, encryptedHash);
-
-                // Save with new encryption
-                await saveProtectedData();
-
-                state.pinUnlocked = true;
-                unlockPINLevel();
-
-                showStatus('PIN reset successfully', 'success');
-
-                // Force sync with new hash
-                await syncToCloud();
-
-            } catch (error) {
-                console.error('Failed to reset PIN:', error);
-                showStatus('Failed to reset PIN', 'error');
-            }
         }
 
         // Setup Wizard Functions
@@ -1833,9 +1739,6 @@
                 state.passwordUnlocked = true;
                 state.secureData.ehr = initializeEHR();
             }
-
-            // Generate recovery codes
-            state.protectedData.recoveryCodes = generateRecoveryCodes();
 
             // Save everything
             localStorage.setItem('ikey_guid', state.currentGUID);
@@ -2231,7 +2134,7 @@
         }
 
         function requestPIN(action) {
-            if (state.pinUnlocked && action !== 'change' && action !== 'recovery' && action !== 'setup') {
+            if (state.pinUnlocked && action !== 'change' && action !== 'setup') {
                 if (action === 'edit') editEmergencyInfo();
                 return;
             }
@@ -2294,8 +2197,7 @@
                     state.pinUnlocked = true;
                     localStorage.setItem(`ikey_pin_temp_${state.currentGUID}`, pinEntry);
                     state.protectedData = {
-                        health: {},
-                        recoveryCodes: generateRecoveryCodes()
+                        health: {}
                     };
                     await saveProtectedData();
                     unlockPINLevel();
@@ -2951,33 +2853,6 @@
         }
 
         // Recovery Codes
-        function generateRecoveryCodes() {
-            const codes = [];
-            for (let i = 0; i < 12; i++) {
-                const bytes = crypto.getRandomValues(new Uint8Array(4));
-                const code = btoa(String.fromCharCode(...bytes))
-                    .replace(/[+/=]/g, '')
-                    .substring(0, 8)
-                    .toUpperCase();
-                codes.push({ code, used: false });
-            }
-            return codes;
-        }
-
-        function showRecoveryCodes() {
-            const codes = state.protectedData.recoveryCodes || [];
-            const container = document.getElementById('recovery-codes-display');
-            
-            container.innerHTML = `
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px;">
-                    ${codes.map(c => `
-                        <div style="padding: 8px; background: var(--surface-alt); border-radius: 4px; font-family: monospace; text-align: center;">
-                            ${c.used ? '(USED)' : c.code}
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
 
         // Utility Functions
         function showStatus(message, type = 'info') {

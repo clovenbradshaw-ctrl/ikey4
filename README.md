@@ -19,7 +19,6 @@ The system implements a progressive disclosure model with three security levels:
 2. **PIN-Protected Tier (Health Records)**
    - Requires 6-digit PIN authentication
    - Contains medical history, surgeries, family history, health notes
-   - Includes recovery code management
    - PIN serves as encryption key derivation source (PBKDF2, 100,000 iterations)
 
 3. **Password-Protected Tier (Full EHR)**
@@ -53,7 +52,7 @@ User Data → JSON → AES-256-GCM Encryption → Base64 → localStorage
 - No plaintext data transmitted to servers
 - Keys never leave the client
 - PIN and password ARE the encryption keys (not just authentication)
-- Cannot recover forgotten PIN/password without recovery codes
+ - Cannot recover forgotten PIN/password
 
 ## Data Storage
 
@@ -84,17 +83,16 @@ state = {
         }
     },
     protectedData: {
-        health: { 
+        health: {
             conditions,
             surgeries,
             familyHistory,
             notes
-        },
-        recoveryCodes: [{ code, used }]
-        },
+        }
+    },
     secureData: {
         ehr: {
-            identity: { 
+            identity: {
                 chosenName,
                 pronouns
             },
@@ -161,8 +159,7 @@ $setWorkflowStaticData('rateLimits', rateLimitMap);
         }
     },
     "protectedData": {
-        "health": {},
-        "recoveryCodes": []
+        "health": {}
     },
     "secureData": { 
         "ehr": {}
@@ -216,27 +213,8 @@ https://example.com/ikey.html#a1b2c3d4-e5f6-7890-abcd-ef1234567890:SGVsbG9Xb3JsZ
 
 ## Recovery Mechanisms
 
-### PIN Recovery
-
-- **12 recovery codes**: Auto-generated 8-character alphanumeric codes
-- **Single-use**: Each code can only be used once
-- **Stored encrypted**: In protectedData tier
-- **Reset flow**: Enter recovery code → Set new PIN → Data re-encrypted with new PIN key
-
-### Password Recovery
-
-- **No built-in recovery**: Password IS the encryption key
-- **Reset consequences**: Previous password-tier data becomes inaccessible
-- **Mitigation**: Export EHR before changing password
-
-### Recovery Code Format
-
-```
-Example codes:
-ABCD1234
-EFGH5678
-IJKL9012
-```
+Recovery options based on a secure key file are under active development.
+At present, forgotten PINs or passwords cannot be recovered.
 
 ## User Experience Features
 
