@@ -1352,16 +1352,15 @@
         const APP_URL = window.location.origin + '/';
         const WEBHOOK_URL = 'https://n8n.intelechia.com/webhook/d5e99c29-2cf1-44c1-b5b4-95a1ca048441';
         const AUTO_LOGOUT_MS = 45 * 60 * 1000;
-        
+        let pinEntry = '';
+
         const state = {
             currentGUID: null,
             baseKey: null,
             pinKey: null,
-            healthKey: null,
-            ehrKey: null,
+            passwordKey: null,
             pinUnlocked: false,
-            healthUnlocked: false,
-            ehrUnlocked: false,
+            passwordUnlocked: false,
             isFirstTime: false,
             autoSaveTimer: null,
             lastSync: null,
@@ -1381,7 +1380,7 @@
                 health: {},
                 recoveryCodes: []
             },
-            
+
             secureData: {
                 ehr: null
             }
@@ -1489,13 +1488,12 @@
 
         function autoLogout() {
             state.pinUnlocked = false;
-            state.healthUnlocked = false;
-            state.ehrUnlocked = false;
+            state.passwordUnlocked = false;
             state.pinKey = null;
-            state.healthKey = null;
-            state.ehrKey = null;
+            state.passwordKey = null;
             state.currentDoubleHash = null;  // Clear from memory
             pinEntry = '';
+            localStorage.removeItem(`ikey_pin_temp_${state.currentGUID}`);
             updateSecurityUI();
             showStatus('Session expired for security', 'warning');
             showTab('emergency');
@@ -1539,7 +1537,7 @@
                     timestamp: new Date().toISOString(),
                     public: state.publicData,
                     protected: state.pinKey ? state.protectedData : null,
-                    secure: state.ehrKey ? state.secureData : null
+                    secure: state.passwordKey ? state.secureData : null
                 };
 
                 // Encrypt entire payload with base key
@@ -1547,8 +1545,8 @@
 
                 // Generate new double hash for next update
                 const salt = Date.now().toString();
-                const pinData = state.pinKey ? btoa(String.fromCharCode(...state.pinKey)) : '';
-                const newDoubleHash = await generateDoubleHash(state.baseKey, pinData, salt);
+                const storedPin = localStorage.getItem(`ikey_pin_temp_${state.currentGUID}`) || '';
+                const newDoubleHash = await generateDoubleHash(state.baseKey, storedPin, salt);
 
                 // Prepare sync data with both hashes
                 const syncData = {
@@ -1669,6 +1667,7 @@
                 // Re-encrypt protected data with new key
                 const tempData = state.protectedData;
                 state.pinKey = newKey;
+                localStorage.setItem(`ikey_pin_temp_${state.currentGUID}`, newPIN);
 
                 // Generate new double hash
                 state.currentDoubleHash = await generateDoubleHash(state.baseKey, newPIN);
@@ -1783,25 +1782,32 @@
             
             const pin = document.getElementById('setup-pin').value;
             const healthPassword = document.getElementById('setup-health-password').value;
-            const keys = await deriveSecurityKeys(pin, healthPassword);
-            state.pinKey = keys.pinKey;
-            state.healthKey = keys.healthKey;
-            state.pinUnlocked = true;
-            state.healthUnlocked = true;
 
-            state.currentDoubleHash = await generateDoubleHash(state.baseKey, pin);
-            const encryptedHash = await encrypt({ hash: state.currentDoubleHash }, state.baseKey);
-            localStorage.setItem(`ikey_hash_${state.currentGUID}`, encryptedHash);
-            
+            if (pin && pin.length === 6) {
+                state.pinKey = await deriveKeyFromPIN(pin);
+                state.pinUnlocked = true;
+                localStorage.setItem(`ikey_pin_temp_${state.currentGUID}`, pin);
+
+                state.currentDoubleHash = await generateDoubleHash(state.baseKey, pin);
+                const encryptedHash = await encrypt({ hash: state.currentDoubleHash }, state.baseKey);
+                localStorage.setItem(`ikey_hash_${state.currentGUID}`, encryptedHash);
+            }
+
+            if (healthPassword && healthPassword.length >= 12) {
+                state.passwordKey = await deriveKeyFromPassword(healthPassword);
+                state.passwordUnlocked = true;
+                state.secureData.ehr = initializeEHR();
+            }
+
             // Generate recovery codes
             state.protectedData.recoveryCodes = generateRecoveryCodes();
-            
+
             // Save everything
             localStorage.setItem('ikey_guid', state.currentGUID);
-            localStorage.setItem(`ikey_basekey_${state.currentGUID}`, 
+            localStorage.setItem(`ikey_basekey_${state.currentGUID}`,
                 btoa(String.fromCharCode(...state.baseKey)));
-            
-            await saveAllData();            
+
+            await saveAllData();
             // Hide wizard and show main app
             document.getElementById('setup-wizard').classList.add('hidden');
             await loadExistingUser();
@@ -1929,59 +1935,6 @@
             return new Uint8Array(derivedBits);
         }
 
-        async function deriveSecurityKeys(pin, healthPassword, ehrPassword = null) {
-            const encoder = new TextEncoder();
-
-            const pinKeyMaterial = await crypto.subtle.importKey(
-                'raw',
-                encoder.encode(pin + state.currentGUID),
-                { name: 'PBKDF2' },
-                false,
-                ['deriveBits']
-            );
-
-            const pinDerivedBits = await crypto.subtle.deriveBits(
-                {
-                    name: 'PBKDF2',
-                    salt: encoder.encode(state.currentGUID + 'demo'),
-                    iterations: 100000,
-                    hash: 'SHA-256'
-                },
-                pinKeyMaterial,
-                256
-            );
-
-            const healthKeyMaterial = await crypto.subtle.importKey(
-                'raw',
-                encoder.encode(healthPassword + state.currentGUID),
-                { name: 'PBKDF2' },
-                false,
-                ['deriveBits']
-            );
-
-            const healthDerivedBits = await crypto.subtle.deriveBits(
-                {
-                    name: 'PBKDF2',
-                    salt: encoder.encode(state.currentGUID + 'health'),
-                    iterations: 500000,
-                    hash: 'SHA-256'
-                },
-                healthKeyMaterial,
-                256
-            );
-
-            let ehrKey = null;
-            if (ehrPassword) {
-                ehrKey = await deriveKeyFromPassword(ehrPassword);
-            }
-
-            return {
-                pinKey: new Uint8Array(pinDerivedBits),
-                healthKey: new Uint8Array(healthDerivedBits),
-                ehrKey
-            };
-        }
-
         async function generateDoubleHash(baseKey, pin, salt = '') {
             const combined = btoa(String.fromCharCode(...baseKey)) + pin + salt;
             const encoder = new TextEncoder();
@@ -2047,7 +2000,7 @@
                     await saveProtectedData();
                 }
 
-                if (state.ehrKey && allData.secure) {
+                if (state.passwordKey && allData.secure) {
                     state.secureData = allData.secure;
                     await saveSecureData();
                 }
@@ -2086,8 +2039,8 @@
         async function loadSecureData() {
             try {
                 const stored = localStorage.getItem(`ikey_${state.currentGUID}_secure`);
-                if (stored && state.ehrKey) {
-                    state.secureData = await decrypt(stored, state.ehrKey);
+                if (stored && state.passwordKey) {
+                    state.secureData = await decrypt(stored, state.passwordKey);
                     if (!state.secureData.ehr) {
                         state.secureData.ehr = initializeEHR();
                     }
@@ -2114,16 +2067,16 @@
         }
 
         async function saveSecureData() {
-            if (!state.ehrKey) return;
+            if (!state.passwordKey) return;
             // encrypt returns "IV.EncryptedData" format directly
-            const encrypted = await encrypt(state.secureData, state.ehrKey);
+            const encrypted = await encrypt(state.secureData, state.passwordKey);
             localStorage.setItem(`ikey_${state.currentGUID}_secure`, encrypted);
         }
 
         async function saveAllData() {
             await savePublicData();
             if (state.pinKey) await saveProtectedData();
-            if (state.ehrKey) await saveSecureData();
+            if (state.passwordKey) await saveSecureData();
             showStatus('All data saved', 'success');
 
             // Sync single encrypted blob to cloud
@@ -2196,7 +2149,6 @@
         }
 
         // PIN Management
-        let pinEntry = '';
         let pinCallback = null;
 
         function requestPIN(action) {
@@ -2253,6 +2205,7 @@
                     // First time setting PIN
                     state.pinKey = derivedKey;
                     state.pinUnlocked = true;
+                    localStorage.setItem(`ikey_pin_temp_${state.currentGUID}`, pinEntry);
                     state.protectedData = {
                         health: {},
                         recoveryCodes: generateRecoveryCodes()
@@ -2269,6 +2222,7 @@
                 state.pinKey = derivedKey;
                 state.protectedData = decrypted;
                 state.pinUnlocked = true;
+                localStorage.setItem(`ikey_pin_temp_${state.currentGUID}`, pinEntry);
 
                 // Regenerate and store double hash with verified PIN
                 state.currentDoubleHash = await generateDoubleHash(state.baseKey, pinEntry);
@@ -2297,14 +2251,7 @@
         }
 
         function unlockPINLevel() {
-            document.getElementById('healthTab').classList.remove('locked');
-            document.getElementById('securityTab').classList.remove('locked');
-            
-            document.getElementById('lockIcon').textContent = '🔐';
-            document.getElementById('lockText').textContent = 'PIN Protected';
-            document.getElementById('securityBadge').className = 'security-badge badge-pin';
-            
-            document.getElementById('passwordBtn').style.display = 'inline-flex';
+            updateSecurityUI();
         }
 
         // Password Management
@@ -2322,7 +2269,7 @@
         }
 
         function showPasswordManager() {
-            if (state.ehrUnlocked) {
+            if (state.passwordUnlocked) {
                 if (confirm('Change your EHR password?')) {
                     requestPassword('change');
                 }
@@ -2377,9 +2324,9 @@
                     const stored = localStorage.getItem(`ikey_${state.currentGUID}_secure`);
                     if (stored) {
                         const decrypted = await decrypt(stored, derivedKey);
-                        state.ehrKey = derivedKey;
+                        state.passwordKey = derivedKey;
                         state.secureData = decrypted;
-                        state.ehrUnlocked = true;
+                        state.passwordUnlocked = true;
                         unlockPasswordLevel();
                         closePasswordModal();
                         showStatus('EHR unlocked', 'success');
@@ -2388,8 +2335,8 @@
                     }
                 } else {
                     // Set new password
-                    state.ehrKey = derivedKey;
-                    state.ehrUnlocked = true;
+                    state.passwordKey = derivedKey;
+                    state.passwordUnlocked = true;
                     if (!state.secureData.ehr) {
                         state.secureData.ehr = initializeEHR();
                     }
@@ -2404,10 +2351,7 @@
         }
 
         function unlockPasswordLevel() {
-            document.getElementById('ehrTab').classList.remove('hidden', 'locked');
-            document.getElementById('lockIcon').textContent = '🔒';
-            document.getElementById('lockText').textContent = 'Fully Secured';
-            document.getElementById('securityBadge').className = 'security-badge badge-password';
+            updateSecurityUI();
             loadEHRData();
         }
 
@@ -2569,8 +2513,8 @@
                 requestPIN('unlock');
                 return;
             }
-            
-            if (!state.ehrUnlocked && tabName === 'ehr') {
+
+            if (!state.passwordUnlocked && tabName === 'ehr') {
                 requestPassword('unlock');
                 return;
             }
@@ -2930,25 +2874,21 @@
         }
 
         function updateSecurityUI() {
-            if (state.ehrUnlocked) {
+            if (state.passwordUnlocked) {
                 document.getElementById('lockIcon').textContent = '🔒';
-                document.getElementById('lockText').textContent = 'Maximum Security';
+                document.getElementById('lockText').textContent = 'Fully Secured';
                 document.getElementById('securityBadge').className = 'security-badge badge-password';
                 document.getElementById('ehrTab').classList.remove('hidden', 'locked');
-                document.getElementById('passwordBtn').style.display = 'inline-flex';
-            } else if (state.healthUnlocked) {
-                document.getElementById('lockIcon').textContent = '🔐';
-                document.getElementById('lockText').textContent = 'Password Protected';
-                document.getElementById('securityBadge').className = 'security-badge badge-pin';
                 document.getElementById('healthTab').classList.remove('locked');
                 document.getElementById('securityTab').classList.remove('locked');
                 document.getElementById('passwordBtn').style.display = 'inline-flex';
             } else if (state.pinUnlocked) {
-                document.getElementById('lockIcon').textContent = '📝';
+                document.getElementById('lockIcon').textContent = '🔐';
                 document.getElementById('lockText').textContent = 'PIN Protected';
                 document.getElementById('securityBadge').className = 'security-badge badge-pin';
-                document.getElementById('healthTab').classList.add('locked');
+                document.getElementById('healthTab').classList.remove('locked');
                 document.getElementById('securityTab').classList.remove('locked');
+                document.getElementById('ehrTab').classList.add('locked', 'hidden');
                 document.getElementById('passwordBtn').style.display = 'inline-flex';
             } else {
                 document.getElementById('lockIcon').textContent = '🔓';
@@ -2956,8 +2896,7 @@
                 document.getElementById('securityBadge').className = 'security-badge badge-public';
                 document.getElementById('healthTab').classList.add('locked');
                 document.getElementById('securityTab').classList.add('locked');
-                document.getElementById('ehrTab').classList.add('locked');
-                document.getElementById('ehrTab').classList.add('hidden');
+                document.getElementById('ehrTab').classList.add('locked', 'hidden');
                 document.getElementById('passwordBtn').style.display = 'none';
             }
         }
@@ -2969,7 +2908,7 @@
                 timestamp: new Date().toISOString(),
                 publicData: state.publicData,
                 protectedData: state.pinKey ? state.protectedData : null,
-                secureData: state.ehrKey ? state.secureData : null
+                secureData: state.passwordKey ? state.secureData : null
             };
             
             const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
@@ -3093,7 +3032,7 @@
         // Periodic memory cleanup
         function memoryCleanup() {
             if (!state.pinUnlocked) state.pinKey = null;
-            if (!state.ehrUnlocked) state.ehrKey = null;
+            if (!state.passwordUnlocked) state.passwordKey = null;
         }
         setInterval(memoryCleanup, 5 * 60 * 1000);
 
@@ -3114,10 +3053,10 @@
 
         window.addEventListener('beforeunload', function() {
             state.pinKey = null;
-            state.healthKey = null;
-            state.ehrKey = null;
+            state.passwordKey = null;
             state.currentDoubleHash = null;
             pinEntry = '';
+            localStorage.removeItem(`ikey_pin_temp_${state.currentGUID}`);
             sessionStorage.removeItem('ikey_session_active');
         });
     </script>
