@@ -919,26 +919,52 @@
                         <input type="text" id="setup-name" placeholder="Enter your full name">
                     </div>
                     
+                    <div class="form-group">
+                        <label>Blood Type</label>
+                        <select id="setup-blood">
+                            <option value="">Unknown</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="required">Emergency Contact Name</label>
+                        <input type="text" id="setup-contact-name" placeholder="Full name of emergency contact">
+                    </div>
+
                     <div class="grid-2">
                         <div class="form-group">
-                            <label>Blood Type</label>
-                            <select id="setup-blood">
-                                <option value="">Unknown</option>
-                                <option value="A+">A+</option>
-                                <option value="A-">A-</option>
-                                <option value="B+">B+</option>
-                                <option value="B-">B-</option>
-                                <option value="AB+">AB+</option>
-                                <option value="AB-">AB-</option>
-                                <option value="O+">O+</option>
-                                <option value="O-">O-</option>
+                            <label class="required">Contact Phone</label>
+                            <input type="tel" id="setup-contact-phone" placeholder="Phone number">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="required">Relationship</label>
+                            <select id="setup-contact-relationship" onchange="handleRelationshipChange('setup')">
+                                <option value="">Select relationship</option>
+                                <option value="spouse">Spouse/Partner</option>
+                                <option value="parent">Parent</option>
+                                <option value="child">Child</option>
+                                <option value="sibling">Sibling</option>
+                                <option value="case-manager">Case Manager</option>
+                                <option value="employer">Employer</option>
+                                <option value="friend">Friend</option>
+                                <option value="prefer-not">Prefer not to answer</option>
+                                <option value="other">Other (specify)</option>
                             </select>
                         </div>
-                        
-                        <div class="form-group">
-                            <label>Emergency Contact</label>
-                            <input type="text" id="setup-contact" placeholder="Contact name">
-                        </div>
+                    </div>
+
+                    <div class="form-group" id="setup-other-relationship-group" style="display: none;">
+                        <label>Please specify relationship</label>
+                        <input type="text" id="setup-contact-other" placeholder="Describe relationship">
                     </div>
                     
                     <div class="form-group">
@@ -1737,8 +1763,20 @@
         function validateWizardStep(step) {
             if (step === 2) {
                 const name = document.getElementById('setup-name').value;
+                const contactName = document.getElementById('setup-contact-name').value;
+                const contactPhone = document.getElementById('setup-contact-phone').value;
+                const contactRelationship = document.getElementById('setup-contact-relationship').value;
+
                 if (!name) {
                     alert('Please enter your name');
+                    return false;
+                }
+                if (!contactName || !contactPhone || !contactRelationship) {
+                    alert('Please complete all emergency contact fields');
+                    return false;
+                }
+                if (contactRelationship === 'other' && !document.getElementById('setup-contact-other').value) {
+                    alert('Please specify the relationship');
                     return false;
                 }
             }
@@ -1771,7 +1809,10 @@
                 allergies: document.getElementById('setup-allergies').value,
                 medications: document.getElementById('setup-medications').value,
                 conditions: document.getElementById('setup-conditions').value,
-                contactName: document.getElementById('setup-contact').value
+                contactName: document.getElementById('setup-contact-name').value,
+                contactPhone: document.getElementById('setup-contact-phone').value,
+                contactRelationship: document.getElementById('setup-contact-relationship').value,
+                contactOther: document.getElementById('setup-contact-other').value
             };
             
             const pin = document.getElementById('setup-pin').value;
@@ -2087,10 +2128,41 @@
         }
 
         // Display Functions
+        function handleRelationshipChange(context) {
+            const select = document.getElementById(`${context}-contact-relationship`);
+            const otherGroup = document.getElementById(`${context}-other-relationship-group`);
+
+            if (select && otherGroup) {
+                if (select.value === 'other') {
+                    otherGroup.style.display = 'block';
+                } else {
+                    otherGroup.style.display = 'none';
+                    const otherInput = document.getElementById(`${context}-contact-other`);
+                    if (otherInput) otherInput.value = '';
+                }
+            }
+        }
+
         function displayEmergencyInfo() {
             const container = document.getElementById('emergency-display');
             const data = state.publicData.emergency || {};
-            
+
+            let relationshipDisplay = 'Not specified';
+            if (data.contactRelationship) {
+                const relationships = {
+                    'spouse': 'Spouse/Partner',
+                    'parent': 'Parent',
+                    'child': 'Child',
+                    'sibling': 'Sibling',
+                    'case-manager': 'Case Manager',
+                    'employer': 'Employer',
+                    'friend': 'Friend',
+                    'prefer-not': 'Prefer not to say',
+                    'other': data.contactOther || 'Other'
+                };
+                relationshipDisplay = relationships[data.contactRelationship] || data.contactRelationship;
+            }
+
             container.innerHTML = `
                 <div class="info-card">
                     <span class="info-card-icon">👤</span>
@@ -2099,7 +2171,7 @@
                         <div class="info-card-value">${data.name || 'Not set'}</div>
                     </div>
                 </div>
-                
+
                 <div class="info-card">
                     <span class="info-card-icon">🩸</span>
                     <div class="info-card-content">
@@ -2107,7 +2179,7 @@
                         <div class="info-card-value">${data.bloodType || 'Unknown'}</div>
                     </div>
                 </div>
-                
+
                 <div class="info-card">
                     <span class="info-card-icon">⚠️</span>
                     <div class="info-card-content">
@@ -2115,7 +2187,7 @@
                         <div class="info-card-value">${data.allergies || 'None reported'}</div>
                     </div>
                 </div>
-                
+
                 <div class="info-card">
                     <span class="info-card-icon">💊</span>
                     <div class="info-card-content">
@@ -2123,7 +2195,7 @@
                         <div class="info-card-value">${data.medications || 'None reported'}</div>
                     </div>
                 </div>
-                
+
                 <div class="info-card">
                     <span class="info-card-icon">🏥</span>
                     <div class="info-card-content">
@@ -2131,12 +2203,17 @@
                         <div class="info-card-value">${data.conditions || 'None reported'}</div>
                     </div>
                 </div>
-                
+
                 <div class="info-card">
                     <span class="info-card-icon">📞</span>
                     <div class="info-card-content">
                         <div class="info-card-label">EMERGENCY CONTACT</div>
-                        <div class="info-card-value">${data.contactName || 'Not set'}</div>
+                        <div class="info-card-value">
+                            ${data.contactName || 'Not set'}<br>
+                            <small style="color: var(--text-secondary);">
+                                ${data.contactPhone || 'No phone'} • ${relationshipDisplay}
+                            </small>
+                        </div>
                     </div>
                 </div>
             `;
@@ -2400,7 +2477,7 @@
         // Edit Emergency Info
         function editEmergencyInfo() {
             const data = state.publicData.emergency || {};
-            
+
             const container = document.getElementById('emergency-display');
             container.innerHTML = `
                 <h3>Edit Emergency Information</h3>
@@ -2438,6 +2515,35 @@
                     <label>Emergency Contact Name</label>
                     <input type="text" id="edit-contact-name" value="${data.contactName || ''}">
                 </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Contact Phone</label>
+                        <input type="tel" id="edit-contact-phone" value="${data.contactPhone || ''}">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Relationship</label>
+                        <select id="edit-contact-relationship" onchange="handleRelationshipChange('edit')">
+                            <option value="">Select relationship</option>
+                            <option value="spouse" ${data.contactRelationship === 'spouse' ? 'selected' : ''}>Spouse/Partner</option>
+                            <option value="parent" ${data.contactRelationship === 'parent' ? 'selected' : ''}>Parent</option>
+                            <option value="child" ${data.contactRelationship === 'child' ? 'selected' : ''}>Child</option>
+                            <option value="sibling" ${data.contactRelationship === 'sibling' ? 'selected' : ''}>Sibling</option>
+                            <option value="case-manager" ${data.contactRelationship === 'case-manager' ? 'selected' : ''}>Case Manager</option>
+                            <option value="employer" ${data.contactRelationship === 'employer' ? 'selected' : ''}>Employer</option>
+                            <option value="friend" ${data.contactRelationship === 'friend' ? 'selected' : ''}>Friend</option>
+                            <option value="prefer-not" ${data.contactRelationship === 'prefer-not' ? 'selected' : ''}>Prefer not to answer</option>
+                            <option value="other" ${data.contactRelationship === 'other' ? 'selected' : ''}>Other (specify)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group" id="edit-other-relationship-group" style="display: ${data.contactRelationship === 'other' ? 'block' : 'none'};">
+                    <label>Please specify relationship</label>
+                    <input type="text" id="edit-contact-other" value="${data.contactOther || ''}">
+                </div>
+
                 <div class="btn-group">
                     <button class="btn btn-success" onclick="saveEmergencyInfo()">Save Changes</button>
                     <button class="btn btn-secondary" onclick="displayEmergencyInfo()">Cancel</button>
@@ -2452,9 +2558,12 @@
                 allergies: document.getElementById('edit-allergies').value,
                 medications: document.getElementById('edit-medications').value,
                 conditions: document.getElementById('edit-conditions').value,
-                contactName: document.getElementById('edit-contact-name').value
+                contactName: document.getElementById('edit-contact-name').value,
+                contactPhone: document.getElementById('edit-contact-phone').value,
+                contactRelationship: document.getElementById('edit-contact-relationship').value,
+                contactOther: document.getElementById('edit-contact-other').value
             };
-            
+
             await savePublicData();
             displayEmergencyInfo();
             showStatus('Emergency information saved', 'success');
