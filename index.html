@@ -1367,8 +1367,11 @@
             lastSync: null,
             lastActivity: Date.now(),
             logoutTimer: null,
+            logoutWarningTimer: null,
             currentDoubleHash: null,
             saltValue: null,
+
+            pinAttemptsRemaining: 5,
 
             publicData: {
                 emergency: {}
@@ -1469,6 +1472,14 @@
 
         function resetLogoutTimer() {
             clearTimeout(state.logoutTimer);
+            clearTimeout(state.logoutWarningTimer);
+
+            state.logoutWarningTimer = setTimeout(() => {
+                if (confirm('Session expiring in 5 minutes. Continue?')) {
+                    trackActivity();
+                }
+            }, AUTO_LOGOUT_MS - (5 * 60 * 1000));
+
             state.logoutTimer = setTimeout(() => {
                 if (Date.now() - state.lastActivity > AUTO_LOGOUT_MS) {
                     autoLogout();
@@ -1536,8 +1547,8 @@
 
                 // Generate new double hash for next update
                 const salt = Date.now().toString();
-                const pinData = localStorage.getItem(`ikey_pin_temp_${state.currentGUID}`);
-                const newDoubleHash = await generateDoubleHash(state.baseKey, pinData || '', salt);
+                const pinData = state.pinKey ? btoa(String.fromCharCode(...state.pinKey)) : '';
+                const newDoubleHash = await generateDoubleHash(state.baseKey, pinData, salt);
 
                 // Prepare sync data with both hashes
                 const syncData = {
@@ -1654,10 +1665,6 @@
             try {
                 // Derive new key from new PIN
                 const newKey = await deriveKeyFromPIN(newPIN);
-                localStorage.setItem(
-                    `ikey_pin_temp_${state.currentGUID}`,
-                    btoa(String.fromCharCode(...newKey))
-                );
 
                 // Re-encrypt protected data with new key
                 const tempData = state.protectedData;
@@ -1749,8 +1756,10 @@
                     alert('Please enter a 6-digit PIN');
                     return false;
                 }
-                if (!healthPass || healthPass.length < 12) {
-                    alert('Health password must be at least 12 characters');
+                try {
+                    validateHealthPassword(healthPass);
+                } catch (e) {
+                    alert(e.message);
                     return false;
                 }
             }
@@ -1783,10 +1792,6 @@
             state.currentDoubleHash = await generateDoubleHash(state.baseKey, pin);
             const encryptedHash = await encrypt({ hash: state.currentDoubleHash }, state.baseKey);
             localStorage.setItem(`ikey_hash_${state.currentGUID}`, encryptedHash);
-            localStorage.setItem(
-                `ikey_pin_temp_${state.currentGUID}`,
-                btoa(String.fromCharCode(...state.pinKey))
-            );
             
             // Generate recovery codes
             state.protectedData.recoveryCodes = generateRecoveryCodes();
@@ -2265,11 +2270,6 @@
                 state.protectedData = decrypted;
                 state.pinUnlocked = true;
 
-                localStorage.setItem(
-                    `ikey_pin_temp_${state.currentGUID}`,
-                    btoa(String.fromCharCode(...derivedKey))
-                );
-
                 // Regenerate and store double hash with verified PIN
                 state.currentDoubleHash = await generateDoubleHash(state.baseKey, pinEntry);
                 const encryptedHash = await encrypt({ hash: state.currentDoubleHash }, state.baseKey);
@@ -2278,6 +2278,7 @@
                 unlockPINLevel();
                 closePinPad();
                 await loadProtectedData();
+                state.pinAttemptsRemaining = 5;
 
                 if (pinCallback === 'edit') {
                     editEmergencyInfo();
@@ -2285,6 +2286,8 @@
                 
             } catch (error) {
                 // Wrong PIN
+                state.pinAttemptsRemaining--;
+                showStatus(`Wrong PIN. ${state.pinAttemptsRemaining} attempts remaining`, 'error');
                 document.querySelectorAll('#pinDisplay .pin-dot').forEach(dot => dot.classList.add('error'));
                 setTimeout(() => {
                     pinEntry = '';
@@ -2334,13 +2337,30 @@
             document.getElementById('confirm-password').value = '';
         }
 
+        function validateHealthPassword(password) {
+            if (password.length < 12) {
+                throw new Error('Password must be at least 12 characters');
+            }
+            const checks = {
+                uppercase: /[A-Z]/.test(password),
+                lowercase: /[a-z]/.test(password),
+                number: /[0-9]/.test(password)
+            };
+            if (!checks.uppercase || !checks.lowercase || !checks.number) {
+                throw new Error('Password must include uppercase, lowercase, and numbers');
+            }
+            return true;
+        }
+
         async function submitPassword() {
             const action = document.getElementById('password-modal').dataset.action;
             const password = document.getElementById('password-input').value;
             const confirm = document.getElementById('confirm-password').value;
-            
-            if (!password || password.length < 8) {
-                alert('Password must be at least 8 characters');
+
+            try {
+                validateHealthPassword(password);
+            } catch (e) {
+                alert(e.message);
                 return;
             }
             

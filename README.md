@@ -115,6 +115,34 @@ state = {
 - **POST Method**: Creates new record (first sync for new GUID)
 - **PUT Method**: Updates existing record (subsequent syncs for existing GUID)
 
+### Rate Limiting
+
+Add rate limiting to your n8n webhook to prevent brute-force attacks:
+
+```javascript
+const rateLimitMap = $getWorkflowStaticData('rateLimits') || {};
+const key = `${items[0].json.guid}_${$context.clientIp}`;
+const now = Date.now();
+
+// Check rate limit
+const attempts = rateLimitMap[key] || { count: 0, resetAt: now + 3600000 };
+if (attempts.resetAt < now) {
+    attempts.count = 0;
+    attempts.resetAt = now + 3600000;
+}
+
+if (attempts.count > 5) {
+    return {
+        statusCode: 429,
+        body: { error: 'Too many attempts. Try again in 1 hour.' }
+    };
+}
+
+attempts.count++;
+rateLimitMap[key] = attempts;
+$setWorkflowStaticData('rateLimits', rateLimitMap);
+```
+
 ### Webhook Payload Structure
 
 ```json
