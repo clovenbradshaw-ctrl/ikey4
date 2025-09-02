@@ -2286,6 +2286,7 @@
                 processingOverlay.querySelector('.processing-message').textContent = 'Syncing to cloud...';
                 
                 await saveAllData();
+                await downloadKeyFile();
                 
                 // Final message
                 processingOverlay.querySelector('.processing-message').textContent = '✓ Setup complete!';
@@ -2450,6 +2451,45 @@
                 codes.push(Math.random().toString(36).substring(2, 8).toUpperCase());
             }
             return codes;
+        }
+
+        async function deriveKeyFromURL(url) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(url);
+            const hash = await crypto.subtle.digest('SHA-256', data);
+            return new Uint8Array(hash);
+        }
+
+        async function downloadKeyFile() {
+            if (!state.baseKey || !state.currentGUID) return;
+            const urlKey = await deriveKeyFromURL(APP_URL);
+            const keyData = {
+                guid: state.currentGUID,
+                baseKey: btoa(String.fromCharCode(...state.baseKey))
+            };
+            const encrypted = await encrypt(keyData, urlKey);
+            const blob = new Blob([encrypted], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `ikey-key-${state.currentGUID}.ikey`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            alert('Recovery key file downloaded. Keep it secure for alternate login.');
+        }
+
+        async function refreshBaseKey() {
+            state.baseKey = await generateKey();
+            localStorage.setItem(`ikey_basekey_${state.currentGUID}`,
+                btoa(String.fromCharCode(...state.baseKey)));
+            const storedPin = localStorage.getItem(`ikey_pin_temp_${state.currentGUID}`) || '';
+            if (storedPin) {
+                state.currentDoubleHash = await generateDoubleHash(state.baseKey, storedPin);
+                const encryptedHash = await encrypt({ hash: state.currentDoubleHash }, state.baseKey);
+                localStorage.setItem(`ikey_hash_${state.currentGUID}`, encryptedHash);
+            }
+            await saveAllData();
+            await downloadKeyFile();
         }
 
         // Encryption/Decryption
@@ -2829,6 +2869,11 @@
                 await loadProtectedData();
                 state.pinAttemptsRemaining = 5;
 
+                if (pinCallback === 'change') {
+                    await refreshBaseKey();
+                    showStatus('PIN changed successfully', 'success');
+                }
+
                 if (pinCallback === 'edit') {
                     editEmergencyInfo();
                 }
@@ -2938,7 +2983,8 @@
                     await saveSecureData();
                     unlockPasswordLevel();
                     closePasswordModal();
-                    showStatus('Password set successfully', 'success');
+                    await refreshBaseKey();
+                    showStatus(action === 'change' ? 'Password changed successfully' : 'Password set successfully', 'success');
                 }
             } catch (error) {
                 alert('Failed to process password');
