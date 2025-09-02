@@ -1659,7 +1659,7 @@
     <script>
         // Global State Management
         const APP_VERSION = '2.0.0';
-        const APP_URL = window.location.origin + '/';
+        const APP_URL = new URL('.', window.location.href).href;
         const WEBHOOK_URL = 'https://n8n.intelechia.com/webhook/d5e99c29-2cf1-44c1-b5b4-95a1ca048441';
         const XANO_CACHE_URL = 'https://xvkq-pq7i-idtl.n7d.xano.io/api:Hj4C6PGO/ikey_cache';
         const ARCHIVE_BASE_URL = 'https://archive.org/download/zuboff';
