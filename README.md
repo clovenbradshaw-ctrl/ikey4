@@ -220,8 +220,7 @@ https://example.com/ikey.html#a1b2c3d4-e5f6-7890-abcd-ef1234567890:SGVsbG9Xb3JsZ
 
 ## Recovery Mechanisms
 
-Recovery options based on a secure key file are under active development.
-At present, forgotten PINs or passwords cannot be recovered.
+A recovery key file provides an alternate login path if your PIN or password is lost. The key file is automatically downloaded during setup and whenever you change your PIN or EHR password. It is encrypted using the application's base URL—store it securely as a new key file is required after each credential change.
 
 ## User Experience Features
 
