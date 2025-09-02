@@ -58,19 +58,19 @@
         }
 
         body.theme-topsecret {
-            --primary: #ff6b00;
-            --primary-dark: #cc5500;
+            --primary: #ff0000;
+            --primary-dark: #cc0000;
             --danger: #ff0000;
             --success: #00ff00;
             --warning: #ffff00;
             --surface: #1a1a1a;
             --surface-alt: #0d0d0d;
-            --text: #ff6b00;
-            --text-secondary: #cc5500;
-            --border: #ff6b00;
+            --text: #ff0000;
+            --text-secondary: #cc0000;
+            --border: #ff0000;
             --glass: rgba(0, 0, 0, 0.95);
             background: #000;
-            font-family: 'Courier New', monospace;
+            font-family: 'Arial', sans-serif;
         }
 
         body.theme-topsecret::before {
@@ -84,8 +84,8 @@
                 0deg,
                 transparent,
                 transparent 2px,
-                rgba(255, 107, 0, 0.03) 2px,
-                rgba(255, 107, 0, 0.03) 4px
+                rgba(255, 0, 0, 0.03) 2px,
+                rgba(255, 0, 0, 0.03) 4px
             );
             pointer-events: none;
             z-index: 9999;
@@ -107,17 +107,17 @@
         body.theme-topsecret h2 {
             text-transform: uppercase;
             letter-spacing: 2px;
-            border-bottom: 2px dashed #ff6b00;
+            border-bottom: 2px dashed #ff0000;
         }
 
         body.theme-topsecret .status-message {
-            border: 3px double #ff6b00;
+            border: 3px double #ff0000;
             background: repeating-linear-gradient(
                 45deg,
                 transparent,
                 transparent 10px,
-                rgba(255, 107, 0, 0.1) 10px,
-                rgba(255, 107, 0, 0.1) 20px
+                rgba(255, 0, 0, 0.1) 10px,
+                rgba(255, 0, 0, 0.1) 20px
             );
             text-transform: uppercase;
         }
@@ -510,6 +510,7 @@
 
         .nav-tab {
             background: var(--surface);
+            color: var(--text);
             border: none;
             padding: 14px 18px;
             border-radius: 10px;
@@ -545,6 +546,7 @@
 
         .content-section {
             background: var(--surface);
+            color: var(--text);
             border-radius: calc(12px * var(--element-scale));
             padding: calc(16px * var(--spacing-scale));
             box-shadow: 0 2px 12px rgba(0,0,0,0.08);
@@ -1419,7 +1421,7 @@
                 🏥 Health Info
             </button>
             <button class="nav-tab locked" onclick="showTab('security')" data-tab="security" id="securityTab">
-                🔒 Security
+                🔒 Security &amp; Access
             </button>
             <button class="nav-tab locked hidden" onclick="showTab('ehr')" data-tab="ehr" id="ehrTab">
                 📋 Full EHR
