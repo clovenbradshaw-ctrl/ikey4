@@ -1828,15 +1828,33 @@
     }
     
     // Only check localStorage if NO hash in URL
-    const hasGUID = localStorage.getItem('ikey_guid');
-    
-    if (!hasGUID) {
-        // No saved instance and no hash - show wizard
+    const params = new URLSearchParams(window.location.search);
+    const forceSetup = params.get('setup') === 'new';
+    const savedGUID = localStorage.getItem('ikey_guid');
+
+    if (forceSetup) {
         state.isFirstTime = true;
         showSetupWizard();
+    } else if (savedGUID) {
+        const baseKey = localStorage.getItem(`ikey_basekey_${savedGUID}`);
+        const publicData = localStorage.getItem(`ikey_${savedGUID}_public`);
+        if (baseKey && publicData) {
+            await loadExistingUser();
+        } else {
+            // Corrupted instance - clean up and show wizard
+            localStorage.removeItem('ikey_guid');
+            localStorage.removeItem(`ikey_basekey_${savedGUID}`);
+            localStorage.removeItem(`ikey_${savedGUID}_public`);
+            localStorage.removeItem(`ikey_${savedGUID}_protected`);
+            localStorage.removeItem(`ikey_${savedGUID}_secure`);
+            localStorage.removeItem(`ikey_hash_${savedGUID}`);
+            localStorage.removeItem(`ikey_pin_temp_${savedGUID}`);
+            state.isFirstTime = true;
+            showSetupWizard();
+        }
     } else {
-        // Load the saved instance ONLY if no hash
-        await loadExistingUser();
+        state.isFirstTime = true;
+        showSetupWizard();
     }
 
     // Setup keyboard listeners and activity tracking
