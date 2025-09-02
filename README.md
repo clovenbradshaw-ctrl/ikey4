@@ -68,6 +68,10 @@ localStorage:
 └── ikey_[GUID]_lastSync              # Last cloud sync timestamp
 ```
 
+### Starting Fresh
+
+To create a new profile or bypass saved data, open the application with `?setup=new` in the URL. This forces the setup wizard even if a previous instance exists.
+
 ### Data Structure
 
 ```javascript
