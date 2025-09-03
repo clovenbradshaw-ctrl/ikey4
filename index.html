@@ -1948,64 +1948,53 @@
         // Initialize Application
         async function init() {
             const fragment = window.location.hash.slice(1);
+            
+            // If there's a hash fragment with GUID and key, load that data
             if (fragment) {
                 const [guid, keyB64] = fragment.split(':');
                 if (guid && keyB64) {
                     try {
                         state.currentGUID = guid;
-                        state.isShareMode = true;
-                        document.body.classList.add('share-mode');
-
-                await restoreFromCloud(guid, null);
-                displayEmergencyInfo();
-                return; // STOP HERE - don't load localStorage
-            } catch (error) {
-                console.error('Hash access failed:', error);
-                showStatus('Unable to load emergency data', 'error');
-                window.location.hash = '';
-                showSetupWizard();
-                return;
+                        state.isShareMode = false;
+                        
+                        // Restore the base key from URL
+                        state.baseKey = Uint8Array.from(atob(decodeURIComponent(keyB64)), c => c.charCodeAt(0));
+                        
+                        // Save to localStorage for this session
+                        localStorage.setItem('ikey_guid', state.currentGUID);
+                        localStorage.setItem(`ikey_basekey_${state.currentGUID}`, keyB64);
+                        
+                        // Try to restore from cloud or local storage
+                        const publicData = localStorage.getItem(`ikey_${state.currentGUID}_public`);
+                        if (publicData) {
+                            state.publicData = JSON.parse(publicData);
+                        } else {
+                            // Try to restore from cloud
+                            await restoreFromCloud(guid, state.baseKey);
+                        }
+                        
+                        displayEmergencyInfo();
+                        updateSecurityUI();
+                        return;
+                    } catch (error) {
+                        console.error('Hash access failed:', error);
+                        showStatus('Unable to load data from URL', 'error');
+                        // Fall through to show setup wizard
+                    }
+                }
             }
-        }
-    }
-    
-    // Only check localStorage if NO hash in URL
-    const params = new URLSearchParams(window.location.search);
-    const forceSetup = params.get('setup') === 'new';
-    const savedGUID = localStorage.getItem('ikey_guid');
-
-    if (forceSetup) {
-        state.isFirstTime = true;
-        showSetupWizard();
-    } else if (savedGUID) {
-        const baseKey = localStorage.getItem(`ikey_basekey_${savedGUID}`);
-        const publicData = localStorage.getItem(`ikey_${savedGUID}_public`);
-        if (baseKey && publicData) {
-            await loadExistingUser();
-        } else {
-            // Corrupted instance - clean up and show wizard
-            localStorage.removeItem('ikey_guid');
-            localStorage.removeItem(`ikey_basekey_${savedGUID}`);
-            localStorage.removeItem(`ikey_${savedGUID}_public`);
-            localStorage.removeItem(`ikey_${savedGUID}_protected`);
-            localStorage.removeItem(`ikey_${savedGUID}_secure`);
-            localStorage.removeItem(`ikey_hash_${savedGUID}`);
-            localStorage.removeItem(`ikey_pin_temp_${savedGUID}`);
+            
+            // No hash or invalid hash - always show setup wizard
             state.isFirstTime = true;
             showSetupWizard();
+            
+            // Setup keyboard listeners and activity tracking
+            setupKeyboardListeners();
+            ['mousemove','keypress','click','touchstart','scroll'].forEach(evt => {
+                document.addEventListener(evt, trackActivity, { passive: true });
+            });
+            trackActivity();
         }
-    } else {
-        state.isFirstTime = true;
-        showSetupWizard();
-    }
-
-    // Setup keyboard listeners and activity tracking
-    setupKeyboardListeners();
-    ['mousemove','keypress','click','touchstart','scroll'].forEach(evt => {
-        document.addEventListener(evt, trackActivity, { passive: true });
-    });
-    trackActivity();
-}
 
         function switchInstance() {
             const instances = [];
@@ -2304,6 +2293,11 @@
                 processingOverlay.querySelector('.processing-message').textContent = 'Syncing to cloud...';
                 
                 await saveAllData();
+
+                // Update URL with GUID and key
+                const newUrl = `${window.location.origin}${window.location.pathname}#${state.currentGUID}:${encodeURIComponent(btoa(String.fromCharCode(...state.baseKey)))}`;
+                window.history.pushState({}, '', newUrl);
+
                 await downloadKeyFile();
                 
                 // Final message
