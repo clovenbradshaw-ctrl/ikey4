@@ -1723,6 +1723,18 @@
             }
         };
 
+        function promptForPIN() {
+            return new Promise((resolve, reject) => {
+                window.pinPromiseResolve = resolve;
+                window.pinPromiseReject = reject;
+                pinCallback = 'prompt';
+                document.getElementById('pin-modal').classList.add('active');
+                document.getElementById('pin-modal-title').textContent = 'Enter 6-Digit PIN';
+                pinEntry = '';
+                updatePinDisplay();
+            });
+        }
+
         // Zero-knowledge utilities
         async function decryptWithPIN(callback) {
             let pin = await promptForPIN();
@@ -2866,6 +2878,12 @@
             document.getElementById('pin-modal').classList.remove('active');
             pinEntry = '';
             pinCallback = null;
+
+            if (window.pinPromiseReject) {
+                window.pinPromiseReject(new Error('PIN entry cancelled'));
+                window.pinPromiseResolve = null;
+                window.pinPromiseReject = null;
+            }
         }
 
         function updatePinDisplay() {
@@ -2877,6 +2895,17 @@
         }
 
         async function verifyPIN() {
+            if (window.pinPromiseResolve) {
+                if (pinEntry.length === 6) {
+                    const tempPin = pinEntry;
+                    closePinPad();
+                    window.pinPromiseResolve(tempPin);
+                    window.pinPromiseResolve = null;
+                    window.pinPromiseReject = null;
+                    return;
+                }
+            }
+
             if (pinCallback === 'setup') {
                 document.getElementById('setup-pin').value = pinEntry;
                 document.getElementById('setup-pin-display').style.display = 'block';
