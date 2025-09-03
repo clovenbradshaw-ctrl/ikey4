@@ -45,31 +45,43 @@
             --success: #10B981;
             --warning: #F59E0B;
             --surface: #FFFFFF;
-            --surface-alt: #F9FAFB;
+            --surface-alt: #E8EAF0;
             --text: #111827;
-            --text-secondary: #6B7280;
-            --border: #E5E7EB;
-            --glass: rgba(255, 255, 255, 0.95);
-            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-secondary: #4B5563;
+            --border: #9CA3AF;
+            --glass: rgba(255, 255, 255, 0.98);
+            --glass-border: rgba(0, 0, 0, 0.1);
             --gac: #8B5CF6;
 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
         }
 
+        body.theme-default input,
+        body.theme-default textarea,
+        body.theme-default select {
+            background: #FAFBFC;
+            border: 2px solid #CBD5E1;
+        }
+
+        body.theme-default .info-card {
+            background: #F1F5F9;
+            border: 1px solid #CBD5E1;
+        }
+
         body.theme-topsecret {
-            --primary: #ff0000;
+            --primary: #ff3333;
             --primary-dark: #cc0000;
-            --danger: #ff0000;
-            --success: #00ff00;
-            --warning: #ffff00;
-            --surface: #1a1a1a;
-            --surface-alt: #0d0d0d;
-            --text: #ff0000;
-            --text-secondary: #cc0000;
-            --border: #ff0000;
+            --danger: #ff6666;
+            --success: #33ff33;
+            --warning: #ffaa00;
+            --surface: #1a0000;
+            --surface-alt: #2d0000;
+            --text: #ffffff;
+            --text-secondary: #ff9999;
+            --border: #660000;
             --glass: rgba(0, 0, 0, 0.95);
-            background: #000;
+            background: #1a0000;
             font-family: 'Arial', sans-serif;
         }
 
@@ -125,14 +137,14 @@
         body.theme-hacker {
             --primary: #00ff00;
             --primary-dark: #00cc00;
-            --danger: #ff0000;
+            --danger: #ff3333;
             --success: #00ff00;
-            --surface: #000000;
-            --surface-alt: #0a0a0a;
-            --text: #00ff00;
-            --text-secondary: #00cc00;
-            --border: #00ff00;
-            background: #000;
+            --surface: #0a1a0a;
+            --surface-alt: #132613;
+            --text: #b3ffb3;
+            --text-secondary: #66ff66;
+            --border: #004400;
+            background: #0a1a0a;
             font-family: 'Consolas', 'Monaco', monospace;
         }
 
@@ -176,15 +188,15 @@
         }
 
         body.theme-wellness {
-            --primary: #7c9885;
-            --primary-dark: #5a7261;
-            --success: #a8c09a;
-            --surface: #faf8f3;
-            --surface-alt: #f0ede5;
-            --text: #3d4a3d;
-            --text-secondary: #6b7c6b;
-            --border: #d4cfc0;
-            background: linear-gradient(135deg, #faf8f3 0%, #e8e2d5 100%);
+            --primary: #5a7261;
+            --primary-dark: #3d4f42;
+            --success: #7a9a6a;
+            --surface: #ffffff;
+            --surface-alt: #f5f3ed;
+            --text: #1a1a1a;
+            --text-secondary: #4a5a4a;
+            --border: #b8b3a0;
+            background: linear-gradient(135deg, #ffffff 0%, #f5f3ed 100%);
             font-family: 'Segoe UI', 'San Francisco', sans-serif;
         }
 
@@ -232,8 +244,13 @@
         }
 
         body.theme-contrast * {
-            border-width: 3px !important;
-            font-weight: bold !important;
+            border-width: 2px !important;
+            font-weight: 600 !important;
+        }
+
+        body.theme-contrast .form-group input,
+        body.theme-contrast .form-group textarea {
+            padding: 14px;
         }
 
         body.theme-contrast *:focus {
@@ -247,12 +264,13 @@
         }
 
         body.theme-retro {
-            --primary: #4a7c59;
-            --surface: #f4f1e8;
-            --surface-alt: #e8ddc7;
-            --text: #2d2d2d;
-            --border: #9b8f7e;
-            background: #f4f1e8;
+            --primary: #2d5a39;
+            --surface: #ffffff;
+            --surface-alt: #f5f0e1;
+            --text: #000000;
+            --text-secondary: #3d3d3d;
+            --border: #8a7e6d;
+            background: #ffffff;
             font-family: 'American Typewriter', 'Courier', serif;
         }
 
@@ -272,10 +290,32 @@
         }
 
         body.theme-retro .status-success {
-            transform: rotate(-5deg);
+            transform: none;
             border: 3px double #4a7c59;
             border-radius: 50%;
             text-transform: uppercase;
+        }
+
+        body.theme-accessible {
+            --primary: #0050a0;
+            --primary-dark: #003670;
+            --danger: #d00000;
+            --success: #007000;
+            --warning: #a06000;
+            --surface: #ffffff;
+            --surface-alt: #f0f4f8;
+            --text: #000000;
+            --text-secondary: #333333;
+            --border: #0050a0;
+            --glass: rgba(255, 255, 255, 1);
+
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        body.theme-accessible *:focus {
+            outline: 3px solid #0050a0 !important;
+            outline-offset: 2px !important;
         }
 
         .container {
@@ -2627,6 +2667,7 @@
                         <option value="wellness">Zen Wellness</option>
                         <option value="contrast">High Contrast</option>
                         <option value="retro">Retro Medical</option>
+                        <option value="accessible">High Contrast Accessible</option>
                     </select>
                 </div>
 
@@ -4577,6 +4618,17 @@
             if (!state.passwordUnlocked) state.passwordKey = null;
         }
         setInterval(memoryCleanup, 5 * 60 * 1000);
+
+        function validateThemeContrast() {
+            const themes = ['default', 'topsecret', 'hacker', 'wellness', 'contrast', 'retro', 'accessible'];
+            themes.forEach(theme => {
+                document.body.className = 'theme-' + theme;
+                const styles = getComputedStyle(document.body);
+                const textColor = styles.getPropertyValue('--text');
+                const bgColor = styles.getPropertyValue('--surface');
+                console.log(`${theme}: Text ${textColor} on Background ${bgColor}`);
+            });
+        }
 
         // Initialize on load with session warning and input hardening
         window.addEventListener('DOMContentLoaded', () => {
