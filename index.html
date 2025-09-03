@@ -1977,7 +1977,7 @@
     if (forceSetup) {
         state.isFirstTime = true;
         showSetupWizard();
-    } else if (savedGUID) {
+    } else if (savedGUID && window.location.hash.slice(1) === savedGUID) {
         const baseKey = localStorage.getItem(`ikey_basekey_${savedGUID}`);
         const publicData = localStorage.getItem(`ikey_${savedGUID}_public`);
         if (baseKey && publicData) {
@@ -2121,6 +2121,8 @@
             state.passwordUnlocked = false;
             pinEntry = '';
             localStorage.removeItem(`ikey_pin_temp_${state.currentGUID}`);
+            localStorage.removeItem(`ikey_pin_hash_${state.currentGUID}`);
+            localStorage.removeItem(`ikey_password_hash_${state.currentGUID}`);
             updateSecurityUI();
             showStatus('Session expired for security', 'warning');
             showTab('emergency');
@@ -2286,6 +2288,8 @@
                 if (healthPassword && healthPassword.length >= 12) {
                     state.passwordUnlocked = true;
                     state.secureData.ehr = initializeEHR();
+                    const passHash = await hashPassword(healthPassword);
+                    localStorage.setItem(`ikey_password_hash_${state.currentGUID}`, passHash);
                 }
 
                 // Update message
@@ -2370,6 +2374,10 @@
         async function loadExistingUser() {
             state.currentGUID = localStorage.getItem('ikey_guid');
             state.lastSync = localStorage.getItem(`ikey_${state.currentGUID}_lastSync`);
+
+            if (state.currentGUID) {
+                window.location.hash = state.currentGUID;
+            }
 
             const baseKeyStr = localStorage.getItem(`ikey_basekey_${state.currentGUID}`);
             if (baseKeyStr) {
@@ -2457,6 +2465,18 @@
             );
             
             return new Uint8Array(derivedBits);
+        }
+
+        async function hashPIN(pin) {
+            const encoder = new TextEncoder();
+            const hash = await crypto.subtle.digest('SHA-256', encoder.encode(pin));
+            return btoa(String.fromCharCode(...new Uint8Array(hash)));
+        }
+
+        async function hashPassword(password) {
+            const encoder = new TextEncoder();
+            const hash = await crypto.subtle.digest('SHA-256', encoder.encode(password));
+            return btoa(String.fromCharCode(...new Uint8Array(hash)));
         }
 
         async function generateDoubleHash(baseKey, pin, salt = '') {
@@ -2921,6 +2941,8 @@
                         const decrypted = await decrypt(stored, derivedKey);
                         state.secureData = decrypted;
                         state.passwordUnlocked = true;
+                        const passHash = await hashPassword(password);
+                        localStorage.setItem(`ikey_password_hash_${state.currentGUID}`, passHash);
                         unlockPasswordLevel();
                         closePasswordModal();
                         showStatus('EHR unlocked', 'success');
@@ -2933,6 +2955,8 @@
                         state.secureData.ehr = initializeEHR();
                     }
                     await saveSecureData();
+                    const passHash = await hashPassword(password);
+                    localStorage.setItem(`ikey_password_hash_${state.currentGUID}`, passHash);
                     unlockPasswordLevel();
                     closePasswordModal();
                     showStatus(action === 'change' ? 'Password changed successfully' : 'Password set successfully', 'success');
@@ -3726,6 +3750,10 @@
             pinEntry = '';
             session.lock();
             localStorage.removeItem(`ikey_pin_temp_${state.currentGUID}`);
+            if (state.currentGUID) {
+                localStorage.removeItem(`ikey_pin_hash_${state.currentGUID}`);
+                localStorage.removeItem(`ikey_password_hash_${state.currentGUID}`);
+            }
             sessionStorage.removeItem('ikey_session_active');
         });
     </script>
