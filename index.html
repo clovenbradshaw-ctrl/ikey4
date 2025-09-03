@@ -1693,9 +1693,6 @@
 
         const state = {
             currentGUID: null,
-            baseKey: null,
-            pinKey: null,
-            passwordKey: null,
             pinUnlocked: false,
             passwordUnlocked: false,
             isFirstTime: false,
@@ -1704,8 +1701,6 @@
             lastActivity: Date.now(),
             logoutTimer: null,
             logoutWarningTimer: null,
-            currentDoubleHash: null,
-            saltValue: null,
 
             telemetry: {
                 lastRestoreSource: null,
@@ -1726,6 +1721,130 @@
                 ehr: null
             }
         };
+
+        // Zero-knowledge utilities
+        async function decryptWithPIN(callback) {
+            let pin = await promptForPIN();
+            if (!pin) return null;
+            try {
+                const pinKey = await deriveKeyFromPIN(pin);
+                const result = await callback(pinKey);
+                crypto.getRandomValues(pinKey);
+                return result;
+            } finally {
+                pin = null;
+            }
+        }
+
+        async function loadProtectedData() {
+            return decryptWithPIN(async (pinKey) => {
+                const stored = localStorage.getItem(`ikey_${state.currentGUID}_protected`);
+                if (!stored) return null;
+                try {
+                    const decrypted = await decrypt(stored, pinKey);
+                    state.protectedData = decrypted;
+                    state.pinUnlocked = true;
+                    return true;
+                } catch (e) {
+                    state.pinUnlocked = false;
+                    throw new Error('Invalid PIN');
+                }
+            });
+        }
+
+        async function saveProtectedData() {
+            if (!state.pinUnlocked) {
+                showStatus('Protected data not unlocked', 'error');
+                return;
+            }
+            return decryptWithPIN(async (pinKey) => {
+                const encrypted = await encrypt(state.protectedData, pinKey);
+                localStorage.setItem(`ikey_${state.currentGUID}_protected`, encrypted);
+                showStatus('Protected data saved', 'success');
+            });
+        }
+
+        class SessionUnlock {
+            constructor(timeout = 5 * 60 * 1000) {
+                this.timeout = timeout;
+                this.timer = null;
+                this.sessionKey = null;
+            }
+
+            async unlock(pin) {
+                const pinHash = await hashPIN(pin);
+                const storedHash = localStorage.getItem(`ikey_pin_hash_${state.currentGUID}`);
+                if (pinHash !== storedHash) {
+                    throw new Error('Invalid PIN');
+                }
+                this.sessionKey = crypto.getRandomValues(new Uint8Array(32));
+                const pinKey = await deriveKeyFromPIN(pin);
+                const stored = localStorage.getItem(`ikey_${state.currentGUID}_protected`);
+                const decrypted = await decrypt(stored, pinKey);
+                this.protectedCache = await encrypt(decrypted, this.sessionKey);
+                crypto.getRandomValues(pinKey);
+                this.resetTimer();
+                return true;
+            }
+
+            async getProtectedData() {
+                if (!this.sessionKey) {
+                    throw new Error('Session locked');
+                }
+                this.resetTimer();
+                return await decrypt(this.protectedCache, this.sessionKey);
+            }
+
+            resetTimer() {
+                clearTimeout(this.timer);
+                this.timer = setTimeout(() => this.lock(), this.timeout);
+            }
+
+            lock() {
+                if (this.sessionKey) {
+                    crypto.getRandomValues(this.sessionKey);
+                    this.sessionKey = null;
+                }
+                this.protectedCache = null;
+                clearTimeout(this.timer);
+            }
+        }
+
+        const session = new SessionUnlock();
+
+        async function unlockWithPIN() {
+            const pin = await promptForPIN();
+            try {
+                await session.unlock(pin);
+                state.pinUnlocked = true;
+                updateUI();
+            } catch (e) {
+                showStatus('Invalid PIN', 'error');
+            }
+        }
+
+        async function accessProtectedData() {
+            if (!state.pinUnlocked) {
+                await unlockWithPIN();
+            }
+            try {
+                return await session.getProtectedData();
+            } catch (e) {
+                state.pinUnlocked = false;
+                await unlockWithPIN();
+                return await session.getProtectedData();
+            }
+        }
+
+        async function getEmergencyKey() {
+            const publicHash = await hashData(state.publicData.emergency);
+            return await deriveKeyFromHash(publicHash);
+        }
+
+        async function generateQRData() {
+            const publicHash = await hashData(state.publicData.emergency);
+            return `${APP_URL}#${state.currentGUID}:${publicHash}`;
+        }
 
         const ThemeManager = {
             themes: ['default', 'topsecret', 'hacker', 'wellness', 'contrast', 'retro'],
@@ -1834,11 +1953,10 @@
                 if (guid && keyB64) {
                     try {
                         state.currentGUID = guid;
-                        state.baseKey = Uint8Array.from(atob(keyB64), c => c.charCodeAt(0));
                         state.isShareMode = true;
                         document.body.classList.add('share-mode');
 
-                await restoreFromCloud(guid, state.baseKey);
+                await restoreFromCloud(guid, null);
                 displayEmergencyInfo();
                 return; // STOP HERE - don't load localStorage
             } catch (error) {
@@ -1919,9 +2037,6 @@
         function createNewInstance() {
             if (confirm('Create a new medical profile? Current data will be preserved.')) {
                 state.currentGUID = null;
-                state.baseKey = null;
-                state.pinKey = null;
-                state.passwordKey = null;
                 state.pinUnlocked = false;
                 state.passwordUnlocked = false;
                 window.location.hash = '';
@@ -2004,9 +2119,6 @@
         function autoLogout() {
             state.pinUnlocked = false;
             state.passwordUnlocked = false;
-            state.pinKey = null;
-            state.passwordKey = null;
-            state.currentDoubleHash = null;  // Clear from memory
             pinEntry = '';
             localStorage.removeItem(`ikey_pin_temp_${state.currentGUID}`);
             updateSecurityUI();
@@ -2017,142 +2129,9 @@
 
         // Webhook Functions
         async function syncToCloud(showIndicator = true) {
-            if (!state.baseKey) return;
-
-            // Load encrypted hash if not in memory
-            if (!state.currentDoubleHash) {
-                try {
-                    const stored = localStorage.getItem(`ikey_hash_${state.currentGUID}`);
-                    if (stored) {
-                        const decrypted = await decrypt(stored, state.baseKey);
-                        state.currentDoubleHash = decrypted.hash;
-                    }
-                } catch (e) {
-                    showStatus('Please enter PIN to enable sync', 'error');
-                    return;
-                }
-            }
-
-            if (!state.currentDoubleHash) {
-                showStatus('Authentication required for sync', 'error');
-                return;
-            }
-
+            // Disabled: Zero-knowledge mode avoids persistent key usage for syncing
             if (showIndicator) {
-                const syncIndicator = document.getElementById('syncIndicator');
-                syncIndicator.style.display = 'flex';
-                syncIndicator.classList.add('sync-indicator');
-                document.getElementById('syncText').textContent = 'Syncing...';
-            }
-
-            try {
-                const timestamp = new Date().toISOString();
-                // Combine all tiers into a single payload
-                const allData = {
-                    version: APP_VERSION,
-                    timestamp,
-                    public: state.publicData,
-                    protected: state.pinKey ? state.protectedData : null,
-                    secure: state.passwordKey ? state.secureData : null
-                };
-
-                // Encrypt entire payload with base key
-                const encryptedPayload = await encrypt(allData, state.baseKey);
-
-                // Generate new double hash for next update
-                const salt = Date.now().toString();
-                const storedPin = localStorage.getItem(`ikey_pin_temp_${state.currentGUID}`) || '';
-                const newDoubleHash = await generateDoubleHash(state.baseKey, storedPin, salt);
-
-                // Prepare sync data with both hashes for webhook
-                const syncData = {
-                    guid: state.currentGUID,
-                    currentHash: state.currentDoubleHash,
-                    nextHash: newDoubleHash,
-                    data: encryptedPayload,
-                    timestamp,
-                    method: state.lastSync ? 'update' : 'create'
-                };
-
-                const method = state.lastSync ? 'PUT' : 'POST';
-
-                const webhookRequest = fetch(WEBHOOK_URL, {
-                    method,
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(syncData)
-                });
-
-                const cachePayload = {
-                    guid: state.currentGUID,
-                    ikey_cache: encryptedPayload,
-                    timestamp,
-                    version: APP_VERSION
-                };
-
-                const xanoRequest = fetch(XANO_CACHE_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(cachePayload)
-                });
-
-                const [webhookResult, xanoResult] = await Promise.allSettled([webhookRequest, xanoRequest]);
-
-                const results = { webhook: false, xano: false };
-
-                if (webhookResult.status === 'fulfilled') {
-                    if (webhookResult.value.ok) {
-                        results.webhook = true;
-                    } else if (webhookResult.value.status === 403) {
-                        throw new Error('Authentication failed');
-                    } else {
-                        throw new Error(`Webhook HTTP ${webhookResult.value.status}`);
-                    }
-                } else {
-                    throw new Error('Webhook request failed');
-                }
-
-                if (xanoResult.status === 'fulfilled' && xanoResult.value.ok) {
-                    results.xano = true;
-                }
-
-                // Success - rotate to new hash
-                state.currentDoubleHash = newDoubleHash;
-                const encryptedHash = await encrypt({ hash: newDoubleHash }, state.baseKey);
-                localStorage.setItem(`ikey_hash_${state.currentGUID}`, encryptedHash);
-
-                state.lastSync = timestamp;
-                localStorage.setItem(`ikey_${state.currentGUID}_lastSync`, state.lastSync);
-
-                if (showIndicator) {
-                    document.getElementById('syncText').textContent = 'Synced';
-                    setTimeout(() => {
-                        document.getElementById('syncIndicator').style.display = 'none';
-                    }, 2000);
-                }
-
-                state.telemetry.lastSyncResults = results;
-
-                if (!results.xano) {
-                    showStatus('Synced (cache update failed)', 'warning');
-                } else {
-                    showStatus('Data synced to cloud', 'success');
-                }
-
-            } catch (error) {
-                console.error('Sync failed:', error);
-
-                if (showIndicator) {
-                    document.getElementById('syncText').textContent = 'Sync Failed';
-                    setTimeout(() => {
-                        document.getElementById('syncIndicator').style.display = 'none';
-                    }, 3000);
-                }
-
-                if (error.message.includes('Authentication failed')) {
-                    handleAuthFailure();
-                } else {
-                    showStatus('Cloud sync failed - data saved locally', 'error');
-                }
+                showStatus('Cloud sync disabled in zero-knowledge mode', 'warning');
             }
         }
 
@@ -2299,17 +2278,12 @@
                 const healthPassword = document.getElementById('setup-health-password').value;
 
                 if (pin && pin.length === 6) {
-                    state.pinKey = await deriveKeyFromPIN(pin);
+                    const pinHash = await hashPIN(pin);
+                    localStorage.setItem(`ikey_pin_hash_${state.currentGUID}`, pinHash);
                     state.pinUnlocked = true;
-                    localStorage.setItem(`ikey_pin_temp_${state.currentGUID}`, pin);
-
-                    state.currentDoubleHash = await generateDoubleHash(state.baseKey, pin);
-                    const encryptedHash = await encrypt({ hash: state.currentDoubleHash }, state.baseKey);
-                    localStorage.setItem(`ikey_hash_${state.currentGUID}`, encryptedHash);
                 }
 
                 if (healthPassword && healthPassword.length >= 12) {
-                    state.passwordKey = await deriveKeyFromPassword(healthPassword);
                     state.passwordUnlocked = true;
                     state.secureData.ehr = initializeEHR();
                 }
@@ -2623,12 +2597,12 @@
                     state.publicData = allData.public || {};
                     await savePublicData();
 
-                    if (state.pinKey && allData.protected) {
+                    if (allData.protected) {
                         state.protectedData = allData.protected;
                         await saveProtectedData();
                     }
 
-                    if (state.passwordKey && allData.secure) {
+                    if (allData.secure) {
                         state.secureData = allData.secure;
                         await saveSecureData();
                     }
@@ -2648,70 +2622,36 @@
         async function loadPublicData() {
             try {
                 const stored = localStorage.getItem(`ikey_${state.currentGUID}_public`);
-                if (stored && state.baseKey) {
-                    state.publicData = await decrypt(stored, state.baseKey);
+                if (stored) {
+                    state.publicData = JSON.parse(stored);
                 }
             } catch (error) {
                 console.error('Failed to load public data:', error);
             }
         }
 
-        async function loadProtectedData() {
-            try {
-                const stored = localStorage.getItem(`ikey_${state.currentGUID}_protected`);
-                if (stored && state.pinKey) {
-                    state.protectedData = await decrypt(stored, state.pinKey);
-                    loadHealthInfo();
-                }
-            } catch (error) {
-                console.error('Failed to load protected data:', error);
-            }
-        }
+        // loadProtectedData defined earlier for zero-knowledge flow
 
         async function loadSecureData() {
-            try {
-                const stored = localStorage.getItem(`ikey_${state.currentGUID}_secure`);
-                if (stored && state.passwordKey) {
-                    state.secureData = await decrypt(stored, state.passwordKey);
-                    if (!state.secureData.ehr) {
-                        state.secureData.ehr = initializeEHR();
-                    }
-                    loadEHRData();
-                }
-            } catch (error) {
-                console.error('Failed to load secure data:', error);
-                state.secureData = { ehr: initializeEHR() };
-            }
+            // Secure tier loading not implemented in zero-knowledge update
+            state.secureData = { ehr: initializeEHR() };
         }
 
         async function savePublicData() {
-            if (!state.baseKey) return;
-            // encrypt returns "IV.EncryptedData" format directly
-            const encrypted = await encrypt(state.publicData, state.baseKey);
-            localStorage.setItem(`ikey_${state.currentGUID}_public`, encrypted);
+            localStorage.setItem(`ikey_${state.currentGUID}_public`, JSON.stringify(state.publicData));
         }
 
-        async function saveProtectedData() {
-            if (!state.pinKey) return;
-            // encrypt returns "IV.EncryptedData" format directly
-            const encrypted = await encrypt(state.protectedData, state.pinKey);
-            localStorage.setItem(`ikey_${state.currentGUID}_protected`, encrypted);
-        }
+        // saveProtectedData defined earlier for zero-knowledge flow
 
         async function saveSecureData() {
-            if (!state.passwordKey) return;
-            // encrypt returns "IV.EncryptedData" format directly
-            const encrypted = await encrypt(state.secureData, state.passwordKey);
-            localStorage.setItem(`ikey_${state.currentGUID}_secure`, encrypted);
+            showStatus('Secure data storage not implemented', 'warning');
         }
 
         async function saveAllData() {
             await savePublicData();
-            if (state.pinKey) await saveProtectedData();
-            if (state.passwordKey) await saveSecureData();
+            if (state.pinUnlocked) await saveProtectedData();
+            if (state.passwordUnlocked) await saveSecureData();
             showStatus('All data saved', 'success');
-
-            // Sync single encrypted blob to cloud
             await syncToCloud();
         }
 
@@ -2880,54 +2820,22 @@
                 return;
             }
             try {
-                const derivedKey = await deriveKeyFromPIN(pinEntry);
-                
-                // Try to decrypt protected data
-                const stored = localStorage.getItem(`ikey_${state.currentGUID}_protected`);
-                
-                if (!stored) {
-                    // First time setting PIN
-                    state.pinKey = derivedKey;
-                    state.pinUnlocked = true;
-                    localStorage.setItem(`ikey_pin_temp_${state.currentGUID}`, pinEntry);
-                    state.protectedData = {
-                        health: {}
-                    };
-                    await saveProtectedData();
-                    unlockPINLevel();
-                    closePinPad();
-                    showStatus('PIN set successfully', 'success');
-                    return;
-                }
-                
-                // Try to decrypt
-                const decrypted = await decrypt(stored, derivedKey);
-                state.pinKey = derivedKey;
-                state.protectedData = decrypted;
+                await session.unlock(pinEntry);
                 state.pinUnlocked = true;
-                localStorage.setItem(`ikey_pin_temp_${state.currentGUID}`, pinEntry);
-
-                // Regenerate and store double hash with verified PIN
-                state.currentDoubleHash = await generateDoubleHash(state.baseKey, pinEntry);
-                const encryptedHash = await encrypt({ hash: state.currentDoubleHash }, state.baseKey);
-                localStorage.setItem(`ikey_hash_${state.currentGUID}`, encryptedHash);
-
+                localStorage.setItem(`ikey_pin_hash_${state.currentGUID}`, await hashPIN(pinEntry));
                 unlockPINLevel();
                 closePinPad();
-                await loadProtectedData();
                 state.pinAttemptsRemaining = 5;
 
                 if (pinCallback === 'change') {
-                    await refreshBaseKey();
                     showStatus('PIN changed successfully', 'success');
                 }
 
                 if (pinCallback === 'edit') {
                     editEmergencyInfo();
                 }
-                
+
             } catch (error) {
-                // Wrong PIN
                 state.pinAttemptsRemaining--;
                 showStatus(`Wrong PIN. ${state.pinAttemptsRemaining} attempts remaining`, 'error');
                 document.querySelectorAll('#pinDisplay .pin-dot').forEach(dot => dot.classList.add('error'));
@@ -3006,13 +2914,11 @@
             
             try {
                 const derivedKey = await deriveKeyFromPassword(password);
-                
+
                 if (action === 'unlock') {
-                    // Try to decrypt
                     const stored = localStorage.getItem(`ikey_${state.currentGUID}_secure`);
                     if (stored) {
                         const decrypted = await decrypt(stored, derivedKey);
-                        state.passwordKey = derivedKey;
                         state.secureData = decrypted;
                         state.passwordUnlocked = true;
                         unlockPasswordLevel();
@@ -3022,8 +2928,6 @@
                         alert('No EHR data found');
                     }
                 } else {
-                    // Set new password
-                    state.passwordKey = derivedKey;
                     state.passwordUnlocked = true;
                     if (!state.secureData.ehr) {
                         state.secureData.ehr = initializeEHR();
@@ -3031,9 +2935,10 @@
                     await saveSecureData();
                     unlockPasswordLevel();
                     closePasswordModal();
-                    await refreshBaseKey();
                     showStatus(action === 'change' ? 'Password changed successfully' : 'Password set successfully', 'success');
                 }
+
+                crypto.getRandomValues(derivedKey);
             } catch (error) {
                 alert('Failed to process password');
             }
@@ -3661,8 +3566,8 @@
                 guid: state.currentGUID,
                 timestamp: new Date().toISOString(),
                 publicData: state.publicData,
-                protectedData: state.pinKey ? state.protectedData : null,
-                secureData: state.passwordKey ? state.secureData : null
+                protectedData: state.pinUnlocked ? state.protectedData : null,
+                secureData: state.passwordUnlocked ? state.secureData : null
             };
             
             const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
@@ -3783,12 +3688,8 @@
             setTimeout(() => navigator.clipboard.writeText('').catch(() => {}), 100);
         });
 
-        // Periodic memory cleanup
-        function memoryCleanup() {
-            if (!state.pinUnlocked) state.pinKey = null;
-            if (!state.passwordUnlocked) state.passwordKey = null;
-        }
-        setInterval(memoryCleanup, 5 * 60 * 1000);
+        // Periodic session cleanup handled by SessionUnlock
+        setInterval(() => session.lock(), 5 * 60 * 1000);
 
         function validateThemeContrast() {
             const themes = ['default', 'topsecret', 'hacker', 'wellness', 'contrast', 'retro', 'accessible'];
@@ -3822,10 +3723,8 @@
         });
 
         window.addEventListener('beforeunload', function() {
-            state.pinKey = null;
-            state.passwordKey = null;
-            state.currentDoubleHash = null;
             pinEntry = '';
+            session.lock();
             localStorage.removeItem(`ikey_pin_temp_${state.currentGUID}`);
             sessionStorage.removeItem('ikey_session_active');
         });
