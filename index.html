@@ -2231,6 +2231,12 @@
         }
 
         async function completeSetup() {
+            // Preflight security feature check
+            if (!window.crypto?.subtle || !window.localStorage) {
+                showStatus('Browser missing required security features', 'error');
+                return;
+            }
+
             // Show processing overlay
             const wizardContainer = document.querySelector('.wizard-container');
             const processingOverlay = document.createElement('div');
@@ -2306,9 +2312,18 @@
 
                 // Update message
                 processingOverlay.querySelector('.processing-message').textContent = 'Syncing to cloud...';
-                
-                await saveAllData();
-                await downloadKeyFile();
+
+                try {
+                    await saveAllData();
+                } catch (e) {
+                    throw new Error(`Data save failed: ${e.message}`);
+                }
+
+                try {
+                    await downloadKeyFile();
+                } catch (e) {
+                    throw new Error(`Key download failed: ${e.message}`);
+                }
                 
                 // Final message
                 processingOverlay.querySelector('.processing-message').textContent = '✓ Setup complete!';
@@ -2323,14 +2338,16 @@
                 processingOverlay.innerHTML = `
                     <div style="text-align: center; color: var(--danger);">
                         <div style="font-size: 2rem; margin-bottom: 10px;">⚠️</div>
-                        <div class="processing-message">Setup failed. Please try again.</div>
+                        <div class="processing-message"></div>
                     </div>
                 `;
-                
+                const message = typeof error?.message === 'string' ? error.message : 'Setup failed. Please try again.';
+                processingOverlay.querySelector('.processing-message').textContent = message;
+
                 // Re-enable button
                 completeBtn.disabled = false;
                 completeBtn.innerHTML = 'Start Using iKey';
-                
+
                 setTimeout(() => {
                     processingOverlay.remove();
                 }, 3000);
