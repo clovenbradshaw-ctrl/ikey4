@@ -2933,7 +2933,7 @@
             pinEntry = '';
             pinAction = null;
             pinCallback = null;
-
+            // Only reject if a promise was waiting (actual cancel)
             if (window.pinPromiseReject) {
                 window.pinPromiseReject(new Error('PIN entry cancelled'));
                 window.pinPromiseResolve = null;
@@ -2950,43 +2950,66 @@
         }
 
         async function verifyPIN() {
-            if (window.pinPromiseResolve) {
-                if (pinEntry.length === 6) {
-                    const tempPin = pinEntry;
-                    closePinPad();
-                    window.pinPromiseResolve(tempPin);
-                    window.pinPromiseResolve = null;
-                    window.pinPromiseReject = null;
-                    return;
-                }
-            }
-
+            // Handle setup flow
             if (pinAction === 'setup') {
                 document.getElementById('setup-pin').value = pinEntry;
                 document.getElementById('setup-pin-display').style.display = 'block';
                 closePinPad();
                 return;
             }
+
+            // Handle promise-based PIN entry (zero-knowledge functions)
+            if (window.pinPromiseResolve) {
+                if (pinEntry.length === 6) {
+                    const tempPin = pinEntry;
+                    const resolver = window.pinPromiseResolve;
+                    window.pinPromiseResolve = null;
+                    window.pinPromiseReject = null;
+                    closePinPad();
+                    resolver(tempPin);
+                    return;
+                }
+            }
+
+            // Standard verification
             try {
-                await session.unlock(pinEntry);
-                state.pinUnlocked = true;
-                localStorage.setItem(`ikey_pin_hash_${state.currentGUID}`, await hashPIN(pinEntry));
-                unlockPINLevel();
-                const action = pinAction;
-                const cb = pinCallback;
-                closePinPad();
-                state.pinAttemptsRemaining = 5;
+                const pinHash = await hashPIN(pinEntry);
+                const storedHash = localStorage.getItem(`ikey_pin_hash_${state.currentGUID}`);
 
-                if (action === 'change') {
-                    showStatus('PIN changed successfully', 'success');
-                }
+                if (pinHash === storedHash) {
+                    state.pinUnlocked = true;
 
-                if (action === 'edit') {
-                    editEmergencyInfo();
-                }
+                    if (typeof session !== 'undefined' && session.unlock) {
+                        await session.unlock(pinEntry);
+                    }
 
-                if (typeof cb === 'function') {
-                    cb();
+                    if (window.pinPromiseResolve) {
+                        const resolver = window.pinPromiseResolve;
+                        window.pinPromiseResolve = null;
+                        window.pinPromiseReject = null;
+                        closePinPad();
+                        resolver(pinEntry);
+                        return;
+                    }
+
+                    closePinPad();
+                    state.pinAttemptsRemaining = 5;
+
+                    if (pinAction === 'edit') {
+                        editEmergencyInfo();
+                    } else if (pinAction === 'unlock') {
+                        unlockPINLevel();
+                        showStatus('PIN verified successfully', 'success');
+                    } else if (pinAction === 'change') {
+                        showStatus('PIN changed successfully', 'success');
+                    }
+
+                    if (typeof pinCallback === 'function') {
+                        pinCallback();
+                    }
+
+                } else {
+                    throw new Error('Invalid PIN');
                 }
 
             } catch (error) {
@@ -2997,6 +3020,14 @@
                     pinEntry = '';
                     updatePinDisplay();
                 }, 1000);
+
+                if (state.pinAttemptsRemaining <= 0 && window.pinPromiseReject) {
+                    const rejector = window.pinPromiseReject;
+                    window.pinPromiseResolve = null;
+                    window.pinPromiseReject = null;
+                    closePinPad();
+                    rejector(new Error('Too many incorrect attempts'));
+                }
             }
         }
 
