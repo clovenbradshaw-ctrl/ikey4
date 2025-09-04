@@ -2668,6 +2668,7 @@
             ];
 
             for (const src of sources) {
+                console.info(`Attempting to retrieve data from ${src.name}: ${src.url}`);
                 try {
                     const json = await fetchWithRetry(src.url);
                     const payload = src.extract(json);
@@ -2688,6 +2689,7 @@
                     }
 
                     state.telemetry.lastRestoreSource = src.name;
+                    console.info(`Successfully restored data from ${src.name}`);
                     showStatus(`Data restored from ${src.name}`, 'success');
                     return allData;
                 } catch (err) {
