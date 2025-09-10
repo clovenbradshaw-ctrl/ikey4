@@ -840,9 +840,14 @@
             
             let html = '';
             
+            // Add timestamp if available
+            html += `<div style="text-align: center; margin-bottom: 20px; color: var(--secondary); font-size: 0.85rem;">
+                Patient Medical Information Card
+            </div>`;
+            
             if (data.n) {
                 html += `<div class="info-card">
-                    <div class="info-label">Name</div>
+                    <div class="info-label">Patient Name</div>
                     <div class="info-value">${data.n}</div>
                 </div>`;
             }
@@ -855,22 +860,22 @@
             }
             
             if (data.b) {
-                html += `<div class="info-card">
+                html += `<div class="info-card" style="border-left: 4px solid var(--danger);">
                     <div class="info-label">Blood Type</div>
-                    <div class="info-value">${data.b}</div>
+                    <div class="info-value" style="color: var(--danger); font-weight: bold;">${data.b}</div>
                 </div>`;
             }
             
             if (data.a) {
-                html += `<div class="info-card">
-                    <div class="info-label">Allergies</div>
-                    <div class="info-value">${data.a}</div>
+                html += `<div class="info-card" style="border-left: 4px solid var(--danger);">
+                    <div class="info-label">⚠️ Allergies</div>
+                    <div class="info-value" style="color: var(--danger);">${data.a}</div>
                 </div>`;
             }
             
             if (data.m) {
                 html += `<div class="info-card">
-                    <div class="info-label">Medications</div>
+                    <div class="info-label">Current Medications</div>
                     <div class="info-value">${data.m}</div>
                 </div>`;
             }
@@ -883,12 +888,14 @@
             }
             
             if (data.ec) {
-                html += `<div class="info-card">
-                    <div class="info-label">Emergency Contact</div>
-                    <div class="info-value">
-                        ${data.ec}<br>
-                        📞 ${data.ep}
-                        ${data.er ? `<br><small>${data.er}</small>` : ''}
+                html += `<div class="info-card" style="background: #dcfce7; border: 2px solid var(--success);">
+                    <div class="info-label">📞 EMERGENCY CONTACT</div>
+                    <div class="info-value" style="font-size: 1.2rem;">
+                        <strong>${data.ec}</strong><br>
+                        <a href="tel:${data.ep}" style="color: var(--primary); text-decoration: none; font-weight: bold;">
+                            📱 ${data.ep}
+                        </a>
+                        ${data.er ? `<br><small>Relationship: ${data.er}</small>` : ''}
                     </div>
                 </div>`;
             }
