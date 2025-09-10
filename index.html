@@ -1108,7 +1108,7 @@
                         <span class="info-card-icon">📝</span>
                         <div class="info-card-content">
                             <div class="info-card-label">Level 2: Demographics (PIN)</div>
-                            <div class="info-card-value">Contact info and basic details - protected by 6-digit PIN</div>
+                            <div class="info-card-value">Contact info and basic details - protected by 6-digit password</div>
                         </div>
                     </div>
 
@@ -1212,6 +1212,13 @@
                             <small>Use at least 12 characters with a mix of letters, numbers, and symbols.</small>
                         </div>
                         <div class="form-group">
+
+                            <label>Enter 6-Digit PIN</label>
+                            <button type="button" class="btn" onclick="requestPasswordForSetup()">Set PIN</button>
+                            <div id="setup-pin-display" style="display:none;">PIN Set ✓</div>
+                            <input type="hidden" id="setup-pin">
+                            <small>Easy to remember, for non-sensitive updates</small>
+
                             <label for="setup-password-confirm">Confirm Password</label>
                             <input type="password" id="setup-password-confirm" autocomplete="new-password">
                             <small>Re-enter your password to confirm.</small>
@@ -1340,7 +1347,7 @@
             </div>
             <div id="emergency-display"></div>
             <div class="btn-group mt-4">
-                <button class="btn" onclick="requestPIN('edit')">
+                <button class="btn" onclick="requestPassword('edit')">
                     🔐 Edit Information
                 </button>
                 <button class="btn btn-outline" onclick="generateMainQR()">
@@ -1454,13 +1461,17 @@
         const XANO_CACHE_URL = 'https://xvkq-pq7i-idtl.n7d.xano.io/api:Hj4C6PGO/ikey_cache';
         const ARCHIVE_BASE_URL = 'https://archive.org/download/zuboff';
         const AUTO_LOGOUT_MS = 45 * 60 * 1000;
+<<<<<<< codex/modify-sessionunlock-to-use-passwords
+        let passwordEntry = '';
+=======
         const MAX_ATTEMPTS = 5;
         const LOCKOUT_DURATION = 15 * 60 * 1000;
         let pinEntry = '';
+>>>>>>> main
 
         const state = {
             currentGUID: null,
-            pinUnlocked: false,
+            passwordUnlocked: false,
             isFirstTime: false,
             isShareMode: false,
             autoSaveTimer: null,
@@ -1474,6 +1485,11 @@
                 lastSyncResults: {}
             },
 
+<<<<<<< codex/modify-sessionunlock-to-use-passwords
+            passwordAttemptsRemaining: 5,
+
+=======
+>>>>>>> main
             publicData: {
                 emergency: {}
             },
@@ -1483,79 +1499,89 @@
             }
         };
 
-        function promptForPIN() {
+        function promptForPassword() {
             return new Promise((resolve, reject) => {
-                window.pinPromiseResolve = resolve;
-                window.pinPromiseReject = reject;
-                pinAction = 'prompt';
-                pinCallback = null;
+                window.passwordPromiseResolve = resolve;
+                window.passwordPromiseReject = reject;
+                passwordAction = 'prompt';
+                passwordCallback = null;
                 document.getElementById('pin-modal').classList.add('active');
                 document.getElementById('pin-modal-title').textContent = 'Enter 6-Digit PIN';
-                pinEntry = '';
+                passwordEntry = '';
                 updatePinDisplay();
             });
         }
 
         // Zero-knowledge utilities
-        async function decryptWithPIN(callback) {
-            let pin = await promptForPIN();
-            if (!pin) return null;
+        async function decryptWithPassword(callback) {
+            let password = await promptForPassword();
+            if (!password) return null;
             try {
+<<<<<<< codex/modify-sessionunlock-to-use-passwords
+                const passwordKey = await deriveKeyFromPassword(password);
+                const result = await callback(passwordKey);
+                crypto.getRandomValues(passwordKey);
+=======
                 const pinKey = await deriveKeyFromPassword(pin);
                 const result = await callback(pinKey);
                 crypto.getRandomValues(pinKey);
+>>>>>>> main
                 return result;
             } finally {
-                pin = null;
+                password = null;
             }
         }
 
         async function loadProtectedData() {
-            return decryptWithPIN(async (pinKey) => {
+            return decryptWithPassword(async (passwordKey) => {
                 const stored = localStorage.getItem(`ikey_${state.currentGUID}_protected`);
                 if (!stored) return null;
                 try {
-                    const decrypted = await decrypt(stored, pinKey);
+                    const decrypted = await decrypt(stored, passwordKey);
                     state.protectedData = decrypted;
-                    state.pinUnlocked = true;
+                    state.passwordUnlocked = true;
                     return true;
                 } catch (e) {
-                    state.pinUnlocked = false;
-                    throw new Error('Invalid PIN');
+                    state.passwordUnlocked = false;
+                    throw new Error('Invalid password');
                 }
             });
         }
 
         async function saveProtectedData() {
-            if (!state.pinUnlocked) {
+            if (!state.passwordUnlocked) {
                 showStatus('Protected data not unlocked', 'error');
                 return;
             }
-            return decryptWithPIN(async (pinKey) => {
-                const encrypted = await encrypt(state.protectedData, pinKey);
+            return decryptWithPassword(async (passwordKey) => {
+                const encrypted = await encrypt(state.protectedData, passwordKey);
                 localStorage.setItem(`ikey_${state.currentGUID}_protected`, encrypted);
             });
         }
 
         class SessionUnlock {
-            constructor(timeout = 5 * 60 * 1000) {
+            constructor(timeout = 15 * 60 * 1000) {
                 this.timeout = timeout;
                 this.timer = null;
                 this.sessionKey = null;
             }
 
-            async unlock(pin) {
-                const pinHash = await hashPIN(pin);
-                const storedHash = localStorage.getItem(`ikey_pin_hash_${state.currentGUID}`);
-                if (pinHash !== storedHash) {
-                    throw new Error('Invalid PIN');
+            async unlock(password) {
+                const passwordHash = await hashPassword(password);
+                const storedHash = localStorage.getItem(`ikey_password_hash_${state.currentGUID}`);
+                if (passwordHash !== storedHash) {
+                    throw new Error('Invalid password');
                 }
                 this.sessionKey = crypto.getRandomValues(new Uint8Array(32));
+<<<<<<< codex/modify-sessionunlock-to-use-passwords
+                const passwordKey = await deriveKeyFromPassword(password);
+=======
                 const pinKey = await deriveKeyFromPassword(pin);
+>>>>>>> main
                 const stored = localStorage.getItem(`ikey_${state.currentGUID}_protected`);
-                const decrypted = await decrypt(stored, pinKey);
+                const decrypted = await decrypt(stored, passwordKey);
                 this.protectedCache = await encrypt(decrypted, this.sessionKey);
-                crypto.getRandomValues(pinKey);
+                crypto.getRandomValues(passwordKey);
                 this.resetTimer();
                 return true;
             }
@@ -1580,31 +1606,32 @@
                 }
                 this.protectedCache = null;
                 clearTimeout(this.timer);
+                this.timer = null;
             }
         }
 
         const session = new SessionUnlock();
 
-        async function unlockWithPIN() {
-            const pin = await promptForPIN();
+        async function unlockWithPassword() {
+            const password = await promptForPassword();
             try {
-                await session.unlock(pin);
-                state.pinUnlocked = true;
+                await session.unlock(password);
+                state.passwordUnlocked = true;
                 updateUI();
             } catch (e) {
-                showStatus('Invalid PIN', 'error');
+                showStatus('Invalid password', 'error');
             }
         }
 
         async function accessProtectedData() {
-            if (!state.pinUnlocked) {
-                await unlockWithPIN();
+            if (!state.passwordUnlocked) {
+                await unlockWithPassword();
             }
             try {
                 return await session.getProtectedData();
             } catch (e) {
-                state.pinUnlocked = false;
-                await unlockWithPIN();
+                state.passwordUnlocked = false;
+                await unlockWithPassword();
                 return await session.getProtectedData();
             }
         }
@@ -1653,7 +1680,7 @@
 
             applyThemeSpecifics(theme) {
                 const lock = document.getElementById('lockText');
-                if (lock) lock.textContent = 'PIN Protected';
+                if (lock) lock.textContent = 'Password Protected';
                 if (theme === 'topsecret') {
                     document.querySelectorAll('.timestamp').forEach(el => {
                         const date = new Date(el.textContent);
@@ -1665,7 +1692,7 @@
                     });
                     if (lock) lock.textContent = 'CLEARANCE LEVEL: PUBLIC';
                     document.querySelectorAll('.security-badge').forEach(badge => {
-                        badge.textContent = badge.textContent.replace('PIN Protected', 'LEVEL 2 CLEARANCE');
+                        badge.textContent = badge.textContent.replace('Password Protected', 'LEVEL 2 CLEARANCE');
                     });
                 }
             },
@@ -1780,7 +1807,7 @@
                     localStorage.removeItem(`ikey_${savedGUID}_public`);
                     localStorage.removeItem(`ikey_${savedGUID}_protected`);
                     localStorage.removeItem(`ikey_hash_${savedGUID}`);
-                    localStorage.removeItem(`ikey_pin_temp_${savedGUID}`);
+                    localStorage.removeItem(`ikey_password_temp_${savedGUID}`);
                     state.isFirstTime = true;
                     showSetupWizard();
                 }
@@ -1827,7 +1854,7 @@
         function createNewInstance() {
             if (confirm('Create a new medical profile? Current data will be preserved.')) {
                 state.currentGUID = null;
-                state.pinUnlocked = false;
+                state.passwordUnlocked = false;
                 window.location.hash = '';
                 showSetupWizard();
             }
@@ -1841,7 +1868,7 @@
                     localStorage.removeItem(`ikey_${state.currentGUID}_public`);
                     localStorage.removeItem(`ikey_${state.currentGUID}_protected`);
                     localStorage.removeItem(`ikey_hash_${state.currentGUID}`);
-                    localStorage.removeItem(`ikey_pin_temp_${state.currentGUID}`);
+                    localStorage.removeItem(`ikey_password_temp_${state.currentGUID}`);
                     window.location.hash = '';
                     location.reload();
                 }
@@ -1869,8 +1896,8 @@
                     // Handle Enter
                     else if (e.key === 'Enter') {
                         e.preventDefault();
-                        if (pinEntry.length === 6) {
-                            verifyPIN();
+                        if (passwordEntry.length === 6) {
+                            verifyPassword();
                         }
                     }
                     // Handle Escape
@@ -1905,10 +1932,10 @@
         }
 
         function autoLogout() {
-            state.pinUnlocked = false;
-            pinEntry = '';
-            localStorage.removeItem(`ikey_pin_temp_${state.currentGUID}`);
-            localStorage.removeItem(`ikey_pin_hash_${state.currentGUID}`);
+            state.passwordUnlocked = false;
+            passwordEntry = '';
+            localStorage.removeItem(`ikey_password_temp_${state.currentGUID}`);
+            localStorage.removeItem(`ikey_password_hash_${state.currentGUID}`);
             updateSecurityUI();
             showStatus('Session expired for security', 'warning');
             showTab('emergency');
@@ -2000,6 +2027,11 @@
                 }
             }
             if (step === 3) {
+<<<<<<< codex/modify-sessionunlock-to-use-passwords
+                const password = document.getElementById('setup-pin').value;
+                if (!password || password.length !== 6) {
+                    alert('Please enter a 6-digit password');
+=======
                 const password = document.getElementById('setup-password').value;
                 const confirm = document.getElementById('setup-password-confirm').value;
                 const complexity = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])/;
@@ -2013,6 +2045,7 @@
                 }
                 if (password !== confirm) {
                     alert('Passwords do not match');
+>>>>>>> main
                     return false;
                 }
             }
@@ -2089,12 +2122,21 @@
                     contactOther: document.getElementById('setup-contact-other').value
                 };
                 
+<<<<<<< codex/modify-sessionunlock-to-use-passwords
+                const password = document.getElementById('setup-pin').value;
+
+                if (password && password.length === 6) {
+                    const passwordHash = await hashPassword(password);
+                    localStorage.setItem(`ikey_password_hash_${state.currentGUID}`, passwordHash);
+                    state.passwordUnlocked = true;
+=======
                 const password = document.getElementById('setup-password').value;
 
                 if (password) {
                     const pinHash = await hashPIN(password);
                     localStorage.setItem(`ikey_pin_hash_${state.currentGUID}`, pinHash);
                     state.pinUnlocked = true;
+>>>>>>> main
                 }
 
                 // Update message
@@ -2244,6 +2286,8 @@
         }
 
         async function deriveKeyFromPassword(password) {
+<<<<<<< codex/modify-sessionunlock-to-use-passwords
+=======
             const encoder = new TextEncoder();
             let salt = localStorage.getItem(`ikey_salt_${state.currentGUID}`);
             if (salt) {
@@ -2276,12 +2320,13 @@
         }
 
         async function deriveKeyFromPIN(pin) {
+>>>>>>> main
             const encoder = new TextEncoder();
-            const pinData = encoder.encode(pin + state.currentGUID);
-            
+            const passwordData = encoder.encode(password + state.currentGUID);
+
             const keyMaterial = await crypto.subtle.importKey(
                 'raw',
-                pinData,
+                passwordData,
                 { name: 'PBKDF2' },
                 false,
                 ['deriveBits']
@@ -2301,14 +2346,14 @@
             return new Uint8Array(derivedBits);
         }
 
-        async function hashPIN(pin) {
+        async function hashPassword(password) {
             const encoder = new TextEncoder();
-            const hash = await crypto.subtle.digest('SHA-256', encoder.encode(pin));
+            const hash = await crypto.subtle.digest('SHA-256', encoder.encode(password));
             return btoa(String.fromCharCode(...new Uint8Array(hash)));
         }
 
-        async function generateDoubleHash(baseKey, pin, salt = '') {
-            const combined = btoa(String.fromCharCode(...baseKey)) + pin + salt;
+        async function generateDoubleHash(baseKey, password, salt = '') {
+            const combined = btoa(String.fromCharCode(...baseKey)) + password + salt;
             const encoder = new TextEncoder();
             const firstHash = await crypto.subtle.digest('SHA-256', encoder.encode(combined));
             const secondHash = await crypto.subtle.digest('SHA-256', firstHash);
@@ -2352,9 +2397,9 @@
             state.baseKey = await generateKey();
             localStorage.setItem(`ikey_basekey_${state.currentGUID}`,
                 btoa(String.fromCharCode(...state.baseKey)));
-            const storedPin = localStorage.getItem(`ikey_pin_temp_${state.currentGUID}`) || '';
-            if (storedPin) {
-                state.currentDoubleHash = await generateDoubleHash(state.baseKey, storedPin);
+            const storedPassword = localStorage.getItem(`ikey_password_temp_${state.currentGUID}`) || '';
+            if (storedPassword) {
+                state.currentDoubleHash = await generateDoubleHash(state.baseKey, storedPassword);
                 const encryptedHash = await encrypt({ hash: state.currentDoubleHash }, state.baseKey);
                 localStorage.setItem(`ikey_hash_${state.currentGUID}`, encryptedHash);
             }
@@ -2481,7 +2526,7 @@
 
         async function saveAllData() {
             await savePublicData();
-            if (state.pinUnlocked) await saveProtectedData();
+            if (state.passwordUnlocked) await saveProtectedData();
         }
 
         // Unified save with feedback
@@ -2626,15 +2671,28 @@
         }
 
         // PIN Management
-        let pinAction = null;
-        let pinCallback = null;
+        let passwordAction = null;
+        let passwordCallback = null;
 
+<<<<<<< codex/modify-sessionunlock-to-use-passwords
+        function requestPasswordForSetup() {
+            passwordAction = 'setup';
+            passwordCallback = null;
+            document.getElementById('pin-modal').classList.add('active');
+            document.getElementById('pin-modal-title').textContent = 'Set Your 6-Digit PIN';
+            passwordEntry = '';
+            updatePinDisplay();
+        }
+
+        function requestPassword(action = 'unlock', callback = null) {
+=======
         function requestPIN(action = 'unlock', callback = null) {
+>>>>>>> main
             if (typeof action === 'function') {
                 callback = action;
                 action = 'unlock';
             }
-            if (state.pinUnlocked && action !== 'change' && action !== 'setup') {
+            if (state.passwordUnlocked && action !== 'change' && action !== 'setup') {
                 if (action === 'edit') {
                     editEmergencyInfo();
                 } else if (callback) {
@@ -2643,53 +2701,62 @@
                 return;
             }
 
-            pinAction = action;
-            pinCallback = callback;
+            passwordAction = action;
+            passwordCallback = callback;
             document.getElementById('pin-modal').classList.add('active');
             document.getElementById('pin-modal-title').textContent = action === 'setup'
                 ? 'Set 6-Digit PIN'
                 : 'Enter 6-Digit PIN';
-            pinEntry = '';
+            passwordEntry = '';
             updatePinDisplay();
         }
 
         function addPinDigit(digit) {
-            if (pinEntry.length < 6) {
-                pinEntry += digit;
+            if (passwordEntry.length < 6) {
+                passwordEntry += digit;
                 updatePinDisplay();
 
-                if (pinEntry.length === 6) {
-                    setTimeout(verifyPIN, 100);
+                if (passwordEntry.length === 6) {
+                    setTimeout(verifyPassword, 100);
                 }
             }
         }
 
         function clearPin() {
-            pinEntry = '';
+            passwordEntry = '';
             updatePinDisplay();
         }
 
         function closePinPad() {
             document.getElementById('pin-modal').classList.remove('active');
-            pinEntry = '';
-            pinAction = null;
-            pinCallback = null;
+            passwordEntry = '';
+            passwordAction = null;
+            passwordCallback = null;
             // Only reject if a promise was waiting (actual cancel)
-            if (window.pinPromiseReject) {
-                window.pinPromiseReject(new Error('PIN entry cancelled'));
-                window.pinPromiseResolve = null;
-                window.pinPromiseReject = null;
+            if (window.passwordPromiseReject) {
+                window.passwordPromiseReject(new Error('Password entry cancelled'));
+                window.passwordPromiseResolve = null;
+                window.passwordPromiseReject = null;
             }
         }
 
         function updatePinDisplay() {
             const dots = document.querySelectorAll('#pinDisplay .pin-dot');
             dots.forEach((dot, index) => {
-                dot.classList.toggle('filled', index < pinEntry.length);
+                dot.classList.toggle('filled', index < passwordEntry.length);
                 dot.classList.remove('error');
             });
         }
 
+<<<<<<< codex/modify-sessionunlock-to-use-passwords
+        async function verifyPassword() {
+            // Handle setup flow
+            if (passwordAction === 'setup') {
+                document.getElementById('setup-pin').value = passwordEntry;
+                document.getElementById('setup-pin-display').style.display = 'block';
+                closePinPad();
+                return;
+=======
         function checkLockout() {
             const guid = state.currentGUID || 'default';
             const attemptsKey = `ikey_pin_attempts_${guid}`;
@@ -2709,6 +2776,7 @@
             if (attempts > 0) {
                 const remaining = MAX_ATTEMPTS - attempts;
                 showStatus(`${remaining} attempts remaining`, 'error');
+>>>>>>> main
             }
             return false;
         }
@@ -2730,6 +2798,15 @@
             }
         }
 
+<<<<<<< codex/modify-sessionunlock-to-use-passwords
+            // Handle promise-based password entry (zero-knowledge functions)
+            if (window.passwordPromiseResolve) {
+                if (passwordEntry.length === 6) {
+                    const tempPassword = passwordEntry;
+                    const resolver = window.passwordPromiseResolve;
+                    window.passwordPromiseResolve = null;
+                    window.passwordPromiseReject = null;
+=======
         async function verifyPIN() {
             // Handle promise-based PIN entry (zero-knowledge functions)
             if (window.pinPromiseResolve) {
@@ -2738,8 +2815,9 @@
                     const resolver = window.pinPromiseResolve;
                     window.pinPromiseResolve = null;
                     window.pinPromiseReject = null;
+>>>>>>> main
                     closePinPad();
-                    resolver(tempPin);
+                    resolver(tempPassword);
                     return;
                 }
             }
@@ -2752,48 +2830,70 @@
 
             // Standard verification
             try {
-                const pinHash = await hashPIN(pinEntry);
-                const storedHash = localStorage.getItem(`ikey_pin_hash_${state.currentGUID}`);
+                const passwordHash = await hashPassword(passwordEntry);
+                const storedHash = localStorage.getItem(`ikey_password_hash_${state.currentGUID}`);
 
-                if (pinHash === storedHash) {
-                    state.pinUnlocked = true;
+                if (passwordHash === storedHash) {
+                    state.passwordUnlocked = true;
 
                     if (typeof session !== 'undefined' && session.unlock) {
-                        await session.unlock(pinEntry);
+                        await session.unlock(passwordEntry);
                     }
 
-                    if (window.pinPromiseResolve) {
-                        const resolver = window.pinPromiseResolve;
-                        window.pinPromiseResolve = null;
-                        window.pinPromiseReject = null;
+                    if (window.passwordPromiseResolve) {
+                        const resolver = window.passwordPromiseResolve;
+                        window.passwordPromiseResolve = null;
+                        window.passwordPromiseReject = null;
                         closePinPad();
-                        resolver(pinEntry);
+                        resolver(passwordEntry);
                         return;
                     }
 
                     closePinPad();
+<<<<<<< codex/modify-sessionunlock-to-use-passwords
+                    state.passwordAttemptsRemaining = 5;
+=======
                     const guid = state.currentGUID || 'default';
                     localStorage.removeItem(`ikey_pin_attempts_${guid}`);
                     localStorage.removeItem(`ikey_pin_lockout_${guid}`);
+>>>>>>> main
 
-                    if (pinAction === 'edit') {
+                    if (passwordAction === 'edit') {
                         editEmergencyInfo();
-                    } else if (pinAction === 'unlock') {
-                        unlockPINLevel();
-                        showStatus('PIN verified successfully', 'success');
-                    } else if (pinAction === 'change') {
-                        showStatus('PIN changed successfully', 'success');
+                    } else if (passwordAction === 'unlock') {
+                        unlockPasswordLevel();
+                        showStatus('Password verified successfully', 'success');
+                    } else if (passwordAction === 'change') {
+                        showStatus('Password changed successfully', 'success');
                     }
 
-                    if (typeof pinCallback === 'function') {
-                        pinCallback();
+                    if (typeof passwordCallback === 'function') {
+                        passwordCallback();
                     }
-
                 } else {
-                    throw new Error('Invalid PIN');
-                }
+                    state.passwordAttemptsRemaining--;
+                    showStatus(`Wrong password. ${state.passwordAttemptsRemaining} attempts remaining`, 'error');
+                    document.querySelectorAll('#pinDisplay .pin-dot').forEach(dot => dot.classList.add('error'));
+                    setTimeout(() => {
+                        passwordEntry = '';
+                        updatePinDisplay();
+                    }, 1000);
 
+                    if (state.passwordAttemptsRemaining <= 0 && window.passwordPromiseReject) {
+                        const rejector = window.passwordPromiseReject;
+                        window.passwordPromiseResolve = null;
+                        window.passwordPromiseReject = null;
+                        rejector(new Error('Too many incorrect attempts'));
+                        closePinPad();
+                    }
+                }
             } catch (error) {
+<<<<<<< codex/modify-sessionunlock-to-use-passwords
+                showStatus('Password verification failed', 'error');
+                console.error('Password verification error:', error);
+                passwordEntry = '';
+                updatePinDisplay();
+=======
                 handleFailedAttempt();
                 document.querySelectorAll('#pinDisplay .pin-dot').forEach(dot => dot.classList.add('error'));
                 setTimeout(() => {
@@ -2810,10 +2910,11 @@
                     closePinPad();
                     rejector(new Error('Too many incorrect attempts'));
                 }
+>>>>>>> main
             }
         }
 
-        function unlockPINLevel() {
+        function unlockPasswordLevel() {
             updateSecurityUI();
         }
 
@@ -2969,8 +3070,8 @@
 
         // Tab Navigation
         function showTab(tabName) {
-            if (!state.pinUnlocked && (tabName === 'health' || tabName === 'security')) {
-                requestPIN('unlock', () => showTab(tabName));
+            if (!state.passwordUnlocked && (tabName === 'health' || tabName === 'security')) {
+                requestPassword('unlock', () => showTab(tabName));
                 return;
             }
 
@@ -3017,9 +3118,9 @@
         }
 
         function updateSecurityUI() {
-            if (state.pinUnlocked) {
+            if (state.passwordUnlocked) {
                 document.getElementById('lockIcon').textContent = '🔐';
-                document.getElementById('lockText').textContent = 'PIN Protected';
+                document.getElementById('lockText').textContent = 'Password Protected';
                 document.getElementById('securityBadge').className = 'security-badge badge-pin';
                 document.getElementById('healthTab').classList.remove('locked');
                 document.getElementById('securityTab').classList.remove('locked');
@@ -3039,7 +3140,7 @@
                 guid: state.currentGUID,
                 timestamp: new Date().toISOString(),
                 publicData: state.publicData,
-                protectedData: state.pinUnlocked ? state.protectedData : null
+                protectedData: state.passwordUnlocked ? state.protectedData : null
             };
             
             const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
@@ -3094,7 +3195,7 @@
             const indicator = document.getElementById('security-indicator');
             if (!indicator) return;
 
-            if (state.pinUnlocked) {
+            if (state.passwordUnlocked) {
                 indicator.innerHTML = `
             <span style="color: #10B981;">🔓 Unlocked</span>
             <button onclick="lockApp()" style="padding: 2px 6px; background: #EF4444; color: white; border: none; border-radius: 4px; font-size: 0.75rem;">Lock</button>
@@ -3108,7 +3209,7 @@
         }
 
         function lockApp() {
-            state.pinUnlocked = false;
+            state.passwordUnlocked = false;
             session.lock();
             updateSecurityIndicator();
             updateSecurityUI();
@@ -3177,7 +3278,7 @@
         });
 
         // Periodic session cleanup handled by SessionUnlock
-        setInterval(() => session.lock(), 5 * 60 * 1000);
+        setInterval(() => session.lock(), 15 * 60 * 1000);
 
         function validateThemeContrast() {
             const themes = ['default', 'topsecret', 'hacker', 'wellness', 'contrast', 'retro', 'accessible'];
@@ -3215,11 +3316,11 @@
         });
 
         window.addEventListener('beforeunload', function() {
-            pinEntry = '';
+            passwordEntry = '';
             session.lock();
-            localStorage.removeItem(`ikey_pin_temp_${state.currentGUID}`);
+            localStorage.removeItem(`ikey_password_temp_${state.currentGUID}`);
             if (state.currentGUID) {
-                localStorage.removeItem(`ikey_pin_hash_${state.currentGUID}`);
+                localStorage.removeItem(`ikey_password_hash_${state.currentGUID}`);
             }
             sessionStorage.removeItem('ikey_session_active');
         });
