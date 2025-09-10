@@ -1016,28 +1016,39 @@
     <!-- Resources Tab -->
     <div id="resources" class="tab-content">
         <div class="container">
-            <div class="resource-card">
-                <div class="resource-icon">🌐</div>
-                <h2 class="resource-title">We The People Inn</h2>
-                <p class="resource-description">
-                    WTTIN.org provides essential resources and support for those in need. 
-                    Access community services, shelter information, food assistance, and more.
-                    Their mission is to help individuals and families in crisis find the support they need.
-                </p>
-                <a href="https://wttin.org" target="_blank" rel="noopener noreferrer" class="resource-link">
-                    Visit WTTIN.org →
-                </a>
+            <div class="card" style="padding: 0; overflow: hidden;">
+                <div style="background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 20px;">
+                    <h2 style="margin-bottom: 10px;">We The People Inn Resources</h2>
+                    <p style="opacity: 0.95;">Community services, shelter information, food assistance, and crisis support</p>
+                </div>
+                <iframe 
+                    src="https://wttin.org" 
+                    style="width: 100%; height: 700px; border: none;"
+                    title="We The People Inn Resources"
+                    sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
+                ></iframe>
             </div>
             
-            <div class="card">
+            <div class="card" style="margin-top: 20px;">
                 <h3 style="margin-bottom: 20px;">Additional Emergency Resources</h3>
-                <ul style="line-height: 2; color: var(--secondary);">
-                    <li><strong>National Suicide Prevention Lifeline:</strong> 988</li>
-                    <li><strong>Crisis Text Line:</strong> Text HOME to 741741</li>
-                    <li><strong>Poison Control:</strong> 1-800-222-1222</li>
-                    <li><strong>Domestic Violence Hotline:</strong> 1-800-799-7233</li>
-                    <li><strong>SAMHSA National Helpline:</strong> 1-800-662-4357</li>
-                </ul>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    <div>
+                        <h4 style="color: var(--primary); margin-bottom: 15px;">Crisis Support</h4>
+                        <ul style="line-height: 2; color: var(--secondary); list-style: none; padding: 0;">
+                            <li>📞 <strong>Suicide & Crisis Lifeline:</strong> 988</li>
+                            <li>💬 <strong>Crisis Text Line:</strong> Text HOME to 741741</li>
+                            <li>☎️ <strong>SAMHSA Helpline:</strong> 1-800-662-4357</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--primary); margin-bottom: 15px;">Emergency Services</h4>
+                        <ul style="line-height: 2; color: var(--secondary); list-style: none; padding: 0;">
+                            <li>🚨 <strong>Poison Control:</strong> 1-800-222-1222</li>
+                            <li>🏠 <strong>Domestic Violence:</strong> 1-800-799-7233</li>
+                            <li>👶 <strong>Child Abuse Hotline:</strong> 1-800-422-4453</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1046,28 +1057,90 @@
     <div id="storage" class="tab-content">
         <div class="container">
             <div class="resource-card">
-                <div class="resource-icon">💾</div>
-                <h2 class="resource-title">Secure Storage & Messaging</h2>
+                <img src="https://filen.io/hub/content/images/2025/06/Logo_name_black.png" 
+                     alt="Filen" 
+                     style="height: 60px; margin-bottom: 20px;">
+                <h2 class="resource-title">Zero-Knowledge End-to-End Encrypted Cloud Storage</h2>
                 <p class="resource-description">
-                    Filen provides end-to-end encrypted cloud storage and secure messaging. 
-                    Keep your important documents, medical records, and emergency information 
-                    safe and accessible from anywhere. Perfect for storing digital copies of 
-                    important documents and maintaining secure communications.
+                    Filen is a secure cloud storage and collaboration platform that prioritizes your privacy above all else. 
+                    Store your emergency documents, medical records, and important files with military-grade encryption.
                 </p>
+                
+                <div style="background: #f0f9ff; border-left: 4px solid var(--primary); padding: 15px; margin: 20px 0; border-radius: 8px;">
+                    <strong>🔐 Getting Started:</strong> You'll need to create a free account at Filen.io. 
+                    The signup process is simple and requires only an email address. Filen offers 10GB of free storage to start.
+                </div>
+                
                 <a href="https://app.filen.io/" target="_blank" rel="noopener noreferrer" class="resource-link">
-                    Access Filen →
+                    Create Account / Login to Filen →
                 </a>
             </div>
             
             <div class="card">
-                <h3 style="margin-bottom: 20px;">Why Secure Storage Matters</h3>
-                <ul style="line-height: 2; color: var(--secondary);">
-                    <li>✓ Keep copies of important medical documents</li>
-                    <li>✓ Store emergency contact information</li>
-                    <li>✓ Backup insurance and identification documents</li>
-                    <li>✓ Secure messaging with family during emergencies</li>
-                    <li>✓ Access your files from any device, anywhere</li>
+                <h3 style="margin-bottom: 20px;">🔒 Uncompromising Security Features</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                    <div style="background: var(--light); padding: 20px; border-radius: 12px;">
+                        <h4 style="color: var(--primary); margin-bottom: 10px;">🛡️ Zero-Knowledge Architecture</h4>
+                        <p style="font-size: 0.9rem; color: var(--secondary); line-height: 1.6;">
+                            Your data is encrypted on your device before upload. Even Filen cannot access your files - only you have the keys.
+                        </p>
+                    </div>
+                    <div style="background: var(--light); padding: 20px; border-radius: 12px;">
+                        <h4 style="color: var(--primary); margin-bottom: 10px;">🔐 Military-Grade Encryption</h4>
+                        <p style="font-size: 0.9rem; color: var(--secondary); line-height: 1.6;">
+                            AES-256 encryption standard used by governments and military organizations worldwide.
+                        </p>
+                    </div>
+                    <div style="background: var(--light); padding: 20px; border-radius: 12px;">
+                        <h4 style="color: var(--primary); margin-bottom: 10px;">🌍 GDPR Compliant</h4>
+                        <p style="font-size: 0.9rem; color: var(--secondary); line-height: 1.6;">
+                            Based in Germany with strict European privacy laws. Your data is protected by some of the world's strongest privacy regulations.
+                        </p>
+                    </div>
+                    <div style="background: var(--light); padding: 20px; border-radius: 12px;">
+                        <h4 style="color: var(--primary); margin-bottom: 10px;">🔑 Client-Side Encryption</h4>
+                        <p style="font-size: 0.9rem; color: var(--secondary); line-height: 1.6;">
+                            All encryption happens on your device. Your password never leaves your computer unencrypted.
+                        </p>
+                    </div>
+                </div>
+
+                <h3 style="margin-bottom: 20px;">✨ Key Features for Emergency Preparedness</h3>
+                <ul style="line-height: 2.2; font-size: 1rem;">
+                    <li><strong>📁 Secure Document Storage:</strong> Store medical records, insurance cards, IDs, and prescriptions</li>
+                    <li><strong>💬 Encrypted Chat:</strong> Communicate securely with family members during emergencies</li>
+                    <li><strong>📱 Cross-Platform Access:</strong> Available on Windows, Mac, Linux, iOS, and Android</li>
+                    <li><strong>🔄 Automatic Sync:</strong> Your files stay updated across all your devices</li>
+                    <li><strong>📤 Secure Sharing:</strong> Share emergency documents with healthcare providers using encrypted links</li>
+                    <li><strong>🗂️ Version History:</strong> Recover previous versions of important documents</li>
+                    <li><strong>🖼️ Photo Backup:</strong> Automatically backup photos of important documents from your phone</li>
+                    <li><strong>⚡ Fast Performance:</strong> Quick upload and download speeds for emergency access</li>
                 </ul>
+
+                <div style="background: #fef3c7; border: 1px solid #fbbf24; border-radius: 12px; padding: 20px; margin-top: 30px;">
+                    <h4 style="color: #92400e; margin-bottom: 10px;">💡 Emergency Preparedness Tips</h4>
+                    <p style="color: #78350f; line-height: 1.8;">
+                        Create a dedicated "Emergency" folder in Filen with:
+                    </p>
+                    <ul style="color: #78350f; line-height: 1.8; margin-top: 10px;">
+                        <li>Copies of all family members' IDs and passports</li>
+                        <li>Insurance policies and cards</li>
+                        <li>Medical records and prescription lists</li>
+                        <li>Emergency contact list with phone numbers</li>
+                        <li>Photos of valuable items for insurance claims</li>
+                        <li>Important legal documents (will, power of attorney)</li>
+                    </ul>
+                </div>
+
+                <div style="text-align: center; margin-top: 30px; padding-top: 30px; border-top: 1px solid var(--border);">
+                    <p style="color: var(--secondary); margin-bottom: 15px;">
+                        <strong>Free Plan:</strong> 10GB storage | <strong>Paid Plans:</strong> Starting at $11.99/month for 100GB
+                    </p>
+                    <a href="https://filen.io" target="_blank" rel="noopener noreferrer" 
+                       style="color: var(--primary); text-decoration: none; font-weight: 600;">
+                        Learn more about Filen's security →
+                    </a>
+                </div>
             </div>
         </div>
     </div>
