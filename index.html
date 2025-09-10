@@ -1387,32 +1387,18 @@
     <!-- PIN Modal -->
     <div id="pin-modal" class="modal-overlay">
         <div class="modal-container">
-            <h3 class="modal-title" id="pin-modal-title">Enter 6-Digit PIN</h3>
-            
-            <div class="pin-display" id="pinDisplay">
-                <div class="pin-dot"></div>
-                <div class="pin-dot"></div>
-                <div class="pin-dot"></div>
-                <div class="pin-dot"></div>
-                <div class="pin-dot"></div>
-                <div class="pin-dot"></div>
+            <h3 class="modal-title" id="pin-modal-title">Enter Password</h3>
+
+            <div class="password-input-wrapper">
+                <input type="password" id="passwordInput" autocomplete="off">
+                <button type="button" id="togglePassword" onclick="togglePasswordVisibility('passwordInput')">Show</button>
             </div>
-            
-            <div class="pin-keypad">
-                <button class="pin-key" onclick="addPinDigit(1)">1</button>
-                <button class="pin-key" onclick="addPinDigit(2)">2</button>
-                <button class="pin-key" onclick="addPinDigit(3)">3</button>
-                <button class="pin-key" onclick="addPinDigit(4)">4</button>
-                <button class="pin-key" onclick="addPinDigit(5)">5</button>
-                <button class="pin-key" onclick="addPinDigit(6)">6</button>
-                <button class="pin-key" onclick="addPinDigit(7)">7</button>
-                <button class="pin-key" onclick="addPinDigit(8)">8</button>
-                <button class="pin-key" onclick="addPinDigit(9)">9</button>
-                <button class="pin-key special-clear" onclick="clearPin()">Clear</button>
-                <button class="pin-key" onclick="addPinDigit(0)">0</button>
-                <button class="pin-key special-cancel" onclick="closePinPad()">Cancel</button>
+            <div id="passwordStrength"></div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closePinPad()">Cancel</button>
+                <button class="btn-submit" onclick="verifyPassword()">Submit</button>
             </div>
-            
+
         </div>
     </div>
 
