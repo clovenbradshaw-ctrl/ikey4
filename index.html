@@ -1307,11 +1307,7 @@
                 }
             }
 
-<<<<<<< codex/expand-validatestep-to-check-for-pe
-            if (step === 4) {
-=======
             if (step === 5) {
->>>>>>> main
                 const ecName = document.getElementById('ec-name').value.trim();
                 const ecPhone = document.getElementById('ec-phone').value.trim();
                 if (!ecName || !ecPhone) {
@@ -1325,17 +1321,11 @@
 
         function showReview() {
             formData = {
-<<<<<<< codex/expand-validatestep-to-check-for-pe
                 // Schema version bumped for `pe` addition
                 v: 2,
                 pe: document.getElementById('pe') ? document.getElementById('pe').value.trim() : '',
-=======
-                v: 1,
-                pe: document.getElementById('proton-email').value.trim(),
->>>>>>> main
                 n: document.getElementById('name').value.trim(),
                 pr: document.getElementById('pronouns').value.trim(),
-                pe: document.getElementById('pe').value.trim(),
                 d: document.getElementById('dob').value,
                 b: document.getElementById('blood').value,
                 a: document.getElementById('allergies').value.trim(),
@@ -1909,11 +1899,8 @@ Generated: ${new Date().toLocaleString()}`;
                 try {
                     const decompressed = LZString.decompressFromEncodedURIComponent(hash);
                     const data = JSON.parse(decompressed);
-<<<<<<< codex/expand-validatestep-to-check-for-pe
-                    // `pe` was introduced in schema v2; older QR codes may omit it
-=======
                     displayData = data;
->>>>>>> main
+                    // `pe` was introduced in schema v2; older QR codes may omit it
                     
                     // Display existing data
                     document.getElementById('wizard-view').classList.add('hidden');
