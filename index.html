@@ -789,27 +789,18 @@
                     <!-- Step 3: Basic Info -->
                     <div class="wizard-step" data-step="3">
                         <h2>Basic Information</h2>
-                        
                         <div class="form-group">
                             <label for="name">Full Name *</label>
                             <input type="text" id="name" placeholder="John Smith" required>
                         </div>
-
                         <div class="form-group">
                             <label for="pronouns">Pronouns</label>
                             <input type="text" id="pronouns" placeholder="they/them">
                         </div>
-
-                        <div class="form-group">
-                            <label for="pe">Proton Email</label>
-                            <input type="email" id="pe" placeholder="name@proton.me">
-                        </div>
-
                         <div class="form-group">
                             <label for="dob">Date of Birth</label>
                             <input type="date" id="dob">
                         </div>
-
                         <div class="form-group">
                             <label for="blood">Blood Type</label>
                             <select id="blood">
@@ -830,19 +821,16 @@
                     <div class="wizard-step" data-step="4">
                         <h2>Medical Information</h2>
                         <p style="margin-bottom: 20px; color: var(--secondary);">Keep entries brief - focus on critical information</p>
-                        
                         <div class="form-group">
                             <label for="allergies">Allergies</label>
                             <textarea id="allergies" placeholder="e.g., Penicillin, peanuts, latex"></textarea>
                             <div class="char-counter good" id="allergies-counter">0 / 200 characters</div>
                         </div>
-
                         <div class="form-group">
                             <label for="medications">Current Medications</label>
                             <textarea id="medications" placeholder="e.g., Metformin 500mg, Lisinopril 10mg"></textarea>
                             <div class="char-counter good" id="medications-counter">0 / 200 characters</div>
                         </div>
-
                         <div class="form-group">
                             <label for="conditions">Medical Conditions</label>
                             <textarea id="conditions" placeholder="e.g., Type 2 Diabetes, Hypertension"></textarea>
@@ -853,17 +841,14 @@
                     <!-- Step 5: Contacts -->
                     <div class="wizard-step" data-step="5">
                         <h2>Contacts</h2>
-
-        <div class="form-group">
+                        <div class="form-group">
                             <label for="ec-name">Emergency Contact Name *</label>
                             <input type="text" id="ec-name" placeholder="Jane Smith" required>
                         </div>
-
                         <div class="form-group">
                             <label for="ec-phone">Emergency Phone Number *</label>
                             <input type="tel" id="ec-phone" placeholder="555-0123" required>
                         </div>
-
                         <div class="form-group">
                             <label for="ec-relationship">Relationship</label>
                             <select id="ec-relationship">
@@ -876,33 +861,24 @@
                                 <option value="Other">Other</option>
                             </select>
                         </div>
-
                         <div class="form-group">
                             <label for="cm-name">Case Manager Name</label>
                             <input type="text" id="cm-name" placeholder="Dr. Jones">
                         </div>
-
                         <div class="form-group">
                             <label for="cm-org">Organization</label>
                             <input type="text" id="cm-org" placeholder="Hospital or Agency">
                         </div>
-
                         <div class="form-group">
                             <label for="cm-phone">Case Manager Phone</label>
                             <input type="tel" id="cm-phone" placeholder="555-0456">
                         </div>
                     </div>
 
-                    <!-- Step 5: Review -->
-                    <div class="wizard-step" data-step="5">
-                        <h2 style="color: var(--proton);">Review Your Information</h2>
-                        <div id="review-content" class="review-card"></div>
-
                     <!-- Step 6: Review -->
                     <div class="wizard-step" data-step="6">
                         <h2>Review Your Information</h2>
                         <div id="review-content"></div>
-
                         <div style="background: #fef3c7; border: 1px solid #facc15; border-radius: 10px; padding: 15px; margin-top: 20px;">
                             <strong>⚠️ Heads up:</strong> Anyone who scans this QR code will be able to view the information you provide.
                         </div>
@@ -1382,14 +1358,9 @@
             document.getElementById('btn-generate').classList.toggle('hidden', currentStep !== 6);
         }
 
-        function validateStep(step) {
-            // Require `pe` (permission/consent field) to be present when advancing
-            const peField = document.getElementById('pe');
-            if (peField && !peField.value.trim()) {
-                alert('Please provide the required permission information');
-                return false;
-            }
+        
 
+        function validateStep(step) {
             if (step === 2) {
                 const email = document.getElementById('proton-email').value.trim();
                 const regex = /^[a-zA-Z0-9._%+-]+@(proton\.me|protonmail\.com)$/;
@@ -1407,11 +1378,7 @@
                 }
             }
 
-
-            if (step === 4) {
-
             if (step === 5) {
-
                 const ecName = document.getElementById('ec-name').value.trim();
                 const ecPhone = document.getElementById('ec-phone').value.trim();
                 if (!ecName || !ecPhone) {
@@ -1425,17 +1392,10 @@
 
         function showReview() {
             formData = {
-
-                // Schema version bumped for `pe` addition
-                v: 2,
-                pe: document.getElementById('pe') ? document.getElementById('pe').value.trim() : '',
-
-                v: 1,
+                v: 2, // Schema version
                 pe: document.getElementById('proton-email').value.trim(),
-
                 n: document.getElementById('name').value.trim(),
                 pr: document.getElementById('pronouns').value.trim(),
-                pe: document.getElementById('pe').value.trim(),
                 d: document.getElementById('dob').value,
                 b: document.getElementById('blood').value,
                 a: document.getElementById('allergies').value.trim(),
@@ -1455,19 +1415,14 @@
                     <div style="font-weight: 600;">${formData.n || 'Not provided'}</div>
                 </div>
                 ${formData.pe ? `
-                <div class="info-card">
-                    <div style=\"font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;\">Proton Email</div>
-                    <div style=\"font-weight: 600;\">${formData.pe}</div>
+                <div class="info-card" style="border-left: 4px solid #6d4aff;">
+                    <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Proton Email</div>
+                    <div style="font-weight: 600;">${formData.pe}</div>
                 </div>` : ''}
                 ${formData.pr ? `
                 <div class="info-card">
-                    <div style=\"font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;\">Pronouns</div>
-                    <div style=\"font-weight: 600;\">${formData.pr}</div>
-                </div>` : ''}
-                ${formData.pe ? `
-                <div class="info-card" style=\"border-left: 4px solid #6d4aff;\">
-                    <div style=\"font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;\">Proton Email</div>
-                    <div style=\"font-weight: 600;\">${formData.pe}</div>
+                    <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Pronouns</div>
+                    <div style="font-weight: 600;">${formData.pr}</div>
                 </div>` : ''}
                 ${formData.d ? `
                 <div class="info-card">
@@ -1504,18 +1459,17 @@
                 </div>
                 ${formData.cm ? `
                 <div class="info-card">
-                    <div style=\"font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;\">Case Manager</div>
-                    <div style=\"font-weight: 600;\">
+                    <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Case Manager</div>
+                    <div style="font-weight: 600;">
                         ${formData.cm}<br>
                         ${formData.co ? `<small>${formData.co}</small><br>` : ''}
                         ${formData.cp ? `📞 ${formData.cp}` : ''}
                     </div>
                 </div>` : ''}
             `;
-            
+
             document.getElementById('review-content').innerHTML = reviewHTML;
         }
-
         function generateQR() {
             const cleanData = {};
             Object.keys(formData).forEach(key => {
