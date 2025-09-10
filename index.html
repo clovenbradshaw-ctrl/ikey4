@@ -534,10 +534,6 @@
             color: var(--primary);
         }
 
-        .badge-password {
-            background: rgba(139, 92, 246, 0.1);
-            color: var(--gac);
-        }
 
         .nav-tabs {
             display: flex;
@@ -874,133 +870,8 @@
             font-size: 1.2rem;
         }
 
-        .password-modal {
-            background: white;
-            border-radius: 12px;
-            padding: 24px;
-            max-width: 400px;
-            width: 90%;
-        }
 
-        .password-input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            font-size: 1rem;
-            margin-bottom: 12px;
-        }
 
-        .password-strength {
-            display: flex;
-            gap: 5px;
-            margin-bottom: 12px;
-        }
-
-        .strength-bar {
-            flex: 1;
-            height: 4px;
-            background: var(--border);
-            border-radius: 2px;
-            transition: background 0.3s;
-        }
-
-        .strength-bar.active {
-            background: var(--success);
-        }
-
-        .strength-bar.weak {
-            background: var(--danger);
-        }
-
-        .strength-bar.medium {
-            background: var(--warning);
-        }
-
-        /* EHR Specific Styles */
-        .ehr-nav {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            background: var(--surface-alt);
-            padding: 8px;
-            border-radius: 8px;
-        }
-
-        .ehr-tab {
-            padding: 8px 16px;
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.875rem;
-            transition: all 0.2s;
-        }
-
-        .ehr-tab.active {
-            background: var(--gac);
-            color: white;
-            border-color: var(--gac);
-        }
-
-        .ehr-section {
-            display: none;
-        }
-
-        .ehr-section.active {
-            display: block;
-        }
-
-        .provider-card {
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 12px;
-            background: var(--surface-alt);
-            position: relative;
-        }
-
-        .provider-status-green {
-            border-left: 4px solid var(--success);
-        }
-
-        .provider-status-yellow {
-            border-left: 4px solid var(--warning);
-        }
-
-        .provider-status-red {
-            border-left: 4px solid var(--danger);
-        }
-
-        .delete-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: var(--danger);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 4px 8px;
-            font-size: 0.75rem;
-            cursor: pointer;
-        }
-
-        .case-note {
-            background: var(--surface-alt);
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 12px;
-            border-left: 3px solid var(--primary);
-        }
-
-        .note-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-        }
 
         .grid-2 {
             display: grid;
@@ -1217,8 +1088,8 @@
             <div class="wizard-content">
                 <!-- Step 1: Welcome -->
                 <div class="wizard-step active" data-step="1">
-                    <h2>Three Levels of Security</h2>
-                    <p style="margin-bottom: 20px;">iKey Health protects your medical information with three security tiers:</p>
+                    <h2>Two Levels of Security</h2>
+                    <p style="margin-bottom: 20px;">iKey Health protects your medical information with two security tiers:</p>
                     
                     <div class="info-card">
                         <span class="info-card-icon">🚨</span>
@@ -1236,16 +1107,8 @@
                         </div>
                     </div>
 
-                    <div class="info-card">
-                        <span class="info-card-icon">🔐</span>
-                        <div class="info-card-content">
-                            <div class="info-card-label">Level 3: Health Records (Password)</div>
-                            <div class="info-card-value">Sensitive medical history and test results - secured by strong password</div>
-                        </div>
-                    </div>
-                    
                     <div class="warning-box">
-                        <strong>Important:</strong> Your PIN and password ARE your encryption keys. They cannot be recovered if lost. Store them safely.
+                        <strong>Important:</strong> Your PIN IS your encryption key. It cannot be recovered if lost. Store it safely.
                     </div>
                 </div>
                 
@@ -1346,33 +1209,8 @@
                         </div>
                     </div>
 
-                    <div class="security-tier-card">
-                        <div class="tier-header">
-                            <span class="tier-icon">🏥</span>
-                            <h3>Level 2: Password (Health Records)</h3>
-                        </div>
-                        <div class="tier-info">
-                            <p><strong>Protects:</strong> Medical history, conditions, medications, test results</p>
-                            <p><strong>Why password:</strong> Sensitive medical data needs strong protection</p>
-                        </div>
-                        <div class="form-group">
-                            <label>Enter Password (minimum 12 characters)</label>
-                            <input type="password"
-                                   id="setup-health-password"
-                                   minlength="12"
-                                   placeholder="Strong password">
-                            <div class="password-strength">
-                                <div class="strength-bar"></div>
-                                <div class="strength-bar"></div>
-                                <div class="strength-bar"></div>
-                                <div class="strength-bar"></div>
-                            </div>
-                            <small>This is your main medical records password</small>
-                        </div>
-                    </div>
-
                     <div class="warning-box">
-                        <strong>⚠️ Important:</strong> These cannot be recovered if forgotten. Write them down and store safely.
+                        <strong>⚠️ Important:</strong> Your PIN cannot be recovered if forgotten. Write it down and store safely.
                     </div>
                 </div>
 
@@ -1436,17 +1274,11 @@
                     <span id="lockIcon">🔓</span>
                     <span id="lockText">Public Access</span>
                 </div>
-                <button class="btn btn-outline" onclick="showPasswordManager()" id="passwordBtn" style="display: none; padding: 8px 16px; font-size: 0.875rem;">
-                    🔑 Manage Password
-                </button>
                 <button class="btn btn-outline" onclick="switchInstance()" id="switchInstanceBtn" style="padding: 8px 16px; font-size: 0.875rem;">
                     🔄 Switch Profile
                 </button>
                 <button class="btn btn-outline" onclick="createNewInstance()" id="newInstanceBtn" style="padding: 8px 16px; font-size: 0.875rem;">
                     ➕ New Profile
-                </button>
-                <button class="btn btn-outline" id="sampleDataBtn" onclick="toggleSampleData()" style="padding: 8px 16px; font-size: 0.875rem;">
-                    👁️ Sample Data
                 </button>
                 <div class="security-badge" id="syncIndicator" style="display: none;">
                     <span>☁️</span>
@@ -1462,9 +1294,6 @@
             </button>
             <button class="nav-tab locked" onclick="showTab('health')" data-tab="health" id="healthTab">
                 🏥 Health Info
-            </button>
-            <button class="nav-tab locked hidden" onclick="showTab('ehr')" data-tab="ehr" id="ehrTab">
-                📋 Full EHR
             </button>
             <button class="nav-tab locked" onclick="showTab('security')" data-tab="security" id="securityTab">
                 🔒 Security &amp; Settings
@@ -1525,14 +1354,6 @@
                 💾 Save Health Information
             </button>
             
-            <div class="info-box mt-4">
-                <strong>Want comprehensive medical records?</strong> Set a password to unlock the full Electronic Health Record system with detailed provider management, medications tracking, and more.
-                <div class="mt-4">
-                    <button class="btn" onclick="requestPassword('set')">
-                        🔐 Set Password for Full EHR
-                    </button>
-                </div>
-            </div>
         </div>
 
         <!-- Security Section (PIN Tier) -->
@@ -1561,49 +1382,6 @@
             </div>
         </div>
 
-        <!-- EHR Section (Password Tier) -->
-        <div class="content-section" id="ehr-section">
-            <div class="ehr-nav">
-                <button class="ehr-tab active" onclick="showEHRSection('identity', this)">Identity</button>
-                <button class="ehr-tab" onclick="showEHRSection('providers', this)">Providers</button>
-                <button class="ehr-tab" onclick="showEHRSection('medications', this)">Medications</button>
-                <button class="ehr-tab" onclick="showEHRSection('conditions', this)">Conditions</button>
-                <button class="ehr-tab" onclick="showEHRSection('notes', this)">Notes</button>
-            </div>
-            <div class="ehr-section active" id="ehr-identity">
-                <div class="form-group">
-                    <label>Full Name</label>
-                    <input type="text" class="ehr-data" data-field="fullName">
-                </div>
-                <div class="form-group">
-                    <label>Date of Birth</label>
-                    <input type="date" class="ehr-data" data-field="dob">
-                </div>
-                <div class="form-group">
-                    <label>Blood Type</label>
-                    <input type="text" class="ehr-data" data-field="bloodType">
-                </div>
-            </div>
-            <div class="ehr-section" id="ehr-providers">
-                <div id="providers-container"></div>
-                <button class="btn btn-success" onclick="addProvider()">Add Provider</button>
-            </div>
-            <div class="ehr-section" id="ehr-medications">
-                <div id="medications-container"></div>
-                <button class="btn btn-success" onclick="addMedication()">Add Medication</button>
-            </div>
-            <div class="ehr-section" id="ehr-conditions">
-                <div id="conditions-container"></div>
-                <button class="btn btn-success" onclick="addCondition()">Add Condition</button>
-            </div>
-            <div class="ehr-section" id="ehr-notes">
-                <div id="case-notes-container"></div>
-                <button class="btn btn-success" onclick="addCaseNote()">Add Note</button>
-            </div>
-            <div class="btn-group" style="margin-top: 16px;">
-                <button class="btn btn-success" onclick="saveEHR()">Save EHR</button>
-            </div>
-        </div>
     </div>
 
     <!-- PIN Modal -->
@@ -1638,38 +1416,6 @@
         </div>
     </div>
 
-    <!-- Password Modal -->
-    <div id="password-modal" class="modal-overlay">
-        <div class="password-modal">
-            <h3 id="password-title">Set Password for Full EHR</h3>
-            
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" id="password-input" class="password-input" placeholder="Enter password">
-                <div class="password-strength" id="password-strength">
-                    <div class="strength-bar"></div>
-                    <div class="strength-bar"></div>
-                    <div class="strength-bar"></div>
-                    <div class="strength-bar"></div>
-                </div>
-            </div>
-            
-            <div class="form-group" id="confirm-group">
-                <label>Confirm Password</label>
-                <input type="password" id="confirm-password" class="password-input" placeholder="Confirm password">
-            </div>
-            
-            <p style="font-size: 0.875rem; color: var(--text-secondary); margin-top: 12px;">
-                This password encrypts your full medical records. It cannot be recovered if lost.
-            </p>
-            
-            <div class="btn-group mt-4">
-                <button class="btn btn-secondary" onclick="closePasswordModal()">Cancel</button>
-                <button class="btn btn-success" onclick="submitPassword()">Continue</button>
-            </div>
-        </div>
-    </div>
-
     <!-- QR Code Library - Try multiple CDNs -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
@@ -1694,7 +1440,6 @@
         const state = {
             currentGUID: null,
             pinUnlocked: false,
-            passwordUnlocked: false,
             isFirstTime: false,
             isShareMode: false,
             autoSaveTimer: null,
@@ -1716,10 +1461,6 @@
 
             protectedData: {
                 health: {}
-            },
-
-            secureData: {
-                ehr: null
             }
         };
 
@@ -2019,7 +1760,6 @@
                     localStorage.removeItem(`ikey_basekey_${savedGUID}`);
                     localStorage.removeItem(`ikey_${savedGUID}_public`);
                     localStorage.removeItem(`ikey_${savedGUID}_protected`);
-                    localStorage.removeItem(`ikey_${savedGUID}_secure`);
                     localStorage.removeItem(`ikey_hash_${savedGUID}`);
                     localStorage.removeItem(`ikey_pin_temp_${savedGUID}`);
                     state.isFirstTime = true;
@@ -2069,7 +1809,6 @@
             if (confirm('Create a new medical profile? Current data will be preserved.')) {
                 state.currentGUID = null;
                 state.pinUnlocked = false;
-                state.passwordUnlocked = false;
                 window.location.hash = '';
                 showSetupWizard();
             }
@@ -2082,7 +1821,6 @@
                     localStorage.removeItem(`ikey_basekey_${state.currentGUID}`);
                     localStorage.removeItem(`ikey_${state.currentGUID}_public`);
                     localStorage.removeItem(`ikey_${state.currentGUID}_protected`);
-                    localStorage.removeItem(`ikey_${state.currentGUID}_secure`);
                     localStorage.removeItem(`ikey_hash_${state.currentGUID}`);
                     localStorage.removeItem(`ikey_pin_temp_${state.currentGUID}`);
                     window.location.hash = '';
@@ -2149,11 +1887,9 @@
 
         function autoLogout() {
             state.pinUnlocked = false;
-            state.passwordUnlocked = false;
             pinEntry = '';
             localStorage.removeItem(`ikey_pin_temp_${state.currentGUID}`);
             localStorage.removeItem(`ikey_pin_hash_${state.currentGUID}`);
-            localStorage.removeItem(`ikey_password_hash_${state.currentGUID}`);
             updateSecurityUI();
             showStatus('Session expired for security', 'warning');
             showTab('emergency');
@@ -2246,15 +1982,8 @@
             }
             if (step === 3) {
                 const pin = document.getElementById('setup-pin').value;
-                const healthPass = document.getElementById('setup-health-password').value;
                 if (!pin || pin.length !== 6) {
                     alert('Please enter a 6-digit PIN');
-                    return false;
-                }
-                try {
-                    validateHealthPassword(healthPass);
-                } catch (e) {
-                    alert(e.message);
                     return false;
                 }
             }
@@ -2314,19 +2043,11 @@
                 };
                 
                 const pin = document.getElementById('setup-pin').value;
-                const healthPassword = document.getElementById('setup-health-password').value;
 
                 if (pin && pin.length === 6) {
                     const pinHash = await hashPIN(pin);
                     localStorage.setItem(`ikey_pin_hash_${state.currentGUID}`, pinHash);
                     state.pinUnlocked = true;
-                }
-
-                if (healthPassword && healthPassword.length >= 12) {
-                    state.passwordUnlocked = true;
-                    state.secureData.ehr = initializeEHR();
-                    const passHash = await hashPassword(healthPassword);
-                    localStorage.setItem(`ikey_password_hash_${state.currentGUID}`, passHash);
                 }
 
                 // Update message
@@ -2501,41 +2222,9 @@
             return new Uint8Array(derivedBits);
         }
 
-        async function deriveKeyFromPassword(password) {
-            const encoder = new TextEncoder();
-            const passwordData = encoder.encode(password + state.currentGUID);
-            
-            const keyMaterial = await crypto.subtle.importKey(
-                'raw',
-                passwordData,
-                { name: 'PBKDF2' },
-                false,
-                ['deriveBits']
-            );
-            
-            const derivedBits = await crypto.subtle.deriveBits(
-                {
-                    name: 'PBKDF2',
-                    salt: encoder.encode(state.currentGUID + 'secure'),
-                    iterations: 200000,
-                    hash: 'SHA-256'
-                },
-                keyMaterial,
-                256
-            );
-            
-            return new Uint8Array(derivedBits);
-        }
-
         async function hashPIN(pin) {
             const encoder = new TextEncoder();
             const hash = await crypto.subtle.digest('SHA-256', encoder.encode(pin));
-            return btoa(String.fromCharCode(...new Uint8Array(hash)));
-        }
-
-        async function hashPassword(password) {
-            const encoder = new TextEncoder();
-            const hash = await crypto.subtle.digest('SHA-256', encoder.encode(password));
             return btoa(String.fromCharCode(...new Uint8Array(hash)));
         }
 
@@ -2683,11 +2372,6 @@
                         await saveProtectedData();
                     }
 
-                    if (allData.secure) {
-                        state.secureData = allData.secure;
-                        await saveSecureData();
-                    }
-
                     state.telemetry.lastRestoreSource = src.name;
                     console.info(`Successfully restored data from ${src.name}`);
                     showStatus(`Data restored from ${src.name}`, 'success');
@@ -2712,27 +2396,13 @@
             }
         }
 
-        // loadProtectedData defined earlier for zero-knowledge flow
-
-        async function loadSecureData() {
-            // Secure tier loading not implemented in zero-knowledge update
-            state.secureData = { ehr: initializeEHR() };
-        }
-
         async function savePublicData() {
             localStorage.setItem(`ikey_${state.currentGUID}_public`, JSON.stringify(state.publicData));
-        }
-
-        // saveProtectedData defined earlier for zero-knowledge flow
-
-        async function saveSecureData() {
-            // Secure data storage not implemented in this version
         }
 
         async function saveAllData() {
             await savePublicData();
             if (state.pinUnlocked) await saveProtectedData();
-            if (state.passwordUnlocked) await saveSecureData();
         }
 
         // Unified save with feedback
@@ -2879,7 +2549,6 @@
         // PIN Management
         let pinAction = null;
         let pinCallback = null;
-        let passwordCallback = null;
 
         function requestPINForSetup() {
             pinAction = 'setup';
@@ -3035,156 +2704,6 @@
 
         function unlockPINLevel() {
             updateSecurityUI();
-        }
-
-        // Password Management
-        function requestPassword(action = 'unlock', callback = null) {
-            if (typeof action === 'function') {
-                callback = action;
-                action = 'unlock';
-            }
-            passwordCallback = callback;
-            document.getElementById('password-modal').classList.add('active');
-            document.getElementById('password-modal').dataset.action = action;
-
-            if (action === 'unlock') {
-                document.getElementById('password-title').textContent = 'Enter Password to Unlock EHR';
-                document.getElementById('confirm-group').style.display = 'none';
-            } else {
-                document.getElementById('password-title').textContent = 'Set Password for Full EHR';
-                document.getElementById('confirm-group').style.display = 'block';
-            }
-        }
-
-        function showPasswordManager() {
-            if (state.passwordUnlocked) {
-                if (confirm('Change your EHR password?')) {
-                    requestPassword('change');
-                }
-            } else {
-                requestPassword('set');
-            }
-        }
-
-        function closePasswordModal() {
-            document.getElementById('password-modal').classList.remove('active');
-            document.getElementById('password-input').value = '';
-            document.getElementById('confirm-password').value = '';
-        }
-
-        function validateHealthPassword(password) {
-            if (password.length < 12) {
-                throw new Error('Password must be at least 12 characters');
-            }
-            const checks = {
-                uppercase: /[A-Z]/.test(password),
-                lowercase: /[a-z]/.test(password),
-                number: /[0-9]/.test(password)
-            };
-            if (!checks.uppercase || !checks.lowercase || !checks.number) {
-                throw new Error('Password must include uppercase, lowercase, and numbers');
-            }
-            return true;
-        }
-
-        async function submitPassword() {
-            const action = document.getElementById('password-modal').dataset.action;
-            const password = document.getElementById('password-input').value;
-            const confirm = document.getElementById('confirm-password').value;
-
-            try {
-                validateHealthPassword(password);
-            } catch (e) {
-                alert(e.message);
-                return;
-            }
-            
-            if (action !== 'unlock' && password !== confirm) {
-                alert('Passwords do not match');
-                return;
-            }
-            
-            try {
-                const derivedKey = await deriveKeyFromPassword(password);
-
-                if (action === 'unlock') {
-                    const stored = localStorage.getItem(`ikey_${state.currentGUID}_secure`);
-                    if (stored) {
-                        const decrypted = await decrypt(stored, derivedKey);
-                        state.secureData = decrypted;
-                        state.passwordUnlocked = true;
-                        const passHash = await hashPassword(password);
-                        localStorage.setItem(`ikey_password_hash_${state.currentGUID}`, passHash);
-                        unlockPasswordLevel();
-                        closePasswordModal();
-                        showStatus('EHR unlocked', 'success');
-                        if (typeof passwordCallback === 'function') {
-                            const cb = passwordCallback;
-                            passwordCallback = null;
-                            cb();
-                        }
-                    } else {
-                        alert('No EHR data found');
-                    }
-                } else {
-                    state.passwordUnlocked = true;
-                    if (!state.secureData.ehr) {
-                        state.secureData.ehr = initializeEHR();
-                    }
-                    await saveSecureData();
-                    const passHash = await hashPassword(password);
-                    localStorage.setItem(`ikey_password_hash_${state.currentGUID}`, passHash);
-                    unlockPasswordLevel();
-                    closePasswordModal();
-                    showStatus(action === 'change' ? 'Password changed successfully' : 'Password set successfully', 'success');
-                    if (typeof passwordCallback === 'function') {
-                        const cb = passwordCallback;
-                        passwordCallback = null;
-                        cb();
-                    }
-                }
-
-                crypto.getRandomValues(derivedKey);
-            } catch (error) {
-                alert('Failed to process password');
-            }
-        }
-
-        function unlockPasswordLevel() {
-            updateSecurityUI();
-            loadEHRData();
-        }
-
-        // Password strength indicator
-        document.addEventListener('DOMContentLoaded', function() {
-            const setupPassword = document.getElementById('setup-health-password');
-            const mainPassword = document.getElementById('password-input');
-            
-            if (setupPassword) {
-                setupPassword.addEventListener('input', (e) => checkPasswordStrength(e.target));
-            }
-            
-            if (mainPassword) {
-                mainPassword.addEventListener('input', (e) => checkPasswordStrength(e.target));
-            }
-        });
-
-        function checkPasswordStrength(input) {
-            const password = input.value;
-            const bars = input.parentElement.querySelectorAll('.strength-bar');
-            
-            bars.forEach(bar => bar.className = 'strength-bar');
-            
-            let strength = 0;
-            if (password.length >= 8) strength++;
-            if (password.length >= 12) strength++;
-            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
-            if (/[0-9]/.test(password) && /[^a-zA-Z0-9]/.test(password)) strength++;
-            
-            const colors = ['weak', 'weak', 'medium', 'active'];
-            for (let i = 0; i < strength; i++) {
-                bars[i].classList.add(colors[Math.min(strength - 1, 2)]);
-            }
         }
 
         // Edit Emergency Info
@@ -3344,11 +2863,6 @@
                 return;
             }
 
-            if (!state.passwordUnlocked && tabName === 'ehr') {
-                requestPassword('unlock', () => showTab(tabName));
-                return;
-            }
-
             document.querySelectorAll('.content-section').forEach(section => {
                 section.classList.remove('active');
             });
@@ -3360,350 +2874,6 @@
             });
 
             document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-        }
-
-        // EHR Functions
-        function initializeEHR() {
-            return {
-                identity: {},
-                providers: [],
-                medications: [],
-                conditions: [],
-                caseNotes: []
-            };
-        }
-
-        const sampleEHR = {
-            identity: {
-                fullName: 'John Doe',
-                dob: '1985-02-15',
-                bloodType: 'O+'
-            },
-            providers: [
-                { name: 'Dr. Sarah Smith', specialty: 'Primary Care Physician', phone: '555-123-4567' },
-                { name: 'Dr. Michael Johnson', specialty: 'Cardiologist', phone: '555-987-6543' }
-            ],
-            medications: [
-                { name: 'Atorvastatin', dosage: '20 mg', frequency: 'Once daily' },
-                { name: 'Lisinopril', dosage: '10 mg', frequency: 'Once daily' }
-            ],
-            conditions: [
-                { name: 'Hypertension', date: '2019-06-01', status: 'Managed' },
-                { name: 'Hyperlipidemia', date: '2018-03-15', status: 'Active' }
-            ],
-            caseNotes: [
-                { date: '2024-01-10', content: 'Patient blood pressure well controlled. Continue medications.' },
-                { date: '2024-03-05', content: 'Cholesterol levels improved. Maintain diet.' }
-            ]
-        };
-
-        let sampleDataLoaded = false;
-
-        function toggleSampleData() {
-            if (!state.secureData) state.secureData = {};
-            if (!state.secureData.ehr) state.secureData.ehr = initializeEHR();
-
-            if (!sampleDataLoaded) {
-                state.secureData.ehr = JSON.parse(JSON.stringify(sampleEHR));
-                loadEHRData();
-                sampleDataLoaded = true;
-                document.getElementById('sampleDataBtn').textContent = '🚫 Clear Sample';
-            } else {
-                state.secureData.ehr = initializeEHR();
-                loadEHRData();
-                sampleDataLoaded = false;
-                document.getElementById('sampleDataBtn').textContent = '👁️ Sample Data';
-            }
-            triggerAutoSave();
-        }
-
-        function showEHRSection(section, el) {
-            document.querySelectorAll('.ehr-section').forEach(s => s.classList.remove('active'));
-            document.getElementById(`ehr-${section}`).classList.add('active');
-
-            document.querySelectorAll('.ehr-tab').forEach(t => t.classList.remove('active'));
-            if (el) el.classList.add('active');
-        }
-
-        function loadEHRData() {
-            if (!state.secureData.ehr) return;
-            
-            // Load identity fields
-            document.querySelectorAll('.ehr-data').forEach(input => {
-                const field = input.dataset.field;
-                if (state.secureData.ehr.identity && state.secureData.ehr.identity[field]) {
-                    input.value = state.secureData.ehr.identity[field];
-                } else {
-                    input.value = '';
-                }
-            });
-            
-            // Load dynamic sections
-            loadProviders();
-            loadMedications();
-            loadConditions();
-            loadCaseNotes();
-        }
-
-        async function saveEHR() {
-            if (!state.secureData.ehr) {
-                state.secureData.ehr = initializeEHR();
-            }
-
-            // Save identity fields
-            document.querySelectorAll('.ehr-data').forEach(input => {
-                const field = input.dataset.field;
-                if (!state.secureData.ehr.identity) state.secureData.ehr.identity = {};
-                state.secureData.ehr.identity[field] = input.value;
-            });
-
-            // Save dynamic sections
-            saveProviders();
-            saveMedications();
-            saveConditions();
-            saveCaseNotes();
-
-            await saveWithFeedback('ehr');
-        }
-
-        // Dynamic content functions
-        function addProvider() {
-            const container = document.getElementById('providers-container');
-            const id = 'prov_' + Date.now();
-            
-            const html = `
-                <div class="provider-card" data-provider-id="${id}">
-                    <button class="delete-btn" onclick="removeProvider('${id}')">Remove</button>
-                    <div class="grid-2">
-                        <div class="form-group">
-                            <label>Provider Name</label>
-                            <input type="text" class="provider-field" data-id="${id}" data-field="name">
-                        </div>
-                        <div class="form-group">
-                            <label>Specialty</label>
-                            <input type="text" class="provider-field" data-id="${id}" data-field="specialty">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Phone</label>
-                        <input type="tel" class="provider-field" data-id="${id}" data-field="phone">
-                    </div>
-                </div>
-            `;
-            
-            container.insertAdjacentHTML('beforeend', html);
-        }
-
-        function removeProvider(id) {
-            document.querySelector(`[data-provider-id="${id}"]`).remove();
-        }
-
-        function saveProviders() {
-            const providers = [];
-            document.querySelectorAll('[data-provider-id]').forEach(card => {
-                const provider = {};
-                card.querySelectorAll('.provider-field').forEach(field => {
-                    provider[field.dataset.field] = field.value;
-                });
-                providers.push(provider);
-            });
-            state.secureData.ehr.providers = providers;
-        }
-
-        function loadProviders() {
-            const container = document.getElementById('providers-container');
-            if (!container) return;
-            
-            container.innerHTML = '';
-            const providers = state.secureData.ehr.providers || [];
-            
-            providers.forEach(provider => {
-                addProvider();
-                const card = container.lastElementChild;
-                Object.keys(provider).forEach(field => {
-                    const input = card.querySelector(`[data-field="${field}"]`);
-                    if (input) input.value = provider[field];
-                });
-            });
-        }
-
-        // Similar functions for medications, conditions, case notes
-        function addMedication() {
-            const container = document.getElementById('medications-container');
-            const id = 'med_' + Date.now();
-            
-            const html = `
-                <div class="provider-card" data-med-id="${id}">
-                    <button class="delete-btn" onclick="removeMedication('${id}')">Remove</button>
-                    <div class="grid-3">
-                        <div class="form-group">
-                            <label>Medication</label>
-                            <input type="text" class="med-field" data-id="${id}" data-field="name">
-                        </div>
-                        <div class="form-group">
-                            <label>Dosage</label>
-                            <input type="text" class="med-field" data-id="${id}" data-field="dosage">
-                        </div>
-                        <div class="form-group">
-                            <label>Frequency</label>
-                            <input type="text" class="med-field" data-id="${id}" data-field="frequency">
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            container.insertAdjacentHTML('beforeend', html);
-        }
-
-        function removeMedication(id) {
-            document.querySelector(`[data-med-id="${id}"]`).remove();
-        }
-
-        function saveMedications() {
-            const medications = [];
-            document.querySelectorAll('[data-med-id]').forEach(card => {
-                const med = {};
-                card.querySelectorAll('.med-field').forEach(field => {
-                    med[field.dataset.field] = field.value;
-                });
-                medications.push(med);
-            });
-            state.secureData.ehr.medications = medications;
-        }
-
-        function loadMedications() {
-            const container = document.getElementById('medications-container');
-            if (!container) return;
-            
-            container.innerHTML = '';
-            const medications = state.secureData.ehr.medications || [];
-            
-            medications.forEach(med => {
-                addMedication();
-                const card = container.lastElementChild;
-                Object.keys(med).forEach(field => {
-                    const input = card.querySelector(`[data-field="${field}"]`);
-                    if (input) input.value = med[field];
-                });
-            });
-        }
-
-        function addCondition() {
-            const container = document.getElementById('conditions-container');
-            const id = 'cond_' + Date.now();
-            
-            const html = `
-                <div class="provider-card" data-condition-id="${id}">
-                    <button class="delete-btn" onclick="removeCondition('${id}')">Remove</button>
-                    <div class="form-group">
-                        <label>Condition</label>
-                        <input type="text" class="condition-field" data-id="${id}" data-field="name">
-                    </div>
-                    <div class="grid-2">
-                        <div class="form-group">
-                            <label>Diagnosed</label>
-                            <input type="date" class="condition-field" data-id="${id}" data-field="date">
-                        </div>
-                        <div class="form-group">
-                            <label>Status</label>
-                            <select class="condition-field" data-id="${id}" data-field="status">
-                                <option>Active</option>
-                                <option>Managed</option>
-                                <option>Resolved</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            container.insertAdjacentHTML('beforeend', html);
-        }
-
-        function removeCondition(id) {
-            document.querySelector(`[data-condition-id="${id}"]`).remove();
-        }
-
-        function saveConditions() {
-            const conditions = [];
-            document.querySelectorAll('[data-condition-id]').forEach(card => {
-                const condition = {};
-                card.querySelectorAll('.condition-field').forEach(field => {
-                    condition[field.dataset.field] = field.value;
-                });
-                conditions.push(condition);
-            });
-            state.secureData.ehr.conditions = conditions;
-        }
-
-        function loadConditions() {
-            const container = document.getElementById('conditions-container');
-            if (!container) return;
-            
-            container.innerHTML = '';
-            const conditions = state.secureData.ehr.conditions || [];
-            
-            conditions.forEach(condition => {
-                addCondition();
-                const card = container.lastElementChild;
-                Object.keys(condition).forEach(field => {
-                    const input = card.querySelector(`[data-field="${field}"]`);
-                    if (input) input.value = condition[field];
-                });
-            });
-        }
-
-        function addCaseNote() {
-            const container = document.getElementById('case-notes-container');
-            const id = 'note_' + Date.now();
-            const today = new Date().toISOString().split('T')[0];
-            
-            const html = `
-                <div class="case-note" data-note-id="${id}">
-                    <div class="note-header">
-                        <input type="date" class="note-field" data-id="${id}" data-field="date" value="${today}">
-                        <button class="delete-btn" onclick="removeNote('${id}')">Remove</button>
-                    </div>
-                    <div class="form-group">
-                        <label>Note</label>
-                        <textarea class="note-field" data-id="${id}" data-field="content" rows="4"></textarea>
-                    </div>
-                </div>
-            `;
-            
-            container.insertAdjacentHTML('beforeend', html);
-        }
-
-        function removeNote(id) {
-            document.querySelector(`[data-note-id="${id}"]`).remove();
-        }
-
-        function saveCaseNotes() {
-            const notes = [];
-            document.querySelectorAll('[data-note-id]').forEach(card => {
-                const note = {};
-                card.querySelectorAll('.note-field').forEach(field => {
-                    note[field.dataset.field] = field.value;
-                });
-                notes.push(note);
-            });
-            state.secureData.ehr.caseNotes = notes;
-        }
-
-        function loadCaseNotes() {
-            const container = document.getElementById('case-notes-container');
-            if (!container) return;
-            
-            container.innerHTML = '';
-            const notes = state.secureData.ehr.caseNotes || [];
-            
-            notes.forEach(note => {
-                addCaseNote();
-                const card = container.lastElementChild;
-                Object.keys(note).forEach(field => {
-                    const input = card.querySelector(`[data-field="${field}"]`);
-                    if (input) input.value = note[field];
-                });
-            });
         }
 
         // Recovery Codes
@@ -3736,32 +2906,19 @@
         }
 
         function updateSecurityUI() {
-            if (state.passwordUnlocked) {
-                document.getElementById('lockIcon').textContent = '🔒';
-                document.getElementById('lockText').textContent = 'Fully Secured';
-                document.getElementById('securityBadge').className = 'security-badge badge-password';
-                document.getElementById('ehrTab').classList.remove('hidden', 'locked');
-                document.getElementById('healthTab').classList.remove('locked');
-                document.getElementById('securityTab').classList.remove('locked');
-                document.getElementById('passwordBtn').style.display = 'inline-flex';
-            } else if (state.pinUnlocked) {
+            if (state.pinUnlocked) {
                 document.getElementById('lockIcon').textContent = '🔐';
                 document.getElementById('lockText').textContent = 'PIN Protected';
                 document.getElementById('securityBadge').className = 'security-badge badge-pin';
                 document.getElementById('healthTab').classList.remove('locked');
                 document.getElementById('securityTab').classList.remove('locked');
-                document.getElementById('ehrTab').classList.add('locked', 'hidden');
-                document.getElementById('passwordBtn').style.display = 'inline-flex';
             } else {
                 document.getElementById('lockIcon').textContent = '🔓';
                 document.getElementById('lockText').textContent = 'Public Access';
                 document.getElementById('securityBadge').className = 'security-badge badge-public';
                 document.getElementById('healthTab').classList.add('locked');
                 document.getElementById('securityTab').classList.add('locked');
-                document.getElementById('ehrTab').classList.add('locked', 'hidden');
-                document.getElementById('passwordBtn').style.display = 'none';
             }
-
             updateSecurityIndicator();
         }
 
@@ -3771,8 +2928,7 @@
                 guid: state.currentGUID,
                 timestamp: new Date().toISOString(),
                 publicData: state.publicData,
-                protectedData: state.pinUnlocked ? state.protectedData : null,
-                secureData: state.passwordUnlocked ? state.secureData : null
+                protectedData: state.pinUnlocked ? state.protectedData : null
             };
             
             const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
@@ -3784,97 +2940,6 @@
             URL.revokeObjectURL(url);
         }
 
-        async function exportEHR() {
-            // Generate HTML report
-            const report = generateEHRReport();
-            const blob = new Blob([report], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `ehr-report-${new Date().toISOString().split('T')[0]}.html`;
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        function generateEHRReport() {
-            const ehr = state.secureData.ehr || {};
-            const emergency = state.publicData.emergency || {};
-            
-            return `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Electronic Health Record</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
-                        h1 { color: #4F46E5; border-bottom: 2px solid #4F46E5; padding-bottom: 10px; }
-                        h2 { color: #666; margin-top: 30px; }
-                        .section { margin-bottom: 30px; }
-                        .field { margin: 10px 0; }
-                        .label { font-weight: bold; display: inline-block; width: 150px; }
-                        .value { display: inline-block; }
-                        .provider, .medication, .condition { 
-                            background: #f5f5f5; 
-                            padding: 10px; 
-                            margin: 10px 0; 
-                            border-radius: 5px; 
-                        }
-                    </style>
-                </head>
-                <body>
-                    <h1>Electronic Health Record</h1>
-                    <p>Generated: ${new Date().toLocaleString()}</p>
-                    
-                    <div class="section">
-                        <h2>Emergency Information</h2>
-                        <div class="field"><span class="label">Name:</span> <span class="value">${emergency.name || 'Not set'}</span></div>
-                        <div class="field"><span class="label">Blood Type:</span> <span class="value">${emergency.bloodType || 'Unknown'}</span></div>
-                        <div class="field"><span class="label">Allergies:</span> <span class="value">${emergency.allergies || 'None'}</span></div>
-                        <div class="field"><span class="label">Medications:</span> <span class="value">${emergency.medications || 'None'}</span></div>
-                        <div class="field"><span class="label">Conditions:</span> <span class="value">${emergency.conditions || 'None'}</span></div>
-                    </div>
-                    
-                    ${ehr.providers && ehr.providers.length ? `
-                        <div class="section">
-                            <h2>Healthcare Providers</h2>
-                            ${ehr.providers.map(p => `
-                                <div class="provider">
-                                    <strong>${p.name || 'Unnamed'}</strong> - ${p.specialty || 'General'}<br>
-                                    Phone: ${p.phone || 'Not provided'}
-                                </div>
-                            `).join('')}
-                        </div>
-                    ` : ''}
-                    
-                    ${ehr.medications && ehr.medications.length ? `
-                        <div class="section">
-                            <h2>Current Medications</h2>
-                            ${ehr.medications.map(m => `
-                                <div class="medication">
-                                    <strong>${m.name || 'Unnamed'}</strong><br>
-                                    Dosage: ${m.dosage || 'Not specified'}<br>
-                                    Frequency: ${m.frequency || 'Not specified'}
-                                </div>
-                            `).join('')}
-                        </div>
-                    ` : ''}
-                    
-                    ${ehr.conditions && ehr.conditions.length ? `
-                        <div class="section">
-                            <h2>Medical Conditions</h2>
-                            ${ehr.conditions.map(c => `
-                                <div class="condition">
-                                    <strong>${c.name || 'Unnamed'}</strong><br>
-                                    Status: ${c.status || 'Active'}<br>
-                                    Since: ${c.date || 'Unknown'}
-                                </div>
-                            `).join('')}
-                        </div>
-                    ` : ''}
-                </body>
-                </html>
-            `;
-        }
 
         function showURLWarning() {
             const existing = document.getElementById('url-warning');
@@ -3918,7 +2983,7 @@
             const indicator = document.getElementById('security-indicator');
             if (!indicator) return;
 
-            if (state.pinUnlocked || state.passwordUnlocked) {
+            if (state.pinUnlocked) {
                 indicator.innerHTML = `
             <span style="color: #10B981;">🔓 Unlocked</span>
             <button onclick="lockApp()" style="padding: 2px 6px; background: #EF4444; color: white; border: none; border-radius: 4px; font-size: 0.75rem;">Lock</button>
@@ -3933,7 +2998,6 @@
 
         function lockApp() {
             state.pinUnlocked = false;
-            state.passwordUnlocked = false;
             session.lock();
             updateSecurityIndicator();
             updateSecurityUI();
@@ -3942,12 +3006,7 @@
 
         // Auto-save on input
         document.addEventListener('input', function(e) {
-            if (e.target.classList.contains('protected-data') ||
-                e.target.classList.contains('ehr-data') ||
-                e.target.classList.contains('provider-field') ||
-                e.target.classList.contains('med-field') ||
-                e.target.classList.contains('condition-field') ||
-                e.target.classList.contains('note-field')) {
+            if (e.target.classList.contains('protected-data')) {
                 triggerAutoSave();
             }
         });
@@ -4001,7 +3060,6 @@
             localStorage.removeItem(`ikey_pin_temp_${state.currentGUID}`);
             if (state.currentGUID) {
                 localStorage.removeItem(`ikey_pin_hash_${state.currentGUID}`);
-                localStorage.removeItem(`ikey_password_hash_${state.currentGUID}`);
             }
             sessionStorage.removeItem('ikey_session_active');
         });
