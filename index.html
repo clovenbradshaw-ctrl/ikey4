@@ -630,12 +630,17 @@
             touch-action: manipulation;
         }
 
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+        .password-strength {
+            margin-top: 4px;
+            font-size: calc(0.875rem * var(--text-scale));
         }
 
         .size-controls {
@@ -1194,18 +1199,22 @@
                     <div class="security-tier-card">
                         <div class="tier-header">
                             <span class="tier-icon">📝</span>
-                            <h3>Level 1: PIN (Demographics)</h3>
+                            <h3>Level 1: Password (Demographics)</h3>
                         </div>
                         <div class="tier-info">
                             <p><strong>Protects:</strong> Contact info, address, phone numbers, non-medical updates</p>
-                            <p><strong>Why PIN is OK here:</strong> Lower risk data, convenience for frequent updates</p>
+                            <p><strong>Why a password is required:</strong> Lower risk data, convenience for frequent updates</p>
                         </div>
                         <div class="form-group">
-                            <label>Enter 6-Digit PIN</label>
-                            <button type="button" class="btn" onclick="requestPINForSetup()">Set PIN</button>
-                            <div id="setup-pin-display" style="display:none;">PIN Set ✓</div>
-                            <input type="hidden" id="setup-pin">
-                            <small>Easy to remember, for non-sensitive updates</small>
+                            <label for="setup-password">Create Password</label>
+                            <input type="password" id="setup-password" oninput="displayPasswordStrength(this.value)" autocomplete="new-password">
+                            <div id="password-strength" class="password-strength"></div>
+                            <small>Use at least 12 characters with a mix of letters, numbers, and symbols.</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="setup-password-confirm">Confirm Password</label>
+                            <input type="password" id="setup-password-confirm" autocomplete="new-password">
+                            <small>Re-enter your password to confirm.</small>
                         </div>
                     </div>
 
@@ -1233,7 +1242,8 @@
                     </div>
 
                     <div class="warning-box">
-                        <strong>⚠️ Important:</strong> Your PIN and password cannot be recovered if forgotten. Write them down and store safely.
+                        <strong>⚠️ Important:</strong> Your password cannot be recovered if forgotten. Store it securely.
+                      
                     </div>
                 </div>
 
@@ -1990,13 +2000,41 @@
                 }
             }
             if (step === 3) {
-                const pin = document.getElementById('setup-pin').value;
-                if (!pin || pin.length !== 6) {
-                    alert('Please enter a 6-digit PIN');
+                const password = document.getElementById('setup-password').value;
+                const confirm = document.getElementById('setup-password-confirm').value;
+                const complexity = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])/;
+                if (!password || password.length < 12) {
+                    alert('Password must be at least 12 characters');
+                    return false;
+                }
+                if (!complexity.test(password)) {
+                    alert('Use a mix of upper and lower case letters, numbers, and symbols');
+                    return false;
+                }
+                if (password !== confirm) {
+                    alert('Passwords do not match');
                     return false;
                 }
             }
             return true;
+        }
+
+        function displayPasswordStrength(password) {
+            const strengthEl = document.getElementById('password-strength');
+            if (!strengthEl) return;
+
+            let score = 0;
+            if (password.length >= 12) score++;
+            if (/[a-z]/.test(password)) score++;
+            if (/[A-Z]/.test(password)) score++;
+            if (/[0-9]/.test(password)) score++;
+            if (/[^A-Za-z0-9]/.test(password)) score++;
+
+            const levels = ['Very Weak', 'Weak', 'Fair', 'Good', 'Strong'];
+            const colors = ['#EF4444', '#F97316', '#EAB308', '#10B981', '#10B981'];
+            const idx = Math.min(score, levels.length - 1);
+            strengthEl.textContent = password ? `Strength: ${levels[idx]}` : '';
+            strengthEl.style.color = colors[idx];
         }
 
         async function completeSetup() {
@@ -2051,10 +2089,10 @@
                     contactOther: document.getElementById('setup-contact-other').value
                 };
                 
-                const pin = document.getElementById('setup-pin').value;
+                const password = document.getElementById('setup-password').value;
 
-                if (pin && pin.length === 6) {
-                    const pinHash = await hashPIN(pin);
+                if (password) {
+                    const pinHash = await hashPIN(password);
                     localStorage.setItem(`ikey_pin_hash_${state.currentGUID}`, pinHash);
                     state.pinUnlocked = true;
                 }
@@ -2559,15 +2597,6 @@
         let pinAction = null;
         let pinCallback = null;
 
-        function requestPINForSetup() {
-            pinAction = 'setup';
-            pinCallback = null;
-            document.getElementById('pin-modal').classList.add('active');
-            document.getElementById('pin-modal-title').textContent = 'Set Your 6-Digit PIN';
-            pinEntry = '';
-            updatePinDisplay();
-        }
-
         function requestPIN(action = 'unlock', callback = null) {
             if (typeof action === 'function') {
                 callback = action;
@@ -2630,14 +2659,6 @@
         }
 
         async function verifyPIN() {
-            // Handle setup flow
-            if (pinAction === 'setup') {
-                document.getElementById('setup-pin').value = pinEntry;
-                document.getElementById('setup-pin-display').style.display = 'block';
-                closePinPad();
-                return;
-            }
-
             // Handle promise-based PIN entry (zero-knowledge functions)
             if (window.pinPromiseResolve) {
                 if (pinEntry.length === 6) {
