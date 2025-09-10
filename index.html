@@ -715,6 +715,11 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="pe">Proton Email</label>
+                            <input type="email" id="pe" placeholder="name@proton.me">
+                        </div>
+
+                        <div class="form-group">
                             <label for="dob">Date of Birth</label>
                             <input type="date" id="dob">
                         </div>
@@ -826,7 +831,8 @@
                 <div id="display-view" class="hidden">
                     <h2>Emergency Medical Information</h2>
                     <div id="display-content"></div>
-                    <div style="margin-top: 20px;">
+                    <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button class="btn btn-primary" onclick="copyMedicalInfo(displayData)">📋 Copy Info</button>
                         <button class="btn btn-primary" onclick="createNew()">🆕 Create New QR Code</button>
                     </div>
                 </div>
@@ -842,6 +848,7 @@
                             <button class="btn btn-success" onclick="downloadQR('wallet')">📱 Wallet Size</button>
                             <button class="btn btn-success" onclick="downloadQR('full')">📄 Full Page</button>
                             <button class="btn btn-primary" onclick="copyURL()">📋 Copy Link</button>
+                            <button class="btn btn-primary" onclick="copyMedicalInfo()">📋 Copy Info</button>
                         </div>
                     </div>
 
@@ -1314,6 +1321,7 @@
                 pe: document.getElementById('proton-email').value.trim(),
                 n: document.getElementById('name').value.trim(),
                 pr: document.getElementById('pronouns').value.trim(),
+                pe: document.getElementById('pe').value.trim(),
                 d: document.getElementById('dob').value,
                 b: document.getElementById('blood').value,
                 a: document.getElementById('allergies').value.trim(),
@@ -1341,6 +1349,11 @@
                 <div class="info-card">
                     <div style=\"font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;\">Pronouns</div>
                     <div style=\"font-weight: 600;\">${formData.pr}</div>
+                </div>` : ''}
+                ${formData.pe ? `
+                <div class="info-card" style=\"border-left: 4px solid #6d4aff;\">
+                    <div style=\"font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;\">Proton Email</div>
+                    <div style=\"font-weight: 600;\">${formData.pe}</div>
                 </div>` : ''}
                 ${formData.d ? `
                 <div class="info-card">
@@ -1436,7 +1449,12 @@
                 ctx.fillText('MEDICAL ID', 170, 30);
                 ctx.font = '12px Arial';
                 ctx.fillText(`Name: ${formData.n}`, 170, 60);
-                ctx.fillText('Scan for full info', 170, 90);
+                let nextY = 90;
+                if (formData.pe) {
+                    ctx.fillText(`Email: ${formData.pe}`, 170, 90);
+                    nextY = 120;
+                }
+                ctx.fillText('Scan for full info', 170, nextY);
                 
                 const link = document.createElement('a');
                 link.download = 'medical-id-wallet.png';
@@ -1453,6 +1471,35 @@
         function copyURL() {
             navigator.clipboard.writeText(window.location.href).then(() => {
                 alert('Link copied to clipboard!');
+            });
+        }
+
+        function copyMedicalInfo(dataObj = formData) {
+            const data = dataObj || {};
+            const lines = [];
+            if (data.pe) lines.push(`Proton Email: ${data.pe}`);
+            if (data.n) lines.push(`Name: ${data.n}`);
+            if (data.pr) lines.push(`Pronouns: ${data.pr}`);
+            if (data.d) lines.push(`Date of Birth: ${new Date(data.d).toLocaleDateString()}`);
+            if (data.b) lines.push(`Blood Type: ${data.b}`);
+            if (data.a) lines.push(`Allergies: ${data.a}`);
+            if (data.m) lines.push(`Medications: ${data.m}`);
+            if (data.c) lines.push(`Medical Conditions: ${data.c}`);
+            if (data.ec) {
+                let ecLine = `Emergency Contact: ${data.ec}`;
+                if (data.ep) ecLine += ` (${data.ep})`;
+                if (data.er) ecLine += ` - ${data.er}`;
+                lines.push(ecLine);
+            }
+            if (data.cm) {
+                let cmLine = `Case Manager: ${data.cm}`;
+                if (data.co) cmLine += `, ${data.co}`;
+                if (data.cp) cmLine += ` (${data.cp})`;
+                lines.push(cmLine);
+            }
+
+            navigator.clipboard.writeText(lines.join('\n')).then(() => {
+                alert('Medical info copied!');
             });
         }
 
@@ -1836,6 +1883,8 @@ Generated: ${new Date().toLocaleString()}`;
             }
         }
 
+        let displayData = null;
+
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             setupCharacterCounters();
@@ -1846,12 +1895,20 @@ Generated: ${new Date().toLocaleString()}`;
                 try {
                     const decompressed = LZString.decompressFromEncodedURIComponent(hash);
                     const data = JSON.parse(decompressed);
+                    displayData = data;
                     
                     // Display existing data
                     document.getElementById('wizard-view').classList.add('hidden');
                     document.getElementById('display-view').classList.remove('hidden');
                     
                     let html = '';
+                    if (data.pe) {
+                        html += `<div class="info-card" style="border-left: 4px solid #6d4aff;">
+                            <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Proton Email</div>
+                            <div style="font-weight: 600;">${data.pe}</div>
+                        </div>`;
+                    }
+
                     if (data.n) {
                         html += `<div class="info-card">
                             <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Patient Name</div>
