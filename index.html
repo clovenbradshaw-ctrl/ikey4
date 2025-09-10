@@ -1056,25 +1056,21 @@
 
     <!-- WTTIN Tab -->
     <div id="wttin" class="tab-content">
-        <div class="container">
-            <div class="card">
-                <h2 style="margin-bottom: 20px;">Where To Turn in Nashville</h2>
-                <p style="color: var(--secondary); margin-bottom: 20px;">
+        <div style="height: calc(100vh - 120px); display: flex; flex-direction: column;">
+            <div style="padding: 20px; background: white; border-bottom: 1px solid var(--border);">
+                <h2 style="margin-bottom: 10px;">Where To Turn in Nashville</h2>
+                <p style="color: var(--secondary);">
                     Community resources and support services for Nashville residents.
                 </p>
-                <div class="iframe-container">
-                    <iframe 
-                        src="https://wttin.org" 
-                        sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-                        title="WTTIN Resources"
-                        loading="lazy">
-                    </iframe>
-                </div>
-                <div style="margin-top: 20px; text-align: center;">
-                    <a href="https://wttin.org" target="_blank" class="btn btn-primary">
-                        Open Full Site →
-                    </a>
-                </div>
+            </div>
+            <div style="flex: 1; position: relative;">
+                <iframe 
+                    src="https://wttin.org" 
+                    sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+                    title="WTTIN Resources"
+                    loading="lazy"
+                    style="width: 100%; height: 100%; border: none;">
+                </iframe>
             </div>
         </div>
     </div>
@@ -1890,99 +1886,6 @@ Generated: ${new Date().toLocaleString()}`;
                 loadWeatherForCity(cityName);
             }
         }
-
-        // Translation Widget Functions
-        const TOP5 = [
-            { code: 'es', name: 'Español' },
-            { code: 'ar', name: 'العربية' },
-            { code: 'ckb', name: 'کوردی' },
-            { code: 'so', name: 'Af-Soomaali' },
-            { code: 'my', name: 'ဗမာ' }
-        ];
-
-        // Setup translation panel toggle
-        (function setupPanel(){
-            const btn = document.getElementById('gtwToggle');
-            const panel = document.getElementById('gtwPanel');
-            
-            btn.addEventListener('click', () => {
-                const open = panel.style.display === 'block';
-                panel.style.display = open ? 'none' : 'block';
-                btn.setAttribute('aria-expanded', String(!open));
-            });
-            
-            // Close panel when clicking outside
-            document.addEventListener('click', (e) => {
-                if (!panel.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
-                    panel.style.display = 'none';
-                    btn.setAttribute('aria-expanded', 'false');
-                }
-            });
-        })();
-
-        // Setup quick-pick chips
-        (function setupQuickPicks(){
-            const chips = document.getElementById('gtwQuick');
-            
-            TOP5.forEach(({ code, name }) => {
-                const el = document.createElement('button');
-                el.className = 'gtw-chip';
-                el.type = 'button';
-                el.textContent = name;
-                el.setAttribute('data-lang', code);
-                el.setAttribute('title', `Translate to ${name}`);
-                el.addEventListener('click', () => {
-                    applyTranslation(code);
-                    document.getElementById('gtwPanel').style.display = 'none';
-                    document.getElementById('gtwToggle').setAttribute('aria-expanded', 'false');
-                });
-                chips.appendChild(el);
-            });
-        })();
-
-        // Apply translation programmatically
-        function applyTranslation(targetCode) {
-            const src = (document.documentElement.getAttribute('lang') || 'en').toLowerCase();
-            const path = `/${src}/${targetCode}`;
-            const d = new Date();
-            d.setTime(d.getTime() + (365*24*60*60*1000));
-            
-            document.cookie = `googtrans=${path};expires=${d.toUTCString()};path=/`;
-            document.cookie = `googtrans=${path};domain=${location.hostname};expires=${d.toUTCString()};path=/`;
-            
-            if (window.google && google.translate && google.translate.TranslateElement) {
-                document.getElementById('google_translate_element').innerHTML = '';
-                new google.translate.TranslateElement(_gtConfig(), 'google_translate_element');
-            } else {
-                location.reload();
-            }
-        }
-
-        // Google Translate configuration
-        function _gtConfig() {
-            const pageLang = (document.documentElement.getAttribute('lang') || 'en').toLowerCase();
-            const included = ['es','ar','ckb','so','my','vi','zh-CN','fr','de','pt','ja','ko','ru','hi','it','ne','am','ur','tl'];
-            
-            return {
-                pageLanguage: pageLang,
-                includedLanguages: included.join(','),
-                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-                multilanguagePage: true,
-                autoDisplay: false
-            };
-        }
-
-        window.googleTranslateElementInit = function () {
-            new google.translate.TranslateElement(_gtConfig(), 'google_translate_element');
-        };
-
-        // Load Google Translate script
-        (function loadGT() {
-            var s = document.createElement('script');
-            s.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-            s.async = true;
-            document.head.appendChild(s);
-        })();
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
