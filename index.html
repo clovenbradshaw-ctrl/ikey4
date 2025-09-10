@@ -1501,7 +1501,7 @@
             let pin = await promptForPIN();
             if (!pin) return null;
             try {
-                const pinKey = await deriveKeyFromPIN(pin);
+                const pinKey = await deriveKeyFromPassword(pin);
                 const result = await callback(pinKey);
                 crypto.getRandomValues(pinKey);
                 return result;
@@ -1551,7 +1551,7 @@
                     throw new Error('Invalid PIN');
                 }
                 this.sessionKey = crypto.getRandomValues(new Uint8Array(32));
-                const pinKey = await deriveKeyFromPIN(pin);
+                const pinKey = await deriveKeyFromPassword(pin);
                 const stored = localStorage.getItem(`ikey_${state.currentGUID}_protected`);
                 const decrypted = await decrypt(stored, pinKey);
                 this.protectedCache = await encrypt(decrypted, this.sessionKey);
@@ -2241,6 +2241,38 @@
 
         async function generateKey() {
             return crypto.getRandomValues(new Uint8Array(32));
+        }
+
+        async function deriveKeyFromPassword(password) {
+            const encoder = new TextEncoder();
+            let salt = localStorage.getItem(`ikey_salt_${state.currentGUID}`);
+            if (salt) {
+                salt = Uint8Array.from(atob(salt), c => c.charCodeAt(0));
+            } else {
+                salt = crypto.getRandomValues(new Uint8Array(32));
+                localStorage.setItem(`ikey_salt_${state.currentGUID}`, btoa(String.fromCharCode(...salt)));
+            }
+
+            const keyMaterial = await crypto.subtle.importKey(
+                'raw',
+                encoder.encode(password),
+                { name: 'PBKDF2' },
+                false,
+                ['deriveBits']
+            );
+
+            const derivedBits = await crypto.subtle.deriveBits(
+                {
+                    name: 'PBKDF2',
+                    salt,
+                    iterations: 500000,
+                    hash: 'SHA-256'
+                },
+                keyMaterial,
+                256
+            );
+
+            return new Uint8Array(derivedBits);
         }
 
         async function deriveKeyFromPIN(pin) {
