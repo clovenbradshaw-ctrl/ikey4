@@ -1283,6 +1283,13 @@
         }
 
         function validateStep(step) {
+            // Require `pe` (permission/consent field) to be present when advancing
+            const peField = document.getElementById('pe');
+            if (peField && !peField.value.trim()) {
+                alert('Please provide the required permission information');
+                return false;
+            }
+
             if (step === 2) {
                 const email = document.getElementById('proton-email').value.trim();
                 const regex = /^[a-zA-Z0-9._%+-]+@(proton\.me|protonmail\.com)$/;
@@ -1300,7 +1307,11 @@
                 }
             }
 
+<<<<<<< codex/expand-validatestep-to-check-for-pe
+            if (step === 4) {
+=======
             if (step === 5) {
+>>>>>>> main
                 const ecName = document.getElementById('ec-name').value.trim();
                 const ecPhone = document.getElementById('ec-phone').value.trim();
                 if (!ecName || !ecPhone) {
@@ -1314,8 +1325,14 @@
 
         function showReview() {
             formData = {
+<<<<<<< codex/expand-validatestep-to-check-for-pe
+                // Schema version bumped for `pe` addition
+                v: 2,
+                pe: document.getElementById('pe') ? document.getElementById('pe').value.trim() : '',
+=======
                 v: 1,
                 pe: document.getElementById('proton-email').value.trim(),
+>>>>>>> main
                 n: document.getElementById('name').value.trim(),
                 pr: document.getElementById('pronouns').value.trim(),
                 pe: document.getElementById('pe').value.trim(),
@@ -1892,7 +1909,11 @@ Generated: ${new Date().toLocaleString()}`;
                 try {
                     const decompressed = LZString.decompressFromEncodedURIComponent(hash);
                     const data = JSON.parse(decompressed);
+<<<<<<< codex/expand-validatestep-to-check-for-pe
+                    // `pe` was introduced in schema v2; older QR codes may omit it
+=======
                     displayData = data;
+>>>>>>> main
                     
                     // Display existing data
                     document.getElementById('wizard-view').classList.add('hidden');
