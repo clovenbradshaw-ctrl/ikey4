@@ -1387,13 +1387,9 @@
         }
 
         function validateStep(step) {
-            // Require `pe` (permission/consent field) to be present when advancing
-            const peField = document.getElementById('pe');
-            if (peField && !peField.value.trim()) {
-                alert('Please provide the required permission information');
-                return false;
-            }
+            // Validate fields only when their step is active
 
+            // Step 2: require a valid Proton email
             if (step === 2) {
                 const email = document.getElementById('proton-email').value.trim();
                 const regex = /^[a-zA-Z0-9._%+-]+@(proton\.me|protonmail\.com)$/;
@@ -1403,6 +1399,16 @@
                 }
             }
 
+            // Step 3+: require personal Proton email field
+            if (step >= 3) {
+                const peField = document.getElementById('pe');
+                if (peField && !peField.value.trim()) {
+                    alert('Please provide your Proton email');
+                    return false;
+                }
+            }
+
+            // Step 3: require name
             if (step === 3) {
                 const name = document.getElementById('name').value.trim();
                 if (!name) {
@@ -1411,11 +1417,8 @@
                 }
             }
 
-
-            if (step === 4) {
-
+            // Step 5: require emergency contact info
             if (step === 5) {
-
                 const ecName = document.getElementById('ec-name').value.trim();
                 const ecPhone = document.getElementById('ec-phone').value.trim();
                 if (!ecName || !ecPhone) {
