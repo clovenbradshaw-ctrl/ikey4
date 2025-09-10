@@ -737,11 +737,6 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="pe">Proton Email</label>
-                            <input type="email" id="pe" placeholder="name@proton.me">
-                        </div>
-
-                        <div class="form-group">
                             <label for="dob">Date of Birth</label>
                             <input type="date" id="dob">
                         </div>
@@ -1283,13 +1278,6 @@
         }
 
         function validateStep(step) {
-            // Require `pe` (permission/consent field) to be present when advancing
-            const peField = document.getElementById('pe');
-            if (peField && !peField.value.trim()) {
-                alert('Please provide the required permission information');
-                return false;
-            }
-
             if (step === 2) {
                 const email = document.getElementById('proton-email').value.trim();
                 const regex = /^[a-zA-Z0-9._%+-]+@(proton\.me|protonmail\.com)$/;
@@ -1323,7 +1311,7 @@
             formData = {
                 // Schema version bumped for `pe` addition
                 v: 2,
-                pe: document.getElementById('pe') ? document.getElementById('pe').value.trim() : '',
+                pe: document.getElementById('proton-email') ? document.getElementById('proton-email').value.trim() : '',
                 n: document.getElementById('name').value.trim(),
                 pr: document.getElementById('pronouns').value.trim(),
                 d: document.getElementById('dob').value,
@@ -1345,7 +1333,7 @@
                     <div style="font-weight: 600;">${formData.n || 'Not provided'}</div>
                 </div>
                 ${formData.pe ? `
-                <div class="info-card">
+                <div class="info-card" style=\"border-left: 4px solid #6d4aff;\">
                     <div style=\"font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;\">Proton Email</div>
                     <div style=\"font-weight: 600;\">${formData.pe}</div>
                 </div>` : ''}
@@ -1353,11 +1341,6 @@
                 <div class="info-card">
                     <div style=\"font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;\">Pronouns</div>
                     <div style=\"font-weight: 600;\">${formData.pr}</div>
-                </div>` : ''}
-                ${formData.pe ? `
-                <div class="info-card" style=\"border-left: 4px solid #6d4aff;\">
-                    <div style=\"font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;\">Proton Email</div>
-                    <div style=\"font-weight: 600;\">${formData.pe}</div>
                 </div>` : ''}
                 ${formData.d ? `
                 <div class="info-card">
