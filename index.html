@@ -1473,10 +1473,10 @@ GPS: ${currentLocation.latitude}, ${currentLocation.longitude}
 ADDRESS: ${currentLocation.address}
 INTERSECTION: ${currentLocation.crossStreets}
 PLUS CODE: ${currentLocation.plusCode}
-MAPS: https://maps.google.com/?q=${currentLocation.latitude},${currentLocation.longitude}
+MAPS: https://maps.google.com/?q=${currentLocation.latitude},${currentLocation.longitude}${formData.pe ? `\nPROTON EMAIL: ${formData.pe}` : ''}
 
 Generated: ${new Date().toLocaleString()}`;
-                
+
                 navigator.clipboard.writeText(allInfo)
                     .then(() => alert('All location info copied!'));
             }
