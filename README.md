@@ -8,7 +8,7 @@ iKey Health is a client-side encrypted, progressive web application for storing 
 
 ### Three-Tier Security Model
 
-The system implements a progressive disclosure model with three security levels:
+The system implements a progressive disclosure model with two security levels:
 
 1. **Public Tier (Emergency Information)**
    - Accessible via QR code without authentication
@@ -16,16 +16,10 @@ The system implements a progressive disclosure model with three security levels:
    - Encrypted with a base key embedded in the QR code
    - Designed for first responders in emergency situations
 
-2. **PIN-Protected Tier (Health Records)**
-   - Requires 6-digit PIN authentication
-   - Contains medical history, surgeries, family history, health notes
-   - PIN serves as encryption key derivation source (PBKDF2, 100,000 iterations)
-
-3. **Password-Protected Tier (Full EHR)**
-   - Requires strong password (8+ characters)
-   - Contains comprehensive electronic health records
-   - Includes provider management, detailed medications, conditions tracking, case notes
-   - Password derives strongest encryption key (PBKDF2, 200,000 iterations)
+2. **Password-Protected Tier (Health Records)**
+   - Requires a strong password for access
+   - Contains medical history, surgeries, family history, health notes, and detailed records
+   - Password serves as the encryption key derivation source (PBKDF2, 100,000 iterations)
 
 ## Security Implementation
 
@@ -36,14 +30,13 @@ User Data → JSON → AES-256-GCM Encryption → Base64 → localStorage
                         ↑
                     Derived Key
                         ↑
-                PIN/Password + GUID + Salt → PBKDF2
+                Password + GUID + Salt → PBKDF2
 ```
 
 - **Key Derivation**: Uses Web Crypto API's PBKDF2 with SHA-256
 - **Encryption**: AES-256-GCM with random 12-byte IV per encryption
 - **Key Hierarchy**:
   - Base Key: Random 32-byte key for emergency data
-  - PIN Key: Derived from 6-digit PIN + GUID
   - Password Key: Derived from password + GUID + "secure" salt
 
 ### Client-Side Security Features
@@ -51,8 +44,8 @@ User Data → JSON → AES-256-GCM Encryption → Base64 → localStorage
 - All encryption/decryption happens in-browser
 - No plaintext data transmitted to servers
 - Keys never leave the client
-- PIN and password ARE the encryption keys (not just authentication)
- - Cannot recover forgotten PIN/password
+- Password is the encryption key (not just authentication)
+- Cannot recover forgotten password
 
 ## Data Storage
 
@@ -224,17 +217,15 @@ https://example.com/ikey.html#a1b2c3d4-e5f6-7890-abcd-ef1234567890:SGVsbG9Xb3JsZ
 
 ## Recovery Mechanisms
 
-A recovery key file provides an alternate login path if your PIN or password is lost. The key file is automatically downloaded during setup and whenever you change your PIN or EHR password. It is encrypted using the application's base URL—store it securely as a new key file is required after each credential change.
+A recovery key file provides an alternate login path if your password is lost. The key file is automatically downloaded during setup and whenever you change your password. It is encrypted using the application's base URL—store it securely as a new key file is required after each credential change.
 
 ## User Experience Features
 
 ### Keyboard Support
 
-PIN entry supports full keyboard interaction:
-- **Number keys (0-9)**: Enter PIN digits
-- **Backspace/Delete**: Clear current entry
-- **Enter**: Confirm when 6 digits entered
-- **Escape**: Cancel PIN entry
+Password entry supports full keyboard interaction:
+- **Enter**: Submit password
+- **Escape**: Cancel entry
 - **Tab navigation**: Accessible interface
 
 ### Auto-Save System
@@ -250,13 +241,11 @@ Input Change → 2s Debounce → Encrypt → Save to localStorage → Sync to Cl
 
 ### Progressive Disclosure
 
-1. **Initial Setup**: Minimal (name + emergency info + PIN)
-2. **Health Records**: Unlock with PIN when needed
-3. **Full EHR**: Add password for comprehensive records
-4. **Visual Security Indicators**:
+1. **Initial Setup**: Minimal (name + emergency info + password)
+2. **Health Records**: Unlock with password when needed
+3. **Visual Security Indicators**:
    - 🔓 Public Access (gray badge)
-   - 🔐 PIN Protected (blue badge)
-   - 🔒 Fully Secured (purple badge)
+   - 🔐 Password Protected (blue badge)
 
 ## Archive.org Integration Strategy
 
@@ -289,7 +278,7 @@ async function archiveToWayback(data) {
 - **Defense in depth**: Multiple encryption tiers
 - **Client-side encryption**: Uses modern Web Crypto API
 - **No account system**: Reduces attack surface
-- **Deterministic key derivation**: PIN/password reproducibly generate same keys
+- **Deterministic key derivation**: Password reproducibly generates the same keys
 - **Forward secrecy**: Each encryption uses new IV
 
 ### Limitations
@@ -305,7 +294,7 @@ async function archiveToWayback(data) {
 | Threat | Mitigation |
 |--------|------------|
 | Server compromise | Client-side encryption, zero-knowledge |
-| Device theft | PIN/password protection |
+| Device theft | Password protection |
 | XSS attacks | Content Security Policy, input sanitization |
 | Network interception | HTTPS only, encrypted payloads |
 | Brute force | PBKDF2 high iterations, rate limiting |
@@ -315,12 +304,12 @@ async function archiveToWayback(data) {
 
 When working with this codebase:
 
-1. **Never log sensitive data**: PINs, passwords, or decrypted medical information
+1. **Never log sensitive data**: passwords or decrypted medical information
 2. **Maintain encryption boundaries**: Don't decrypt unnecessarily
 3. **Respect security tiers**: Each tier has specific access requirements
 4. **Handle crypto errors gracefully**: Invalid keys should fail safely
 5. **Preserve client-side nature**: Avoid server dependencies for core functionality
-6. **Test edge cases**: Wrong PIN, corrupted data, browser storage limits
+6. **Test edge cases**: Wrong password, corrupted data, browser storage limits
 7. **Consider offline-first**: Should work without network connection
 8. **Validate all inputs**: Especially before encryption operations
 
