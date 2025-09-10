@@ -8,7 +8,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'none';">
-    <title>iKey Health - Secure Medical System</title>
+    <title>iKey Emergency Hub - Emergency Resource System</title>
     <style>
         * {
             margin: 0;
@@ -1067,8 +1067,8 @@
     <div id="setup-wizard" class="setup-wizard hidden">
         <div class="wizard-container">
             <div class="wizard-header">
-                <h1>🔑 Welcome to iKey Health</h1>
-                <p>Your secure, tiered medical information system</p>
+                <h1>🔑 Welcome to iKey Emergency</h1>
+                <p>Your emergency resource and contact hub</p>
             </div>
             
             <div class="wizard-progress">
@@ -1094,12 +1094,12 @@
                 <!-- Step 1: Welcome -->
                 <div class="wizard-step active" data-step="1">
                     <h2>Two Levels of Security</h2>
-                    <p style="margin-bottom: 20px;">iKey Health protects your medical information with two security tiers:</p>
+                    <p style="margin-bottom: 20px;">iKey provides essential emergency tools with two security tiers:</p>
                     
                     <div class="info-card">
                         <span class="info-card-icon">🚨</span>
                         <div class="info-card-content">
-                            <div class="info-card-label">Level 1: Emergency (QR Code)</div>
+                            <div class="info-card-label">Level 1: Emergency Contacts (QR Code)</div>
                             <div class="info-card-value">Critical info for first responders - accessible via QR code</div>
                         </div>
                     </div>
@@ -1107,8 +1107,8 @@
                     <div class="info-card">
                         <span class="info-card-icon">📝</span>
                         <div class="info-card-content">
-                            <div class="info-card-label">Level 2: Demographics (PIN)</div>
-                            <div class="info-card-value">Contact info and basic details - protected by 6-digit PIN</div>
+                            <div class="info-card-label">Level 2: Settings (PIN)</div>
+                            <div class="info-card-value">Manage secure settings and documents</div>
                         </div>
                     </div>
 
@@ -1119,7 +1119,7 @@
                 
                 <!-- Step 2: Emergency Info -->
                 <div class="wizard-step" data-step="2">
-                    <h2>Emergency Information</h2>
+                    <h2>Emergency Contact Information</h2>
                     <p style="margin-bottom: 20px;">This information will be accessible to first responders via QR code:</p>
                     
                     <div class="form-group">
@@ -1193,57 +1193,24 @@
                 
                 <!-- Step 3: Security Setup -->
                 <div class="wizard-step" data-step="3">
-                    <h2>Set Up Your Security Layers</h2>
-                    <p style="margin-bottom: 20px;">Your data is protected by multiple security layers. Set each one:</p>
+                    <h2>Set Up Your Security</h2>
+                    <p style="margin-bottom: 20px;">Create a password to protect your data and settings:</p>
 
-                    <div class="security-tier-card">
-                        <div class="tier-header">
-                            <span class="tier-icon">📝</span>
-                            <h3>Level 1: Password (Demographics)</h3>
-                        </div>
-                        <div class="tier-info">
-                            <p><strong>Protects:</strong> Contact info, address, phone numbers, non-medical updates</p>
-                            <p><strong>Why a password is required:</strong> Lower risk data, convenience for frequent updates</p>
-                        </div>
-                        <div class="form-group">
-                            <label for="setup-password">Create Password</label>
-                            <input type="password" id="setup-password" oninput="displayPasswordStrength(this.value)" autocomplete="new-password">
-                            <div id="password-strength" class="password-strength"></div>
-                            <small>Use at least 12 characters with a mix of letters, numbers, and symbols.</small>
-                        </div>
-                        <div class="form-group">
-                            <label for="setup-password-confirm">Confirm Password</label>
-                            <input type="password" id="setup-password-confirm" autocomplete="new-password">
-                            <small>Re-enter your password to confirm.</small>
-                        </div>
+                    <div class="form-group">
+                        <label for="setup-password">Create Password</label>
+                        <input type="password" id="setup-password" oninput="displayPasswordStrength(this.value)" autocomplete="new-password">
+                        <div id="password-strength" class="password-strength"></div>
+                        <small>Use at least 12 characters with a mix of letters, numbers, and symbols.</small>
                     </div>
-
-                    <div class="security-tier-card">
-                        <div class="tier-header">
-                            <span class="tier-icon">🔐</span>
-                            <h3>Level 2: Password (Full EHR)</h3>
-                        </div>
-                        <div class="tier-info">
-                            <p><strong>Protects:</strong> Complete health records and sensitive data</p>
-                            <p><strong>Use a strong password:</strong> 8+ characters combining letters, numbers, and symbols</p>
-                        </div>
-                        <div class="form-group">
-                            <label>Set Password</label>
-                            <input type="password" id="setup-password" placeholder="Enter strong password" oninput="displayPasswordStrength(this.value)">
-                            <div id="password-strength" style="margin-top:8px;"></div>
-                            <ul id="password-requirements" style="list-style:none; padding-left:0; font-size:0.875rem; color: var(--danger);">
-                                <li id="req-length" data-text="At least 8 characters">✗ At least 8 characters</li>
-                                <li id="req-lower" data-text="Lowercase letter">✗ Lowercase letter</li>
-                                <li id="req-upper" data-text="Uppercase letter">✗ Uppercase letter</li>
-                                <li id="req-digit" data-text="Number">✗ Number</li>
-                                <li id="req-special" data-text="Special character">✗ Special character</li>
-                            </ul>
-                        </div>
+                    <div class="form-group">
+                        <label for="setup-password-confirm">Confirm Password</label>
+                        <input type="password" id="setup-password-confirm" autocomplete="new-password">
+                        <small>Re-enter your password to confirm.</small>
                     </div>
 
                     <div class="warning-box">
                         <strong>⚠️ Important:</strong> Your password cannot be recovered if forgotten. Store it securely.
-                      
+
                     </div>
                 </div>
 
@@ -1255,7 +1222,7 @@
                         <div id="setup-qrcode"></div>
                     </div>
                     
-                    <p style="margin-bottom: 20px;">Your iKey Health system is ready! Here's what you can do:</p>
+                    <p style="margin-bottom: 20px;">Your emergency resource hub is ready! Here's what you can do:</p>
                     
                     <div class="info-card">
                         <span class="info-card-icon">📱</span>
@@ -1300,7 +1267,7 @@
         <div class="header">
             <div class="logo">
                 <span>🔑</span>
-                <span>iKey Health</span>
+                <span>iKey Emergency</span>
             </div>
             <div class="header-controls">
                 <div class="security-badge badge-public" id="securityBadge">
@@ -1323,20 +1290,26 @@
         <!-- Navigation Tabs -->
         <div class="nav-tabs" id="navTabs">
             <button class="nav-tab active" onclick="showTab('emergency')" data-tab="emergency">
-                🚨 Emergency
+                🚨 Emergency Info
             </button>
-            <button class="nav-tab locked" onclick="showTab('health')" data-tab="health" id="healthTab">
-                🏥 Health Info
+            <button class="nav-tab" onclick="showTab('locate911')" data-tab="locate911">
+                📍 911 Location
+            </button>
+            <button class="nav-tab" onclick="showTab('filen')" data-tab="filen">
+                ☁️ Secure Storage
+            </button>
+            <button class="nav-tab" onclick="showTab('resources')" data-tab="resources">
+                📚 Resources
             </button>
             <button class="nav-tab locked" onclick="showTab('security')" data-tab="security" id="securityTab">
-                🔒 Security &amp; Settings
+                🔒 Settings
             </button>
         </div>
 
         <!-- Emergency Section (Public Tier) -->
         <div class="content-section active" id="emergency-section">
             <div class="section-header">
-                <h2>Emergency Medical Information</h2>
+                <h2>Emergency Information</h2>
             </div>
             <div id="emergency-display"></div>
             <div class="btn-group mt-4">
@@ -1357,36 +1330,108 @@
             </div>
         </div>
 
-        <!-- Health Section (PIN Tier) -->
-        <div class="content-section" id="health-section">
+        <!-- 911 Location Widget Section -->
+        <div class="content-section" id="locate911-section">
             <div class="section-header">
-                <h2>Health Information</h2>
+                <h2>Emergency Location for 911</h2>
+                <p style="color: var(--text-secondary); margin-top: 8px;">
+                    Instantly share your exact location with emergency responders
+                </p>
             </div>
-            
-            <div class="form-group">
-                <label>Current Medical Conditions</label>
-                <textarea id="conditions" class="protected-data" data-field="conditions" placeholder="List current medical conditions..."></textarea>
+
+            <div class="warning-box">
+                <strong>When to use:</strong> Open this tab during an emergency to get your precise GPS coordinates, nearest address, and cross streets to share with 911 operators.
             </div>
-            
-            <div class="form-group">
-                <label>Past Surgeries</label>
-                <textarea id="surgeries" class="protected-data" data-field="surgeries" placeholder="List past surgeries..."></textarea>
+
+            <div id="location-widget-container" style="margin-top: 20px; min-height: 600px;">
+                <!-- Widget loads here dynamically -->
             </div>
-            
-            <div class="form-group">
-                <label>Family Medical History</label>
-                <textarea id="family-history" class="protected-data" data-field="familyHistory" placeholder="Relevant family medical history..."></textarea>
+        </div>
+
+        <!-- Filen Secure Storage Section -->
+        <div class="content-section" id="filen-section">
+            <div class="section-header">
+                <h2>Secure Document Storage</h2>
+                <p style="color: var(--text-secondary); margin-top: 8px;">
+                    Store important documents with zero-knowledge encryption
+                </p>
             </div>
-            
-            <div class="form-group">
-                <label>Notes</label>
-                <textarea id="health-notes" class="protected-data" data-field="notes" placeholder="Additional health notes..."></textarea>
+
+            <div class="info-box" style="background: rgba(79, 70, 229, 0.05);">
+                <strong>Store Your Critical Documents Securely:</strong><br>
+                • Medical records and test results<br>
+                • Insurance cards and policies<br>
+                • Legal documents and directives<br>
+                • Emergency contact lists<br>
+                • Prescription information
             </div>
-            
-            <button class="btn btn-success" onclick="saveHealthInfo()">
-                💾 Save Health Information
-            </button>
-            
+
+            <div class="grid-2" style="margin-top: 20px;">
+                <div class="info-card">
+                    <span class="info-card-icon">🔐</span>
+                    <div class="info-card-content">
+                        <div class="info-card-label">END-TO-END ENCRYPTED</div>
+                        <div class="info-card-value">Files encrypted before leaving your device</div>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <span class="info-card-icon">💾</span>
+                    <div class="info-card-content">
+                        <div class="info-card-label">10GB FREE</div>
+                        <div class="info-card-value">No credit card required</div>
+                    </div>
+                </div>
+            </div>
+
+            <a href="https://filen.io" target="_blank" class="btn btn-success" style="width: 100%; margin-top: 20px; text-decoration: none;">
+                Open Filen.io →
+            </a>
+
+            <p style="margin-top: 16px; font-size: 0.875rem; color: var(--text-secondary);">
+                Filen uses client-side AES-256 encryption. Your files are encrypted on your device - even Filen cannot read them.
+            </p>
+        </div>
+
+        <!-- Community Resources Section -->
+        <div class="content-section" id="resources-section">
+            <div class="section-header">
+                <h2>Nashville Community Resources</h2>
+                <p style="color: var(--text-secondary); margin-top: 8px;">
+                    Where to Turn in Nashville - Local support services
+                </p>
+            </div>
+
+            <div class="resource-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-top: 20px;">
+                <div class="info-box">
+                    <strong>🏥 Medical</strong><br>
+                    Free clinics, mental health, prescriptions
+                </div>
+                <div class="info-box">
+                    <strong>🏠 Housing</strong><br>
+                    Shelters, rent assistance, transitional housing
+                </div>
+                <div class="info-box">
+                    <strong>🍽️ Food</strong><br>
+                    Food banks, soup kitchens, SNAP benefits
+                </div>
+                <div class="info-box">
+                    <strong>💼 Employment</strong><br>
+                    Job training, placement services, career help
+                </div>
+                <div class="info-box">
+                    <strong>⚖️ Legal</strong><br>
+                    Legal aid, documentation, benefits assistance
+                </div>
+                <div class="info-box">
+                    <strong>👨‍👩‍👧 Family</strong><br>
+                    Childcare, parenting support, youth services
+                </div>
+            </div>
+
+            <a href="https://wttin.org" target="_blank" class="btn btn-success" style="width: 100%; margin-top: 20px; text-decoration: none;">
+                Visit WTTIN.org for Full Directory →
+            </a>
         </div>
 
         <!-- Security Section (PIN Tier) -->
@@ -1398,7 +1443,7 @@
             <div class="mb-4">
                 <h3>PIN Management</h3>
                 <p style="color: var(--text-secondary); margin-top: 8px; font-size: 0.875rem;">
-                    Set and manage your PIN for accessing protected health data.
+                    Set and manage your PIN for accessing protected settings.
                 </p>
             </div>
             
@@ -1478,9 +1523,7 @@
                 emergency: {}
             },
 
-            protectedData: {
-                health: {}
-            }
+            protectedData: {}
         };
 
         function promptForPIN() {
@@ -1807,7 +1850,7 @@
                 }
             }
             if (instances.length > 1) {
-                const choice = confirm('Multiple medical profiles detected.\nWould you like to switch profiles?');
+                const choice = confirm('Multiple profiles detected.\nWould you like to switch profiles?');
                 if (choice) {
                     const selected = prompt(
                         'Enter profile number:\n' +
@@ -1825,7 +1868,7 @@
         }
 
         function createNewInstance() {
-            if (confirm('Create a new medical profile? Current data will be preserved.')) {
+            if (confirm('Create a new profile? Current data will be preserved.')) {
                 state.currentGUID = null;
                 state.pinUnlocked = false;
                 window.location.hash = '';
@@ -2911,26 +2954,6 @@
             displayEmergencyInfo();
         }
 
-        // Health Info Management
-        function loadHealthInfo() {
-            const data = state.protectedData.health || {};
-            document.getElementById('conditions').value = data.conditions || '';
-            document.getElementById('surgeries').value = data.surgeries || '';
-            document.getElementById('family-history').value = data.familyHistory || '';
-            document.getElementById('health-notes').value = data.notes || '';
-        }
-
-        async function saveHealthInfo() {
-            state.protectedData.health = {
-                conditions: document.getElementById('conditions').value,
-                surgeries: document.getElementById('surgeries').value,
-                familyHistory: document.getElementById('family-history').value,
-                notes: document.getElementById('health-notes').value
-            };
-
-            await saveWithFeedback('health');
-        }
-
         // QR Code Generation
         function generateMainQR() {
             if (typeof QRCode === 'undefined') {
@@ -2967,9 +2990,32 @@
             }
         }
 
+        // Function to inject 911 location widget
+        function load911Widget() {
+            const container = document.getElementById('location-widget-container');
+            if (!container || container.dataset.loaded === 'true') return;
+
+            // Create iframe for widget
+            const iframe = document.createElement('iframe');
+            iframe.style.cssText = 'width: 100%; height: 650px; border: none; border-radius: 12px;';
+            iframe.sandbox = 'allow-scripts allow-same-origin allow-geolocation';
+
+            // Use the HTML from document 2
+            const widgetHTML = `[INSERT FULL HTML FROM DOCUMENT 2 HERE]`;
+
+            // Create blob URL
+            const blob = new Blob([widgetHTML], { type: 'text/html' });
+            iframe.src = URL.createObjectURL(blob);
+
+            container.innerHTML = '';
+            container.appendChild(iframe);
+            container.dataset.loaded = 'true';
+        }
+
         // Tab Navigation
         function showTab(tabName) {
-            if (!state.pinUnlocked && (tabName === 'health' || tabName === 'security')) {
+            // Only require PIN for security tab now
+            if (!state.pinUnlocked && tabName === 'security') {
                 requestPIN('unlock', () => showTab(tabName));
                 return;
             }
@@ -2985,6 +3031,11 @@
             });
 
             document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+
+            // Load 911 widget when tab opens
+            if (tabName === 'locate911') {
+                load911Widget();
+            }
         }
 
         // Recovery Codes
@@ -3021,13 +3072,11 @@
                 document.getElementById('lockIcon').textContent = '🔐';
                 document.getElementById('lockText').textContent = 'PIN Protected';
                 document.getElementById('securityBadge').className = 'security-badge badge-pin';
-                document.getElementById('healthTab').classList.remove('locked');
                 document.getElementById('securityTab').classList.remove('locked');
             } else {
                 document.getElementById('lockIcon').textContent = '🔓';
                 document.getElementById('lockText').textContent = 'Public Access';
                 document.getElementById('securityBadge').className = 'security-badge badge-public';
-                document.getElementById('healthTab').classList.add('locked');
                 document.getElementById('securityTab').classList.add('locked');
             }
             updateSecurityIndicator();
@@ -3061,7 +3110,7 @@
         <div style="position: fixed; top: 0; left: 0; right: 0; background: #FEF3C7; border-bottom: 3px solid #F59E0B; padding: 12px; z-index: 4000; display: flex; align-items: center; gap: 12px;">
             <span style="font-size: 1.5rem;">⚠️</span>
             <div style="flex: 1;">
-                <strong>Important:</strong> This URL is your key to access your medical data. 
+                <strong>Important:</strong> This URL is your key to access your data.
                 <button onclick="navigator.clipboard.writeText(window.location.href); this.textContent='Copied!'" style="margin-left: 8px; padding: 4px 8px; background: #F59E0B; color: white; border: none; border-radius: 4px;">Copy URL</button>
                 <button onclick="document.getElementById('url-warning').remove()" style="margin-left: 8px; padding: 4px 8px; background: #666; color: white; border: none; border-radius: 4px;">I've Saved It</button>
             </div>
