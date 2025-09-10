@@ -910,12 +910,11 @@
                 </div>
                 
                 <div id="weather-content" style="display: none;">
-                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 25px;">
                         <div>
                             <h2 id="weather-location">Nashville</h2>
                             <p id="weather-coords" style="color: var(--secondary); font-size: 0.9rem;"></p>
                         </div>
-                        <button class="btn btn-primary" onclick="useMyLocation()">📍 My Location</button>
                     </div>
                     
                     <div style="margin-bottom: 20px;">
@@ -1758,41 +1757,11 @@ Generated: ${new Date().toLocaleString()}`;
             }
         }
 
-        async function useMyLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    async (position) => {
-                        const lat = position.coords.latitude;
-                        const lon = position.coords.longitude;
-                        
-                        try {
-                            const weatherData = await fetchWeatherData(lat, lon);
-                            const locationInfo = {
-                                latitude: lat,
-                                longitude: lon,
-                                name: 'Your Location',
-                                country: '',
-                                admin1: ''
-                            };
-                            
-                            updateWeatherUI(weatherData, locationInfo);
-                            document.getElementById('city-input').value = 'My Location';
-                        } catch (error) {
-                            alert('Error loading weather for your location');
-                        }
-                    },
-                    () => {
-                        alert('Unable to get your location. Please enable location services.');
-                    }
-                );
-            }
-        }
-
         function changeWeatherLocation() {
             const cityInput = document.getElementById('city-input');
             const cityName = cityInput.value.trim();
-            
-            if (cityName && cityName !== 'My Location') {
+
+            if (cityName) {
                 loadWeatherForCity(cityName);
             }
         }
