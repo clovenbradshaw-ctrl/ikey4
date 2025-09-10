@@ -73,6 +73,7 @@ state = {
         emergency: {
             name,
             pronouns,
+            pe, // v2: permission/consent field
             bloodType,
             allergies,
             medications,
@@ -106,6 +107,9 @@ state = {
     }
 }
 ```
+
+Schema version 2 introduces the `pe` field. QR codes generated with earlier versions (v1)
+won't include this property but remain fully compatible.
 
 ## Cloud Storage Endpoints
 

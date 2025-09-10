@@ -1262,6 +1262,13 @@
         }
 
         function validateStep(step) {
+            // Require `pe` (permission/consent field) to be present when advancing
+            const peField = document.getElementById('pe');
+            if (peField && !peField.value.trim()) {
+                alert('Please provide the required permission information');
+                return false;
+            }
+
             if (step === 2) {
                 const name = document.getElementById('name').value.trim();
                 if (!name) {
@@ -1269,7 +1276,7 @@
                     return false;
                 }
             }
-            
+
             if (step === 4) {
                 const ecName = document.getElementById('ec-name').value.trim();
                 const ecPhone = document.getElementById('ec-phone').value.trim();
@@ -1278,13 +1285,15 @@
                     return false;
                 }
             }
-            
+
             return true;
         }
 
         function showReview() {
             formData = {
-                v: 1,
+                // Schema version bumped for `pe` addition
+                v: 2,
+                pe: document.getElementById('pe') ? document.getElementById('pe').value.trim() : '',
                 n: document.getElementById('name').value.trim(),
                 pr: document.getElementById('pronouns').value.trim(),
                 d: document.getElementById('dob').value,
@@ -1814,6 +1823,7 @@ Generated: ${new Date().toLocaleString()}`;
                 try {
                     const decompressed = LZString.decompressFromEncodedURIComponent(hash);
                     const data = JSON.parse(decompressed);
+                    // `pe` was introduced in schema v2; older QR codes may omit it
                     
                     // Display existing data
                     document.getElementById('wizard-view').classList.add('hidden');
