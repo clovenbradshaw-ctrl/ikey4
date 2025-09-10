@@ -8,6 +8,28 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'none';">
+    <meta name="theme-color" content="#4F46E5">
+    <script>
+        const manifest = {
+            "name": "iKey Emergency Hub",
+            "short_name": "iKey",
+            "description": "Your emergency information when you need it most",
+            "start_url": "/",
+            "display": "standalone",
+            "background_color": "#ffffff",
+            "theme_color": "#4F46E5",
+            "orientation": "portrait",
+            "icons": [
+                { "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20192%20192%22%3E%3Crect%20width%3D%22192%22%20height%3D%22192%22%20fill%3D%22%234F46E5%22%2F%3E%3C%2Fsvg%3E", "sizes": "192x192", "type": "image/svg+xml" },
+                { "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20512%20512%22%3E%3Crect%20width%3D%22512%22%20height%3D%22512%22%20fill%3D%22%234F46E5%22%2F%3E%3C%2Fsvg%3E", "sizes": "512x512", "type": "image/svg+xml" }
+            ]
+            };
+        const manifestURL = URL.createObjectURL(new Blob([JSON.stringify(manifest)], {type: 'application/manifest+json'}));
+        const manifestLink = document.createElement('link');
+        manifestLink.rel = 'manifest';
+        manifestLink.href = manifestURL;
+        document.head.appendChild(manifestLink);
+    </script>
     <title>iKey Emergency Hub - Emergency Resource System</title>
     <style>
         * {
@@ -919,55 +941,6 @@
             margin: 16px 0;
         }
 
-        .status-bar {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: var(--surface);
-            border-radius: 12px;
-            padding: 10px 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 2000;
-            min-width: 200px;
-            max-width: 300px;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.3s ease;
-            pointer-events: none;
-        }
-
-        .status-bar.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .status-content {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-
-        .status-bar.success {
-            background: var(--success);
-            color: white;
-        }
-
-        .status-bar.error {
-            background: var(--danger);
-            color: white;
-        }
-
-        .status-bar.info {
-            background: var(--primary);
-            color: white;
-        }
-
-        .status-bar.warning {
-            background: var(--warning);
-            color: white;
-        }
 
         .sync-indicator {
             animation: pulse 2s infinite;
@@ -1529,6 +1502,119 @@
             protectedData: {}
         };
 
+        class ToastManager {
+            constructor() {
+                this.container = this.createContainer();
+            }
+            createContainer() {
+                const div = document.createElement('div');
+                div.className = 'toast-container';
+                div.style.cssText = `
+                    position: fixed;
+                    bottom: 20px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    z-index: 9999;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 8px;
+                    pointer-events: none;
+                `;
+                document.body.appendChild(div);
+                return div;
+            }
+            show(message, type = 'info', duration = 3000, actions = null) {
+                const toast = document.createElement('div');
+                toast.className = `toast toast-${type}`;
+                toast.style.cssText = `
+                    background: ${this.getColor(type)};
+                    color: white;
+                    padding: 14px 20px;
+                    border-radius: 10px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    transform: translateY(100px);
+                    opacity: 0;
+                    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+                    pointer-events: auto;
+                `;
+                const icon = this.getIcon(type);
+                toast.innerHTML = `<span>${icon}</span><span>${message}</span>`;
+                if (actions) {
+                    const btnContainer = document.createElement('div');
+                    btnContainer.style.cssText = 'display: flex; gap: 8px; margin-left: 12px;';
+                    actions.forEach(action => {
+                        const btn = document.createElement('button');
+                        btn.textContent = action.label;
+                        btn.onclick = action.callback;
+                        btn.style.cssText = `
+                            background: rgba(255,255,255,0.2);
+                            border: none;
+                            padding: 4px 8px;
+                            border-radius: 4px;
+                            color: white;
+                            cursor: pointer;
+                        `;
+                        btnContainer.appendChild(btn);
+                    });
+                    toast.appendChild(btnContainer);
+                }
+                this.container.appendChild(toast);
+                requestAnimationFrame(() => {
+                    toast.style.transform = 'translateY(0)';
+                    toast.style.opacity = '1';
+                });
+                setTimeout(() => {
+                    toast.style.transform = 'translateY(100px)';
+                    toast.style.opacity = '0';
+                    setTimeout(() => toast.remove(), 300);
+                }, duration);
+            }
+            getColor(type) {
+                const colors = {
+                    success: '#10B981',
+                    error: '#EF4444',
+                    warning: '#F59E0B',
+                    info: '#3B82F6'
+                };
+                return colors[type] || colors.info;
+            }
+            getIcon(type) {
+                const icons = {
+                    success: '✓',
+                    error: '✕',
+                    warning: '⚠',
+                    info: 'ℹ'
+                };
+                return icons[type] || icons.info;
+            }
+        }
+
+        const toast = new ToastManager();
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                const swCode = `
+                    const CACHE_NAME = 'ikey-v2';
+                    const urlsToCache = ['/', '/index.html'];
+                    self.addEventListener('install', event => {
+                        event.waitUntil(
+                            caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
+                        );
+                    });
+                    self.addEventListener('fetch', event => {
+                        event.respondWith(
+                            caches.match(event.request).then(response => response || fetch(event.request))
+                        );
+                    });
+                `;
+                const blob = new Blob([swCode], { type: 'text/javascript' });
+                navigator.serviceWorker.register(URL.createObjectURL(blob));
+            });
+        }
+
         function promptForPassword() {
             return new Promise((resolve, reject) => {
                 window.pinPromiseResolve = resolve;
@@ -1952,10 +2038,7 @@
         }
 
         async function handleAuthFailure() {
-            alert(
-                'Sync authentication failed.\n\n' +
-                'Recovery is not available in this version.'
-            );
+            toast.show('Sync authentication failed. Recovery is not available in this version.', 'error');
         }
 
         // Setup Wizard Functions
@@ -2015,15 +2098,15 @@
                 const contactRelationship = document.getElementById('setup-contact-relationship').value;
 
                 if (!name) {
-                    alert('Please enter your name');
+                    toast.show('Please enter your name', 'error');
                     return false;
                 }
                 if (!contactName || !contactPhone || !contactRelationship) {
-                    alert('Please complete all emergency contact fields');
+                    toast.show('Please complete all emergency contact fields', 'error');
                     return false;
                 }
                 if (contactRelationship === 'other' && !document.getElementById('setup-contact-other').value) {
-                    alert('Please specify the relationship');
+                    toast.show('Please specify the relationship', 'error');
                     return false;
                 }
             }
@@ -2032,15 +2115,15 @@
                 const confirm = document.getElementById('setup-password-confirm').value;
                 const complexity = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])/;
                 if (!password || password.length < 12) {
-                    alert('Password must be at least 12 characters');
+                    toast.show('Password must be at least 12 characters', 'error');
                     return false;
                 }
                 if (!complexity.test(password)) {
-                    alert('Use a mix of upper and lower case letters, numbers, and symbols');
+                    toast.show('Use a mix of upper and lower case letters, numbers, and symbols', 'error');
                     return false;
                 }
                 if (password !== confirm) {
-                    alert('Passwords do not match');
+                    toast.show('Passwords do not match', 'error');
                     return false;
                 }
             }
@@ -2349,7 +2432,7 @@
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            alert('Recovery key file downloaded. Keep it secure for alternate login.');
+            toast.show('Recovery key file downloaded. Keep it secure for alternate login.', 'success');
         }
 
         async function refreshBaseKey() {
@@ -2961,29 +3044,7 @@
 
         // Utility Functions
         function showStatus(message, type = 'info') {
-            const statusBar = document.getElementById('status-bar');
-            const statusText = document.getElementById('status-text');
-            const statusIcon = document.getElementById('status-icon');
-
-            const icons = {
-                success: '✓',
-                error: '✗',
-                warning: '⚠',
-                info: 'ℹ',
-                sync: '↻'
-            };
-
-            statusIcon.textContent = icons[type] || icons.info;
-            statusText.textContent = message;
-
-            statusBar.className = 'status-bar active ' + type;
-
-            clearTimeout(window.statusTimeout);
-            if (type !== 'sync') {
-                window.statusTimeout = setTimeout(() => {
-                    statusBar.classList.remove('active');
-                }, 3000);
-            }
+            toast.show(message, type);
         }
 
         function updateSecurityUI() {
@@ -3161,7 +3222,7 @@
         // Initialize on load with session warning and input hardening
         window.addEventListener('DOMContentLoaded', () => {
             if (sessionStorage.getItem('ikey_session_active')) {
-                alert('Another tab might be open - warn user');
+                toast.show('Another tab might be open - warn user', 'warning');
             }
             sessionStorage.setItem('ikey_session_active', 'true');
             document.querySelectorAll('input').forEach(input => {
@@ -3191,12 +3252,5 @@
             sessionStorage.removeItem('ikey_session_active');
         });
     </script>
-    <!-- Status Bar -->
-    <div id="status-bar" class="status-bar">
-        <div class="status-content">
-            <span id="status-icon">✓</span>
-            <span id="status-text">Ready</span>
-        </div>
-    </div>
 </body>
 </html>
