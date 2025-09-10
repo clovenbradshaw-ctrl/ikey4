@@ -655,7 +655,7 @@
                         </div>
                         <div class="progress-step" data-step="4">
                             <div class="progress-dot">4</div>
-                            <div class="progress-label">Contact</div>
+                            <div class="progress-label">Contacts</div>
                         </div>
                         <div class="progress-step" data-step="5">
                             <div class="progress-dot">5</div>
@@ -668,10 +668,10 @@
                         <h2>Create Your Medical ID</h2>
                         <p style="margin: 20px 0;">Generate a secure QR code with your medical information for emergency responders:</p>
                         <ul style="margin-left: 20px; color: var(--secondary); line-height: 2;">
-                            <li>Name and blood type</li>
+                            <li>Name, pronouns and blood type</li>
                             <li>Critical allergies and medications</li>
                             <li>Medical conditions</li>
-                            <li>Emergency contact</li>
+                            <li>Emergency & case manager contacts</li>
                         </ul>
                         <div style="background: #eff6ff; border: 1px solid #3b82f6; border-radius: 10px; padding: 15px; margin-top: 20px;">
                             <strong>🔒 Privacy First:</strong> Your data is encoded directly in the QR code. No cloud storage, no accounts needed.
@@ -685,6 +685,11 @@
                         <div class="form-group">
                             <label for="name">Full Name *</label>
                             <input type="text" id="name" placeholder="John Smith" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="pronouns">Pronouns</label>
+                            <input type="text" id="pronouns" placeholder="they/them">
                         </div>
 
                         <div class="form-group">
@@ -732,17 +737,17 @@
                         </div>
                     </div>
 
-                    <!-- Step 4: Emergency Contact -->
+                    <!-- Step 4: Contacts -->
                     <div class="wizard-step" data-step="4">
-                        <h2>Emergency Contact</h2>
-                        
-                        <div class="form-group">
-                            <label for="ec-name">Contact Name *</label>
+                        <h2>Contacts</h2>
+
+        <div class="form-group">
+                            <label for="ec-name">Emergency Contact Name *</label>
                             <input type="text" id="ec-name" placeholder="Jane Smith" required>
                         </div>
 
                         <div class="form-group">
-                            <label for="ec-phone">Phone Number *</label>
+                            <label for="ec-phone">Emergency Phone Number *</label>
                             <input type="tel" id="ec-phone" placeholder="555-0123" required>
                         </div>
 
@@ -758,12 +763,30 @@
                                 <option value="Other">Other</option>
                             </select>
                         </div>
+
+                        <div class="form-group">
+                            <label for="cm-name">Case Manager Name</label>
+                            <input type="text" id="cm-name" placeholder="Dr. Jones">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cm-org">Organization</label>
+                            <input type="text" id="cm-org" placeholder="Hospital or Agency">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cm-phone">Case Manager Phone</label>
+                            <input type="tel" id="cm-phone" placeholder="555-0456">
+                        </div>
                     </div>
 
                     <!-- Step 5: Review -->
                     <div class="wizard-step" data-step="5">
                         <h2>Review Your Information</h2>
                         <div id="review-content"></div>
+                        <div style="background: #fef3c7; border: 1px solid #facc15; border-radius: 10px; padding: 15px; margin-top: 20px;">
+                            <strong>⚠️ Heads up:</strong> Anyone who scans this QR code will be able to view the information you provide.
+                        </div>
                         <div style="background: #dcfce7; border: 1px solid #86efac; border-radius: 10px; padding: 15px; margin-top: 20px;">
                             <strong>✅ Ready to Generate:</strong> Your QR code is permanent once created. To make changes, you'll need to create a new one.
                         </div>
@@ -1226,6 +1249,7 @@
             formData = {
                 v: 1,
                 n: document.getElementById('name').value.trim(),
+                pr: document.getElementById('pronouns').value.trim(),
                 d: document.getElementById('dob').value,
                 b: document.getElementById('blood').value,
                 a: document.getElementById('allergies').value.trim(),
@@ -1233,7 +1257,10 @@
                 c: document.getElementById('conditions').value.trim(),
                 ec: document.getElementById('ec-name').value.trim(),
                 ep: document.getElementById('ec-phone').value.trim(),
-                er: document.getElementById('ec-relationship').value
+                er: document.getElementById('ec-relationship').value,
+                cm: document.getElementById('cm-name').value.trim(),
+                co: document.getElementById('cm-org').value.trim(),
+                cp: document.getElementById('cm-phone').value.trim()
             };
 
             const reviewHTML = `
@@ -1241,6 +1268,11 @@
                     <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Name</div>
                     <div style="font-weight: 600;">${formData.n || 'Not provided'}</div>
                 </div>
+                ${formData.pr ? `
+                <div class="info-card">
+                    <div style=\"font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;\">Pronouns</div>
+                    <div style=\"font-weight: 600;\">${formData.pr}</div>
+                </div>` : ''}
                 ${formData.d ? `
                 <div class="info-card">
                     <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Date of Birth</div>
@@ -1274,6 +1306,15 @@
                         ${formData.er ? `<br><small>${formData.er}</small>` : ''}
                     </div>
                 </div>
+                ${formData.cm ? `
+                <div class="info-card">
+                    <div style=\"font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;\">Case Manager</div>
+                    <div style=\"font-weight: 600;\">
+                        ${formData.cm}<br>
+                        ${formData.co ? `<small>${formData.co}</small><br>` : ''}
+                        ${formData.cp ? `📞 ${formData.cp}` : ''}
+                    </div>
+                </div>` : ''}
             `;
             
             document.getElementById('review-content').innerHTML = reviewHTML;

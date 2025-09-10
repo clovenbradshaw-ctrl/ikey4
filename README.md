@@ -12,7 +12,7 @@ The system implements a progressive disclosure model with two security levels:
 
 1. **Public Tier (Emergency Information)**
    - Accessible via QR code without authentication
-   - Contains critical emergency data: name, blood type, allergies, medications, conditions, emergency contact
+   - Contains critical emergency data: name, pronouns, blood type, allergies, medications, conditions, emergency and case manager contacts
    - Encrypted with a base key embedded in the QR code
    - Designed for first responders in emergency situations
 
@@ -70,13 +70,18 @@ To create a new profile or bypass saved data, open the application with `?setup=
 ```javascript
 state = {
     publicData: {
-        emergency: { 
+        emergency: {
             name,
+            pronouns,
             bloodType,
             allergies,
             medications,
             conditions,
-            contactName
+            emergencyContactName,
+            emergencyContactPhone,
+            caseManagerName,
+            caseManagerPhone,
+            caseManagerOrganization
         }
     },
     protectedData: {
@@ -152,14 +157,19 @@ $setWorkflowStaticData('rateLimits', rateLimitMap);
     "guid": "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx",
     "version": "2.0.0",
     "timestamp": "2024-01-01T00:00:00.000Z",
-    "publicData": { 
+    "publicData": {
         "emergency": {
             "name": "John Doe",
+            "pronouns": "they/them",
             "bloodType": "O+",
             "allergies": "Penicillin",
             "medications": "Lisinopril 10mg daily",
             "conditions": "Hypertension, Type 2 Diabetes",
-            "contactName": "Jane Doe"
+            "emergencyContactName": "Jane Doe",
+            "emergencyContactPhone": "555-0123",
+            "caseManagerName": "Dr. Jones",
+            "caseManagerPhone": "555-0456",
+            "caseManagerOrganization": "Metro Health"
         }
     },
     "protectedData": {
