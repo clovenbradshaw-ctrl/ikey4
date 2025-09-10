@@ -1209,8 +1209,31 @@
                         </div>
                     </div>
 
+                    <div class="security-tier-card">
+                        <div class="tier-header">
+                            <span class="tier-icon">🔐</span>
+                            <h3>Level 2: Password (Full EHR)</h3>
+                        </div>
+                        <div class="tier-info">
+                            <p><strong>Protects:</strong> Complete health records and sensitive data</p>
+                            <p><strong>Use a strong password:</strong> 8+ characters combining letters, numbers, and symbols</p>
+                        </div>
+                        <div class="form-group">
+                            <label>Set Password</label>
+                            <input type="password" id="setup-password" placeholder="Enter strong password" oninput="displayPasswordStrength(this.value)">
+                            <div id="password-strength" style="margin-top:8px;"></div>
+                            <ul id="password-requirements" style="list-style:none; padding-left:0; font-size:0.875rem; color: var(--danger);">
+                                <li id="req-length" data-text="At least 8 characters">✗ At least 8 characters</li>
+                                <li id="req-lower" data-text="Lowercase letter">✗ Lowercase letter</li>
+                                <li id="req-upper" data-text="Uppercase letter">✗ Uppercase letter</li>
+                                <li id="req-digit" data-text="Number">✗ Number</li>
+                                <li id="req-special" data-text="Special character">✗ Special character</li>
+                            </ul>
+                        </div>
+                    </div>
+
                     <div class="warning-box">
-                        <strong>⚠️ Important:</strong> Your PIN cannot be recovered if forgotten. Write it down and store safely.
+                        <strong>⚠️ Important:</strong> Your PIN and password cannot be recovered if forgotten. Write them down and store safely.
                     </div>
                 </div>
 
@@ -3002,6 +3025,55 @@
             updateSecurityIndicator();
             updateSecurityUI();
             showTab('emergency');
+        }
+
+        function checkPasswordStrength(password) {
+            const requirements = {
+                length: password.length >= 8,
+                lower: /[a-z]/.test(password),
+                upper: /[A-Z]/.test(password),
+                digit: /\d/.test(password),
+                special: /[^A-Za-z0-9]/.test(password)
+            };
+            const score = Object.values(requirements).filter(Boolean).length;
+            let strength = 'weak';
+            if (score >= 5) {
+                strength = 'strong';
+            } else if (score >= 3) {
+                strength = 'medium';
+            }
+            return { requirements, strength };
+        }
+
+        function displayPasswordStrength(password) {
+            const result = checkPasswordStrength(password);
+            const strengthEl = document.getElementById('password-strength');
+            const reqIds = {
+                length: 'req-length',
+                lower: 'req-lower',
+                upper: 'req-upper',
+                digit: 'req-digit',
+                special: 'req-special'
+            };
+            const colors = { weak: 'var(--danger)', medium: 'var(--warning)', strong: 'var(--success)' };
+            const labels = { weak: 'Weak', medium: 'Medium', strong: 'Strong' };
+
+            if (strengthEl) {
+                strengthEl.textContent = labels[result.strength];
+                strengthEl.style.color = colors[result.strength];
+            }
+
+            Object.keys(reqIds).forEach(key => {
+                const el = document.getElementById(reqIds[key]);
+                if (!el) return;
+                if (result.requirements[key]) {
+                    el.style.color = 'var(--success)';
+                    el.textContent = '✓ ' + el.dataset.text;
+                } else {
+                    el.style.color = 'var(--danger)';
+                    el.textContent = '✗ ' + el.dataset.text;
+                }
+            });
         }
 
         // Auto-save on input
