@@ -652,18 +652,22 @@
                         </div>
                         <div class="progress-step" data-step="2">
                             <div class="progress-dot">2</div>
-                            <div class="progress-label">Basic</div>
+                            <div class="progress-label">Proton Email</div>
                         </div>
                         <div class="progress-step" data-step="3">
                             <div class="progress-dot">3</div>
-                            <div class="progress-label">Medical</div>
+                            <div class="progress-label">Basic</div>
                         </div>
                         <div class="progress-step" data-step="4">
                             <div class="progress-dot">4</div>
-                            <div class="progress-label">Contacts</div>
+                            <div class="progress-label">Medical</div>
                         </div>
                         <div class="progress-step" data-step="5">
                             <div class="progress-dot">5</div>
+                            <div class="progress-label">Contacts</div>
+                        </div>
+                        <div class="progress-step" data-step="6">
+                            <div class="progress-dot">6</div>
                             <div class="progress-label">Review</div>
                         </div>
                     </div>
@@ -683,8 +687,21 @@
                         </div>
                     </div>
 
-                    <!-- Step 2: Basic Info -->
+                    <!-- Step 2: Proton Email -->
                     <div class="wizard-step" data-step="2">
+                        <h2>Proton Email</h2>
+                        <p style="margin-bottom: 20px;"><strong>Why Proton?</strong> Proton uses zero-knowledge encryption so only you can access your data.</p>
+                        <div class="form-group">
+                            <label for="proton-email">Proton Email *</label>
+                            <input type="email" id="proton-email" placeholder="you@proton.me" required>
+                        </div>
+                        <div style="margin-top: 20px;">
+                            <a href="https://account.proton.me/signup" target="_blank" class="btn btn-primary">Create Account</a>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Basic Info -->
+                    <div class="wizard-step" data-step="3">
                         <h2>Basic Information</h2>
                         
                         <div class="form-group">
@@ -718,8 +735,8 @@
                         </div>
                     </div>
 
-                    <!-- Step 3: Medical Info -->
-                    <div class="wizard-step" data-step="3">
+                    <!-- Step 4: Medical Info -->
+                    <div class="wizard-step" data-step="4">
                         <h2>Medical Information</h2>
                         <p style="margin-bottom: 20px; color: var(--secondary);">Keep entries brief - focus on critical information</p>
                         
@@ -742,8 +759,8 @@
                         </div>
                     </div>
 
-                    <!-- Step 4: Contacts -->
-                    <div class="wizard-step" data-step="4">
+                    <!-- Step 5: Contacts -->
+                    <div class="wizard-step" data-step="5">
                         <h2>Contacts</h2>
 
         <div class="form-group">
@@ -785,8 +802,8 @@
                         </div>
                     </div>
 
-                    <!-- Step 5: Review -->
-                    <div class="wizard-step" data-step="5">
+                    <!-- Step 6: Review -->
+                    <div class="wizard-step" data-step="6">
                         <h2>Review Your Information</h2>
                         <div id="review-content"></div>
                         <div style="background: #fef3c7; border: 1px solid #facc15; border-radius: 10px; padding: 15px; margin-top: 20px;">
@@ -1222,10 +1239,10 @@
 
         function nextStep() {
             if (validateStep(currentStep)) {
-                if (currentStep === 4) {
+                if (currentStep === 5) {
                     showReview();
                 }
-                
+
                 currentStep++;
                 updateWizardDisplay();
             }
@@ -1257,20 +1274,29 @@
 
             // Update buttons
             document.getElementById('btn-back').style.display = currentStep === 1 ? 'none' : 'block';
-            document.getElementById('btn-next').classList.toggle('hidden', currentStep === 5);
-            document.getElementById('btn-generate').classList.toggle('hidden', currentStep !== 5);
+            document.getElementById('btn-next').classList.toggle('hidden', currentStep === 6);
+            document.getElementById('btn-generate').classList.toggle('hidden', currentStep !== 6);
         }
 
         function validateStep(step) {
             if (step === 2) {
+                const email = document.getElementById('proton-email').value.trim();
+                const regex = /^[a-zA-Z0-9._%+-]+@(proton\.me|protonmail\.com)$/;
+                if (!regex.test(email)) {
+                    alert('Please enter a valid Proton email address');
+                    return false;
+                }
+            }
+
+            if (step === 3) {
                 const name = document.getElementById('name').value.trim();
                 if (!name) {
                     alert('Please enter your name');
                     return false;
                 }
             }
-            
-            if (step === 4) {
+
+            if (step === 5) {
                 const ecName = document.getElementById('ec-name').value.trim();
                 const ecPhone = document.getElementById('ec-phone').value.trim();
                 if (!ecName || !ecPhone) {
@@ -1278,13 +1304,14 @@
                     return false;
                 }
             }
-            
+
             return true;
         }
 
         function showReview() {
             formData = {
                 v: 1,
+                pe: document.getElementById('proton-email').value.trim(),
                 n: document.getElementById('name').value.trim(),
                 pr: document.getElementById('pronouns').value.trim(),
                 d: document.getElementById('dob').value,
@@ -1305,6 +1332,11 @@
                     <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Name</div>
                     <div style="font-weight: 600;">${formData.n || 'Not provided'}</div>
                 </div>
+                ${formData.pe ? `
+                <div class="info-card">
+                    <div style=\"font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;\">Proton Email</div>
+                    <div style=\"font-weight: 600;\">${formData.pe}</div>
+                </div>` : ''}
                 ${formData.pr ? `
                 <div class="info-card">
                     <div style=\"font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;\">Pronouns</div>
@@ -1826,7 +1858,14 @@ Generated: ${new Date().toLocaleString()}`;
                             <div style="font-weight: 600;">${data.n}</div>
                         </div>`;
                     }
-                    
+
+                    if (data.pe) {
+                        html += `<div class="info-card">
+                            <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Proton Email</div>
+                            <div style="font-weight: 600;">${data.pe}</div>
+                        </div>`;
+                    }
+
                     if (data.pr) {
                         html += `<div class="info-card">
                             <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Pronouns</div>
