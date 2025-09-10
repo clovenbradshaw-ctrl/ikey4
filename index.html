@@ -1218,8 +1218,32 @@
                         </div>
                     </div>
 
+                    <div class="security-tier-card">
+                        <div class="tier-header">
+                            <span class="tier-icon">🔐</span>
+                            <h3>Level 2: Password (Full EHR)</h3>
+                        </div>
+                        <div class="tier-info">
+                            <p><strong>Protects:</strong> Complete health records and sensitive data</p>
+                            <p><strong>Use a strong password:</strong> 8+ characters combining letters, numbers, and symbols</p>
+                        </div>
+                        <div class="form-group">
+                            <label>Set Password</label>
+                            <input type="password" id="setup-password" placeholder="Enter strong password" oninput="displayPasswordStrength(this.value)">
+                            <div id="password-strength" style="margin-top:8px;"></div>
+                            <ul id="password-requirements" style="list-style:none; padding-left:0; font-size:0.875rem; color: var(--danger);">
+                                <li id="req-length" data-text="At least 8 characters">✗ At least 8 characters</li>
+                                <li id="req-lower" data-text="Lowercase letter">✗ Lowercase letter</li>
+                                <li id="req-upper" data-text="Uppercase letter">✗ Uppercase letter</li>
+                                <li id="req-digit" data-text="Number">✗ Number</li>
+                                <li id="req-special" data-text="Special character">✗ Special character</li>
+                            </ul>
+                        </div>
+                    </div>
+
                     <div class="warning-box">
                         <strong>⚠️ Important:</strong> Your password cannot be recovered if forgotten. Store it securely.
+                      
                     </div>
                 </div>
 
@@ -1396,32 +1420,18 @@
     <!-- PIN Modal -->
     <div id="pin-modal" class="modal-overlay">
         <div class="modal-container">
-            <h3 class="modal-title" id="pin-modal-title">Enter 6-Digit PIN</h3>
-            
-            <div class="pin-display" id="pinDisplay">
-                <div class="pin-dot"></div>
-                <div class="pin-dot"></div>
-                <div class="pin-dot"></div>
-                <div class="pin-dot"></div>
-                <div class="pin-dot"></div>
-                <div class="pin-dot"></div>
+            <h3 class="modal-title" id="pin-modal-title">Enter Password</h3>
+
+            <div class="password-input-wrapper">
+                <input type="password" id="passwordInput" autocomplete="off">
+                <button type="button" id="togglePassword" onclick="togglePasswordVisibility('passwordInput')">Show</button>
             </div>
-            
-            <div class="pin-keypad">
-                <button class="pin-key" onclick="addPinDigit(1)">1</button>
-                <button class="pin-key" onclick="addPinDigit(2)">2</button>
-                <button class="pin-key" onclick="addPinDigit(3)">3</button>
-                <button class="pin-key" onclick="addPinDigit(4)">4</button>
-                <button class="pin-key" onclick="addPinDigit(5)">5</button>
-                <button class="pin-key" onclick="addPinDigit(6)">6</button>
-                <button class="pin-key" onclick="addPinDigit(7)">7</button>
-                <button class="pin-key" onclick="addPinDigit(8)">8</button>
-                <button class="pin-key" onclick="addPinDigit(9)">9</button>
-                <button class="pin-key special-clear" onclick="clearPin()">Clear</button>
-                <button class="pin-key" onclick="addPinDigit(0)">0</button>
-                <button class="pin-key special-cancel" onclick="closePinPad()">Cancel</button>
+            <div id="passwordStrength"></div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closePinPad()">Cancel</button>
+                <button class="btn-submit" onclick="verifyPassword()">Submit</button>
             </div>
-            
+
         </div>
     </div>
 
@@ -3022,6 +3032,55 @@
             updateSecurityIndicator();
             updateSecurityUI();
             showTab('emergency');
+        }
+
+        function checkPasswordStrength(password) {
+            const requirements = {
+                length: password.length >= 8,
+                lower: /[a-z]/.test(password),
+                upper: /[A-Z]/.test(password),
+                digit: /\d/.test(password),
+                special: /[^A-Za-z0-9]/.test(password)
+            };
+            const score = Object.values(requirements).filter(Boolean).length;
+            let strength = 'weak';
+            if (score >= 5) {
+                strength = 'strong';
+            } else if (score >= 3) {
+                strength = 'medium';
+            }
+            return { requirements, strength };
+        }
+
+        function displayPasswordStrength(password) {
+            const result = checkPasswordStrength(password);
+            const strengthEl = document.getElementById('password-strength');
+            const reqIds = {
+                length: 'req-length',
+                lower: 'req-lower',
+                upper: 'req-upper',
+                digit: 'req-digit',
+                special: 'req-special'
+            };
+            const colors = { weak: 'var(--danger)', medium: 'var(--warning)', strong: 'var(--success)' };
+            const labels = { weak: 'Weak', medium: 'Medium', strong: 'Strong' };
+
+            if (strengthEl) {
+                strengthEl.textContent = labels[result.strength];
+                strengthEl.style.color = colors[result.strength];
+            }
+
+            Object.keys(reqIds).forEach(key => {
+                const el = document.getElementById(reqIds[key]);
+                if (!el) return;
+                if (result.requirements[key]) {
+                    el.style.color = 'var(--success)';
+                    el.textContent = '✓ ' + el.dataset.text;
+                } else {
+                    el.style.color = 'var(--danger)';
+                    el.textContent = '✗ ' + el.dataset.text;
+                }
+            });
         }
 
         // Auto-save on input
