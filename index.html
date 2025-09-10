@@ -554,20 +554,42 @@
             border: none;
         }
 
-        /* Storage Tab */
-        .resource-card {
-            background: white;
-            border-radius: var(--radius);
-            padding: 30px;
-            text-align: center;
-            box-shadow: var(--shadow-lg);
-            margin-bottom: 30px;
+        /* Apps Tab */
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
         }
 
-        .resource-icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            color: var(--primary);
+        .app-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 25px 20px;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .app-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .app-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .app-card h3 {
+            color: #6d4aff;
+            margin-bottom: 10px;
+        }
+
+        .app-card p {
+            color: var(--secondary);
+            font-size: 0.9rem;
         }
 
         /* Settings Tab */
@@ -692,9 +714,9 @@
             <span class="tab-icon">📡</span>
             Dispatch
         </button>
-        <button class="tab-btn" onclick="switchTab('storage')">
-            <span class="tab-icon">💾</span>
-            Storage
+        <button class="tab-btn" onclick="switchTab('apps')">
+            <span class="tab-icon">📦</span>
+            Apps
         </button>
         <button class="tab-btn" onclick="switchTab('settings')">
             <span class="tab-icon">⚙️</span>
@@ -716,18 +738,22 @@
                         </div>
                         <div class="progress-step" data-step="2">
                             <div class="progress-dot">2</div>
-                            <div class="progress-label">Basic</div>
+                            <div class="progress-label">Proton Email</div>
                         </div>
                         <div class="progress-step" data-step="3">
                             <div class="progress-dot">3</div>
-                            <div class="progress-label">Medical</div>
+                            <div class="progress-label">Basic</div>
                         </div>
                         <div class="progress-step" data-step="4">
                             <div class="progress-dot">4</div>
-                            <div class="progress-label">Contacts</div>
+                            <div class="progress-label">Medical</div>
                         </div>
                         <div class="progress-step" data-step="5">
                             <div class="progress-dot">5</div>
+                            <div class="progress-label">Contacts</div>
+                        </div>
+                        <div class="progress-step" data-step="6">
+                            <div class="progress-dot">6</div>
                             <div class="progress-label">Review</div>
                         </div>
                     </div>
@@ -747,8 +773,21 @@
                         </div>
                     </div>
 
-                    <!-- Step 2: Basic Info -->
+                    <!-- Step 2: Proton Email -->
                     <div class="wizard-step" data-step="2">
+                        <h2>Proton Email</h2>
+                        <p style="margin-bottom: 20px;"><strong>Why Proton?</strong> Proton uses zero-knowledge encryption so only you can access your data.</p>
+                        <div class="form-group">
+                            <label for="proton-email">Proton Email *</label>
+                            <input type="email" id="proton-email" placeholder="you@proton.me" required>
+                        </div>
+                        <div style="margin-top: 20px;">
+                            <a href="https://account.proton.me/signup" target="_blank" class="btn btn-primary">Create Account</a>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Basic Info -->
+                    <div class="wizard-step" data-step="3">
                         <h2>Basic Information</h2>
                         
                         <div class="form-group">
@@ -759,6 +798,11 @@
                         <div class="form-group">
                             <label for="pronouns">Pronouns</label>
                             <input type="text" id="pronouns" placeholder="they/them">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="pe">Proton Email</label>
+                            <input type="email" id="pe" placeholder="name@proton.me">
                         </div>
 
                         <div class="form-group">
@@ -782,8 +826,8 @@
                         </div>
                     </div>
 
-                    <!-- Step 3: Medical Info -->
-                    <div class="wizard-step" data-step="3">
+                    <!-- Step 4: Medical Info -->
+                    <div class="wizard-step" data-step="4">
                         <h2>Medical Information</h2>
                         <p style="margin-bottom: 20px; color: var(--secondary);">Keep entries brief - focus on critical information</p>
                         
@@ -806,8 +850,8 @@
                         </div>
                     </div>
 
-                    <!-- Step 4: Contacts -->
-                    <div class="wizard-step" data-step="4">
+                    <!-- Step 5: Contacts -->
+                    <div class="wizard-step" data-step="5">
                         <h2>Contacts</h2>
 
         <div class="form-group">
@@ -853,6 +897,12 @@
                     <div class="wizard-step" data-step="5">
                         <h2 style="color: var(--proton);">Review Your Information</h2>
                         <div id="review-content" class="review-card"></div>
+
+                    <!-- Step 6: Review -->
+                    <div class="wizard-step" data-step="6">
+                        <h2>Review Your Information</h2>
+                        <div id="review-content"></div>
+
                         <div style="background: #fef3c7; border: 1px solid #facc15; border-radius: 10px; padding: 15px; margin-top: 20px;">
                             <strong>⚠️ Heads up:</strong> Anyone who scans this QR code will be able to view the information you provide.
                         </div>
@@ -873,7 +923,8 @@
                 <div id="display-view" class="hidden">
                     <h2>Emergency Medical Information</h2>
                     <div id="display-content"></div>
-                    <div style="margin-top: 20px;">
+                    <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button class="btn btn-primary" onclick="copyMedicalInfo(displayData)">📋 Copy Info</button>
                         <button class="btn btn-primary" onclick="createNew()">🆕 Create New QR Code</button>
                     </div>
                 </div>
@@ -889,6 +940,7 @@
                             <button class="btn btn-success" onclick="downloadQR('wallet')">📱 Wallet Size</button>
                             <button class="btn btn-success" onclick="downloadQR('full')">📄 Full Page</button>
                             <button class="btn btn-primary" onclick="copyURL()">📋 Copy Link</button>
+                            <button class="btn btn-primary" onclick="copyMedicalInfo()">📋 Copy Info</button>
                         </div>
                     </div>
 
@@ -1067,8 +1119,8 @@
         </div>
     </div>
 
-    <!-- Storage Tab -->
-    <div id="storage" class="tab-content">
+    <!-- Apps Tab -->
+    <div id="apps" class="tab-content">
         <div class="container">
             <div class="resource-card">
                 <div class="resource-icon">🔐</div>
@@ -1098,49 +1150,49 @@
                 
                 <a href="https://app.filen.io/" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="font-size: 1.1rem; padding: 16px 40px;">
                     Open Filen →
+
+            <div class="apps-grid">
+                <a class="app-card" href="https://proton.me/mail" target="_blank" rel="noopener noreferrer">
+                    <div class="app-icon">📧</div>
+                    <h3>Email</h3>
+                    <p>Secure encrypted email.</p>
                 </a>
-            </div>
-            
-            <div class="card">
-                <h3 style="margin-bottom: 20px;">Why Filen for Emergency Documents?</h3>
-                <div style="display: grid; gap: 15px;">
-                    <div style="display: flex; align-items: start; gap: 12px;">
-                        <span style="font-size: 1.5rem;">🛡️</span>
-                        <div>
-                            <strong>Zero-Knowledge Architecture</strong>
-                            <p style="color: var(--secondary); font-size: 0.9rem; margin-top: 5px;">Your files are encrypted before leaving your device</p>
-                        </div>
-                    </div>
-                    <div style="display: flex; align-items: start; gap: 12px;">
-                        <span style="font-size: 1.5rem;">🔒</span>
-                        <div>
-                            <strong>Military-Grade AES-256 Encryption</strong>
-                            <p style="color: var(--secondary); font-size: 0.9rem; margin-top: 5px;">The same standard used by governments worldwide</p>
-                        </div>
-                    </div>
-                    <div style="display: flex; align-items: start; gap: 12px;">
-                        <span style="font-size: 1.5rem;">🌍</span>
-                        <div>
-                            <strong>GDPR Compliant (Germany-based)</strong>
-                            <p style="color: var(--secondary); font-size: 0.9rem; margin-top: 5px;">Protected by Europe's strictest privacy laws</p>
-                        </div>
-                    </div>
-                    <div style="display: flex; align-items: start; gap: 12px;">
-                        <span style="font-size: 1.5rem;">📱</span>
-                        <div>
-                            <strong>Access on All Your Devices</strong>
-                            <p style="color: var(--secondary); font-size: 0.9rem; margin-top: 5px;">iOS, Android, Windows, Mac, Linux support</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div style="background: #fef3c7; border: 1px solid #fbbf24; border-radius: 12px; padding: 18px; margin-top: 25px;">
-                    <h4 style="color: #92400e; margin-bottom: 10px;">💡 Pro Tip: Emergency Folder</h4>
-                    <p style="color: #78350f; line-height: 1.8;">
-                        Create an "Emergency" folder in Filen with copies of IDs, insurance cards, medical records, 
-                        and important contacts. Share it securely with trusted family members.
-                    </p>
-                </div>
+                <a class="app-card" href="https://proton.me/calendar" target="_blank" rel="noopener noreferrer">
+                    <div class="app-icon">📅</div>
+                    <h3>Calendar</h3>
+                    <p>Private scheduling for your day.</p>
+                </a>
+                <a class="app-card" href="https://proton.me/drive" target="_blank" rel="noopener noreferrer">
+                    <div class="app-icon">📁</div>
+                    <h3>Drive</h3>
+                    <p>Store files with end-to-end encryption.</p>
+                </a>
+                <a class="app-card" href="https://proton.me/docs" target="_blank" rel="noopener noreferrer">
+                    <div class="app-icon">📄</div>
+                    <h3>Docs (Beta)</h3>
+                    <p>Collaborative editing with privacy.</p>
+                </a>
+                <a class="app-card" href="https://proton.me/pass" target="_blank" rel="noopener noreferrer">
+                    <div class="app-icon">🔐</div>
+                    <h3>Pass</h3>
+                    <p>Manage passwords securely.</p>
+                </a>
+                <a class="app-card" href="https://proton.me/wallet" target="_blank" rel="noopener noreferrer">
+                    <div class="app-icon">💳</div>
+                    <h3>Wallet</h3>
+                    <p>Encrypted digital payments.</p>
+                </a>
+                <a class="app-card" href="https://protonvpn.com" target="_blank" rel="noopener noreferrer">
+                    <div class="app-icon">🛡️</div>
+                    <h3>VPN</h3>
+                    <p>Secure VPN for your devices.</p>
+                </a>
+                <a class="app-card" href="https://proton.me/ai" target="_blank" rel="noopener noreferrer">
+                    <div class="app-icon">🤖</div>
+                    <h3>AI</h3>
+                    <p>Privacy-focused AI tools.</p>
+
+                </a>
             </div>
         </div>
     </div>
@@ -1291,10 +1343,10 @@
 
         function nextStep() {
             if (validateStep(currentStep)) {
-                if (currentStep === 4) {
+                if (currentStep === 5) {
                     showReview();
                 }
-                
+
                 currentStep++;
                 updateWizardDisplay();
             }
@@ -1326,20 +1378,40 @@
 
             // Update buttons
             document.getElementById('btn-back').style.display = currentStep === 1 ? 'none' : 'block';
-            document.getElementById('btn-next').classList.toggle('hidden', currentStep === 5);
-            document.getElementById('btn-generate').classList.toggle('hidden', currentStep !== 5);
+            document.getElementById('btn-next').classList.toggle('hidden', currentStep === 6);
+            document.getElementById('btn-generate').classList.toggle('hidden', currentStep !== 6);
         }
 
         function validateStep(step) {
+            // Require `pe` (permission/consent field) to be present when advancing
+            const peField = document.getElementById('pe');
+            if (peField && !peField.value.trim()) {
+                alert('Please provide the required permission information');
+                return false;
+            }
+
             if (step === 2) {
+                const email = document.getElementById('proton-email').value.trim();
+                const regex = /^[a-zA-Z0-9._%+-]+@(proton\.me|protonmail\.com)$/;
+                if (!regex.test(email)) {
+                    alert('Please enter a valid Proton email address');
+                    return false;
+                }
+            }
+
+            if (step === 3) {
                 const name = document.getElementById('name').value.trim();
                 if (!name) {
                     alert('Please enter your name');
                     return false;
                 }
             }
-            
+
+
             if (step === 4) {
+
+            if (step === 5) {
+
                 const ecName = document.getElementById('ec-name').value.trim();
                 const ecPhone = document.getElementById('ec-phone').value.trim();
                 if (!ecName || !ecPhone) {
@@ -1347,15 +1419,23 @@
                     return false;
                 }
             }
-            
+
             return true;
         }
 
         function showReview() {
             formData = {
+
+                // Schema version bumped for `pe` addition
+                v: 2,
+                pe: document.getElementById('pe') ? document.getElementById('pe').value.trim() : '',
+
                 v: 1,
+                pe: document.getElementById('proton-email').value.trim(),
+
                 n: document.getElementById('name').value.trim(),
                 pr: document.getElementById('pronouns').value.trim(),
+                pe: document.getElementById('pe').value.trim(),
                 d: document.getElementById('dob').value,
                 b: document.getElementById('blood').value,
                 a: document.getElementById('allergies').value.trim(),
@@ -1374,10 +1454,20 @@
                     <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Name</div>
                     <div style="font-weight: 600;">${formData.n || 'Not provided'}</div>
                 </div>
+                ${formData.pe ? `
+                <div class="info-card">
+                    <div style=\"font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;\">Proton Email</div>
+                    <div style=\"font-weight: 600;\">${formData.pe}</div>
+                </div>` : ''}
                 ${formData.pr ? `
                 <div class="info-card">
                     <div style=\"font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;\">Pronouns</div>
                     <div style=\"font-weight: 600;\">${formData.pr}</div>
+                </div>` : ''}
+                ${formData.pe ? `
+                <div class="info-card" style=\"border-left: 4px solid #6d4aff;\">
+                    <div style=\"font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;\">Proton Email</div>
+                    <div style=\"font-weight: 600;\">${formData.pe}</div>
                 </div>` : ''}
                 ${formData.d ? `
                 <div class="info-card">
@@ -1473,7 +1563,12 @@
                 ctx.fillText('MEDICAL ID', 170, 30);
                 ctx.font = '12px Arial';
                 ctx.fillText(`Name: ${formData.n}`, 170, 60);
-                ctx.fillText('Scan for full info', 170, 90);
+                let nextY = 90;
+                if (formData.pe) {
+                    ctx.fillText(`Email: ${formData.pe}`, 170, 90);
+                    nextY = 120;
+                }
+                ctx.fillText('Scan for full info', 170, nextY);
                 
                 const link = document.createElement('a');
                 link.download = 'medical-id-wallet.png';
@@ -1490,6 +1585,35 @@
         function copyURL() {
             navigator.clipboard.writeText(window.location.href).then(() => {
                 alert('Link copied to clipboard!');
+            });
+        }
+
+        function copyMedicalInfo(dataObj = formData) {
+            const data = dataObj || {};
+            const lines = [];
+            if (data.pe) lines.push(`Proton Email: ${data.pe}`);
+            if (data.n) lines.push(`Name: ${data.n}`);
+            if (data.pr) lines.push(`Pronouns: ${data.pr}`);
+            if (data.d) lines.push(`Date of Birth: ${new Date(data.d).toLocaleDateString()}`);
+            if (data.b) lines.push(`Blood Type: ${data.b}`);
+            if (data.a) lines.push(`Allergies: ${data.a}`);
+            if (data.m) lines.push(`Medications: ${data.m}`);
+            if (data.c) lines.push(`Medical Conditions: ${data.c}`);
+            if (data.ec) {
+                let ecLine = `Emergency Contact: ${data.ec}`;
+                if (data.ep) ecLine += ` (${data.ep})`;
+                if (data.er) ecLine += ` - ${data.er}`;
+                lines.push(ecLine);
+            }
+            if (data.cm) {
+                let cmLine = `Case Manager: ${data.cm}`;
+                if (data.co) cmLine += `, ${data.co}`;
+                if (data.cp) cmLine += ` (${data.cp})`;
+                lines.push(cmLine);
+            }
+
+            navigator.clipboard.writeText(lines.join('\n')).then(() => {
+                alert('Medical info copied!');
             });
         }
 
@@ -1542,10 +1666,10 @@ GPS: ${currentLocation.latitude}, ${currentLocation.longitude}
 ADDRESS: ${currentLocation.address}
 INTERSECTION: ${currentLocation.crossStreets}
 PLUS CODE: ${currentLocation.plusCode}
-MAPS: https://maps.google.com/?q=${currentLocation.latitude},${currentLocation.longitude}
+MAPS: https://maps.google.com/?q=${currentLocation.latitude},${currentLocation.longitude}${formData.pe ? `\nPROTON EMAIL: ${formData.pe}` : ''}
 
 Generated: ${new Date().toLocaleString()}`;
-                
+
                 navigator.clipboard.writeText(allInfo)
                     .then(() => alert('All location info copied!'));
             }
@@ -1873,6 +1997,8 @@ Generated: ${new Date().toLocaleString()}`;
             }
         }
 
+        let displayData = null;
+
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             setupCharacterCounters();
@@ -1883,19 +2009,37 @@ Generated: ${new Date().toLocaleString()}`;
                 try {
                     const decompressed = LZString.decompressFromEncodedURIComponent(hash);
                     const data = JSON.parse(decompressed);
+                    // `pe` was introduced in schema v2; older QR codes may omit it
+
+                    displayData = data;
+
                     
                     // Display existing data
                     document.getElementById('wizard-view').classList.add('hidden');
                     document.getElementById('display-view').classList.remove('hidden');
                     
                     let html = '';
+                    if (data.pe) {
+                        html += `<div class="info-card" style="border-left: 4px solid #6d4aff;">
+                            <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Proton Email</div>
+                            <div style="font-weight: 600;">${data.pe}</div>
+                        </div>`;
+                    }
+
                     if (data.n) {
                         html += `<div class="info-card">
                             <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Patient Name</div>
                             <div style="font-weight: 600;">${data.n}</div>
                         </div>`;
                     }
-                    
+
+                    if (data.pe) {
+                        html += `<div class="info-card">
+                            <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Proton Email</div>
+                            <div style="font-weight: 600;">${data.pe}</div>
+                        </div>`;
+                    }
+
                     if (data.pr) {
                         html += `<div class="info-card">
                             <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Pronouns</div>
