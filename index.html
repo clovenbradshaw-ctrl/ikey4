@@ -25,6 +25,7 @@
         :root {
             --primary: #4f46e5;
             --primary-dark: #4338ca;
+            --proton: #6d4aff;
             --secondary: #64748b;
             --success: #10b981;
             --danger: #ef4444;
@@ -202,6 +203,69 @@
             background: var(--light);
             color: var(--dark);
             border: 2px solid var(--border);
+        }
+
+        .proton-input {
+            border: 2px solid var(--proton);
+        }
+
+        .proton-input:focus {
+            border-color: var(--primary);
+        }
+
+        .proton-input:active {
+            border-color: var(--primary-dark);
+        }
+
+        .proton-link {
+            color: var(--proton);
+            border-bottom: 2px solid var(--proton);
+        }
+
+        .proton-link:hover {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .proton-link:active {
+            color: var(--primary-dark);
+            border-bottom-color: var(--primary-dark);
+        }
+
+        .review-card {
+            border-left: 4px solid var(--proton);
+            padding-left: 15px;
+        }
+
+        .apps-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .apps-grid .btn-primary {
+            background: var(--proton);
+        }
+
+        .apps-grid .btn-primary:hover {
+            background: var(--primary);
+        }
+
+        .apps-grid .btn-primary:active {
+            background: var(--primary-dark);
+        }
+
+        .apps-grid .btn-secondary {
+            border-color: var(--proton);
+        }
+
+        .apps-grid .btn-secondary:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .apps-grid .btn-secondary:active {
+            border-color: var(--primary-dark);
+            color: var(--primary-dark);
         }
 
         /* Medical QR Tab Styles */
@@ -787,8 +851,8 @@
 
                     <!-- Step 5: Review -->
                     <div class="wizard-step" data-step="5">
-                        <h2>Review Your Information</h2>
-                        <div id="review-content"></div>
+                        <h2 style="color: var(--proton);">Review Your Information</h2>
+                        <div id="review-content" class="review-card"></div>
                         <div style="background: #fef3c7; border: 1px solid #facc15; border-radius: 10px; padding: 15px; margin-top: 20px;">
                             <strong>⚠️ Heads up:</strong> Anyone who scans this QR code will be able to view the information you provide.
                         </div>
@@ -889,7 +953,7 @@
                         <div id="plusCode" style="font-family: monospace; font-size: 1.1rem;">Loading...</div>
                     </div>
                     
-                    <div style="display: grid; gap: 12px; margin-top: 30px;">
+                    <div class="apps-grid" style="margin-top: 30px;">
                         <button class="btn btn-primary" onclick="copyAll()" style="width: 100%; justify-content: center;">
                             📋 Copy All Location Info
                         </button>
@@ -1021,10 +1085,15 @@
                     <h3 style="margin-bottom: 12px; color: var(--primary);">🚀 Getting Started</h3>
                     <ol style="line-height: 2; color: var(--secondary); margin-left: 20px;">
                         <li><strong>Create a free account</strong> at Filen.io (10GB free storage)</li>
-                        <li><strong>Need an email?</strong> Get a secure one at <a href="https://proton.me/mail" target="_blank" style="color: var(--primary); display: inline-flex; align-items: center; gap: 8px;"><img src="https://sm.pcmag.com/pcmag_uk/review/p/proton-mai/proton-mail_zjn6.jpg" alt="Proton Mail logo" style="width:24px;height:auto;border-radius:4px;">Proton Mail</a></li>
+                        <li><strong>Need an email?</strong> Get a secure one at <a href="https://proton.me/mail" target="_blank" class="proton-link" style="display: inline-flex; align-items: center; gap: 8px;"><img src="https://sm.pcmag.com/pcmag_uk/review/p/proton-mai/proton-mail_zjn6.jpg" alt="Proton Mail logo" style="width:24px;height:auto;border-radius:4px;">Proton Mail</a></li>
                         <li><strong>Upload your documents</strong> - they're encrypted on your device first</li>
                         <li><strong>Access anywhere</strong> with apps for all platforms</li>
                     </ol>
+                <div style="margin-top: 20px;">
+                    <input type="email" placeholder="you@proton.me" class="proton-input" style="width: 100%; padding: 12px 14px; border-radius: 10px;">
+                </div>
+
+                
                 </div>
                 
                 <a href="https://app.filen.io/" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="font-size: 1.1rem; padding: 16px 40px;">
