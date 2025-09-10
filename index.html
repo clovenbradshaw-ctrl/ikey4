@@ -1107,13 +1107,14 @@
                     <div class="info-card">
                         <span class="info-card-icon">📝</span>
                         <div class="info-card-content">
-                            <div class="info-card-label">Level 2: Settings (PIN)</div>
                             <div class="info-card-value">Manage secure settings and documents</div>
+                            <div class="info-card-label">Level 2: Demographics (Password)</div>
+                            <div class="info-card-value">Contact info and basic details - protected by your password</div>
                         </div>
                     </div>
 
                     <div class="warning-box">
-                        <strong>Important:</strong> Your PIN IS your encryption key. It cannot be recovered if lost. Store it safely.
+                        <strong>Important:</strong> Your password IS your encryption key. It cannot be recovered if lost. Store it safely.
                     </div>
                 </div>
                 
@@ -1313,7 +1314,7 @@
             </div>
             <div id="emergency-display"></div>
             <div class="btn-group mt-4">
-                <button class="btn" onclick="requestPIN('edit')">
+                <button class="btn" onclick="requestPassword('edit')">
                     🔐 Edit Information
                 </button>
                 <button class="btn btn-outline" onclick="generateMainQR()">
@@ -1332,6 +1333,8 @@
 
         <!-- 911 Location Widget Section -->
         <div class="content-section" id="locate911-section">
+        <!-- Health Section (Password Tier) -->
+        <div class="content-section" id="health-section">
             <div class="section-header">
                 <h2>Emergency Location for 911</h2>
                 <p style="color: var(--text-secondary); margin-top: 8px;">
@@ -1434,16 +1437,17 @@
             </a>
         </div>
 
-        <!-- Security Section (PIN Tier) -->
+        <!-- Security Section -->
         <div class="content-section" id="security-section">
             <div class="section-header">
                 <h2>Security & Settings</h2>
             </div>
             
             <div class="mb-4">
-                <h3>PIN Management</h3>
+                <h3>Password Management</h3>
                 <p style="color: var(--text-secondary); margin-top: 8px; font-size: 0.875rem;">
-                    Set and manage your PIN for accessing protected settings.
+                   
+                    Set and manage your password for accessing protected health data.
                 </p>
             </div>
             
@@ -1462,7 +1466,7 @@
 
     </div>
 
-    <!-- PIN Modal -->
+    <!-- Password Modal -->
     <div id="pin-modal" class="modal-overlay">
         <div class="modal-container">
             <h3 class="modal-title" id="pin-modal-title">Enter Password</h3>
@@ -1501,7 +1505,6 @@
         const AUTO_LOGOUT_MS = 45 * 60 * 1000;
         const MAX_ATTEMPTS = 5;
         const LOCKOUT_DURATION = 15 * 60 * 1000;
-        let pinEntry = '';
 
         const state = {
             currentGUID: null,
@@ -1526,35 +1529,35 @@
             protectedData: {}
         };
 
-        function promptForPIN() {
+        function promptForPassword() {
             return new Promise((resolve, reject) => {
                 window.pinPromiseResolve = resolve;
                 window.pinPromiseReject = reject;
                 pinAction = 'prompt';
                 pinCallback = null;
-                document.getElementById('pin-modal').classList.add('active');
-                document.getElementById('pin-modal-title').textContent = 'Enter 6-Digit PIN';
-                pinEntry = '';
-                updatePinDisplay();
+                const modal = document.getElementById('pin-modal');
+                modal.classList.add('active');
+                document.getElementById('pin-modal-title').textContent = 'Enter Password';
+                document.getElementById('passwordInput').value = '';
             });
         }
 
         // Zero-knowledge utilities
-        async function decryptWithPIN(callback) {
-            let pin = await promptForPIN();
-            if (!pin) return null;
+        async function decryptWithPassword(callback) {
+            let password = await promptForPassword();
+            if (!password) return null;
             try {
-                const pinKey = await deriveKeyFromPassword(pin);
+                const pinKey = await deriveKeyFromPassword(password);
                 const result = await callback(pinKey);
                 crypto.getRandomValues(pinKey);
                 return result;
             } finally {
-                pin = null;
+                password = null;
             }
         }
 
         async function loadProtectedData() {
-            return decryptWithPIN(async (pinKey) => {
+            return decryptWithPassword(async (pinKey) => {
                 const stored = localStorage.getItem(`ikey_${state.currentGUID}_protected`);
                 if (!stored) return null;
                 try {
@@ -1564,7 +1567,7 @@
                     return true;
                 } catch (e) {
                     state.pinUnlocked = false;
-                    throw new Error('Invalid PIN');
+                    throw new Error('Invalid password');
                 }
             });
         }
@@ -1574,7 +1577,7 @@
                 showStatus('Protected data not unlocked', 'error');
                 return;
             }
-            return decryptWithPIN(async (pinKey) => {
+            return decryptWithPassword(async (pinKey) => {
                 const encrypted = await encrypt(state.protectedData, pinKey);
                 localStorage.setItem(`ikey_${state.currentGUID}_protected`, encrypted);
             });
@@ -1587,14 +1590,14 @@
                 this.sessionKey = null;
             }
 
-            async unlock(pin) {
-                const pinHash = await hashPIN(pin);
+            async unlock(password) {
+                const passwordHash = await hashPassword(password);
                 const storedHash = localStorage.getItem(`ikey_pin_hash_${state.currentGUID}`);
-                if (pinHash !== storedHash) {
-                    throw new Error('Invalid PIN');
+                if (passwordHash !== storedHash) {
+                    throw new Error('Invalid Password');
                 }
                 this.sessionKey = crypto.getRandomValues(new Uint8Array(32));
-                const pinKey = await deriveKeyFromPassword(pin);
+                const pinKey = await deriveKeyFromPassword(password);
                 const stored = localStorage.getItem(`ikey_${state.currentGUID}_protected`);
                 const decrypted = await decrypt(stored, pinKey);
                 this.protectedCache = await encrypt(decrypted, this.sessionKey);
@@ -1628,26 +1631,26 @@
 
         const session = new SessionUnlock();
 
-        async function unlockWithPIN() {
-            const pin = await promptForPIN();
+        async function unlockWithPassword() {
+            const password = await promptForPassword();
             try {
-                await session.unlock(pin);
+                await session.unlock(password);
                 state.pinUnlocked = true;
                 updateUI();
             } catch (e) {
-                showStatus('Invalid PIN', 'error');
+                showStatus('Invalid password', 'error');
             }
         }
 
         async function accessProtectedData() {
             if (!state.pinUnlocked) {
-                await unlockWithPIN();
+                await unlockWithPassword();
             }
             try {
                 return await session.getProtectedData();
             } catch (e) {
                 state.pinUnlocked = false;
-                await unlockWithPIN();
+                await unlockWithPassword();
                 return await session.getProtectedData();
             }
         }
@@ -1696,7 +1699,7 @@
 
             applyThemeSpecifics(theme) {
                 const lock = document.getElementById('lockText');
-                if (lock) lock.textContent = 'PIN Protected';
+                if (lock) lock.textContent = 'Password Protected';
                 if (theme === 'topsecret') {
                     document.querySelectorAll('.timestamp').forEach(el => {
                         const date = new Date(el.textContent);
@@ -1708,7 +1711,7 @@
                     });
                     if (lock) lock.textContent = 'CLEARANCE LEVEL: PUBLIC';
                     document.querySelectorAll('.security-badge').forEach(badge => {
-                        badge.textContent = badge.textContent.replace('PIN Protected', 'LEVEL 2 CLEARANCE');
+                        badge.textContent = badge.textContent.replace('Password Protected', 'LEVEL 2 CLEARANCE');
                     });
                 }
             },
@@ -1891,33 +1894,16 @@
             }
         }
 
-        // Keyboard Support for PIN Entry
+        // Keyboard Support for Password Entry
         function setupKeyboardListeners() {
             document.addEventListener('keydown', function(e) {
-                // Handle keyboard only when PIN modal is active
                 const pinModal = document.getElementById('pin-modal');
 
                 if (pinModal.classList.contains('active')) {
-                    // Handle number keys 0-9
-                    if (e.key >= '0' && e.key <= '9') {
+                    if (e.key === 'Enter') {
                         e.preventDefault();
-                        const digit = parseInt(e.key);
-                        addPinDigit(digit);
-                    }
-                    // Handle backspace/delete
-                    else if (e.key === 'Backspace' || e.key === 'Delete') {
-                        e.preventDefault();
-                        clearPin();
-                    }
-                    // Handle Enter
-                    else if (e.key === 'Enter') {
-                        e.preventDefault();
-                        if (pinEntry.length === 6) {
-                            verifyPIN();
-                        }
-                    }
-                    // Handle Escape
-                    else if (e.key === 'Escape') {
+                        verifyPassword();
+                    } else if (e.key === 'Escape') {
                         e.preventDefault();
                         closePinPad();
                     }
@@ -1949,7 +1935,6 @@
 
         function autoLogout() {
             state.pinUnlocked = false;
-            pinEntry = '';
             localStorage.removeItem(`ikey_pin_temp_${state.currentGUID}`);
             localStorage.removeItem(`ikey_pin_hash_${state.currentGUID}`);
             updateSecurityUI();
@@ -2135,8 +2120,8 @@
                 const password = document.getElementById('setup-password').value;
 
                 if (password) {
-                    const pinHash = await hashPIN(password);
-                    localStorage.setItem(`ikey_pin_hash_${state.currentGUID}`, pinHash);
+                    const passwordHash = await hashPassword(password);
+                    localStorage.setItem(`ikey_pin_hash_${state.currentGUID}`, passwordHash);
                     state.pinUnlocked = true;
                 }
 
@@ -2186,6 +2171,7 @@
                 // Hide wizard and show main app
                 document.getElementById('setup-wizard').classList.add('hidden');
                 await loadExistingUser();
+                generateMainQR();
                 
             } catch (error) {
                 console.error('Setup failed:', error);
@@ -2268,6 +2254,7 @@
 
             await loadPublicData();
             displayEmergencyInfo();
+            generateMainQR();
 
             // Update UI based on what's unlocked
             updateSecurityUI();
@@ -2318,35 +2305,9 @@
             return new Uint8Array(derivedBits);
         }
 
-        async function deriveKeyFromPIN(pin) {
+        async function hashPassword(password) {
             const encoder = new TextEncoder();
-            const pinData = encoder.encode(pin + state.currentGUID);
-            
-            const keyMaterial = await crypto.subtle.importKey(
-                'raw',
-                pinData,
-                { name: 'PBKDF2' },
-                false,
-                ['deriveBits']
-            );
-            
-            const derivedBits = await crypto.subtle.deriveBits(
-                {
-                    name: 'PBKDF2',
-                    salt: encoder.encode(state.currentGUID),
-                    iterations: 100000,
-                    hash: 'SHA-256'
-                },
-                keyMaterial,
-                256
-            );
-            
-            return new Uint8Array(derivedBits);
-        }
-
-        async function hashPIN(pin) {
-            const encoder = new TextEncoder();
-            const hash = await crypto.subtle.digest('SHA-256', encoder.encode(pin));
+            const hash = await crypto.subtle.digest('SHA-256', encoder.encode(password));
             return btoa(String.fromCharCode(...new Uint8Array(hash)));
         }
 
@@ -2668,11 +2629,11 @@
             `;
         }
 
-        // PIN Management
+        // Password Management
         let pinAction = null;
         let pinCallback = null;
 
-        function requestPIN(action = 'unlock', callback = null) {
+        function requestPassword(action = 'unlock', callback = null) {
             if (typeof action === 'function') {
                 callback = action;
                 action = 'unlock';
@@ -2688,49 +2649,23 @@
 
             pinAction = action;
             pinCallback = callback;
-            document.getElementById('pin-modal').classList.add('active');
+            const modal = document.getElementById('pin-modal');
+            modal.classList.add('active');
             document.getElementById('pin-modal-title').textContent = action === 'setup'
-                ? 'Set 6-Digit PIN'
-                : 'Enter 6-Digit PIN';
-            pinEntry = '';
-            updatePinDisplay();
-        }
-
-        function addPinDigit(digit) {
-            if (pinEntry.length < 6) {
-                pinEntry += digit;
-                updatePinDisplay();
-
-                if (pinEntry.length === 6) {
-                    setTimeout(verifyPIN, 100);
-                }
-            }
-        }
-
-        function clearPin() {
-            pinEntry = '';
-            updatePinDisplay();
+                ? 'Set Password'
+                : 'Enter Password';
+            document.getElementById('passwordInput').value = '';
         }
 
         function closePinPad() {
             document.getElementById('pin-modal').classList.remove('active');
-            pinEntry = '';
             pinAction = null;
             pinCallback = null;
-            // Only reject if a promise was waiting (actual cancel)
             if (window.pinPromiseReject) {
-                window.pinPromiseReject(new Error('PIN entry cancelled'));
+                window.pinPromiseReject(new Error('Password entry cancelled'));
                 window.pinPromiseResolve = null;
                 window.pinPromiseReject = null;
             }
-        }
-
-        function updatePinDisplay() {
-            const dots = document.querySelectorAll('#pinDisplay .pin-dot');
-            dots.forEach((dot, index) => {
-                dot.classList.toggle('filled', index < pinEntry.length);
-                dot.classList.remove('error');
-            });
         }
 
         function checkLockout() {
@@ -2769,49 +2704,37 @@
             } else {
                 localStorage.setItem(attemptsKey, attempts.toString());
                 const remaining = MAX_ATTEMPTS - attempts;
-                showStatus(`Wrong PIN. ${remaining} attempts remaining`, 'error');
+                showStatus(`Wrong password. ${remaining} attempts remaining`, 'error');
             }
         }
 
-        async function verifyPIN() {
-            // Handle promise-based PIN entry (zero-knowledge functions)
-            if (window.pinPromiseResolve) {
-                if (pinEntry.length === 6) {
-                    const tempPin = pinEntry;
-                    const resolver = window.pinPromiseResolve;
-                    window.pinPromiseResolve = null;
-                    window.pinPromiseReject = null;
-                    closePinPad();
-                    resolver(tempPin);
-                    return;
-                }
-            }
+        async function verifyPassword() {
+            const inputEl = document.getElementById('passwordInput');
+            const password = inputEl.value;
 
-            if (checkLockout()) {
-                pinEntry = '';
-                updatePinDisplay();
+            if (window.pinPromiseResolve) {
+                const resolver = window.pinPromiseResolve;
+                window.pinPromiseResolve = null;
+                window.pinPromiseReject = null;
+                closePinPad();
+                resolver(password);
                 return;
             }
 
-            // Standard verification
+            if (checkLockout()) {
+                inputEl.value = '';
+                return;
+            }
+
             try {
-                const pinHash = await hashPIN(pinEntry);
+                const passwordHash = await hashPassword(password);
                 const storedHash = localStorage.getItem(`ikey_pin_hash_${state.currentGUID}`);
 
-                if (pinHash === storedHash) {
+                if (passwordHash === storedHash) {
                     state.pinUnlocked = true;
 
                     if (typeof session !== 'undefined' && session.unlock) {
-                        await session.unlock(pinEntry);
-                    }
-
-                    if (window.pinPromiseResolve) {
-                        const resolver = window.pinPromiseResolve;
-                        window.pinPromiseResolve = null;
-                        window.pinPromiseReject = null;
-                        closePinPad();
-                        resolver(pinEntry);
-                        return;
+                        await session.unlock(password);
                     }
 
                     closePinPad();
@@ -2822,10 +2745,10 @@
                     if (pinAction === 'edit') {
                         editEmergencyInfo();
                     } else if (pinAction === 'unlock') {
-                        unlockPINLevel();
-                        showStatus('PIN verified successfully', 'success');
+                        unlockPasswordLevel();
+                        showStatus('Password verified successfully', 'success');
                     } else if (pinAction === 'change') {
-                        showStatus('PIN changed successfully', 'success');
+                        showStatus('Password changed successfully', 'success');
                     }
 
                     if (typeof pinCallback === 'function') {
@@ -2833,16 +2756,12 @@
                     }
 
                 } else {
-                    throw new Error('Invalid PIN');
+                    throw new Error('Invalid password');
                 }
 
             } catch (error) {
                 handleFailedAttempt();
-                document.querySelectorAll('#pinDisplay .pin-dot').forEach(dot => dot.classList.add('error'));
-                setTimeout(() => {
-                    pinEntry = '';
-                    updatePinDisplay();
-                }, 1000);
+                inputEl.value = '';
 
                 const guid = state.currentGUID || 'default';
                 const lockoutUntil = parseInt(localStorage.getItem(`ikey_pin_lockout_${guid}`) || '0', 10);
@@ -2856,7 +2775,7 @@
             }
         }
 
-        function unlockPINLevel() {
+        function unlockPasswordLevel() {
             updateSecurityUI();
         }
 
@@ -3014,9 +2933,9 @@
 
         // Tab Navigation
         function showTab(tabName) {
-            // Only require PIN for security tab now
-            if (!state.pinUnlocked && tabName === 'security') {
-                requestPIN('unlock', () => showTab(tabName));
+
+            if (!state.pinUnlocked && (tabName === 'health' || tabName === 'security')) {
+                requestPassword('unlock', () => showTab(tabName));
                 return;
             }
 
@@ -3070,7 +2989,7 @@
         function updateSecurityUI() {
             if (state.pinUnlocked) {
                 document.getElementById('lockIcon').textContent = '🔐';
-                document.getElementById('lockText').textContent = 'PIN Protected';
+                document.getElementById('lockText').textContent = 'Password Protected';
                 document.getElementById('securityBadge').className = 'security-badge badge-pin';
                 document.getElementById('securityTab').classList.remove('locked');
             } else {
@@ -3264,7 +3183,6 @@
         });
 
         window.addEventListener('beforeunload', function() {
-            pinEntry = '';
             session.lock();
             localStorage.removeItem(`ikey_pin_temp_${state.currentGUID}`);
             if (state.currentGUID) {
