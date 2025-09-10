@@ -490,20 +490,42 @@
             border: none;
         }
 
-        /* Storage Tab */
-        .resource-card {
-            background: white;
-            border-radius: var(--radius);
-            padding: 30px;
-            text-align: center;
-            box-shadow: var(--shadow-lg);
-            margin-bottom: 30px;
+        /* Apps Tab */
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
         }
 
-        .resource-icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            color: var(--primary);
+        .app-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 25px 20px;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .app-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .app-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .app-card h3 {
+            color: #6d4aff;
+            margin-bottom: 10px;
+        }
+
+        .app-card p {
+            color: var(--secondary);
+            font-size: 0.9rem;
         }
 
         /* Settings Tab */
@@ -628,9 +650,9 @@
             <span class="tab-icon">📡</span>
             Dispatch
         </button>
-        <button class="tab-btn" onclick="switchTab('storage')">
-            <span class="tab-icon">💾</span>
-            Storage
+        <button class="tab-btn" onclick="switchTab('apps')">
+            <span class="tab-icon">📦</span>
+            Apps
         </button>
         <button class="tab-btn" onclick="switchTab('settings')">
             <span class="tab-icon">⚙️</span>
@@ -1003,75 +1025,50 @@
         </div>
     </div>
 
-    <!-- Storage Tab -->
-    <div id="storage" class="tab-content">
+    <!-- Apps Tab -->
+    <div id="apps" class="tab-content">
         <div class="container">
-            <div class="resource-card">
-                <div class="resource-icon">🔐</div>
-                <h2 style="color: var(--primary); margin-bottom: 15px;">Secure Cloud Storage with Filen</h2>
-                <div style="text-align: center; margin-bottom: 20px;">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSwL_Iiqw_VgXBMRLJX3IaUhlGQcR4Z7LWnlQ&s" alt="Filen interface" style="max-width: 100%; border-radius: 12px;">
-                </div>
-                <p style="color: var(--secondary); margin-bottom: 25px; line-height: 1.8;">
-                    Store your important documents and emergency files with military-grade encryption.
-                    Filen offers zero-knowledge end-to-end encryption - even they can't see your files.
-                </p>
-                
-                <div style="background: #eff6ff; border-left: 4px solid var(--primary); padding: 18px; margin: 25px 0; border-radius: 10px; text-align: left;">
-                    <h3 style="margin-bottom: 12px; color: var(--primary);">🚀 Getting Started</h3>
-                    <ol style="line-height: 2; color: var(--secondary); margin-left: 20px;">
-                        <li><strong>Create a free account</strong> at Filen.io (10GB free storage)</li>
-                        <li><strong>Need an email?</strong> Get a secure one at <a href="https://proton.me/mail" target="_blank" style="color: var(--primary); display: inline-flex; align-items: center; gap: 8px;"><img src="https://sm.pcmag.com/pcmag_uk/review/p/proton-mai/proton-mail_zjn6.jpg" alt="Proton Mail logo" style="width:24px;height:auto;border-radius:4px;">Proton Mail</a></li>
-                        <li><strong>Upload your documents</strong> - they're encrypted on your device first</li>
-                        <li><strong>Access anywhere</strong> with apps for all platforms</li>
-                    </ol>
-                </div>
-                
-                <a href="https://app.filen.io/" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="font-size: 1.1rem; padding: 16px 40px;">
-                    Open Filen →
+            <div class="apps-grid">
+                <a class="app-card" href="https://proton.me/mail" target="_blank" rel="noopener noreferrer">
+                    <div class="app-icon">📧</div>
+                    <h3>Email</h3>
+                    <p>Secure encrypted email.</p>
                 </a>
-            </div>
-            
-            <div class="card">
-                <h3 style="margin-bottom: 20px;">Why Filen for Emergency Documents?</h3>
-                <div style="display: grid; gap: 15px;">
-                    <div style="display: flex; align-items: start; gap: 12px;">
-                        <span style="font-size: 1.5rem;">🛡️</span>
-                        <div>
-                            <strong>Zero-Knowledge Architecture</strong>
-                            <p style="color: var(--secondary); font-size: 0.9rem; margin-top: 5px;">Your files are encrypted before leaving your device</p>
-                        </div>
-                    </div>
-                    <div style="display: flex; align-items: start; gap: 12px;">
-                        <span style="font-size: 1.5rem;">🔒</span>
-                        <div>
-                            <strong>Military-Grade AES-256 Encryption</strong>
-                            <p style="color: var(--secondary); font-size: 0.9rem; margin-top: 5px;">The same standard used by governments worldwide</p>
-                        </div>
-                    </div>
-                    <div style="display: flex; align-items: start; gap: 12px;">
-                        <span style="font-size: 1.5rem;">🌍</span>
-                        <div>
-                            <strong>GDPR Compliant (Germany-based)</strong>
-                            <p style="color: var(--secondary); font-size: 0.9rem; margin-top: 5px;">Protected by Europe's strictest privacy laws</p>
-                        </div>
-                    </div>
-                    <div style="display: flex; align-items: start; gap: 12px;">
-                        <span style="font-size: 1.5rem;">📱</span>
-                        <div>
-                            <strong>Access on All Your Devices</strong>
-                            <p style="color: var(--secondary); font-size: 0.9rem; margin-top: 5px;">iOS, Android, Windows, Mac, Linux support</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div style="background: #fef3c7; border: 1px solid #fbbf24; border-radius: 12px; padding: 18px; margin-top: 25px;">
-                    <h4 style="color: #92400e; margin-bottom: 10px;">💡 Pro Tip: Emergency Folder</h4>
-                    <p style="color: #78350f; line-height: 1.8;">
-                        Create an "Emergency" folder in Filen with copies of IDs, insurance cards, medical records, 
-                        and important contacts. Share it securely with trusted family members.
-                    </p>
-                </div>
+                <a class="app-card" href="https://proton.me/calendar" target="_blank" rel="noopener noreferrer">
+                    <div class="app-icon">📅</div>
+                    <h3>Calendar</h3>
+                    <p>Private scheduling for your day.</p>
+                </a>
+                <a class="app-card" href="https://proton.me/drive" target="_blank" rel="noopener noreferrer">
+                    <div class="app-icon">📁</div>
+                    <h3>Drive</h3>
+                    <p>Store files with end-to-end encryption.</p>
+                </a>
+                <a class="app-card" href="https://proton.me/docs" target="_blank" rel="noopener noreferrer">
+                    <div class="app-icon">📄</div>
+                    <h3>Docs (Beta)</h3>
+                    <p>Collaborative editing with privacy.</p>
+                </a>
+                <a class="app-card" href="https://proton.me/pass" target="_blank" rel="noopener noreferrer">
+                    <div class="app-icon">🔐</div>
+                    <h3>Pass</h3>
+                    <p>Manage passwords securely.</p>
+                </a>
+                <a class="app-card" href="https://proton.me/wallet" target="_blank" rel="noopener noreferrer">
+                    <div class="app-icon">💳</div>
+                    <h3>Wallet</h3>
+                    <p>Encrypted digital payments.</p>
+                </a>
+                <a class="app-card" href="https://protonvpn.com" target="_blank" rel="noopener noreferrer">
+                    <div class="app-icon">🛡️</div>
+                    <h3>VPN</h3>
+                    <p>Secure VPN for your devices.</p>
+                </a>
+                <a class="app-card" href="https://proton.me/ai" target="_blank" rel="noopener noreferrer">
+                    <div class="app-icon">🤖</div>
+                    <h3>AI</h3>
+                    <p>Privacy-focused AI tools.</p>
+                </a>
             </div>
         </div>
     </div>
