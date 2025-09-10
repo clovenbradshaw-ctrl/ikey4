@@ -2,443 +2,135 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'none';">
-    <meta name="theme-color" content="#4F46E5">
-    <script>
-        const manifest = {
-            "name": "iKey Emergency Hub",
-            "short_name": "iKey",
-            "description": "Your emergency information when you need it most",
-            "start_url": "/",
-            "display": "standalone",
-            "background_color": "#ffffff",
-            "theme_color": "#4F46E5",
-            "orientation": "portrait",
-            "icons": [
-                { "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20192%20192%22%3E%3Crect%20width%3D%22192%22%20height%3D%22192%22%20fill%3D%22%234F46E5%22%2F%3E%3C%2Fsvg%3E", "sizes": "192x192", "type": "image/svg+xml" },
-                { "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20512%20512%22%3E%3Crect%20width%3D%22512%22%20height%3D%22512%22%20fill%3D%22%234F46E5%22%2F%3E%3C%2Fsvg%3E", "sizes": "512x512", "type": "image/svg+xml" }
-            ]
-            };
-        const manifestURL = URL.createObjectURL(new Blob([JSON.stringify(manifest)], {type: 'application/manifest+json'}));
-        const manifestLink = document.createElement('link');
-        manifestLink.rel = 'manifest';
-        manifestLink.href = manifestURL;
-        document.head.appendChild(manifestLink);
-    </script>
-    <title>iKey Emergency Hub - Emergency Resource System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Create your emergency medical QR code - no account needed, fully private">
+    <title>Emergency QR - Your Medical ID</title>
+    
+    <!-- QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- LZ-String Compression -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
+    
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
         }
 
         :root {
-            --text-scale: 1;
-            --spacing-scale: 1;
-            --element-scale: 1;
-        }
-
-        body.size-small { --text-scale: 0.875; --spacing-scale: 0.9; --element-scale: 0.95; }
-        body.size-normal { --text-scale: 1; --spacing-scale: 1; --element-scale: 1; }
-        body.size-large { --text-scale: 1.125; --spacing-scale: 1.1; --element-scale: 1.05; }
-        body.size-xlarge { --text-scale: 1.25; --spacing-scale: 1.2; --element-scale: 1.1; }
-
-        html {
-            font-size: calc(16px * var(--text-scale));
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --border: #e2e8f0;
+            --radius: 12px;
         }
 
         body {
-            min-height: 100vh;
-            color: var(--text);
-            position: relative;
-        }
-
-        body.theme-default {
-            --primary: #4F46E5;
-            --primary-dark: #3730A3;
-            --danger: #EF4444;
-            --success: #10B981;
-            --warning: #F59E0B;
-            --surface: #FFFFFF;
-            --surface-alt: #E8EAF0;
-            --text: #111827;
-            --text-secondary: #4B5563;
-            --border: #9CA3AF;
-            --glass: rgba(255, 255, 255, 0.98);
-            --glass-border: rgba(0, 0, 0, 0.1);
-            --gac: #8B5CF6;
-
-            background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-        }
-
-        body.theme-default input,
-        body.theme-default textarea,
-        body.theme-default select {
-            background: #FAFBFC;
-            border: 2px solid #CBD5E1;
-        }
-
-        body.theme-default .info-card {
-            background: #F1F5F9;
-            border: 1px solid #CBD5E1;
-        }
-
-        body.theme-topsecret {
-            --primary: #ff3333;
-            --primary-dark: #cc0000;
-            --danger: #ff6666;
-            --success: #33ff33;
-            --warning: #ffaa00;
-            --surface: #1a0000;
-            --surface-alt: #2d0000;
-            --text: #ff3333;
-            --text-secondary: #ff9999;
-            --border: #660000;
-            --glass: rgba(0, 0, 0, 0.95);
-            background: #1a0000;
-            font-family: 'Arial', sans-serif;
-        }
-
-        body.theme-topsecret::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 2px,
-                rgba(255, 0, 0, 0.03) 2px,
-                rgba(255, 0, 0, 0.03) 4px
-            );
-            pointer-events: none;
-            z-index: 9999;
-            animation: scanline 8s linear infinite;
-        }
-
-        @keyframes scanline {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(10px); }
-        }
-
-        body.theme-topsecret .nav-tab.locked::after {
-            content: '[CLASSIFIED]';
-            font-size: 0.6rem;
-            color: #ff0000;
-        }
-
-        body.theme-topsecret h1,
-        body.theme-topsecret h2 {
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            border-bottom: 2px dashed #ff0000;
-        }
-
-        body.theme-topsecret .status-message {
-            border: 3px double #ff0000;
-            background: repeating-linear-gradient(
-                45deg,
-                transparent,
-                transparent 10px,
-                rgba(255, 0, 0, 0.1) 10px,
-                rgba(255, 0, 0, 0.1) 20px
-            );
-            text-transform: uppercase;
-        }
-
-        body.theme-hacker {
-            --primary: #00ff00;
-            --primary-dark: #00cc00;
-            --danger: #ff3333;
-            --success: #00ff00;
-            --surface: #0a1a0a;
-            --surface-alt: #132613;
-            --text: #ffffff;
-            --text-secondary: #ffffff;
-            --border: #004400;
-            background: #0a1a0a;
-            font-family: 'Consolas', 'Monaco', monospace;
-        }
-
-        body.theme-hacker::after {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><text x="0" y="20" fill="%2300ff00" font-family="Consolas" font-size="20">010101</text></svg>');
-            opacity: 0.1;
-            pointer-events: none;
-            animation: matrix-fall 20s linear infinite;
-        }
-
-        @keyframes matrix-fall {
-            0% { transform: translateY(-100%); }
-            100% { transform: translateY(100%); }
-        }
-
-        body.theme-hacker input:focus::after {
-            content: '_';
-            animation: blink 1s infinite;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
-
-        body.theme-hacker .form-group label::before {
-            content: '> ';
-            color: #00ff00;
-        }
-
-        body.theme-hacker .btn {
-            text-shadow: 0 0 10px #00ff00;
-            border: 1px solid #00ff00;
-            background: transparent;
-        }
-
-        body.theme-wellness {
-            --primary: #5a7261;
-            --primary-dark: #3d4f42;
-            --success: #7a9a6a;
-            --surface: #ffffff;
-            --surface-alt: #f5f3ed;
-            --text: #1a1a1a;
-            --text-secondary: #4a5a4a;
-            --border: #b8b3a0;
-            background: linear-gradient(135deg, #ffffff 0%, #f5f3ed 100%);
-            font-family: 'Segoe UI', 'San Francisco', sans-serif;
-        }
-
-        body.theme-wellness * {
-            border-radius: calc(var(--base-radius, 8px) * 1.5);
-        }
-
-        body.theme-wellness .btn {
-            animation: breathe 4s ease-in-out infinite;
-        }
-
-        @keyframes breathe {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-        }
-
-        body.theme-wellness .content-section {
-            background-image:
-                repeating-linear-gradient(
-                    90deg,
-                    transparent,
-                    transparent 50px,
-                    rgba(124, 152, 133, 0.02) 50px,
-                    rgba(124, 152, 133, 0.02) 51px
-                );
-        }
-
-        body.theme-contrast {
-            --primary: #000000;
-            --danger: #000000;
-            --success: #000000;
-            --surface: #ffffff;
-            --surface-alt: #ffffff;
-            --text: #000000;
-            --text-secondary: #000000;
-            --border: #000000;
-        }
-
-        body.theme-contrast.dark-mode {
-            --primary: #ffffff;
-            --surface: #000000;
-            --surface-alt: #000000;
-            --text: #ffffff;
-            --border: #ffffff;
-        }
-
-        body.theme-contrast * {
-            border-width: 2px !important;
-            font-weight: 600 !important;
-        }
-
-        body.theme-contrast .form-group input,
-        body.theme-contrast .form-group textarea {
-            padding: 14px;
-        }
-
-        body.theme-contrast *:focus {
-            outline: 4px solid var(--primary);
-            outline-offset: 2px;
-        }
-
-        body.theme-contrast::before,
-        body.theme-contrast::after {
-            display: none !important;
-        }
-
-        body.theme-retro {
-            --primary: #2d5a39;
-            --surface: #ffffff;
-            --surface-alt: #f5f0e1;
-            --text: #000000;
-            --text-secondary: #3d3d3d;
-            --border: #8a7e6d;
-            background: #ffffff;
-            font-family: 'American Typewriter', 'Courier', serif;
-        }
-
-        body.theme-retro .nav-tab {
-            background: linear-gradient(to bottom, #e8ddc7 0%, #d4c4a8 100%);
-            border: 1px solid #9b8f7e;
-            border-bottom: none;
-            border-radius: 8px 8px 0 0;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.5);
-        }
-
-        body.theme-retro .content-section {
-            background-image:
-                linear-gradient(rgba(75, 124, 89, 0.1) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(75, 124, 89, 0.1) 1px, transparent 1px);
-            background-size: 20px 20px;
-        }
-
-        body.theme-retro .status-success {
-            transform: none;
-            border: 3px double #4a7c59;
-            border-radius: 50%;
-            text-transform: uppercase;
-        }
-
-        body.theme-accessible {
-            --primary: #0050a0;
-            --primary-dark: #003670;
-            --danger: #d00000;
-            --success: #007000;
-            --warning: #a06000;
-            --surface: #ffffff;
-            --surface-alt: #f0f4f8;
-            --text: #000000;
-            --text-secondary: #333333;
-            --border: #0050a0;
-            --glass: rgba(255, 255, 255, 1);
-
-            font-size: 18px;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            min-height: 100vh;
+            color: var(--dark);
             line-height: 1.6;
         }
 
-        body.theme-accessible *:focus {
-            outline: 3px solid #0050a0 !important;
-            outline-offset: 2px !important;
-        }
-
         .container {
-            width: 100%;
-            padding: calc(12px * var(--spacing-scale));
-            min-height: 100vh;
-        }
-
-        /* Setup Wizard Styles */
-        .setup-wizard {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            z-index: 3000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            max-width: 600px;
+            margin: 0 auto;
             padding: 20px;
         }
 
-        .setup-wizard.hidden {
-            display: none;
-        }
-
-        .wizard-container {
-            background: white;
-            border-radius: 20px;
-            max-width: 600px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
-        }
-
-        .wizard-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
+        /* Header */
+        .header {
             text-align: center;
-            border-radius: 20px 20px 0 0;
+            padding: 30px 20px;
+            background: white;
+            border-radius: var(--radius);
+            margin-bottom: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
-        .wizard-header h1 {
+        .header h1 {
+            color: var(--primary);
             font-size: 2rem;
             margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
-        .wizard-header p {
-            opacity: 0.9;
-            font-size: 1.1rem;
+        .header p {
+            color: var(--secondary);
         }
 
+        .privacy-badge {
+            background: var(--success);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            display: inline-block;
+            margin-top: 15px;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            background: white;
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        /* Wizard Progress */
         .wizard-progress {
             display: flex;
-            padding: 20px 30px;
-            background: var(--surface-alt);
-            border-bottom: 1px solid var(--border);
+            justify-content: space-between;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .wizard-progress::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 10%;
+            right: 10%;
+            height: 2px;
+            background: var(--border);
+            z-index: 0;
         }
 
         .progress-step {
             flex: 1;
             text-align: center;
             position: relative;
-        }
-
-        .progress-step::after {
-            content: '';
-            position: absolute;
-            top: 15px;
-            left: 50%;
-            width: 100%;
-            height: 2px;
-            background: var(--border);
-            z-index: -1;
-        }
-
-        .progress-step:last-child::after {
-            display: none;
+            z-index: 1;
         }
 
         .progress-dot {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
+            width: 40px;
+            height: 40px;
             background: white;
             border: 2px solid var(--border);
+            border-radius: 50%;
             margin: 0 auto 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            font-size: 0.875rem;
+            transition: all 0.3s ease;
         }
 
         .progress-step.active .progress-dot {
             background: var(--primary);
             color: white;
             border-color: var(--primary);
+            transform: scale(1.1);
         }
 
         .progress-step.completed .progress-dot {
@@ -449,171 +141,17 @@
 
         .progress-label {
             font-size: 0.75rem;
-            color: var(--text-secondary);
+            color: var(--secondary);
         }
 
-        .wizard-content {
-            padding: 30px;
-        }
-
+        /* Wizard Steps */
         .wizard-step {
             display: none;
+            animation: fadeIn 0.3s ease;
         }
 
         .wizard-step.active {
             display: block;
-        }
-
-        .wizard-actions {
-            padding: 20px 30px;
-            border-top: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-        }
-
-        .loading-spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-            margin-right: 8px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .processing-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(255,255,255,0.9);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            border-radius: 20px;
-            z-index: 100;
-        }
-
-        .processing-message {
-            margin-top: 20px;
-            font-size: 1.1rem;
-            color: var(--primary);
-            font-weight: 500;
-        }
-
-        .header {
-            background: var(--surface);
-            border-radius: calc(12px * var(--element-scale));
-            padding: calc(12px * var(--spacing-scale));
-            margin-bottom: calc(12px * var(--spacing-scale));
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .header-controls {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-            flex-wrap: wrap;
-            justify-content: flex-end;
-        }
-
-        .security-badge {
-            padding: 6px 10px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-weight: 600;
-        }
-
-        .badge-public {
-            background: var(--surface-alt);
-            color: var(--text-secondary);
-        }
-
-        .badge-pin {
-            background: rgba(79, 70, 229, 0.1);
-            color: var(--primary);
-        }
-
-
-        .nav-tabs {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 12px;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            padding-bottom: 4px;
-        }
-
-        .nav-tab {
-            background: var(--surface);
-            color: var(--text);
-            border: none;
-            padding: 14px 18px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: all 0.2s;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-            white-space: nowrap;
-            flex-shrink: 0;
-            position: relative;
-        }
-
-        .nav-tab.locked::after {
-            content: '🔒';
-            position: absolute;
-            top: 4px;
-            right: 4px;
-            font-size: 0.7rem;
-        }
-
-        .nav-tab.active {
-            background: var(--primary);
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
-        }
-
-        .nav-tab:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .content-section {
-            background: var(--surface);
-            color: var(--text);
-            border-radius: calc(12px * var(--element-scale));
-            padding: calc(16px * var(--spacing-scale));
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-            display: none;
-        }
-
-        .content-section.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
         }
 
         @keyframes fadeIn {
@@ -621,490 +159,301 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* Form Elements */
         .form-group {
-            margin-bottom: calc(20px * var(--spacing-scale));
+            margin-bottom: 20px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: calc(6px * var(--spacing-scale));
+            margin-bottom: 5px;
             font-weight: 500;
-            color: var(--text);
-            font-size: calc(0.875rem * var(--text-scale));
-        }
-
-        .form-group label.required::after {
-            content: ' *';
-            color: var(--danger);
+            color: var(--dark);
         }
 
         .form-group input,
-        .form-group textarea,
-        .form-group select {
+        .form-group select,
+        .form-group textarea {
             width: 100%;
-            padding: calc(12px * var(--spacing-scale)) calc(14px * var(--spacing-scale));
+            padding: 10px 12px;
             border: 2px solid var(--border);
-            border-radius: calc(8px * var(--element-scale));
-            font-size: calc(1rem * var(--text-scale));
-            transition: all 0.2s;
-            background: var(--surface);
-            min-height: calc(48px * var(--element-scale));
-            touch-action: manipulation;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
         }
 
-.form-group input:focus,
-.form-group textarea:focus,
-.form-group select:focus {
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-}
-
-        .password-strength {
-            margin-top: 4px;
-            font-size: calc(0.875rem * var(--text-scale));
         }
 
-        .size-controls {
-            display: flex;
-            gap: calc(8px * var(--spacing-scale));
-        }
-
-        .size-btn {
-            padding: calc(8px * var(--spacing-scale));
-            border: 1px solid var(--border);
-            background: var(--surface);
-            border-radius: calc(6px * var(--element-scale));
-            cursor: pointer;
-        }
-
-        textarea {
+        .form-group textarea {
             resize: vertical;
             min-height: 80px;
+            font-family: inherit;
         }
 
+        .form-help {
+            font-size: 0.85rem;
+            color: var(--secondary);
+            margin-top: 5px;
+        }
+
+        /* Buttons */
         .btn {
-            padding: calc(14px * var(--spacing-scale)) calc(24px * var(--spacing-scale));
-            background: var(--primary);
-            color: white;
+            padding: 12px 24px;
             border: none;
-            border-radius: calc(10px * var(--element-scale));
-            font-size: calc(1rem * var(--text-scale));
-            font-weight: 600;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s;
             display: inline-flex;
             align-items: center;
-            justify-content: center;
-            gap: calc(8px * var(--spacing-scale));
-            min-height: calc(48px * var(--element-scale));
-            touch-action: manipulation;
+            gap: 8px;
         }
 
-        .btn:hover:not(:disabled) {
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
         }
 
         .btn-secondary {
-            background: var(--text-secondary);
+            background: var(--light);
+            color: var(--dark);
+            border: 2px solid var(--border);
         }
 
-        .btn-danger {
-            background: var(--danger);
+        .btn-secondary:hover {
+            background: var(--border);
         }
 
         .btn-success {
             background: var(--success);
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: var(--primary);
-            border: 2px solid var(--primary);
-        }
-
-        .btn-outline:hover:not(:disabled) {
-            background: var(--primary);
             color: white;
         }
 
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
+        .btn-success:hover {
+            background: #059669;
         }
 
+        .wizard-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Display View */
         .info-card {
-            background: var(--surface-alt);
-            border-radius: 10px;
-            padding: 14px;
-            margin-bottom: 12px;
-            display: flex;
-            gap: 10px;
-            align-items: flex-start;
+            background: var(--light);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
         }
 
-        .info-card-icon {
-            font-size: 1.5rem;
-            flex-shrink: 0;
-        }
-
-        .info-card-content {
-            flex: 1;
-        }
-
-        .info-card-label {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
+        .info-label {
+            font-size: 0.85rem;
+            color: var(--secondary);
             text-transform: uppercase;
-            margin-bottom: 4px;
-            letter-spacing: 0.5px;
+            margin-bottom: 5px;
         }
 
-        .info-card-value {
-            font-size: 1rem;
-            color: var(--text);
+        .info-value {
+            font-size: 1.1rem;
+            color: var(--dark);
             font-weight: 500;
         }
 
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 3500;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal-container {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 24px 16px;
-            width: 100%;
-            max-width: 420px;
-            margin: 0 12px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
-        }
-
-        .modal-title {
-            text-align: center;
-            color: var(--text);
-            margin-bottom: 24px;
-            font-size: 1.25rem;
-            font-weight: 500;
-        }
-
-        .pin-display {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            margin: 32px auto;
-            max-width: 320px;
-        }
-
-        .pin-dot {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: rgba(79, 70, 229, 0.2);
-            border: 2px solid rgba(79, 70, 229, 0.3);
-            transition: all 0.3s;
-        }
-
-        .pin-dot.filled {
-            background: var(--primary);
-            transform: scale(1.3);
-            box-shadow: 0 0 20px rgba(79, 70, 229, 0.5);
-        }
-
-        .pin-dot.error {
-            background: var(--danger);
-            animation: shake 0.5s;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-
-        .pin-keypad {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
-            max-width: 360px;
-            margin-left: auto;
-            margin-right: auto;
-            padding: 0 8px;
-        }
-
-        .pin-key {
-            background: rgba(79, 70, 229, 0.1);
-            border: 2px solid rgba(79, 70, 229, 0.3);
-            border-radius: 14px;
-            padding: 0;
-            font-size: 1.8rem;
-            color: var(--text);
-            cursor: pointer;
-            transition: all 0.2s;
-            font-weight: bold;
-            min-height: 65px;
-            height: 65px;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            touch-action: manipulation;
-        }
-
-        .pin-key:hover {
-            background: rgba(79, 70, 229, 0.2);
-            transform: scale(1.05);
-        }
-
-        .pin-key:active {
-            transform: scale(0.95);
-            background: rgba(79, 70, 229, 0.3);
-        }
-
-        .pin-key.special-clear {
-            background: rgba(239, 68, 68, 0.1);
-            border-color: rgba(239, 68, 68, 0.3);
-            font-size: 1.2rem;
-        }
-
-        .pin-key.special-cancel {
-            background: rgba(107, 114, 128, 0.1);
-            border-color: rgba(107, 114, 128, 0.3);
-            font-size: 1.2rem;
-        }
-
-
-
-
-        .grid-2 {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-        }
-
-        .grid-3 {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-        }
-
-        .checkbox-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 8px;
-        }
-
-        .checkbox-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .info-box {
-            background: rgba(79, 70, 229, 0.1);
-            border: 1px solid var(--primary);
-            border-radius: 8px;
-            padding: 12px;
-            margin: 16px 0;
-        }
-
-        .warning-box {
-            background: rgba(245, 158, 11, 0.1);
-            border: 1px solid var(--warning);
-            border-radius: 8px;
-            padding: 12px;
-            margin: 16px 0;
-        }
-
-
-        .sync-indicator {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .pin-reset-link {
-            text-align: center;
-            margin-top: 12px;
-            font-size: 0.875rem;
-        }
-
-        .pin-reset-link a {
-            color: var(--primary);
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .pin-reset-link a:hover {
-            text-decoration: underline;
-        }
-
+        /* QR Code Display */
         .qr-container {
             text-align: center;
-            padding: 20px;
+            padding: 30px;
             background: white;
-            border-radius: 12px;
-            margin: 20px 0;
+            border-radius: var(--radius);
+            margin-top: 20px;
         }
 
         #qrcode {
             display: inline-block;
             padding: 20px;
             background: white;
+            border: 2px solid var(--border);
             border-radius: 8px;
+            margin: 20px 0;
         }
 
-        #qrcode canvas {
-            display: block !important;
+        .download-options {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
         }
 
-        @media (max-width: 768px) {
-            .grid-2, .grid-3 {
-                grid-template-columns: 1fr;
+        /* Character Counter */
+        .char-counter {
+            text-align: right;
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+
+        .char-counter.good { color: var(--success); }
+        .char-counter.warning { color: #f59e0b; }
+        .char-counter.danger { color: var(--danger); }
+
+        /* Loading State */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .container {
+                padding: 10px;
             }
             
-            .wizard-container {
-                margin: 10px;
+            .header h1 {
+                font-size: 1.5rem;
             }
             
-            .nav-tabs {
-                flex-wrap: nowrap;
-                overflow-x: auto;
+            .main-content {
+                padding: 20px;
             }
+            
+            .wizard-progress {
+                margin-bottom: 20px;
+            }
+            
+            .progress-label {
+                font-size: 0.65rem;
+            }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-state h2 {
+            color: var(--secondary);
+            margin-bottom: 20px;
+        }
+
+        /* Success Animation */
+        .success-checkmark {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: var(--success);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: scaleIn 0.3s ease;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
         }
 
         .hidden {
             display: none !important;
         }
-
-        .mt-4 {
-            margin-top: 2rem;
-        }
-
-        .mb-4 {
-            margin-bottom: 2rem;
-        }
-
-        .section-header {
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 12px;
-            margin-bottom: 20px;
-        }
-
-        .add-button {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.875rem;
-            margin-top: 12px;
-        }
-
-        .add-button:hover {
-            background: var(--primary-dark);
-        }
     </style>
 </head>
-<body class="theme-default size-normal">
-    <!-- Setup Wizard -->
-    <div id="setup-wizard" class="setup-wizard hidden">
-        <div class="wizard-container">
-            <div class="wizard-header">
-                <h1>🔑 Welcome to iKey Emergency</h1>
-                <p>Your emergency resource and contact hub</p>
-            </div>
-            
-            <div class="wizard-progress">
-                <div class="progress-step active" data-step="1">
-                    <div class="progress-dot">1</div>
-                    <div class="progress-label">Welcome</div>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🚨 Emergency QR</h1>
+            <p>Your medical information for emergencies</p>
+            <div class="privacy-badge">🔒 100% Private - No data leaves your device</div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Wizard View -->
+            <div id="wizard-view">
+                <!-- Progress Bar -->
+                <div class="wizard-progress">
+                    <div class="progress-step active" data-step="1">
+                        <div class="progress-dot">1</div>
+                        <div class="progress-label">Welcome</div>
+                    </div>
+                    <div class="progress-step" data-step="2">
+                        <div class="progress-dot">2</div>
+                        <div class="progress-label">Basic Info</div>
+                    </div>
+                    <div class="progress-step" data-step="3">
+                        <div class="progress-dot">3</div>
+                        <div class="progress-label">Medical</div>
+                    </div>
+                    <div class="progress-step" data-step="4">
+                        <div class="progress-dot">4</div>
+                        <div class="progress-label">Contact</div>
+                    </div>
+                    <div class="progress-step" data-step="5">
+                        <div class="progress-dot">5</div>
+                        <div class="progress-label">Review</div>
+                    </div>
                 </div>
-                <div class="progress-step" data-step="2">
-                    <div class="progress-dot">2</div>
-                    <div class="progress-label">Emergency Info</div>
-                </div>
-                <div class="progress-step" data-step="3">
-                    <div class="progress-dot">3</div>
-                    <div class="progress-label">Security Setup</div>
-                </div>
-                <div class="progress-step" data-step="4">
-                    <div class="progress-dot">4</div>
-                    <div class="progress-label">Complete</div>
-                </div>
-            </div>
-            
-            <div class="wizard-content">
+
                 <!-- Step 1: Welcome -->
                 <div class="wizard-step active" data-step="1">
-                    <h2>Two Levels of Security</h2>
-                    <p style="margin-bottom: 20px;">iKey provides essential emergency tools with two security tiers:</p>
-                    
-                    <div class="info-card">
-                        <span class="info-card-icon">🚨</span>
-                        <div class="info-card-content">
-                            <div class="info-card-label">Level 1: Emergency Contacts (QR Code)</div>
-                            <div class="info-card-value">Critical info for first responders - accessible via QR code</div>
-                        </div>
-                    </div>
-                    
-                    <div class="info-card">
-                        <span class="info-card-icon">📝</span>
-                        <div class="info-card-content">
-                            <div class="info-card-value">Manage secure settings and documents</div>
-                            <div class="info-card-label">Level 2: Demographics (Password)</div>
-                            <div class="info-card-value">Contact info and basic details - protected by your password</div>
-                        </div>
-                    </div>
-
-                    <div class="warning-box">
-                        <strong>Important:</strong> Your password IS your encryption key. It cannot be recovered if lost. Store it safely.
+                    <h2>Create Your Emergency Medical ID</h2>
+                    <p style="margin: 20px 0;">This tool creates a QR code containing your emergency medical information. First responders can scan it to instantly see:</p>
+                    <ul style="margin-left: 20px; color: var(--secondary);">
+                        <li>Your name and blood type</li>
+                        <li>Critical allergies and medications</li>
+                        <li>Medical conditions</li>
+                        <li>Emergency contact information</li>
+                    </ul>
+                    <div style="background: #fef3c7; border: 1px solid #fbbf24; border-radius: 8px; padding: 15px; margin-top: 20px;">
+                        <strong>⚡ How it works:</strong> Your information is compressed and stored directly in the QR code. No accounts, no passwords, no cloud storage - just instant access when seconds count.
                     </div>
                 </div>
-                
-                <!-- Step 2: Emergency Info -->
+
+                <!-- Step 2: Basic Info -->
                 <div class="wizard-step" data-step="2">
-                    <h2>Emergency Contact Information</h2>
-                    <p style="margin-bottom: 20px;">This information will be accessible to first responders via QR code:</p>
+                    <h2>Basic Information</h2>
                     
                     <div class="form-group">
-                        <label class="required">Your Name</label>
-                        <input type="text" id="setup-name" placeholder="Enter your full name">
+                        <label for="name">Full Name *</label>
+                        <input type="text" id="name" placeholder="John Smith" required>
                     </div>
-                    
+
                     <div class="form-group">
-                        <label>Blood Type</label>
-                        <select id="setup-blood">
-                            <option value="">Unknown</option>
+                        <label for="dob">Date of Birth</label>
+                        <input type="date" id="dob">
+                        <div class="form-help">Optional - helps with identification</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="blood">Blood Type</label>
+                        <select id="blood">
+                            <option value="">Unknown / Not Sure</option>
                             <option value="A+">A+</option>
                             <option value="A-">A-</option>
                             <option value="B+">B+</option>
@@ -1115,2142 +464,478 @@
                             <option value="O-">O-</option>
                         </select>
                     </div>
-
-                    <div class="form-group">
-                        <label class="required">Emergency Contact Name</label>
-                        <input type="text" id="setup-contact-name" placeholder="Full name of emergency contact">
-                    </div>
-
-                    <div class="grid-2">
-                        <div class="form-group">
-                            <label class="required">Contact Phone</label>
-                            <input type="tel" id="setup-contact-phone" placeholder="Phone number">
-                        </div>
-
-                        <div class="form-group">
-                            <label class="required">Relationship</label>
-                            <select id="setup-contact-relationship" onchange="handleRelationshipChange('setup')">
-                                <option value="">Select relationship</option>
-                                <option value="spouse">Spouse/Partner</option>
-                                <option value="parent">Parent</option>
-                                <option value="child">Child</option>
-                                <option value="sibling">Sibling</option>
-                                <option value="case-manager">Case Manager</option>
-                                <option value="employer">Employer</option>
-                                <option value="friend">Friend</option>
-                                <option value="prefer-not">Prefer not to answer</option>
-                                <option value="other">Other (specify)</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group" id="setup-other-relationship-group" style="display: none;">
-                        <label>Please specify relationship</label>
-                        <input type="text" id="setup-contact-other" placeholder="Describe relationship">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Allergies</label>
-                        <textarea id="setup-allergies" placeholder="List any allergies (medications, foods, etc.)"></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Current Medications</label>
-                        <textarea id="setup-medications" placeholder="List current medications"></textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Medical Conditions</label>
-                        <textarea id="setup-conditions" placeholder="List medical conditions (diabetes, heart disease, etc.)"></textarea>
-                    </div>
                 </div>
-                
-                <!-- Step 3: Security Setup -->
+
+                <!-- Step 3: Medical Info -->
                 <div class="wizard-step" data-step="3">
-                    <h2>Set Up Your Security</h2>
-                    <p style="margin-bottom: 20px;">Create a password to protect your data and settings:</p>
-
+                    <h2>Medical Information</h2>
+                    <p style="margin-bottom: 20px; color: var(--secondary);">Keep entries brief - focus on critical information only</p>
+                    
                     <div class="form-group">
-                        <label for="setup-password">Create Password</label>
-                        <input type="password" id="setup-password" oninput="displayPasswordStrength(this.value)" autocomplete="new-password">
-                        <div id="password-strength" class="password-strength"></div>
-                        <small>Use at least 12 characters with a mix of letters, numbers, and symbols.</small>
-                    </div>
-                    <div class="form-group">
-                        <label for="setup-password-confirm">Confirm Password</label>
-                        <input type="password" id="setup-password-confirm" autocomplete="new-password">
-                        <small>Re-enter your password to confirm.</small>
+                        <label for="allergies">Allergies</label>
+                        <textarea id="allergies" placeholder="e.g., Penicillin, peanuts, latex"></textarea>
+                        <div class="char-counter good" id="allergies-counter">0 / 200 characters</div>
                     </div>
 
-                    <div class="warning-box">
-                        <strong>⚠️ Important:</strong> Your password cannot be recovered if forgotten. Store it securely.
+                    <div class="form-group">
+                        <label for="medications">Current Medications</label>
+                        <textarea id="medications" placeholder="e.g., Metformin 500mg, Lisinopril 10mg"></textarea>
+                        <div class="char-counter good" id="medications-counter">0 / 200 characters</div>
+                    </div>
 
+                    <div class="form-group">
+                        <label for="conditions">Medical Conditions</label>
+                        <textarea id="conditions" placeholder="e.g., Type 2 Diabetes, Hypertension"></textarea>
+                        <div class="char-counter good" id="conditions-counter">0 / 200 characters</div>
                     </div>
                 </div>
 
-                <!-- Step 4: Complete -->
+                <!-- Step 4: Emergency Contact -->
                 <div class="wizard-step" data-step="4">
-                    <h2>🎉 Setup Complete!</h2>
+                    <h2>Emergency Contact</h2>
                     
-                    <div style="text-align: center; margin: 30px 0;">
-                        <div id="setup-qrcode"></div>
-                    </div>
-                    
-                    <p style="margin-bottom: 20px;">Your emergency resource hub is ready! Here's what you can do:</p>
-                    
-                    <div class="info-card">
-                        <span class="info-card-icon">📱</span>
-                        <div class="info-card-content">
-                            <div class="info-card-label">Save This QR Code</div>
-                            <div class="info-card-value">Screenshot or download it - first responders can scan it for emergency info</div>
-                        </div>
-                    </div>
-                    
-                    <div class="info-card">
-                        <span class="info-card-icon">☁️</span>
-                        <div class="info-card-content">
-                            <div class="info-card-label">Automatic Backup</div>
-                            <div class="info-card-value">Your encrypted data syncs to the cloud automatically</div>
-                        </div>
-                    </div>
-                    
-                    <div class="info-card">
-                        <span class="info-card-icon">💾</span>
-                        <div class="info-card-content">
-                            <div class="info-card-label">Save This Page</div>
-                            <div class="info-card-value">Bookmark this page or save it offline for future access</div>
-                        </div>
-                    </div>
-                    
-                    <button class="btn btn-success" onclick="downloadSetupQR()" style="width: 100%; margin-top: 20px;">
-                        📥 Download QR Code
-                    </button>
-                </div>
-            </div>
-            
-            <div class="wizard-actions">
-                <button class="btn btn-secondary" id="wizard-back" onclick="wizardBack()">Back</button>
-                <button class="btn" id="wizard-next" onclick="wizardNext()">Next</button>
-                <button class="btn btn-success hidden" id="wizard-complete" onclick="completeSetup()">Start Using iKey</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <div class="logo">
-                <span>🔑</span>
-                <span>iKey Emergency</span>
-            </div>
-            <div class="header-controls">
-                <div class="security-badge badge-public" id="securityBadge">
-                    <span id="lockIcon">🔓</span>
-                    <span id="lockText">Public Access</span>
-                </div>
-                <button class="btn btn-outline" onclick="switchInstance()" id="switchInstanceBtn" style="padding: 8px 16px; font-size: 0.875rem;">
-                    🔄 Switch Profile
-                </button>
-                <button class="btn btn-outline" onclick="createNewInstance()" id="newInstanceBtn" style="padding: 8px 16px; font-size: 0.875rem;">
-                    ➕ New Profile
-                </button>
-                <div class="security-badge" id="syncIndicator" style="display: none;">
-                    <span>☁️</span>
-                    <span id="syncText">Syncing...</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Navigation Tabs -->
-        <div class="nav-tabs" id="navTabs">
-            <button class="nav-tab active" onclick="showTab('emergency')" data-tab="emergency">
-                🚨 Emergency Info
-            </button>
-            <button class="nav-tab" onclick="showTab('locate911')" data-tab="locate911">
-                📍 911 Location
-            </button>
-            <button class="nav-tab" onclick="showTab('filen')" data-tab="filen">
-                ☁️ Secure Storage
-            </button>
-            <button class="nav-tab" onclick="showTab('resources')" data-tab="resources">
-                📚 Resources
-            </button>
-            <button class="nav-tab locked" onclick="showTab('security')" data-tab="security" id="securityTab">
-                🔒 Settings
-            </button>
-        </div>
-
-        <!-- Emergency Section (Public Tier) -->
-        <div class="content-section active" id="emergency-section">
-            <div class="section-header">
-                <h2>Emergency Information</h2>
-            </div>
-            <div id="emergency-display"></div>
-            <div class="btn-group mt-4">
-                <button class="btn" onclick="requestPassword('edit')">
-                    🔐 Edit Information
-                </button>
-                <button class="btn btn-outline" onclick="generateMainQR()">
-                    📱 Generate QR Code
-                </button>
-            </div>
-            <div id="qr-display" class="qr-container hidden">
-                <div id="main-qrcode"></div>
-                <div class="mt-4">
-                    <button class="btn btn-success" onclick="downloadMainQR()">
-                        📥 Download QR
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- 911 Location Widget Section -->
-        <div class="content-section" id="locate911-section">
-        <!-- Health Section (Password Tier) -->
-        <div class="content-section" id="health-section">
-            <div class="section-header">
-                <h2>Emergency Location for 911</h2>
-                <p style="color: var(--text-secondary); margin-top: 8px;">
-                    Instantly share your exact location with emergency responders
-                </p>
-            </div>
-
-            <div class="warning-box">
-                <strong>When to use:</strong> Open this tab during an emergency to get your precise GPS coordinates, nearest address, and cross streets to share with 911 operators.
-            </div>
-
-            <div id="location-widget-container" style="margin-top: 20px; min-height: 600px;">
-                <!-- Widget loads here dynamically -->
-            </div>
-        </div>
-
-        <!-- Filen Secure Storage Section -->
-        <div class="content-section" id="filen-section">
-            <div class="section-header">
-                <h2>Secure Document Storage</h2>
-                <p style="color: var(--text-secondary); margin-top: 8px;">
-                    Store important documents with zero-knowledge encryption
-                </p>
-            </div>
-
-            <div class="info-box" style="background: rgba(79, 70, 229, 0.05);">
-                <strong>Store Your Critical Documents Securely:</strong><br>
-                • Medical records and test results<br>
-                • Insurance cards and policies<br>
-                • Legal documents and directives<br>
-                • Emergency contact lists<br>
-                • Prescription information
-            </div>
-
-            <div class="grid-2" style="margin-top: 20px;">
-                <div class="info-card">
-                    <span class="info-card-icon">🔐</span>
-                    <div class="info-card-content">
-                        <div class="info-card-label">END-TO-END ENCRYPTED</div>
-                        <div class="info-card-value">Files encrypted before leaving your device</div>
-                    </div>
-                </div>
-
-                <div class="info-card">
-                    <span class="info-card-icon">💾</span>
-                    <div class="info-card-content">
-                        <div class="info-card-label">10GB FREE</div>
-                        <div class="info-card-value">No credit card required</div>
-                    </div>
-                </div>
-            </div>
-
-            <a href="https://filen.io" target="_blank" class="btn btn-success" style="width: 100%; margin-top: 20px; text-decoration: none;">
-                Open Filen.io →
-            </a>
-
-            <p style="margin-top: 16px; font-size: 0.875rem; color: var(--text-secondary);">
-                Filen uses client-side AES-256 encryption. Your files are encrypted on your device - even Filen cannot read them.
-            </p>
-        </div>
-
-        <!-- Community Resources Section -->
-        <div class="content-section" id="resources-section">
-            <div class="section-header">
-                <h2>Nashville Community Resources</h2>
-                <p style="color: var(--text-secondary); margin-top: 8px;">
-                    Where to Turn in Nashville - Local support services
-                </p>
-            </div>
-
-            <div class="resource-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-top: 20px;">
-                <div class="info-box">
-                    <strong>🏥 Medical</strong><br>
-                    Free clinics, mental health, prescriptions
-                </div>
-                <div class="info-box">
-                    <strong>🏠 Housing</strong><br>
-                    Shelters, rent assistance, transitional housing
-                </div>
-                <div class="info-box">
-                    <strong>🍽️ Food</strong><br>
-                    Food banks, soup kitchens, SNAP benefits
-                </div>
-                <div class="info-box">
-                    <strong>💼 Employment</strong><br>
-                    Job training, placement services, career help
-                </div>
-                <div class="info-box">
-                    <strong>⚖️ Legal</strong><br>
-                    Legal aid, documentation, benefits assistance
-                </div>
-                <div class="info-box">
-                    <strong>👨‍👩‍👧 Family</strong><br>
-                    Childcare, parenting support, youth services
-                </div>
-            </div>
-
-            <a href="https://wttin.org" target="_blank" class="btn btn-success" style="width: 100%; margin-top: 20px; text-decoration: none;">
-                Visit WTTIN.org for Full Directory →
-            </a>
-        </div>
-
-        <!-- Security Section -->
-        <div class="content-section" id="security-section">
-            <div class="section-header">
-                <h2>Security & Settings</h2>
-            </div>
-            
-            <div class="mb-4">
-                <h3>Password Management</h3>
-                <p style="color: var(--text-secondary); margin-top: 8px; font-size: 0.875rem;">
-                   
-                    Set and manage your password for accessing protected health data.
-                </p>
-            </div>
-            
-            <div class="mb-4">
-                <h3>Data Management</h3>
-                <div class="btn-group">
-                    <button class="btn btn-success" onclick="syncToCloud()">
-                        ☁️ Sync to Cloud
-                    </button>
-                    <button class="btn btn-outline" onclick="exportData()">
-                        📥 Export All Data
-                    </button>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Password Modal -->
-    <div id="pin-modal" class="modal-overlay">
-        <div class="modal-container">
-            <h3 class="modal-title" id="pin-modal-title">Enter Password</h3>
-
-            <div class="password-input-wrapper">
-                <input type="password" id="passwordInput" autocomplete="off">
-                <button type="button" id="togglePassword" onclick="togglePasswordVisibility('passwordInput')">Show</button>
-            </div>
-            <div id="passwordStrength"></div>
-            <div class="modal-actions">
-                <button class="btn-cancel" onclick="closePinPad()">Cancel</button>
-                <button class="btn-submit" onclick="verifyPassword()">Submit</button>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- QR Code Library - Try multiple CDNs -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script>
-        // Fallback QR library loader
-        if (typeof QRCode === 'undefined') {
-            const script = document.createElement('script');
-            script.src = 'https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js';
-            document.head.appendChild(script);
-        }
-    </script>
-
-    <script>
-        // Global State Management
-        const APP_VERSION = '2.0.0';
-        const APP_URL = new URL('.', window.location.href).href;
-        const WEBHOOK_URL = 'https://n8n.intelechia.com/webhook/d5e99c29-2cf1-44c1-b5b4-95a1ca048441';
-        const XANO_CACHE_URL = 'https://xvkq-pq7i-idtl.n7d.xano.io/api:Hj4C6PGO/ikey_cache';
-        const ARCHIVE_BASE_URL = 'https://archive.org/download/zuboff';
-        const AUTO_LOGOUT_MS = 45 * 60 * 1000;
-        const MAX_ATTEMPTS = 5;
-        const LOCKOUT_DURATION = 15 * 60 * 1000;
-
-        const state = {
-            currentGUID: null,
-            pinUnlocked: false,
-            isFirstTime: false,
-            isShareMode: false,
-            autoSaveTimer: null,
-            lastSync: null,
-            lastActivity: Date.now(),
-            logoutTimer: null,
-            logoutWarningTimer: null,
-
-            telemetry: {
-                lastRestoreSource: null,
-                lastSyncResults: {}
-            },
-
-            publicData: {
-                emergency: {}
-            },
-
-            protectedData: {}
-        };
-
-        class ToastManager {
-            constructor() {
-                this.container = this.createContainer();
-            }
-            createContainer() {
-                const div = document.createElement('div');
-                div.className = 'toast-container';
-                div.style.cssText = `
-                    position: fixed;
-                    bottom: 20px;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    z-index: 9999;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 8px;
-                    pointer-events: none;
-                `;
-                document.body.appendChild(div);
-                return div;
-            }
-            show(message, type = 'info', duration = 3000, actions = null) {
-                const toast = document.createElement('div');
-                toast.className = `toast toast-${type}`;
-                toast.style.cssText = `
-                    background: ${this.getColor(type)};
-                    color: white;
-                    padding: 14px 20px;
-                    border-radius: 10px;
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                    display: flex;
-                    align-items: center;
-                    gap: 12px;
-                    transform: translateY(100px);
-                    opacity: 0;
-                    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-                    pointer-events: auto;
-                `;
-                const icon = this.getIcon(type);
-                toast.innerHTML = `<span>${icon}</span><span>${message}</span>`;
-                if (actions) {
-                    const btnContainer = document.createElement('div');
-                    btnContainer.style.cssText = 'display: flex; gap: 8px; margin-left: 12px;';
-                    actions.forEach(action => {
-                        const btn = document.createElement('button');
-                        btn.textContent = action.label;
-                        btn.onclick = action.callback;
-                        btn.style.cssText = `
-                            background: rgba(255,255,255,0.2);
-                            border: none;
-                            padding: 4px 8px;
-                            border-radius: 4px;
-                            color: white;
-                            cursor: pointer;
-                        `;
-                        btnContainer.appendChild(btn);
-                    });
-                    toast.appendChild(btnContainer);
-                }
-                this.container.appendChild(toast);
-                requestAnimationFrame(() => {
-                    toast.style.transform = 'translateY(0)';
-                    toast.style.opacity = '1';
-                });
-                setTimeout(() => {
-                    toast.style.transform = 'translateY(100px)';
-                    toast.style.opacity = '0';
-                    setTimeout(() => toast.remove(), 300);
-                }, duration);
-            }
-            getColor(type) {
-                const colors = {
-                    success: '#10B981',
-                    error: '#EF4444',
-                    warning: '#F59E0B',
-                    info: '#3B82F6'
-                };
-                return colors[type] || colors.info;
-            }
-            getIcon(type) {
-                const icons = {
-                    success: '✓',
-                    error: '✕',
-                    warning: '⚠',
-                    info: 'ℹ'
-                };
-                return icons[type] || icons.info;
-            }
-        }
-
-        const toast = new ToastManager();
-
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                const swCode = `
-                    const CACHE_NAME = 'ikey-v2';
-                    const urlsToCache = ['/', '/index.html'];
-                    self.addEventListener('install', event => {
-                        event.waitUntil(
-                            caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
-                        );
-                    });
-                    self.addEventListener('fetch', event => {
-                        event.respondWith(
-                            caches.match(event.request).then(response => response || fetch(event.request))
-                        );
-                    });
-                `;
-                const blob = new Blob([swCode], { type: 'text/javascript' });
-                navigator.serviceWorker.register(URL.createObjectURL(blob));
-            });
-        }
-
-        function promptForPassword() {
-            return new Promise((resolve, reject) => {
-                window.pinPromiseResolve = resolve;
-                window.pinPromiseReject = reject;
-                pinAction = 'prompt';
-                pinCallback = null;
-                const modal = document.getElementById('pin-modal');
-                modal.classList.add('active');
-                document.getElementById('pin-modal-title').textContent = 'Enter Password';
-                document.getElementById('passwordInput').value = '';
-            });
-        }
-
-        // Zero-knowledge utilities
-        async function decryptWithPassword(callback) {
-            let password = await promptForPassword();
-            if (!password) return null;
-            try {
-                const pinKey = await deriveKeyFromPassword(password);
-                const result = await callback(pinKey);
-                crypto.getRandomValues(pinKey);
-                return result;
-            } finally {
-                password = null;
-            }
-        }
-
-        async function loadProtectedData() {
-            return decryptWithPassword(async (pinKey) => {
-                const stored = localStorage.getItem(`ikey_${state.currentGUID}_protected`);
-                if (!stored) return null;
-                try {
-                    const decrypted = await decrypt(stored, pinKey);
-                    state.protectedData = decrypted;
-                    state.pinUnlocked = true;
-                    return true;
-                } catch (e) {
-                    state.pinUnlocked = false;
-                    throw new Error('Invalid password');
-                }
-            });
-        }
-
-        async function saveProtectedData() {
-            if (!state.pinUnlocked) {
-                showStatus('Protected data not unlocked', 'error');
-                return;
-            }
-            return decryptWithPassword(async (pinKey) => {
-                const encrypted = await encrypt(state.protectedData, pinKey);
-                localStorage.setItem(`ikey_${state.currentGUID}_protected`, encrypted);
-            });
-        }
-
-        class SessionUnlock {
-            constructor(timeout = 5 * 60 * 1000) {
-                this.timeout = timeout;
-                this.timer = null;
-                this.sessionKey = null;
-            }
-
-            async unlock(password) {
-                const passwordHash = await hashPassword(password);
-                const storedHash = localStorage.getItem(`ikey_pin_hash_${state.currentGUID}`);
-                if (passwordHash !== storedHash) {
-                    throw new Error('Invalid Password');
-                }
-                this.sessionKey = crypto.getRandomValues(new Uint8Array(32));
-                const pinKey = await deriveKeyFromPassword(password);
-                const stored = localStorage.getItem(`ikey_${state.currentGUID}_protected`);
-                const decrypted = await decrypt(stored, pinKey);
-                this.protectedCache = await encrypt(decrypted, this.sessionKey);
-                crypto.getRandomValues(pinKey);
-                this.resetTimer();
-                return true;
-            }
-
-            async getProtectedData() {
-                if (!this.sessionKey) {
-                    throw new Error('Session locked');
-                }
-                this.resetTimer();
-                return await decrypt(this.protectedCache, this.sessionKey);
-            }
-
-            resetTimer() {
-                clearTimeout(this.timer);
-                this.timer = setTimeout(() => this.lock(), this.timeout);
-            }
-
-            lock() {
-                if (this.sessionKey) {
-                    crypto.getRandomValues(this.sessionKey);
-                    this.sessionKey = null;
-                }
-                this.protectedCache = null;
-                clearTimeout(this.timer);
-            }
-        }
-
-        const session = new SessionUnlock();
-
-        async function unlockWithPassword() {
-            const password = await promptForPassword();
-            try {
-                await session.unlock(password);
-                state.pinUnlocked = true;
-                updateUI();
-            } catch (e) {
-                showStatus('Invalid password', 'error');
-            }
-        }
-
-        async function accessProtectedData() {
-            if (!state.pinUnlocked) {
-                await unlockWithPassword();
-            }
-            try {
-                return await session.getProtectedData();
-            } catch (e) {
-                state.pinUnlocked = false;
-                await unlockWithPassword();
-                return await session.getProtectedData();
-            }
-        }
-
-        async function getEmergencyKey() {
-            const publicHash = await hashData(state.publicData.emergency);
-            return await deriveKeyFromHash(publicHash);
-        }
-
-        async function generateQRData() {
-            const publicHash = await hashData(state.publicData.emergency);
-            return `${APP_URL}#${state.currentGUID}:${publicHash}`;
-        }
-
-        const ThemeManager = {
-            themes: ['default', 'topsecret', 'hacker', 'wellness', 'contrast', 'retro'],
-            sizes: ['small', 'normal', 'large', 'xlarge'],
-
-            init() {
-                this.loadPreferences();
-                this.addControls();
-                this.bindEvents();
-            },
-
-            loadPreferences() {
-                const savedTheme = localStorage.getItem('ikey_theme') || 'default';
-                const savedSize = localStorage.getItem('ikey_text_size') || 'normal';
-                this.applyTheme(savedTheme);
-                this.applySize(savedSize);
-            },
-
-            applyTheme(theme) {
-                document.body.className = document.body.className
-                    .replace(/theme-\w+/, '')
-                    .trim() + ' theme-' + theme;
-                localStorage.setItem('ikey_theme', theme);
-                this.applyThemeSpecifics(theme);
-            },
-
-            applySize(size) {
-                document.body.className = document.body.className
-                    .replace(/size-\w+/, '')
-                    .trim() + ' size-' + size;
-                localStorage.setItem('ikey_text_size', size);
-            },
-
-            applyThemeSpecifics(theme) {
-                const lock = document.getElementById('lockText');
-                if (lock) lock.textContent = 'Password Protected';
-                if (theme === 'topsecret') {
-                    document.querySelectorAll('.timestamp').forEach(el => {
-                        const date = new Date(el.textContent);
-                        el.textContent = date.toLocaleTimeString('en-US', {
-                            hour12: false,
-                            hour: '2-digit',
-                            minute: '2-digit'
-                        }) + 'hrs';
-                    });
-                    if (lock) lock.textContent = 'CLEARANCE LEVEL: PUBLIC';
-                    document.querySelectorAll('.security-badge').forEach(badge => {
-                        badge.textContent = badge.textContent.replace('Password Protected', 'LEVEL 2 CLEARANCE');
-                    });
-                }
-            },
-
-            addControls() {
-                const controlsHTML = `
-            <div class="theme-controls">
-                <h3>Appearance Settings</h3>
-
-                <div class="form-group">
-                    <label>Visual Theme</label>
-                    <select id="theme-selector" class="theme-select">
-                        <option value="default">Medical Professional</option>
-                        <option value="topsecret">Top Secret</option>
-                        <option value="hacker">Midnight Hacker</option>
-                        <option value="wellness">Zen Wellness</option>
-                        <option value="contrast">High Contrast</option>
-                        <option value="retro">Retro Medical</option>
-                        <option value="accessible">High Contrast Accessible</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Text Size</label>
-                    <div class="size-controls">
-                        <button class="size-btn" data-size="small">A-</button>
-                        <button class="size-btn" data-size="normal">A</button>
-                        <button class="size-btn" data-size="large">A+</button>
-                        <button class="size-btn" data-size="xlarge">A++</button>
-                    </div>
-                </div>
-            </div>
-        `;
-                const securitySection = document.getElementById('security-section');
-                if (securitySection) {
-                    securitySection.insertAdjacentHTML('beforeend', controlsHTML);
-                }
-            },
-
-            bindEvents() {
-                document.getElementById('theme-selector')?.addEventListener('change', (e) => {
-                    this.applyTheme(e.target.value);
-                });
-
-                document.querySelectorAll('.size-btn').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        this.applySize(btn.dataset.size);
-                    });
-                });
-            }
-        };
-
-        // Initialize Application
-        async function init() {
-            const fragment = window.location.hash.slice(1);
-
-            // If there's a hash fragment with GUID and key, load that data
-            if (fragment) {
-                const [guid, keyB64] = fragment.split(':');
-                if (guid && keyB64) {
-                    try {
-                        state.currentGUID = guid;
-                        state.isShareMode = false;
-
-                        // Restore the base key from URL
-                        state.baseKey = Uint8Array.from(
-                            atob(decodeURIComponent(keyB64)),
-                            c => c.charCodeAt(0)
-                        );
-
-                        // Save to localStorage for this session
-                        localStorage.setItem('ikey_guid', state.currentGUID);
-                        localStorage.setItem(`ikey_basekey_${state.currentGUID}`, keyB64);
-
-                        // Try to restore from cloud or local storage
-                        const publicData = localStorage.getItem(`ikey_${state.currentGUID}_public`);
-                        if (publicData) {
-                            state.publicData = JSON.parse(publicData);
-                        } else {
-                            // Try to restore from cloud
-                            await restoreFromCloud(guid, state.baseKey);
-                        }
-
-                        displayEmergencyInfo();
-                        updateSecurityUI();
-                        return;
-                    } catch (error) {
-                        console.error('Hash access failed:', error);
-                        showStatus('Unable to load data from URL', 'error');
-                        // Fall through to show setup wizard
-                    }
-                }
-            }
-
-            // Only check localStorage if NO hash in URL
-            const params = new URLSearchParams(window.location.search);
-            const forceSetup = params.get('setup') === 'new';
-            const savedGUID = localStorage.getItem('ikey_guid');
-
-            if (forceSetup) {
-                state.isFirstTime = true;
-                showSetupWizard();
-            } else if (savedGUID && window.location.hash.slice(1) === savedGUID) {
-                const baseKey = localStorage.getItem(`ikey_basekey_${savedGUID}`);
-                const publicData = localStorage.getItem(`ikey_${savedGUID}_public`);
-                if (baseKey && publicData) {
-                    await loadExistingUser();
-                } else {
-                    // Corrupted instance - clean up and show wizard
-                    localStorage.removeItem('ikey_guid');
-                    localStorage.removeItem(`ikey_basekey_${savedGUID}`);
-                    localStorage.removeItem(`ikey_${savedGUID}_public`);
-                    localStorage.removeItem(`ikey_${savedGUID}_protected`);
-                    localStorage.removeItem(`ikey_hash_${savedGUID}`);
-                    localStorage.removeItem(`ikey_pin_temp_${savedGUID}`);
-                    state.isFirstTime = true;
-                    showSetupWizard();
-                }
-            } else {
-                // No existing data - show setup wizard
-                state.isFirstTime = true;
-                showSetupWizard();
-            }
-
-            // Setup keyboard listeners and activity tracking
-            setupKeyboardListeners();
-            ['mousemove', 'keypress', 'click', 'touchstart', 'scroll'].forEach(evt => {
-                document.addEventListener(evt, trackActivity, { passive: true });
-            });
-            trackActivity();
-        }
-        function switchInstance() {
-            const instances = [];
-            for (let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                if (key.startsWith('ikey_') && key.endsWith('_public')) {
-                    const guid = key.replace('ikey_', '').replace('_public', '');
-                    instances.push(guid);
-                }
-            }
-            if (instances.length > 1) {
-                const choice = confirm('Multiple profiles detected.\nWould you like to switch profiles?');
-                if (choice) {
-                    const selected = prompt(
-                        'Enter profile number:\n' +
-                        instances.map((g, i) => `${i + 1}: ${g.substring(0, 8)}...`).join('\n')
-                    );
-                    if (selected) {
-                        const idx = parseInt(selected) - 1;
-                        if (instances[idx]) {
-                            state.currentGUID = instances[idx];
-                            loadExistingUser();
-                        }
-                    }
-                }
-            }
-        }
-
-        function createNewInstance() {
-            if (confirm('Create a new profile? Current data will be preserved.')) {
-                state.currentGUID = null;
-                state.pinUnlocked = false;
-                window.location.hash = '';
-                showSetupWizard();
-            }
-        }
-
-        function clearCurrentInstance() {
-            if (state.currentGUID) {
-                if (confirm('Clear this profile from browser? (Cloud backup remains)')) {
-                    localStorage.removeItem(`ikey_guid`);
-                    localStorage.removeItem(`ikey_basekey_${state.currentGUID}`);
-                    localStorage.removeItem(`ikey_${state.currentGUID}_public`);
-                    localStorage.removeItem(`ikey_${state.currentGUID}_protected`);
-                    localStorage.removeItem(`ikey_hash_${state.currentGUID}`);
-                    localStorage.removeItem(`ikey_pin_temp_${state.currentGUID}`);
-                    window.location.hash = '';
-                    location.reload();
-                }
-            }
-        }
-
-        // Keyboard Support for Password Entry
-        function setupKeyboardListeners() {
-            document.addEventListener('keydown', function(e) {
-                const pinModal = document.getElementById('pin-modal');
-
-                if (pinModal.classList.contains('active')) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        verifyPassword();
-                    } else if (e.key === 'Escape') {
-                        e.preventDefault();
-                        closePinPad();
-                    }
-                }
-            });
-        }
-
-        function trackActivity() {
-            state.lastActivity = Date.now();
-            resetLogoutTimer();
-        }
-
-        function resetLogoutTimer() {
-            clearTimeout(state.logoutTimer);
-            clearTimeout(state.logoutWarningTimer);
-
-            state.logoutWarningTimer = setTimeout(() => {
-                if (confirm('Session expiring in 5 minutes. Continue?')) {
-                    trackActivity();
-                }
-            }, AUTO_LOGOUT_MS - (5 * 60 * 1000));
-
-            state.logoutTimer = setTimeout(() => {
-                if (Date.now() - state.lastActivity > AUTO_LOGOUT_MS) {
-                    autoLogout();
-                }
-            }, AUTO_LOGOUT_MS);
-        }
-
-        function autoLogout() {
-            state.pinUnlocked = false;
-            localStorage.removeItem(`ikey_pin_temp_${state.currentGUID}`);
-            localStorage.removeItem(`ikey_pin_hash_${state.currentGUID}`);
-            updateSecurityUI();
-            showStatus('Session expired for security', 'warning');
-            showTab('emergency');
-            trackActivity();
-        }
-
-        // Webhook Functions
-        async function syncToCloud(showIndicator = true) {
-            // Disabled: Zero-knowledge mode avoids persistent key usage for syncing
-            if (showIndicator) {
-                showStatus('Cloud sync disabled in zero-knowledge mode', 'warning');
-            }
-        }
-
-        async function handleAuthFailure() {
-            toast.show('Sync authentication failed. Recovery is not available in this version.', 'error');
-        }
-
-        // Setup Wizard Functions
-        function showSetupWizard() {
-            document.getElementById('setup-wizard').classList.remove('hidden');
-            updateWizardProgress(1);
-        }
-
-        function updateWizardProgress(step) {
-            document.querySelectorAll('.wizard-step').forEach(s => {
-                s.classList.remove('active');
-                if (s.dataset.step == step) {
-                    s.classList.add('active');
-                }
-            });
-            
-            document.querySelectorAll('.progress-step').forEach((s, index) => {
-                s.classList.remove('active', 'completed');
-                if (index + 1 < step) {
-                    s.classList.add('completed');
-                } else if (index + 1 == step) {
-                    s.classList.add('active');
-                }
-            });
-            
-            // Update buttons
-            document.getElementById('wizard-back').style.display = step === 1 ? 'none' : 'block';
-            document.getElementById('wizard-next').style.display = step === 4 ? 'none' : 'block';
-            document.getElementById('wizard-complete').classList.toggle('hidden', step !== 4);
-        }
-
-        let currentWizardStep = 1;
-
-        function wizardNext() {
-            if (validateWizardStep(currentWizardStep)) {
-                currentWizardStep++;
-                updateWizardProgress(currentWizardStep);
-
-                if (currentWizardStep === 4) {
-                    generateSetupQR(true);
-                }
-            }
-        }
-
-        function wizardBack() {
-            if (currentWizardStep > 1) {
-                currentWizardStep--;
-                updateWizardProgress(currentWizardStep);
-            }
-        }
-
-        function validateWizardStep(step) {
-            if (step === 2) {
-                const name = document.getElementById('setup-name').value;
-                const contactName = document.getElementById('setup-contact-name').value;
-                const contactPhone = document.getElementById('setup-contact-phone').value;
-                const contactRelationship = document.getElementById('setup-contact-relationship').value;
-
-                if (!name) {
-                    toast.show('Please enter your name', 'error');
-                    return false;
-                }
-                if (!contactName || !contactPhone || !contactRelationship) {
-                    toast.show('Please complete all emergency contact fields', 'error');
-                    return false;
-                }
-                if (contactRelationship === 'other' && !document.getElementById('setup-contact-other').value) {
-                    toast.show('Please specify the relationship', 'error');
-                    return false;
-                }
-            }
-            if (step === 3) {
-                const password = document.getElementById('setup-password').value;
-                const confirm = document.getElementById('setup-password-confirm').value;
-                const complexity = /(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])/;
-                if (!password || password.length < 12) {
-                    toast.show('Password must be at least 12 characters', 'error');
-                    return false;
-                }
-                if (!complexity.test(password)) {
-                    toast.show('Use a mix of upper and lower case letters, numbers, and symbols', 'error');
-                    return false;
-                }
-                if (password !== confirm) {
-                    toast.show('Passwords do not match', 'error');
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        function displayPasswordStrength(password) {
-            const strengthEl = document.getElementById('password-strength');
-            if (!strengthEl) return;
-
-            let score = 0;
-            if (password.length >= 12) score++;
-            if (/[a-z]/.test(password)) score++;
-            if (/[A-Z]/.test(password)) score++;
-            if (/[0-9]/.test(password)) score++;
-            if (/[^A-Za-z0-9]/.test(password)) score++;
-
-            const levels = ['Very Weak', 'Weak', 'Fair', 'Good', 'Strong'];
-            const colors = ['#EF4444', '#F97316', '#EAB308', '#10B981', '#10B981'];
-            const idx = Math.min(score, levels.length - 1);
-            strengthEl.textContent = password ? `Strength: ${levels[idx]}` : '';
-            strengthEl.style.color = colors[idx];
-        }
-
-        async function completeSetup() {
-            // Preflight security feature check
-            if (!window.crypto?.subtle || !window.localStorage) {
-                showStatus('Browser missing required security features', 'error');
-                return;
-            }
-
-            // Show processing overlay
-            const wizardContainer = document.querySelector('.wizard-container');
-            const processingOverlay = document.createElement('div');
-            processingOverlay.className = 'processing-overlay';
-            processingOverlay.innerHTML = `
-                <div style="text-align: center;">
-                    <div class="loading-spinner" style="width: 40px; height: 40px; border-width: 4px;"></div>
-                    <div class="processing-message">Setting up your secure vault...</div>
-                </div>
-            `;
-            wizardContainer.appendChild(processingOverlay);
-            
-            // Update button to show loading state
-            const completeBtn = document.getElementById('wizard-complete');
-            completeBtn.disabled = true;
-            completeBtn.innerHTML = '<span class="loading-spinner"></span>Processing...';
-            
-            // Add small delay so user sees the animation
-            await new Promise(resolve => setTimeout(resolve, 500));
-            
-            try {
-                // Update processing message
-                processingOverlay.querySelector('.processing-message').textContent = 'Generating encryption keys...';
-                
-                // Generate GUID and keys
-                state.currentGUID = generateGUID();
-                state.baseKey = await generateKey();
-                
-                // Update message
-                processingOverlay.querySelector('.processing-message').textContent = 'Encrypting your data...';
-                await new Promise(resolve => setTimeout(resolve, 300));
-                
-                // Save emergency data
-                state.publicData.emergency = {
-                    name: document.getElementById('setup-name').value,
-                    bloodType: document.getElementById('setup-blood').value,
-                    allergies: document.getElementById('setup-allergies').value,
-                    medications: document.getElementById('setup-medications').value,
-                    conditions: document.getElementById('setup-conditions').value,
-                    contactName: document.getElementById('setup-contact-name').value,
-                    contactPhone: document.getElementById('setup-contact-phone').value,
-                    contactRelationship: document.getElementById('setup-contact-relationship').value,
-                    contactOther: document.getElementById('setup-contact-other').value
-                };
-                
-                const password = document.getElementById('setup-password').value;
-
-                if (password) {
-                    const passwordHash = await hashPassword(password);
-                    localStorage.setItem(`ikey_pin_hash_${state.currentGUID}`, passwordHash);
-                    state.pinUnlocked = true;
-                }
-
-                // Update message
-                processingOverlay.querySelector('.processing-message').textContent = 'Generating recovery codes...';
-                await new Promise(resolve => setTimeout(resolve, 300));
-                
-                // Generate recovery codes
-                state.protectedData.recoveryCodes = generateRecoveryCodes();
-
-                // Save everything
-                localStorage.setItem('ikey_guid', state.currentGUID);
-                localStorage.setItem(`ikey_basekey_${state.currentGUID}`,
-                    btoa(String.fromCharCode(...state.baseKey)));
-
-                // Update message
-                processingOverlay.querySelector('.processing-message').textContent = 'Syncing to cloud...';
-
-                
-                await saveAllData();
-
-                // Update URL with GUID and key
-                const newUrl = `${window.location.origin}${window.location.pathname}#${state.currentGUID}:${encodeURIComponent(btoa(String.fromCharCode(...state.baseKey)))}`;
-                window.history.pushState({}, '', newUrl);
-                setTimeout(showURLWarning, 1000);
-
-                await downloadKeyFile();
-
-
-                try {
-                    await saveAllData();
-                } catch (e) {
-                    throw new Error(`Data save failed: ${e.message}`);
-                }
-
-                try {
-                    await downloadKeyFile();
-                } catch (e) {
-                    throw new Error(`Key download failed: ${e.message}`);
-                }
-
-                
-                // Final message
-                processingOverlay.querySelector('.processing-message').textContent = '✓ Setup complete!';
-                await new Promise(resolve => setTimeout(resolve, 500));
-                
-                // Hide wizard and show main app
-                document.getElementById('setup-wizard').classList.add('hidden');
-                await loadExistingUser();
-                generateMainQR();
-                
-            } catch (error) {
-                console.error('Setup failed:', error);
-                processingOverlay.innerHTML = `
-                    <div style="text-align: center; color: var(--danger);">
-                        <div style="font-size: 2rem; margin-bottom: 10px;">⚠️</div>
-                        <div class="processing-message"></div>
-                    </div>
-                `;
-                const message = typeof error?.message === 'string' ? error.message : 'Setup failed. Please try again.';
-                processingOverlay.querySelector('.processing-message').textContent = message;
-
-                // Re-enable button
-                completeBtn.disabled = false;
-                completeBtn.innerHTML = 'Start Using iKey';
-
-                setTimeout(() => {
-                    processingOverlay.remove();
-                }, 3000);
-            }
-        }
-
-        function generateSetupQR(autoDownload = false) {
-            if (typeof QRCode === 'undefined') {
-                setTimeout(() => generateSetupQR(autoDownload), 100);
-                return;
-            }
-
-            const qrData = `${APP_URL}#${state.currentGUID}:${encodeURIComponent(btoa(String.fromCharCode(...state.baseKey)))}`;
-
-            const container = document.getElementById('setup-qrcode');
-            container.innerHTML = '';
-
-            new QRCode(container, {
-                text: qrData,
-                width: 256,
-                height: 256,
-                correctLevel: QRCode.CorrectLevel.M
-            });
-
-            if (autoDownload) {
-                setTimeout(downloadSetupQR, 100);
-            }
-        }
-
-        function downloadSetupQR() {
-            const canvas = document.querySelector('#setup-qrcode canvas');
-            if (canvas) {
-                const link = document.createElement('a');
-                link.download = 'ikey-emergency-qr.png';
-                link.href = canvas.toDataURL();
-                link.click();
-            }
-        }
-
-        // Load existing user
-        async function loadExistingUser() {
-            state.currentGUID = localStorage.getItem('ikey_guid');
-            state.lastSync = localStorage.getItem(`ikey_${state.currentGUID}_lastSync`);
-
-            if (state.currentGUID) {
-                window.location.hash = state.currentGUID;
-            }
-
-            const baseKeyStr = localStorage.getItem(`ikey_basekey_${state.currentGUID}`);
-            if (baseKeyStr) {
-                state.baseKey = Uint8Array.from(atob(baseKeyStr), c => c.charCodeAt(0));
-            }
-
-            // Load encrypted double hash
-            try {
-                const storedHash = localStorage.getItem(`ikey_hash_${state.currentGUID}`);
-                if (storedHash && state.baseKey) {
-                    const decrypted = await decrypt(storedHash, state.baseKey);
-                    state.currentDoubleHash = decrypted.hash;
-                }
-            } catch (e) {
-                console.log('No stored hash found');
-            }
-
-            await loadPublicData();
-            displayEmergencyInfo();
-            generateMainQR();
-
-            // Update UI based on what's unlocked
-            updateSecurityUI();
-        }
-
-        // Utility Functions
-        function generateGUID() {
-            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-                const r = Math.random() * 16 | 0;
-                const v = c === 'x' ? r : (r & 0x3 | 0x8);
-                return v.toString(16);
-            });
-        }
-
-        async function generateKey() {
-            return crypto.getRandomValues(new Uint8Array(32));
-        }
-
-        async function deriveKeyFromPassword(password) {
-            const encoder = new TextEncoder();
-            let salt = localStorage.getItem(`ikey_salt_${state.currentGUID}`);
-            if (salt) {
-                salt = Uint8Array.from(atob(salt), c => c.charCodeAt(0));
-            } else {
-                salt = crypto.getRandomValues(new Uint8Array(32));
-                localStorage.setItem(`ikey_salt_${state.currentGUID}`, btoa(String.fromCharCode(...salt)));
-            }
-
-            const keyMaterial = await crypto.subtle.importKey(
-                'raw',
-                encoder.encode(password),
-                { name: 'PBKDF2' },
-                false,
-                ['deriveBits']
-            );
-
-            const derivedBits = await crypto.subtle.deriveBits(
-                {
-                    name: 'PBKDF2',
-                    salt,
-                    iterations: 500000,
-                    hash: 'SHA-256'
-                },
-                keyMaterial,
-                256
-            );
-
-            return new Uint8Array(derivedBits);
-        }
-
-        async function hashPassword(password) {
-            const encoder = new TextEncoder();
-            const hash = await crypto.subtle.digest('SHA-256', encoder.encode(password));
-            return btoa(String.fromCharCode(...new Uint8Array(hash)));
-        }
-
-        async function generateDoubleHash(baseKey, pin, salt = '') {
-            const combined = btoa(String.fromCharCode(...baseKey)) + pin + salt;
-            const encoder = new TextEncoder();
-            const firstHash = await crypto.subtle.digest('SHA-256', encoder.encode(combined));
-            const secondHash = await crypto.subtle.digest('SHA-256', firstHash);
-            return btoa(String.fromCharCode(...new Uint8Array(secondHash)));
-        }
-
-        function generateRecoveryCodes() {
-            const codes = [];
-            for (let i = 0; i < 6; i++) {
-                codes.push(Math.random().toString(36).substring(2, 8).toUpperCase());
-            }
-            return codes;
-        }
-
-        async function deriveKeyFromURL(url) {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(url);
-            const hash = await crypto.subtle.digest('SHA-256', data);
-            return new Uint8Array(hash);
-        }
-
-        async function downloadKeyFile() {
-            if (!state.baseKey || !state.currentGUID) return;
-            const urlKey = await deriveKeyFromURL(APP_URL);
-            const keyData = {
-                guid: state.currentGUID,
-                baseKey: btoa(String.fromCharCode(...state.baseKey))
-            };
-            const encrypted = await encrypt(keyData, urlKey);
-            const blob = new Blob([encrypted], { type: 'text/plain' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `ikey-key-${state.currentGUID}.ikey`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            toast.show('Recovery key file downloaded. Keep it secure for alternate login.', 'success');
-        }
-
-        async function refreshBaseKey() {
-            state.baseKey = await generateKey();
-            localStorage.setItem(`ikey_basekey_${state.currentGUID}`,
-                btoa(String.fromCharCode(...state.baseKey)));
-            const storedPin = localStorage.getItem(`ikey_pin_temp_${state.currentGUID}`) || '';
-            if (storedPin) {
-                state.currentDoubleHash = await generateDoubleHash(state.baseKey, storedPin);
-                const encryptedHash = await encrypt({ hash: state.currentDoubleHash }, state.baseKey);
-                localStorage.setItem(`ikey_hash_${state.currentGUID}`, encryptedHash);
-            }
-            await saveAllData();
-            await downloadKeyFile();
-        }
-
-        // Encryption/Decryption
-        async function encrypt(data, key) {
-            const iv = crypto.getRandomValues(new Uint8Array(12));
-            const encoded = new TextEncoder().encode(JSON.stringify(data));
-
-            const cryptoKey = await crypto.subtle.importKey(
-                'raw', key, { name: 'AES-GCM' }, false, ['encrypt']
-            );
-
-            const encrypted = await crypto.subtle.encrypt(
-                { name: 'AES-GCM', iv }, cryptoKey, encoded
-            );
-
-            const ivStr = btoa(String.fromCharCode(...iv));
-            const dataStr = btoa(String.fromCharCode(...new Uint8Array(encrypted)));
-            return `${ivStr}.${dataStr}`;
-        }
-
-        async function decrypt(combined, key) {
-            try {
-                const [ivStr, dataStr] = combined.split('.');
-                if (!ivStr || !dataStr) throw new Error('Invalid encrypted format');
-                const iv = Uint8Array.from(atob(ivStr), c => c.charCodeAt(0));
-                const data = Uint8Array.from(atob(dataStr), c => c.charCodeAt(0));
-
-                const cryptoKey = await crypto.subtle.importKey(
-                    'raw', key, { name: 'AES-GCM' }, false, ['decrypt']
-                );
-
-                const decrypted = await crypto.subtle.decrypt(
-                    { name: 'AES-GCM', iv }, cryptoKey, data
-                );
-
-                return JSON.parse(new TextDecoder().decode(decrypted));
-            } catch (error) {
-                console.error('Decryption failed:', error);
-                throw error;
-            }
-        }
-
-        async function fetchWithRetry(url, options = {}, retries = 2, backoff = 500) {
-            for (let attempt = 0; attempt <= retries; attempt++) {
-                try {
-                    const response = await fetch(url, options);
-                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                    return await response.json();
-                } catch (err) {
-                    if (attempt === retries) throw err;
-                    await new Promise(res => setTimeout(res, backoff * Math.pow(2, attempt)));
-                }
-            }
-        }
-
-        // Data Loading/Saving
-        async function restoreFromCloud(guid, baseKey) {
-            const sources = [
-                {
-                    name: 'Xano',
-                    url: `${XANO_CACHE_URL}?guid=${guid}`,
-                    extract: r => r?.ikey_cache
-                },
-                {
-                    name: 'Archive.org',
-                    url: `${ARCHIVE_BASE_URL}/${guid}.json`,
-                    extract: r => r?.ikey_cache
-                },
-                {
-                    name: 'Webhook',
-                    url: `${WEBHOOK_URL}?guid=${guid}`,
-                    extract: r => r?.data
-                }
-            ];
-
-            for (const src of sources) {
-                console.info(`Attempting to retrieve data from ${src.name}: ${src.url}`);
-                try {
-                    const json = await fetchWithRetry(src.url);
-                    const payload = src.extract(json);
-                    if (!payload) throw new Error('Invalid payload');
-                    const allData = await decrypt(payload, baseKey);
-
-                    state.publicData = allData.public || {};
-                    await savePublicData();
-
-                    if (allData.protected) {
-                        state.protectedData = allData.protected;
-                        await saveProtectedData();
-                    }
-
-                    state.telemetry.lastRestoreSource = src.name;
-                    console.info(`Successfully restored data from ${src.name}`);
-                    showStatus(`Data restored from ${src.name}`, 'success');
-                    return allData;
-                } catch (err) {
-                    console.warn(`${src.name} retrieval failed`, err);
-                }
-            }
-
-            showStatus('Unable to retrieve data', 'error');
-            return null;
-        }
-
-        async function loadPublicData() {
-            try {
-                const stored = localStorage.getItem(`ikey_${state.currentGUID}_public`);
-                if (stored) {
-                    state.publicData = JSON.parse(stored);
-                }
-            } catch (error) {
-                console.error('Failed to load public data:', error);
-            }
-        }
-
-        async function savePublicData() {
-            localStorage.setItem(`ikey_${state.currentGUID}_public`, JSON.stringify(state.publicData));
-        }
-
-        async function saveAllData() {
-            await savePublicData();
-            if (state.pinUnlocked) await saveProtectedData();
-        }
-
-        // Unified save with feedback
-        async function saveWithFeedback(section) {
-            const statusDiv = document.createElement('div');
-            statusDiv.id = 'save-status';
-            statusDiv.style.cssText = `
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: #3B82F6;
-        color: white;
-        padding: 12px 24px;
-        border-radius: 8px;
-        z-index: 3000;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    `;
-            statusDiv.innerHTML = '<span class="loading-spinner"></span> Saving...';
-            document.body.appendChild(statusDiv);
-
-            try {
-                await saveAllData();
-                statusDiv.style.background = '#10B981';
-                statusDiv.innerHTML = '✓ Saved locally';
-                try {
-                    await syncToCloud(false);
-                    statusDiv.innerHTML = '✓ Saved locally & cloud';
-                } catch (e) {
-                    statusDiv.innerHTML = '✓ Saved locally (cloud offline)';
-                    statusDiv.style.background = '#F59E0B';
-                }
-            } catch (error) {
-                statusDiv.style.background = '#EF4444';
-                statusDiv.innerHTML = '✗ Save failed';
-            }
-
-            setTimeout(() => statusDiv.remove(), 3000);
-        }
-
-        // Auto-save function
-        function triggerAutoSave() {
-            clearTimeout(state.autoSaveTimer);
-            state.autoSaveTimer = setTimeout(async () => {
-                await saveAllData();
-                showStatus('Auto-saved', 'success');
-            }, 2000);
-        }
-
-        // Display Functions
-        function handleRelationshipChange(context) {
-            const select = document.getElementById(`${context}-contact-relationship`);
-            const otherGroup = document.getElementById(`${context}-other-relationship-group`);
-
-            if (select && otherGroup) {
-                if (select.value === 'other') {
-                    otherGroup.style.display = 'block';
-                } else {
-                    otherGroup.style.display = 'none';
-                    const otherInput = document.getElementById(`${context}-contact-other`);
-                    if (otherInput) otherInput.value = '';
-                }
-            }
-        }
-
-        function displayEmergencyInfo() {
-            const container = document.getElementById('emergency-display');
-            const data = state.publicData.emergency || {};
-
-            let relationshipDisplay = 'Not specified';
-            if (data.contactRelationship) {
-                const relationships = {
-                    'spouse': 'Spouse/Partner',
-                    'parent': 'Parent',
-                    'child': 'Child',
-                    'sibling': 'Sibling',
-                    'case-manager': 'Case Manager',
-                    'employer': 'Employer',
-                    'friend': 'Friend',
-                    'prefer-not': 'Prefer not to say',
-                    'other': data.contactOther || 'Other'
-                };
-                relationshipDisplay = relationships[data.contactRelationship] || data.contactRelationship;
-            }
-
-            container.innerHTML = `
-                <div class="info-card">
-                    <span class="info-card-icon">👤</span>
-                    <div class="info-card-content">
-                        <div class="info-card-label">NAME</div>
-                        <div class="info-card-value">${data.name || 'Not set'}</div>
-                    </div>
-                </div>
-
-                <div class="info-card">
-                    <span class="info-card-icon">🩸</span>
-                    <div class="info-card-content">
-                        <div class="info-card-label">BLOOD TYPE</div>
-                        <div class="info-card-value">${data.bloodType || 'Unknown'}</div>
-                    </div>
-                </div>
-
-                <div class="info-card">
-                    <span class="info-card-icon">⚠️</span>
-                    <div class="info-card-content">
-                        <div class="info-card-label">ALLERGIES</div>
-                        <div class="info-card-value">${data.allergies || 'None reported'}</div>
-                    </div>
-                </div>
-
-                <div class="info-card">
-                    <span class="info-card-icon">💊</span>
-                    <div class="info-card-content">
-                        <div class="info-card-label">MEDICATIONS</div>
-                        <div class="info-card-value">${data.medications || 'None reported'}</div>
-                    </div>
-                </div>
-
-                <div class="info-card">
-                    <span class="info-card-icon">🏥</span>
-                    <div class="info-card-content">
-                        <div class="info-card-label">CONDITIONS</div>
-                        <div class="info-card-value">${data.conditions || 'None reported'}</div>
-                    </div>
-                </div>
-
-                <div class="info-card">
-                    <span class="info-card-icon">📞</span>
-                    <div class="info-card-content">
-                        <div class="info-card-label">EMERGENCY CONTACT</div>
-                        <div class="info-card-value">
-                            ${data.contactName || 'Not set'}<br>
-                            <small style="color: var(--text-secondary);">
-                                ${data.contactPhone || 'No phone'} • ${relationshipDisplay}
-                            </small>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Password Management
-        let pinAction = null;
-        let pinCallback = null;
-
-        function requestPassword(action = 'unlock', callback = null) {
-            if (typeof action === 'function') {
-                callback = action;
-                action = 'unlock';
-            }
-            if (state.pinUnlocked && action !== 'change' && action !== 'setup') {
-                if (action === 'edit') {
-                    editEmergencyInfo();
-                } else if (callback) {
-                    callback();
-                }
-                return;
-            }
-
-            pinAction = action;
-            pinCallback = callback;
-            const modal = document.getElementById('pin-modal');
-            modal.classList.add('active');
-            document.getElementById('pin-modal-title').textContent = action === 'setup'
-                ? 'Set Password'
-                : 'Enter Password';
-            document.getElementById('passwordInput').value = '';
-        }
-
-        function closePinPad() {
-            document.getElementById('pin-modal').classList.remove('active');
-            pinAction = null;
-            pinCallback = null;
-            if (window.pinPromiseReject) {
-                window.pinPromiseReject(new Error('Password entry cancelled'));
-                window.pinPromiseResolve = null;
-                window.pinPromiseReject = null;
-            }
-        }
-
-        function checkLockout() {
-            const guid = state.currentGUID || 'default';
-            const attemptsKey = `ikey_pin_attempts_${guid}`;
-            const lockoutKey = `ikey_pin_lockout_${guid}`;
-            const lockoutUntil = parseInt(localStorage.getItem(lockoutKey) || '0', 10);
-            if (lockoutUntil) {
-                if (Date.now() < lockoutUntil) {
-                    const remainingMs = lockoutUntil - Date.now();
-                    const minutes = Math.ceil(remainingMs / 60000);
-                    showStatus(`Too many failed attempts. Try again in ${minutes} minute${minutes !== 1 ? 's' : ''}.`, 'error');
-                    return true;
-                } else {
-                    localStorage.removeItem(lockoutKey);
-                }
-            }
-            const attempts = parseInt(localStorage.getItem(attemptsKey) || '0', 10);
-            if (attempts > 0) {
-                const remaining = MAX_ATTEMPTS - attempts;
-                showStatus(`${remaining} attempts remaining`, 'error');
-            }
-            return false;
-        }
-
-        function handleFailedAttempt() {
-            const guid = state.currentGUID || 'default';
-            const attemptsKey = `ikey_pin_attempts_${guid}`;
-            const lockoutKey = `ikey_pin_lockout_${guid}`;
-            let attempts = parseInt(localStorage.getItem(attemptsKey) || '0', 10);
-            attempts++;
-            if (attempts >= MAX_ATTEMPTS) {
-                localStorage.setItem(lockoutKey, Date.now() + LOCKOUT_DURATION);
-                localStorage.removeItem(attemptsKey);
-                showStatus('Too many failed attempts. Locked out for 15 minutes.', 'error');
-            } else {
-                localStorage.setItem(attemptsKey, attempts.toString());
-                const remaining = MAX_ATTEMPTS - attempts;
-                showStatus(`Wrong password. ${remaining} attempts remaining`, 'error');
-            }
-        }
-
-        async function verifyPassword() {
-            const inputEl = document.getElementById('passwordInput');
-            const password = inputEl.value;
-
-            if (window.pinPromiseResolve) {
-                const resolver = window.pinPromiseResolve;
-                window.pinPromiseResolve = null;
-                window.pinPromiseReject = null;
-                closePinPad();
-                resolver(password);
-                return;
-            }
-
-            if (checkLockout()) {
-                inputEl.value = '';
-                return;
-            }
-
-            try {
-                const passwordHash = await hashPassword(password);
-                const storedHash = localStorage.getItem(`ikey_pin_hash_${state.currentGUID}`);
-
-                if (passwordHash === storedHash) {
-                    state.pinUnlocked = true;
-
-                    if (typeof session !== 'undefined' && session.unlock) {
-                        await session.unlock(password);
-                    }
-
-                    closePinPad();
-                    const guid = state.currentGUID || 'default';
-                    localStorage.removeItem(`ikey_pin_attempts_${guid}`);
-                    localStorage.removeItem(`ikey_pin_lockout_${guid}`);
-
-                    if (pinAction === 'edit') {
-                        editEmergencyInfo();
-                    } else if (pinAction === 'unlock') {
-                        unlockPasswordLevel();
-                        showStatus('Password verified successfully', 'success');
-                    } else if (pinAction === 'change') {
-                        showStatus('Password changed successfully', 'success');
-                    }
-
-                    if (typeof pinCallback === 'function') {
-                        pinCallback();
-                    }
-
-                } else {
-                    throw new Error('Invalid password');
-                }
-
-            } catch (error) {
-                handleFailedAttempt();
-                inputEl.value = '';
-
-                const guid = state.currentGUID || 'default';
-                const lockoutUntil = parseInt(localStorage.getItem(`ikey_pin_lockout_${guid}`) || '0', 10);
-                if (lockoutUntil && Date.now() < lockoutUntil && window.pinPromiseReject) {
-                    const rejector = window.pinPromiseReject;
-                    window.pinPromiseResolve = null;
-                    window.pinPromiseReject = null;
-                    closePinPad();
-                    rejector(new Error('Too many incorrect attempts'));
-                }
-            }
-        }
-
-        function unlockPasswordLevel() {
-            updateSecurityUI();
-        }
-
-        // Edit Emergency Info
-        function editEmergencyInfo() {
-            const data = state.publicData.emergency || {};
-
-            const container = document.getElementById('emergency-display');
-            container.innerHTML = `
-                <h3>Edit Emergency Information</h3>
-                <div class="form-group">
-                    <label>Full Name</label>
-                    <input type="text" id="edit-name" value="${data.name || ''}">
-                </div>
-                <div class="form-group">
-                    <label>Blood Type</label>
-                    <select id="edit-blood">
-                        <option value="">Unknown</option>
-                        <option value="A+" ${data.bloodType === 'A+' ? 'selected' : ''}>A+</option>
-                        <option value="A-" ${data.bloodType === 'A-' ? 'selected' : ''}>A-</option>
-                        <option value="B+" ${data.bloodType === 'B+' ? 'selected' : ''}>B+</option>
-                        <option value="B-" ${data.bloodType === 'B-' ? 'selected' : ''}>B-</option>
-                        <option value="AB+" ${data.bloodType === 'AB+' ? 'selected' : ''}>AB+</option>
-                        <option value="AB-" ${data.bloodType === 'AB-' ? 'selected' : ''}>AB-</option>
-                        <option value="O+" ${data.bloodType === 'O+' ? 'selected' : ''}>O+</option>
-                        <option value="O-" ${data.bloodType === 'O-' ? 'selected' : ''}>O-</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Allergies</label>
-                    <textarea id="edit-allergies">${data.allergies || ''}</textarea>
-                </div>
-                <div class="form-group">
-                    <label>Current Medications</label>
-                    <textarea id="edit-medications">${data.medications || ''}</textarea>
-                </div>
-                <div class="form-group">
-                    <label>Medical Conditions</label>
-                    <textarea id="edit-conditions">${data.conditions || ''}</textarea>
-                </div>
-                <div class="form-group">
-                    <label>Emergency Contact Name</label>
-                    <input type="text" id="edit-contact-name" value="${data.contactName || ''}">
-                </div>
-
-                <div class="grid-2">
                     <div class="form-group">
-                        <label>Contact Phone</label>
-                        <input type="tel" id="edit-contact-phone" value="${data.contactPhone || ''}">
+                        <label for="ec-name">Contact Name *</label>
+                        <input type="text" id="ec-name" placeholder="Jane Smith" required>
                     </div>
 
                     <div class="form-group">
-                        <label>Relationship</label>
-                        <select id="edit-contact-relationship" onchange="handleRelationshipChange('edit')">
-                            <option value="">Select relationship</option>
-                            <option value="spouse" ${data.contactRelationship === 'spouse' ? 'selected' : ''}>Spouse/Partner</option>
-                            <option value="parent" ${data.contactRelationship === 'parent' ? 'selected' : ''}>Parent</option>
-                            <option value="child" ${data.contactRelationship === 'child' ? 'selected' : ''}>Child</option>
-                            <option value="sibling" ${data.contactRelationship === 'sibling' ? 'selected' : ''}>Sibling</option>
-                            <option value="case-manager" ${data.contactRelationship === 'case-manager' ? 'selected' : ''}>Case Manager</option>
-                            <option value="employer" ${data.contactRelationship === 'employer' ? 'selected' : ''}>Employer</option>
-                            <option value="friend" ${data.contactRelationship === 'friend' ? 'selected' : ''}>Friend</option>
-                            <option value="prefer-not" ${data.contactRelationship === 'prefer-not' ? 'selected' : ''}>Prefer not to answer</option>
-                            <option value="other" ${data.contactRelationship === 'other' ? 'selected' : ''}>Other (specify)</option>
+                        <label for="ec-phone">Phone Number *</label>
+                        <input type="tel" id="ec-phone" placeholder="555-0123" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ec-relationship">Relationship</label>
+                        <select id="ec-relationship">
+                            <option value="">Select...</option>
+                            <option value="Spouse">Spouse/Partner</option>
+                            <option value="Parent">Parent</option>
+                            <option value="Child">Child</option>
+                            <option value="Sibling">Sibling</option>
+                            <option value="Friend">Friend</option>
+                            <option value="Other">Other</option>
                         </select>
                     </div>
                 </div>
 
-                <div class="form-group" id="edit-other-relationship-group" style="display: ${data.contactRelationship === 'other' ? 'block' : 'none'};">
-                    <label>Please specify relationship</label>
-                    <input type="text" id="edit-contact-other" value="${data.contactOther || ''}">
+                <!-- Step 5: Review -->
+                <div class="wizard-step" data-step="5">
+                    <h2>Review Your Information</h2>
+                    <div id="review-content"></div>
+                    <div style="background: #dcfce7; border: 1px solid #86efac; border-radius: 8px; padding: 15px; margin-top: 20px;">
+                        <strong>✅ Ready to Generate:</strong> Check your information above. You can always regenerate your QR code with updated information.
+                    </div>
                 </div>
 
-                <div class="btn-group">
-                    <button class="btn btn-success" onclick="saveEmergencyInfo()">Save Changes</button>
-                    <button class="btn btn-secondary" onclick="displayEmergencyInfo()">Cancel</button>
+                <!-- Wizard Actions -->
+                <div class="wizard-actions">
+                    <button class="btn btn-secondary" id="btn-back" onclick="previousStep()">← Back</button>
+                    <button class="btn btn-primary" id="btn-next" onclick="nextStep()">Next →</button>
+                    <button class="btn btn-success hidden" id="btn-generate" onclick="generateQR()">Generate QR Code</button>
                 </div>
-            `;
+            </div>
+
+            <!-- Display View (for existing data) -->
+            <div id="display-view" class="hidden">
+                <h2>Emergency Information</h2>
+                <div id="display-content"></div>
+                <div style="margin-top: 20px;">
+                    <button class="btn btn-primary" onclick="editInfo()">✏️ Edit Information</button>
+                </div>
+            </div>
+
+            <!-- QR Code View -->
+            <div id="qr-view" class="hidden">
+                <div class="success-checkmark">
+                    <span style="color: white; font-size: 2rem;">✓</span>
+                </div>
+                <h2 style="text-align: center; margin-bottom: 20px;">Your Emergency QR Code is Ready!</h2>
+                
+                <div class="qr-container">
+                    <div id="qrcode"></div>
+                    
+                    <div class="download-options">
+                        <button class="btn btn-success" onclick="downloadQR('wallet')">📱 Wallet Size</button>
+                        <button class="btn btn-success" onclick="downloadQR('full')">📄 Full Page</button>
+                        <button class="btn btn-primary" onclick="copyURL()">📋 Copy Link</button>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px; text-align: center;">
+                    <button class="btn btn-secondary" onclick="startOver()">← Create Another</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let currentStep = 1;
+        let formData = {};
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            // Check if there's data in the URL
+            const urlData = getDataFromURL();
+            if (urlData) {
+                displayExistingData(urlData);
+            } else {
+                showWizard();
+            }
+
+            // Add character counters
+            setupCharacterCounters();
+        });
+
+        // Character counter setup
+        function setupCharacterCounters() {
+            const fields = ['allergies', 'medications', 'conditions'];
+            fields.forEach(field => {
+                const textarea = document.getElementById(field);
+                const counter = document.getElementById(`${field}-counter`);
+                
+                if (textarea && counter) {
+                    textarea.addEventListener('input', () => {
+                        const length = textarea.value.length;
+                        counter.textContent = `${length} / 200 characters`;
+                        
+                        if (length <= 100) {
+                            counter.className = 'char-counter good';
+                        } else if (length <= 150) {
+                            counter.className = 'char-counter warning';
+                        } else {
+                            counter.className = 'char-counter danger';
+                        }
+                    });
+                }
+            });
         }
 
-        async function saveEmergencyInfo() {
-            state.publicData.emergency = {
-                name: document.getElementById('edit-name').value,
-                bloodType: document.getElementById('edit-blood').value,
-                allergies: document.getElementById('edit-allergies').value,
-                medications: document.getElementById('edit-medications').value,
-                conditions: document.getElementById('edit-conditions').value,
-                contactName: document.getElementById('edit-contact-name').value,
-                contactPhone: document.getElementById('edit-contact-phone').value,
-                contactRelationship: document.getElementById('edit-contact-relationship').value,
-                contactOther: document.getElementById('edit-contact-other').value
+        // Wizard navigation
+        function showWizard() {
+            document.getElementById('wizard-view').classList.remove('hidden');
+            document.getElementById('display-view').classList.add('hidden');
+            document.getElementById('qr-view').classList.add('hidden');
+        }
+
+        function nextStep() {
+            if (validateStep(currentStep)) {
+                if (currentStep === 4) {
+                    showReview();
+                }
+                
+                currentStep++;
+                updateWizardDisplay();
+            }
+        }
+
+        function previousStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateWizardDisplay();
+            }
+        }
+
+        function updateWizardDisplay() {
+            // Update progress dots
+            document.querySelectorAll('.progress-step').forEach((step, index) => {
+                step.classList.remove('active', 'completed');
+                if (index + 1 < currentStep) {
+                    step.classList.add('completed');
+                } else if (index + 1 === currentStep) {
+                    step.classList.add('active');
+                }
+            });
+
+            // Show current step
+            document.querySelectorAll('.wizard-step').forEach(step => {
+                step.classList.remove('active');
+            });
+            document.querySelector(`.wizard-step[data-step="${currentStep}"]`).classList.add('active');
+
+            // Update buttons
+            document.getElementById('btn-back').style.display = currentStep === 1 ? 'none' : 'block';
+            document.getElementById('btn-next').classList.toggle('hidden', currentStep === 5);
+            document.getElementById('btn-generate').classList.toggle('hidden', currentStep !== 5);
+        }
+
+        function validateStep(step) {
+            if (step === 2) {
+                const name = document.getElementById('name').value.trim();
+                if (!name) {
+                    alert('Please enter your name');
+                    return false;
+                }
+            }
+            
+            if (step === 4) {
+                const ecName = document.getElementById('ec-name').value.trim();
+                const ecPhone = document.getElementById('ec-phone').value.trim();
+                if (!ecName || !ecPhone) {
+                    alert('Please enter emergency contact name and phone');
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+
+        function showReview() {
+            // Collect all form data
+            formData = {
+                v: 1,
+                n: document.getElementById('name').value.trim(),
+                d: document.getElementById('dob').value,
+                b: document.getElementById('blood').value,
+                a: document.getElementById('allergies').value.trim(),
+                m: document.getElementById('medications').value.trim(),
+                c: document.getElementById('conditions').value.trim(),
+                ec: document.getElementById('ec-name').value.trim(),
+                ep: document.getElementById('ec-phone').value.trim(),
+                er: document.getElementById('ec-relationship').value
             };
 
-            await saveWithFeedback('emergency');
-            displayEmergencyInfo();
+            // Display review
+            const reviewHTML = `
+                <div class="info-card">
+                    <div class="info-label">Name</div>
+                    <div class="info-value">${formData.n || 'Not provided'}</div>
+                </div>
+                ${formData.d ? `
+                <div class="info-card">
+                    <div class="info-label">Date of Birth</div>
+                    <div class="info-value">${new Date(formData.d).toLocaleDateString()}</div>
+                </div>` : ''}
+                ${formData.b ? `
+                <div class="info-card">
+                    <div class="info-label">Blood Type</div>
+                    <div class="info-value">${formData.b}</div>
+                </div>` : ''}
+                ${formData.a ? `
+                <div class="info-card">
+                    <div class="info-label">Allergies</div>
+                    <div class="info-value">${formData.a}</div>
+                </div>` : ''}
+                ${formData.m ? `
+                <div class="info-card">
+                    <div class="info-label">Medications</div>
+                    <div class="info-value">${formData.m}</div>
+                </div>` : ''}
+                ${formData.c ? `
+                <div class="info-card">
+                    <div class="info-label">Medical Conditions</div>
+                    <div class="info-value">${formData.c}</div>
+                </div>` : ''}
+                <div class="info-card">
+                    <div class="info-label">Emergency Contact</div>
+                    <div class="info-value">
+                        ${formData.ec}<br>
+                        📞 ${formData.ep}
+                        ${formData.er ? `<br><small>${formData.er}</small>` : ''}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('review-content').innerHTML = reviewHTML;
         }
 
-        // QR Code Generation
-        function generateMainQR() {
-            if (typeof QRCode === 'undefined') {
-                showStatus('QR library loading...', 'info');
-                setTimeout(generateMainQR, 500);
-                return;
-            }
+        function generateQR() {
+            // Remove empty fields to save space
+            const cleanData = {};
+            Object.keys(formData).forEach(key => {
+                if (formData[key]) {
+                    cleanData[key] = formData[key];
+                }
+            });
+
+            // Compress and encode
+            const jsonStr = JSON.stringify(cleanData);
+            const compressed = LZString.compressToEncodedURIComponent(jsonStr);
             
-            const qrData = `${APP_URL}#${state.currentGUID}:${encodeURIComponent(btoa(String.fromCharCode(...state.baseKey)))}`;
+            // Create URL
+            const url = `${window.location.origin}${window.location.pathname}#${compressed}`;
             
-            document.getElementById('qr-display').classList.remove('hidden');
-            const container = document.getElementById('main-qrcode');
-            container.innerHTML = '';
+            // Update browser URL
+            window.history.replaceState(null, '', url);
             
-            try {
-                new QRCode(container, {
-                    text: qrData,
-                    width: 256,
-                    height: 256,
-                    correctLevel: QRCode.CorrectLevel.M
-                });
-            } catch (error) {
-                showStatus('Failed to generate QR code', 'error');
-            }
+            // Show QR view
+            document.getElementById('wizard-view').classList.add('hidden');
+            document.getElementById('qr-view').classList.remove('hidden');
+            
+            // Generate QR code
+            document.getElementById('qrcode').innerHTML = '';
+            new QRCode(document.getElementById('qrcode'), {
+                text: url,
+                width: 256,
+                height: 256,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.M
+            });
         }
 
-        function downloadMainQR() {
-            const canvas = document.querySelector('#main-qrcode canvas');
-            if (canvas) {
+        function downloadQR(size) {
+            const canvas = document.querySelector('#qrcode canvas');
+            if (!canvas) return;
+
+            if (size === 'wallet') {
+                // Create smaller version for wallet
+                const walletCanvas = document.createElement('canvas');
+                walletCanvas.width = 400;
+                walletCanvas.height = 250;
+                const ctx = walletCanvas.getContext('2d');
+                
+                // White background
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, 400, 250);
+                
+                // Draw QR code
+                ctx.drawImage(canvas, 10, 10, 150, 150);
+                
+                // Add text
+                ctx.fillStyle = 'black';
+                ctx.font = 'bold 16px Arial';
+                ctx.fillText('EMERGENCY MEDICAL ID', 170, 30);
+                ctx.font = '12px Arial';
+                ctx.fillText(`Name: ${formData.n}`, 170, 60);
+                ctx.fillText('Scan for full medical info', 170, 90);
+                ctx.fillText('In emergency, scan QR code', 170, 120);
+                
+                // Download
                 const link = document.createElement('a');
-                link.download = 'ikey-emergency-qr.png';
+                link.download = 'emergency-qr-wallet.png';
+                link.href = walletCanvas.toDataURL();
+                link.click();
+            } else {
+                // Full size download
+                const link = document.createElement('a');
+                link.download = 'emergency-qr-full.png';
                 link.href = canvas.toDataURL();
                 link.click();
             }
         }
 
-        // Function to inject 911 location widget
-        function load911Widget() {
-            const container = document.getElementById('location-widget-container');
-            if (!container || container.dataset.loaded === 'true') return;
-
-            // Create iframe for widget
-            const iframe = document.createElement('iframe');
-            iframe.style.cssText = 'width: 100%; height: 650px; border: none; border-radius: 12px;';
-            iframe.sandbox = 'allow-scripts allow-same-origin allow-geolocation';
-
-            // Use the HTML from document 2
-            const widgetHTML = `[INSERT FULL HTML FROM DOCUMENT 2 HERE]`;
-
-            // Create blob URL
-            const blob = new Blob([widgetHTML], { type: 'text/html' });
-            iframe.src = URL.createObjectURL(blob);
-
-            container.innerHTML = '';
-            container.appendChild(iframe);
-            container.dataset.loaded = 'true';
-        }
-
-        // Tab Navigation
-        function showTab(tabName) {
-
-            if (!state.pinUnlocked && (tabName === 'health' || tabName === 'security')) {
-                requestPassword('unlock', () => showTab(tabName));
-                return;
-            }
-
-            document.querySelectorAll('.content-section').forEach(section => {
-                section.classList.remove('active');
+        function copyURL() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                alert('Link copied to clipboard!');
             });
-
-            document.getElementById(`${tabName}-section`).classList.add('active');
-
-            document.querySelectorAll('.nav-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-
-            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-
-            // Load 911 widget when tab opens
-            if (tabName === 'locate911') {
-                load911Widget();
-            }
         }
 
-        // Recovery Codes
-
-        // Utility Functions
-        function showStatus(message, type = 'info') {
-            toast.show(message, type);
-        }
-
-        function updateSecurityUI() {
-            if (state.pinUnlocked) {
-                document.getElementById('lockIcon').textContent = '🔐';
-                document.getElementById('lockText').textContent = 'Password Protected';
-                document.getElementById('securityBadge').className = 'security-badge badge-pin';
-                document.getElementById('securityTab').classList.remove('locked');
-            } else {
-                document.getElementById('lockIcon').textContent = '🔓';
-                document.getElementById('lockText').textContent = 'Public Access';
-                document.getElementById('securityBadge').className = 'security-badge badge-public';
-                document.getElementById('securityTab').classList.add('locked');
-            }
-            updateSecurityIndicator();
-        }
-
-        async function exportData() {
-            const exportData = {
-                version: APP_VERSION,
-                guid: state.currentGUID,
-                timestamp: new Date().toISOString(),
-                publicData: state.publicData,
-                protectedData: state.pinUnlocked ? state.protectedData : null
-            };
+        function getDataFromURL() {
+            const hash = window.location.hash.slice(1);
+            if (!hash) return null;
             
-            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `ikey-export-${new Date().toISOString().split('T')[0]}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
-
-        function showURLWarning() {
-            const existing = document.getElementById('url-warning');
-            if (existing) existing.remove();
-            const banner = document.createElement('div');
-            banner.id = 'url-warning';
-            banner.innerHTML = `
-        <div style="position: fixed; top: 0; left: 0; right: 0; background: #FEF3C7; border-bottom: 3px solid #F59E0B; padding: 12px; z-index: 4000; display: flex; align-items: center; gap: 12px;">
-            <span style="font-size: 1.5rem;">⚠️</span>
-            <div style="flex: 1;">
-                <strong>Important:</strong> This URL is your key to access your data.
-                <button onclick="navigator.clipboard.writeText(window.location.href); this.textContent='Copied!'" style="margin-left: 8px; padding: 4px 8px; background: #F59E0B; color: white; border: none; border-radius: 4px;">Copy URL</button>
-                <button onclick="document.getElementById('url-warning').remove()" style="margin-left: 8px; padding: 4px 8px; background: #666; color: white; border: none; border-radius: 4px;">I've Saved It</button>
-            </div>
-        </div>
-    `;
-            document.body.appendChild(banner);
-        }
-
-        function addSecurityIndicator() {
-            const indicator = document.createElement('div');
-            indicator.id = 'security-indicator';
-            indicator.style.cssText = `
-        position: fixed;
-        top: 60px;
-        right: 20px;
-        background: white;
-        border-radius: 8px;
-        padding: 8px 12px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        z-index: 1000;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    `;
-            document.body.appendChild(indicator);
-            updateSecurityIndicator();
-        }
-
-        function updateSecurityIndicator() {
-            const indicator = document.getElementById('security-indicator');
-            if (!indicator) return;
-
-            if (state.pinUnlocked) {
-                indicator.innerHTML = `
-            <span style="color: #10B981;">🔓 Unlocked</span>
-            <button onclick="lockApp()" style="padding: 2px 6px; background: #EF4444; color: white; border: none; border-radius: 4px; font-size: 0.75rem;">Lock</button>
-        `;
-            } else {
-                indicator.innerHTML = `
-            <span style="color: #EF4444;">🔒 Locked</span>
-            <span style="font-size: 0.75rem; color: #666;">Enter code to edit</span>
-        `;
+            try {
+                const decompressed = LZString.decompressFromEncodedURIComponent(hash);
+                return JSON.parse(decompressed);
+            } catch (e) {
+                console.error('Failed to parse URL data:', e);
+                return null;
             }
         }
 
-        function lockApp() {
-            state.pinUnlocked = false;
-            session.lock();
-            updateSecurityIndicator();
-            updateSecurityUI();
-            showTab('emergency');
+        function displayExistingData(data) {
+            document.getElementById('wizard-view').classList.add('hidden');
+            document.getElementById('display-view').classList.remove('hidden');
+            
+            let html = '';
+            
+            if (data.n) {
+                html += `<div class="info-card">
+                    <div class="info-label">Name</div>
+                    <div class="info-value">${data.n}</div>
+                </div>`;
+            }
+            
+            if (data.d) {
+                html += `<div class="info-card">
+                    <div class="info-label">Date of Birth</div>
+                    <div class="info-value">${new Date(data.d).toLocaleDateString()}</div>
+                </div>`;
+            }
+            
+            if (data.b) {
+                html += `<div class="info-card">
+                    <div class="info-label">Blood Type</div>
+                    <div class="info-value">${data.b}</div>
+                </div>`;
+            }
+            
+            if (data.a) {
+                html += `<div class="info-card">
+                    <div class="info-label">Allergies</div>
+                    <div class="info-value">${data.a}</div>
+                </div>`;
+            }
+            
+            if (data.m) {
+                html += `<div class="info-card">
+                    <div class="info-label">Medications</div>
+                    <div class="info-value">${data.m}</div>
+                </div>`;
+            }
+            
+            if (data.c) {
+                html += `<div class="info-card">
+                    <div class="info-label">Medical Conditions</div>
+                    <div class="info-value">${data.c}</div>
+                </div>`;
+            }
+            
+            if (data.ec) {
+                html += `<div class="info-card">
+                    <div class="info-label">Emergency Contact</div>
+                    <div class="info-value">
+                        ${data.ec}<br>
+                        📞 ${data.ep}
+                        ${data.er ? `<br><small>${data.er}</small>` : ''}
+                    </div>
+                </div>`;
+            }
+            
+            document.getElementById('display-content').innerHTML = html;
         }
 
-        function checkPasswordStrength(password) {
-            const requirements = {
-                length: password.length >= 8,
-                lower: /[a-z]/.test(password),
-                upper: /[A-Z]/.test(password),
-                digit: /\d/.test(password),
-                special: /[^A-Za-z0-9]/.test(password)
-            };
-            const score = Object.values(requirements).filter(Boolean).length;
-            let strength = 'weak';
-            if (score >= 5) {
-                strength = 'strong';
-            } else if (score >= 3) {
-                strength = 'medium';
+        function editInfo() {
+            const data = getDataFromURL();
+            if (data) {
+                // Pre-fill form with existing data
+                if (data.n) document.getElementById('name').value = data.n;
+                if (data.d) document.getElementById('dob').value = data.d;
+                if (data.b) document.getElementById('blood').value = data.b;
+                if (data.a) document.getElementById('allergies').value = data.a;
+                if (data.m) document.getElementById('medications').value = data.m;
+                if (data.c) document.getElementById('conditions').value = data.c;
+                if (data.ec) document.getElementById('ec-name').value = data.ec;
+                if (data.ep) document.getElementById('ec-phone').value = data.ep;
+                if (data.er) document.getElementById('ec-relationship').value = data.er;
             }
-            return { requirements, strength };
+            
+            currentStep = 1;
+            showWizard();
+            updateWizardDisplay();
         }
 
-        function displayPasswordStrength(password) {
-            const result = checkPasswordStrength(password);
-            const strengthEl = document.getElementById('password-strength');
-            const reqIds = {
-                length: 'req-length',
-                lower: 'req-lower',
-                upper: 'req-upper',
-                digit: 'req-digit',
-                special: 'req-special'
-            };
-            const colors = { weak: 'var(--danger)', medium: 'var(--warning)', strong: 'var(--success)' };
-            const labels = { weak: 'Weak', medium: 'Medium', strong: 'Strong' };
-
-            if (strengthEl) {
-                strengthEl.textContent = labels[result.strength];
-                strengthEl.style.color = colors[result.strength];
-            }
-
-            Object.keys(reqIds).forEach(key => {
-                const el = document.getElementById(reqIds[key]);
-                if (!el) return;
-                if (result.requirements[key]) {
-                    el.style.color = 'var(--success)';
-                    el.textContent = '✓ ' + el.dataset.text;
-                } else {
-                    el.style.color = 'var(--danger)';
-                    el.textContent = '✗ ' + el.dataset.text;
-                }
-            });
+        function startOver() {
+            // Clear form
+            document.getElementById('name').value = '';
+            document.getElementById('dob').value = '';
+            document.getElementById('blood').value = '';
+            document.getElementById('allergies').value = '';
+            document.getElementById('medications').value = '';
+            document.getElementById('conditions').value = '';
+            document.getElementById('ec-name').value = '';
+            document.getElementById('ec-phone').value = '';
+            document.getElementById('ec-relationship').value = '';
+            
+            // Clear URL
+            window.history.replaceState(null, '', window.location.pathname);
+            
+            // Reset wizard
+            currentStep = 1;
+            showWizard();
+            updateWizardDisplay();
         }
-
-        // Auto-save on input
-        document.addEventListener('input', function(e) {
-            if (e.target.classList.contains('protected-data')) {
-                triggerAutoSave();
-            }
-        });
-
-        // Clipboard cleanup after copy operations
-        document.addEventListener('copy', () => {
-            setTimeout(() => navigator.clipboard.writeText('').catch(() => {}), 100);
-        });
-
-        // Periodic session cleanup handled by SessionUnlock
-        setInterval(() => session.lock(), 5 * 60 * 1000);
-
-        function validateThemeContrast() {
-            const themes = ['default', 'topsecret', 'hacker', 'wellness', 'contrast', 'retro', 'accessible'];
-            themes.forEach(theme => {
-                document.body.className = 'theme-' + theme;
-                const styles = getComputedStyle(document.body);
-                const textColor = styles.getPropertyValue('--text');
-                const bgColor = styles.getPropertyValue('--surface');
-                console.log(`${theme}: Text ${textColor} on Background ${bgColor}`);
-            });
-        }
-
-        // Initialize on load with session warning and input hardening
-        window.addEventListener('DOMContentLoaded', () => {
-            if (sessionStorage.getItem('ikey_session_active')) {
-                toast.show('Another tab might be open - warn user', 'warning');
-            }
-            sessionStorage.setItem('ikey_session_active', 'true');
-            document.querySelectorAll('input').forEach(input => {
-                input.setAttribute('autocomplete', 'off');
-                input.setAttribute('autocorrect', 'off');
-                input.setAttribute('autocapitalize', 'off');
-                input.setAttribute('spellcheck', 'false');
-            });
-            ThemeManager.init();
-            init();
-            addSecurityIndicator();
-            if (window.location.hash) {
-                setTimeout(showURLWarning, 1000);
-            }
-        });
-
-        window.addEventListener('hashchange', function() {
-            location.reload();
-        });
-
-        window.addEventListener('beforeunload', function() {
-            session.lock();
-            localStorage.removeItem(`ikey_pin_temp_${state.currentGUID}`);
-            if (state.currentGUID) {
-                localStorage.removeItem(`ikey_pin_hash_${state.currentGUID}`);
-            }
-            sessionStorage.removeItem('ikey_session_active');
-        });
     </script>
 </body>
 </html>
