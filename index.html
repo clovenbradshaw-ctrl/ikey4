@@ -619,10 +619,14 @@
             Weather
         </button>
         <button class="tab-btn" onclick="switchTab('wttin')">
-            <img src="https://wttin.org/wp-content/uploads/2024/05/Group-184-1.png" 
-                 alt="WTTIN" 
+            <img src="https://wttin.org/wp-content/uploads/2024/05/Group-184-1.png"
+                 alt="WTTIN"
                  style="width: 20px; height: 20px; object-fit: contain;">
             WTTIN
+        </button>
+        <button id="dispatch-tab-btn" class="tab-btn" style="display: none;" onclick="switchTab('dispatch')">
+            <span class="tab-icon">📡</span>
+            Dispatch
         </button>
         <button class="tab-btn" onclick="switchTab('storage')">
             <span class="tab-icon">💾</span>
@@ -985,6 +989,20 @@
         </div>
     </div>
 
+    <!-- Dispatch Tab -->
+    <div id="dispatch" class="tab-content">
+        <div style="height: calc(100vh - 120px); display: flex; flex-direction: column;">
+            <div style="flex: 1; position: relative;">
+                <iframe
+                    src="dispatch.html"
+                    title="Nashville Police Dispatch"
+                    loading="lazy"
+                    style="width: 100%; height: 100%; border: none;">
+                </iframe>
+            </div>
+        </div>
+    </div>
+
     <!-- Storage Tab -->
     <div id="storage" class="tab-content">
         <div class="container">
@@ -1066,15 +1084,13 @@
                 
                 <div class="settings-section">
                     <h3 style="margin-bottom: 15px; color: var(--primary);">External Tools</h3>
-                    <a href="https://services2.arcgis.com/HdTo6HJqh92wn4D8/arcgis/rest/services/Metro_Nashville_Police_Department_Active_Dispatch_Table_view/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=html" 
-                       target="_blank" 
-                       class="settings-item">
+                    <div class="settings-item" onclick="openDispatchTab()">
                         <div>
                             <div style="font-weight: 600;">📡 Nashville Police Dispatch</div>
                             <div style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;">View active police dispatches in Nashville</div>
                         </div>
                         <span style="color: var(--secondary);">→</span>
-                    </a>
+                    </div>
                     
                     <a href="https://wttin.org" 
                        target="_blank" 
@@ -1140,7 +1156,20 @@
             if (targetTab) {
                 targetTab.classList.add('active');
             }
-            
+
+            // Remove dispatch tab when not active
+            if (tabName !== 'dispatch') {
+                const dispatchBtn = document.getElementById('dispatch-tab-btn');
+                const dispatchTab = document.getElementById('dispatch');
+                if (dispatchBtn) {
+                    dispatchBtn.style.display = 'none';
+                    dispatchBtn.classList.remove('active');
+                }
+                if (dispatchTab) {
+                    dispatchTab.classList.remove('active');
+                }
+            }
+
             // Initialize tab-specific content
             if (tabName === 'weather') {
                 if (!window.weatherLoaded) {
@@ -1153,6 +1182,14 @@
                     window.locationLoaded = true;
                 }
             }
+        }
+
+        function openDispatchTab() {
+            const btn = document.getElementById('dispatch-tab-btn');
+            if (btn) {
+                btn.style.display = 'flex';
+            }
+            switchTab('dispatch');
         }
 
         // Medical QR Code Functions

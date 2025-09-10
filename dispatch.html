@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nashville Police Active Dispatches</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #f7fafc;
+            min-height: 100vh;
+            padding: 10px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-top: 3px solid #2563eb;
+        }
+        
+        .title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .subtitle {
+            color: #64748b;
+            font-size: 14px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-label {
+            font-size: 11px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        
+        .stat-value.small {
+            font-size: 16px;
+            color: #475569;
+        }
+        
+        .dispatch-card {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #94a3b8;
+            transition: all 0.2s ease;
+        }
+        
+        .dispatch-card:hover {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .dispatch-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .incident-info {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .incident-type {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+        
+        .incident-code {
+            display: inline-flex;
+            align-items: center;
+            background: #f1f5f9;
+            color: #475569;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            font-family: 'SF Mono', Monaco, monospace;
+            margin-left: 8px;
+        }
+        
+        .time-info {
+            text-align: right;
+        }
+        
+        .time-relative {
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 500;
+        }
+        
+        .time-absolute {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+        
+        .dispatch-location {
+            margin-bottom: 12px;
+        }
+        
+        .location-primary {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #334155;
+            font-weight: 500;
+        }
+        
+        .location-icon {
+            color: #64748b;
+            font-size: 16px;
+        }
+        
+        .city-badge {
+            display: inline-block;
+            background: #e0e7ff;
+            color: #3730a3;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .location-detail {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 4px;
+            padding-left: 24px;
+        }
+        
+        .dispatch-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 12px;
+            color: #94a3b8;
+            padding-top: 12px;
+            border-top: 1px solid #f1f5f9;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e2e8f0;
+            border-top-color: #2563eb;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 16px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            color: #dc2626;
+        }
+        
+        .empty {
+            background: white;
+            border-radius: 8px;
+            padding: 60px 20px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        
+        .empty-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+        
+        .empty-subtitle {
+            color: #64748b;
+            font-size: 14px;
+        }
+        
+        .refresh-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* Priority styling */
+        .priority-high {
+            border-left-color: #dc2626;
+        }
+        
+        .priority-high .incident-type {
+            color: #991b1b;
+        }
+        
+        .priority-medium {
+            border-left-color: #f59e0b;
+        }
+        
+        .priority-low {
+            border-left-color: #10b981;
+        }
+        
+        /* Mobile optimizations */
+        @media (max-width: 640px) {
+            .title {
+                font-size: 20px;
+            }
+            
+            .stats {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 12px;
+            }
+            
+            .dispatch-card {
+                padding: 14px;
+            }
+            
+            .incident-type {
+                font-size: 15px;
+            }
+            
+            .dispatch-header {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .time-info {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="title">
+                📡 Nashville Police Dispatches
+                <span class="refresh-dot"></span>
+            </div>
+            <div class="subtitle">Real-time incident monitoring • Updates every 30 seconds</div>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-label">Active</div>
+                    <div class="stat-value" id="totalCalls">0</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Latest</div>
+                    <div class="stat-value small" id="mostRecent">--</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Updated</div>
+                    <div class="stat-value small" id="lastUpdate">--:--</div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="dispatchList">
+            <div class="loading">
+                <div class="loading-spinner"></div>
+                <div>Loading dispatches...</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const API_URL = 'https://services2.arcgis.com/HdTo6HJqh92wn4D8/arcgis/rest/services/Metro_Nashville_Police_Department_Active_Dispatch_Table_view/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json';
+        
+        function formatTimeRelative(timestamp) {
+            if (!timestamp) return 'Unknown';
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            
+            if (diffMins < 1) return 'Just now';
+            if (diffMins === 1) return '1 min ago';
+            if (diffMins < 60) return `${diffMins} mins ago`;
+            if (diffMins < 120) return '1 hour ago';
+            if (diffMins < 1440) {
+                const hours = Math.floor(diffMins / 60);
+                return `${hours} hours ago`;
+            }
+            const days = Math.floor(diffMins / 1440);
+            return `${days} ${days === 1 ? 'day' : 'days'} ago`;
+        }
+        
+        function formatTime(timestamp) {
+            if (!timestamp) return '--:--';
+            return new Date(timestamp).toLocaleTimeString('en-US', { 
+                hour: 'numeric', 
+                minute: '2-digit',
+                hour12: true
+            });
+        }
+        
+        function formatDate(timestamp) {
+            if (!timestamp) return '';
+            const date = new Date(timestamp);
+            const today = new Date();
+            const isToday = date.toDateString() === today.toDateString();
+            
+            if (isToday) {
+                return `Today ${formatTime(timestamp)}`;
+            }
+            
+            return date.toLocaleDateString('en-US', { 
+                month: 'short',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+            });
+        }
+        
+        function formatIncidentType(type) {
+            if (!type) return 'Unknown Incident';
+            // Clean up all-caps text and format nicely
+            return type.toLowerCase()
+                .replace(/non-residence/gi, 'Non-Residential')
+                .replace(/residence/gi, 'Residential')
+                .split(/[\s-]+/)
+                .map(word => {
+                    // Keep certain words lowercase
+                    if (['in', 'at', 'of'].includes(word)) return word;
+                    return word.charAt(0).toUpperCase() + word.slice(1);
+                })
+                .join(' ');
+        }
+        
+        function getPriorityClass(incidentType, code) {
+            if (!incidentType && !code) return '';
+            
+            const typeUpper = (incidentType || '').toUpperCase();
+            const codeUpper = (code || '').toUpperCase();
+            
+            // High priority - immediate danger
+            if (typeUpper.includes('SHOOTING') || 
+                typeUpper.includes('STABBING') || 
+                typeUpper.includes('ROBBERY') || 
+                typeUpper.includes('HOLD UP') ||
+                typeUpper.includes('WEAPON') ||
+                codeUpper === '53P') {
+                return 'priority-high';
+            }
+            
+            // Medium priority - active situations
+            if (typeUpper.includes('FIGHT') || 
+                typeUpper.includes('ASSAULT') || 
+                typeUpper.includes('IN PROGRESS') ||
+                typeUpper.includes('DOMESTIC') ||
+                codeUpper === '57P' || 
+                codeUpper === '57PJ') {
+                return 'priority-medium';
+            }
+            
+            // Low priority - property crimes, alarms
+            if (typeUpper.includes('ALARM')) {
+                return 'priority-low';
+            }
+            
+            return '';
+        }
+        
+        async function fetchDispatches() {
+            try {
+                const response = await fetch(API_URL);
+                if (!response.ok) throw new Error('Failed to fetch data');
+                
+                const data = await response.json();
+                const features = data.features || [];
+                
+                // Update stats
+                document.getElementById('totalCalls').textContent = features.length;
+                document.getElementById('lastUpdate').textContent = formatTime(new Date());
+                
+                // Find most recent call
+                if (features.length > 0) {
+                    const mostRecentTime = Math.max(...features.map(f => f.attributes?.CallReceivedTime || 0));
+                    document.getElementById('mostRecent').textContent = formatTimeRelative(mostRecentTime);
+                } else {
+                    document.getElementById('mostRecent').textContent = '--';
+                }
+                
+                // Sort by most recent first
+                features.sort((a, b) => {
+                    const timeA = a.attributes?.CallReceivedTime || 0;
+                    const timeB = b.attributes?.CallReceivedTime || 0;
+                    return timeB - timeA;
+                });
+                
+                const dispatchList = document.getElementById('dispatchList');
+                
+                if (features.length === 0) {
+                    dispatchList.innerHTML = `
+                        <div class="empty">
+                            <div class="empty-icon">✅</div>
+                            <div class="empty-title">All Clear</div>
+                            <div class="empty-subtitle">No active dispatches at this time</div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                dispatchList.innerHTML = features.map(feature => {
+                    const attr = feature.attributes || {};
+                    const priorityClass = getPriorityClass(attr.IncidentTypeName, attr.IncidentTypeCode);
+                    
+                    return `
+                        <div class="dispatch-card ${priorityClass}">
+                            <div class="dispatch-header">
+                                <div class="incident-info">
+                                    <div class="incident-type">
+                                        ${formatIncidentType(attr.IncidentTypeName)}
+                                        ${attr.IncidentTypeCode ? `<span class="incident-code">${attr.IncidentTypeCode}</span>` : ''}
+                                    </div>
+                                </div>
+                                <div class="time-info">
+                                    <div class="time-relative">${formatTimeRelative(attr.CallReceivedTime)}</div>
+                                    <div class="time-absolute">${formatDate(attr.CallReceivedTime)}</div>
+                                </div>
+                            </div>
+                            
+                            <div class="dispatch-location">
+                                <div class="location-primary">
+                                    <span class="location-icon">📍</span>
+                                    <span>${attr.Location || 'Location not specified'}</span>
+                                    ${attr.CityName ? `<span class="city-badge">${attr.CityName}</span>` : ''}
+                                </div>
+                                ${attr.LocationDescription ? `
+                                    <div class="location-detail">${attr.LocationDescription}</div>
+                                ` : ''}
+                            </div>
+                            
+                            <div class="dispatch-meta">
+                                <div class="meta-item">
+                                    <span>📞</span>
+                                    <span>Received: ${formatTime(attr.CallReceivedTime)}</span>
+                                </div>
+                                ${attr.LastUpdated ? `
+                                    <div class="meta-item">
+                                        <span>🔄</span>
+                                        <span>Updated: ${formatTime(attr.LastUpdated)}</span>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+            } catch (error) {
+                console.error('Error fetching dispatches:', error);
+                document.getElementById('dispatchList').innerHTML = `
+                    <div class="error">
+                        <div style="font-size: 24px; margin-bottom: 10px;">⚠️</div>
+                        <div style="font-weight: 600;">Unable to load dispatch data</div>
+                        <div style="font-size: 13px; margin-top: 8px; color: #7f1d1d;">Will retry in 30 seconds...</div>
+                    </div>
+                `;
+            }
+        }
+        
+        // Initial fetch
+        fetchDispatches();
+        
+        // Refresh every 30 seconds
+        setInterval(fetchDispatches, 30000);
+        
+        // Refresh on visibility change (when user returns to tab)
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                fetchDispatches();
+            }
+        });
+    </script>
+</body>
+</html>
