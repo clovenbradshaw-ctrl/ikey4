@@ -2225,7 +2225,7 @@ END:VCALENDAR`;
                 const value = document.getElementById('contact-value').value.trim();
                 const desc = document.getElementById('contact-desc').value.trim();
                 if (!value) {
-                    alert('Please enter a ' + (type === 'email' ? 'email address' : 'phone number'));
+                    showTooltip('Please enter a ' + (type === 'email' ? 'email address' : 'phone number'), document.getElementById('contact-value'));
                     return;
                 }
                 const savedArr = JSON.parse(storage.get('protonBookmarks') || '[]');
