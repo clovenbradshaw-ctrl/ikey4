@@ -1801,6 +1801,15 @@
         let currentStep = 1;
         let formData = {};
         const baseURL = window.location.origin + window.location.pathname;
+
+        function compressData(data) {
+            return LZString.compressToEncodedURIComponent(data);
+        }
+
+        function decompressData(data) {
+            return LZString.decompressFromEncodedURIComponent(data);
+        }
+
         const storagePrefix = window.location.hash.slice(1) || 'default';
         const storage = {
             get: (key) => localStorage.getItem(`${storagePrefix}_${key}`),
@@ -1998,7 +2007,7 @@
             });
 
             const jsonStr = JSON.stringify(cleanData);
-            const compressed = LZString.compressToEncodedURIComponent(jsonStr);
+            const compressed = compressData(jsonStr);
             const url = `${baseURL}#${compressed}`;
             
             window.history.replaceState(null, '', url);
@@ -3059,7 +3068,7 @@ Generated: ${new Date().toLocaleString()}`;
             const hash = window.location.hash.slice(1);
             if (hash) {
                 try {
-                    const decompressed = LZString.decompressFromEncodedURIComponent(hash);
+                    const decompressed = decompressData(hash);
                     const data = JSON.parse(decompressed);
                     // `pe` was introduced in schema v2; older QR codes may omit it
                     if (data.p && !data.ph) {
