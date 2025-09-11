@@ -78,6 +78,50 @@
             color: var(--secondary);
         }
 
+        #language-toggle {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        #language-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        #language-menu {
+            display: none;
+            position: absolute;
+            top: 35px;
+            right: 0;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-md);
+            padding: 4px;
+        }
+
+        #language-menu.show {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .lang-option {
+            background: none;
+            border: none;
+            padding: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .lang-option.active {
+            background: var(--primary);
+            color: white;
+            border-radius: var(--radius);
+        }
+
         /* Tab Navigation */
         .tab-nav {
             background: white;
@@ -557,7 +601,7 @@
             border-color: var(--primary);
         }
 
-        /* WTTIN Tab */
+        /* Resources Tab */
         .iframe-container {
             position: relative;
             width: 100%;
@@ -1020,15 +1064,18 @@
 <body>
     <!-- Header -->
     <div class="app-header">
-        <select id="language-select" style="position: absolute; top: 10px; right: 10px;">
-            <option value="en">English</option>
-            <option value="es">Español</option>
-            <option value="ar">العربية</option>
-            <option value="ku">Kurdî</option>
-            <option value="so">Af-Soomaali</option>
-            <option value="zh">中文</option>
-        </select>
-        <button id="google-translate-btn" class="btn" style="position: absolute; top: 45px; right: 10px;" data-i18n="googleTranslate">Google Translate</button>
+        <div id="language-toggle">
+            <button id="language-btn" aria-label="Change language">🌐</button>
+            <div id="language-menu">
+                <button class="lang-option" data-lang="en" aria-label="English">EN</button>
+                <button class="lang-option" data-lang="es" aria-label="Español">ES</button>
+                <button class="lang-option" data-lang="ar" aria-label="العربية">ع</button>
+                <button class="lang-option" data-lang="ku" aria-label="Kurdî">Ku</button>
+                <button class="lang-option" data-lang="so" aria-label="Af-Soomaali">So</button>
+                <button class="lang-option" data-lang="zh" aria-label="中文">文</button>
+            </div>
+        </div>
+        <button id="google-translate-btn" class="btn" style="position: absolute; top: 45px; right: 10px;" aria-label="Google Translate">🔄</button>
         <h1 data-i18n="appLogo">🔐 iKey</h1>
         <p data-i18n="appTagline">Secure Location & Personal Safety Hub</p>
     </div>
@@ -1051,11 +1098,11 @@
             <span class="tab-icon">⛈️</span>
             <span class="tab-label" data-i18n="nav.weather">Weather</span>
         </button>
-        <button class="tab-btn" onclick="switchTab('wttin')" aria-label="WTTIN" data-i18n-aria="nav.wttin">
+        <button class="tab-btn" onclick="switchTab('wttin')" aria-label="Resources" data-i18n-aria="nav.wttin">
             <img src="https://wttin.org/wp-content/uploads/2024/05/Group-184-1.png"
-                 alt="WTTIN"
+                 alt="Resources"
                  style="width: 20px; height: 20px; object-fit: contain;">
-            <span class="tab-label" data-i18n="nav.wttin">WTTIN</span>
+            <span class="tab-label" data-i18n="nav.wttin">Resources</span>
         </button>
         <button class="tab-btn" onclick="switchTab('meals')" aria-label="Meals" data-i18n-aria="nav.meals">
             <span class="tab-icon">🍽️</span>
@@ -1581,14 +1628,14 @@
         </div>
     </div>
 
-    <!-- WTTIN Tab -->
+    <!-- Resources Tab -->
     <div id="wttin" class="tab-content">
         <div style="height: calc(100vh - 120px); display: flex; flex-direction: column;">
             <div style="flex: 1; position: relative;">
                 <iframe
                     src="https://wttin.org"
                     sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-                    title="WTTIN Resources"
+                    title="Resources"
                     loading="lazy"
                     style="width: 100%; height: 100%; border: none;">
                 </iframe>
@@ -1663,10 +1710,17 @@
                     <h3>Standard Notes</h3>
                     <p>Encrypted notes app.</p>
                 </a>
+
                 <a class="app-card" href="invite.html">
                     <div class="app-icon"><img src="https://pmecdn.protonweb.com/image-transformation/?s=c&amp;image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fcalendar_ylg2jq.svg" alt="Calendar #2"></div>
                     <h3>Calendar #2</h3>
                     <p>Invite generator.</p>
+
+                <a class="app-card" href="https://account.proton.me/calendar" target="_blank" rel="noopener noreferrer">
+                    <div class="app-icon"><img src="https://pmecdn.protonweb.com/image-transformation/?s=c&amp;image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fcalendar_ylg2jq.svg" alt="Proton Calendar"></div>
+                    <h3>Proton Calendar</h3>
+                    <p>Private calendar.</p>
+
                 </a>
                 <a class="app-card" href="https://account.proton.me/authenticator" target="_blank" rel="noopener noreferrer">
                     <div class="app-icon"><img src="https://pmecdn.protonweb.com/image-transformation/?s=c&amp;image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fauthenticator.svg" alt="Proton Authenticator"></div>
@@ -1739,18 +1793,6 @@
                     <h3 style="margin-bottom: 15px; color: var(--primary);">Tab Visibility</h3>
                     <div class="settings-item" style="cursor: default;">
                         <div>
-                            <div style="font-weight: 600;">🏠 Home</div>
-                        </div>
-                        <input type="checkbox" class="tab-visibility-toggle" data-tab="home" checked>
-                    </div>
-                    <div class="settings-item" style="cursor: default;">
-                        <div>
-                            <div style="font-weight: 600;">🏥 iKey</div>
-                        </div>
-                        <input type="checkbox" class="tab-visibility-toggle" data-tab="ikey" checked>
-                    </div>
-                    <div class="settings-item" style="cursor: default;">
-                        <div>
                             <div style="font-weight: 600;">🚨 911</div>
                         </div>
                         <input type="checkbox" class="tab-visibility-toggle" data-tab="emergency-911" checked>
@@ -1763,7 +1805,7 @@
                     </div>
                     <div class="settings-item" style="cursor: default;">
                         <div>
-                            <div style="font-weight: 600;">WTTIN</div>
+                            <div style="font-weight: 600;" data-i18n="nav.wttin">Resources</div>
                         </div>
                         <input type="checkbox" class="tab-visibility-toggle" data-tab="wttin" checked>
                     </div>
@@ -1885,7 +1927,8 @@
         }
 
         // Tab visibility settings
-        const allTabs = ['home', 'ikey', 'emergency-911', 'weather', 'wttin', 'apps'];
+        const allTabs = ['emergency-911', 'weather', 'wttin', 'apps'];
+        const nonHideableTabs = ['home', 'ikey', 'settings'];
 
         function getTabButton(tabName) {
             return Array.from(document.querySelectorAll('.tab-btn')).find(btn =>
@@ -1894,7 +1937,9 @@
         }
 
         function applyHiddenTabs() {
-            const hidden = JSON.parse(localStorage.getItem('hiddenTabs') || '[]');
+            let hidden = JSON.parse(localStorage.getItem('hiddenTabs') || '[]');
+            hidden = hidden.filter(tab => !nonHideableTabs.includes(tab));
+            localStorage.setItem('hiddenTabs', JSON.stringify(hidden));
             allTabs.forEach(tab => {
                 const btn = getTabButton(tab);
                 if (btn) {
@@ -1912,6 +1957,7 @@
         }
 
         function toggleTabVisibility(tab, isVisible) {
+            if (nonHideableTabs.includes(tab)) return;
             let hidden = JSON.parse(localStorage.getItem('hiddenTabs') || '[]');
             if (!isVisible) {
                 if (!hidden.includes(tab)) hidden.push(tab);
@@ -2375,8 +2421,13 @@ END:VCALENDAR`;
             { id: 'drive', name: 'Proton Drive', url: 'https://drive.proton.me/', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fdrive_wo2nx4.svg' },
             { id: 'vpn', name: 'Proton VPN', url: 'https://account.protonvpn.com/dashboard', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fvpn_f9embt.svg' },
             { id: 'pass', name: 'Proton Pass', url: 'https://account.proton.me/pass', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fpass_wl1fk9.svg' },
-            { id: 'docs', name: 'Proton Docs', url: 'https://docs.proton.me/', icon: 'https://www.google.com/s2/favicons?sz=64&domain=docs.proton.me' },
-            { id: 'simplelogin', name: 'SimpleLogin', url: 'https://app.simplelogin.io/dashboard/', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fv1741968746%2Fstatic%2Flogos%2Fside-products%2Fsimple-login_cozggp.svg' }
+            { id: 'calendar', name: 'Proton Calendar', url: 'https://calendar.proton.me/', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fcalendar_ylg2jq.svg' },
+            { id: 'authenticator', name: 'Proton Authenticator', url: 'https://account.proton.me/authenticator', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fauthenticator.svg' },
+            { id: 'meet', name: 'Proton Meet', url: 'https://meet.proton.me/', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fmeet.svg' },
+            { id: 'wallet', name: 'Proton Wallet', url: 'https://account.proton.me/wallet', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fwallet_hnlslt.svg' },
+            { id: 'simplelogin', name: 'SimpleLogin', url: 'https://app.simplelogin.io/dashboard/', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fv1741968746%2Fstatic%2Flogos%2Fside-products%2Fsimple-login_cozggp.svg' },
+            { id: 'standardnotes', name: 'Standard Notes', url: 'https://app.standardnotes.com/', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fv1741972455%2Fstatic%2Flogos%2Fside-products%2Fstandard-notes_h81doh.svg' },
+            { id: 'lumo', name: 'Lumo', url: 'https://lumo.proton.me/', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Flumo_k0nljk.svg' }
         ];
 
         const INTERNAL_APPS = [
@@ -3492,8 +3543,20 @@ Generated: ${new Date().toLocaleString()}`;
     </script>
 
     <script>
-        const languageSelect = document.getElementById('language-select');
+        const languageBtn = document.getElementById('language-btn');
+        const languageMenu = document.getElementById('language-menu');
         const googleTranslateBtn = document.getElementById('google-translate-btn');
+        if (languageBtn && languageMenu) {
+            languageBtn.addEventListener('click', () => {
+                languageMenu.classList.toggle('show');
+            });
+            document.querySelectorAll('.lang-option').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    setLanguage(btn.dataset.lang);
+                    languageMenu.classList.remove('show');
+                });
+            });
+        }
         if (googleTranslateBtn) {
             googleTranslateBtn.addEventListener('click', () => {
                 const url = `https://translate.google.com/translate?u=${encodeURIComponent(window.location.href)}`;
@@ -3506,12 +3569,6 @@ Generated: ${new Date().toLocaleString()}`;
             .then(data => {
                 translations = data;
                 const saved = localStorage.getItem('language') || 'en';
-                if (languageSelect) {
-                    languageSelect.value = saved;
-                    languageSelect.addEventListener('change', () => {
-                        setLanguage(languageSelect.value);
-                    });
-                }
                 setLanguage(saved);
             });
 
@@ -3519,6 +3576,9 @@ Generated: ${new Date().toLocaleString()}`;
             const dict = translations[lang] || {};
             document.documentElement.lang = lang;
             localStorage.setItem('language', lang);
+            document.querySelectorAll('.lang-option').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const parts = el.dataset.i18n.split('.');
                 let text = dict;
