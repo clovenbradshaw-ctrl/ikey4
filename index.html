@@ -1084,6 +1084,7 @@
                     <div id="bookmark-grid" class="bookmark-grid"></div>
                     <div style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
                         <button id="add-slot-btn" class="btn btn-secondary">Add Space</button>
+                        <button id="remove-slot-btn" class="btn btn-secondary">Remove Space</button>
                         <button id="bookmark-done" class="btn btn-primary hidden">Done</button>
                     </div>
                     <div id="communication-actions" style="margin-top: 20px;"></div>
@@ -2030,6 +2031,16 @@ END:VCALENDAR`;
             openBookmarkModal(count);
         }
 
+        function removeBookmarkSlot() {
+            let count = getBookmarkCount();
+            if (count <= 1) return;
+            const savedArr = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
+            savedArr.splice(count - 1, 1);
+            localStorage.setItem('protonBookmarks', JSON.stringify(savedArr));
+            setBookmarkCount(count - 1);
+            renderBookmarkSlots();
+        }
+
         function openBookmarkModal(index) {
             const modal = document.getElementById('bookmark-modal');
             if (!modal) return;
@@ -2720,6 +2731,8 @@ Generated: ${new Date().toLocaleString()}`;
             }
             const addBtn = document.getElementById('add-slot-btn');
             if (addBtn) addBtn.addEventListener('click', addBookmarkSlot);
+            const removeBtn = document.getElementById('remove-slot-btn');
+            if (removeBtn) removeBtn.addEventListener('click', removeBookmarkSlot);
             const doneBtn = document.getElementById('bookmark-done');
             if (doneBtn) doneBtn.addEventListener('click', exitBookmarkEditMode);
         });
