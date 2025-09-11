@@ -10,9 +10,9 @@ The interface includes a built-in language selector that loads translations from
 
 ## Favorite Apps
 
-The home screen provides a grid of favorite apps for quick access. Four slots are available by default, and additional spaces can be added or removed from the **Settings** tab. Tap an app once to open it. Long-press any bookmark to enter edit mode—icons shake and a remove button appears. The add dialog can populate the grid with all Proton apps or include built-in tools like Weather and Police Dispatch.
+The home screen provides a grid of favorite apps for quick access. Tap an app once to open it. Long‑press any bookmark to enter edit mode—icons shake and a remove button appears. Use the “+” tile in edit mode to add new favorites. Bookmarks can be reordered by dragging and can include built‑in tools like Weather and Police Dispatch.
 
-Bookmarks can also launch direct calls, texts, or emails to specific contacts. These shortcuts ask for a name, number or email, optional description, and photo. **All bookmarks are stored only in this browser's memory**—they will be lost if the device is lost or browser data is cleared. For secure retention, store important details separately such as a note in Proton Drive or an email to yourself.
+These favorites appear only on the Home page and can also launch direct calls, texts, or emails to specific contacts. These shortcuts ask for a name, number or email, optional description, and photo. **All bookmarks are stored only in this browser's memory**—they will be lost if the device is lost or browser data is cleared. For secure retention, store important details separately such as a note in Proton Drive or an email to yourself.
 
 ## Core Architecture
 
