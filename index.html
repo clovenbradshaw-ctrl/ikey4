@@ -894,6 +894,10 @@
 
     <!-- Tab Navigation -->
     <nav class="tab-nav">
+        <button class="tab-btn" onclick="switchTab('home')" aria-label="Home">
+            <span class="tab-icon">🏠</span>
+            <span class="tab-label">Home</span>
+        </button>
         <button class="tab-btn active" onclick="switchTab('ikey')" aria-label="iKey">
             <span class="tab-icon">🏥</span>
             <span class="tab-label">iKey</span>
@@ -925,6 +929,19 @@
             <span class="tab-label">Settings</span>
         </button>
     </nav>
+
+    <!-- Home Tab -->
+    <div id="home" class="tab-content">
+        <div class="container">
+            <h2>Bookmarks</h2>
+            <div id="bookmark-grid" class="bookmark-grid"></div>
+            <div style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
+                <button id="add-slot-btn" class="btn btn-secondary">Add Space</button>
+                <button id="remove-slot-btn" class="btn btn-secondary">Remove Space</button>
+                <button id="bookmark-done" class="btn btn-primary hidden">Done</button>
+            </div>
+        </div>
+    </div>
 
     <!-- iKey Tab -->
     <div id="ikey" class="tab-content active">
@@ -1109,12 +1126,6 @@
                 <div id="display-view" class="hidden">
                     <h2>Emergency Essential Info</h2>
                     <div id="display-content"></div>
-                    <div id="bookmark-grid" class="bookmark-grid"></div>
-                    <div style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
-                        <button id="add-slot-btn" class="btn btn-secondary">Add Space</button>
-                        <button id="remove-slot-btn" class="btn btn-secondary">Remove Space</button>
-                        <button id="bookmark-done" class="btn btn-primary hidden">Done</button>
-                    </div>
                     <div id="communication-actions" style="margin-top: 20px;"></div>
                     <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
                         <button class="btn btn-primary" onclick="openShareModal()">📤 Share Info</button>
