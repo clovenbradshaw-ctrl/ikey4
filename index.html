@@ -725,6 +725,35 @@
         .char-counter.good { color: var(--success); }
         .char-counter.warning { color: var(--warning); }
         .char-counter.danger { color: var(--danger); }
+        /* Share Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal.hidden { display: none; }
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 320px;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+        }
+        .modal-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -954,7 +983,7 @@
                     <div id="display-content"></div>
                     <div id="communication-actions" style="margin-top: 20px;"></div>
                     <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
-                        <button class="btn btn-primary" onclick="copyMedicalInfo(displayData)">📋 Copy Info</button>
+                        <button class="btn btn-primary" onclick="openShareModal()">📤 Share Info</button>
                         <button class="btn btn-primary" onclick="createNew()">🆕 Create New QR Code</button>
                     </div>
                 </div>
@@ -978,6 +1007,20 @@
                         <button class="btn btn-secondary" onclick="createNew()">🆕 Create Another</button>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div id="share-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Share Contact Info</h3>
+            <div class="modal-actions">
+                <button class="btn btn-primary" onclick="downloadInfo()">💾 Save as .txt</button>
+                <button class="btn btn-primary" onclick="emailInfo()">📧 Email</button>
+                <button class="btn btn-primary" onclick="copyMedicalInfo(displayData)">📋 Copy</button>
+                <button class="btn btn-primary" onclick="smsInfo()">💬 Text</button>
+                <button class="btn btn-secondary" onclick="closeShareModal()">Close</button>
             </div>
         </div>
     </div>
@@ -1616,7 +1659,7 @@
             });
         }
 
-        function copyMedicalInfo(dataObj = formData) {
+        function getMedicalInfoText(dataObj = formData) {
             const data = dataObj || {};
             const lines = [];
             if (data.n) lines.push(`Name: ${data.n}`);
@@ -1640,10 +1683,45 @@
                 lines.push(cmLine);
             }
             if (data.pe) lines.push(`Secure Email: ${data.pe}`);
+            return lines.join('\n');
+        }
 
-            navigator.clipboard.writeText(lines.join('\n')).then(() => {
+        function copyMedicalInfo(dataObj = formData) {
+            const text = getMedicalInfoText(dataObj);
+            navigator.clipboard.writeText(text).then(() => {
                 alert('iKey info copied!');
             });
+        }
+
+        function openShareModal() {
+            const text = getMedicalInfoText(displayData);
+            navigator.clipboard.writeText(text);
+            document.getElementById('share-modal').classList.remove('hidden');
+        }
+
+        function closeShareModal() {
+            document.getElementById('share-modal').classList.add('hidden');
+        }
+
+        function downloadInfo() {
+            const text = getMedicalInfoText(displayData);
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'ikey-info.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function emailInfo() {
+            const text = encodeURIComponent(getMedicalInfoText(displayData));
+            window.location.href = `mailto:?subject=iKey%20Info&body=${text}`;
+        }
+
+        function smsInfo() {
+            const text = encodeURIComponent(getMedicalInfoText(displayData));
+            window.location.href = `sms:?body=${text}`;
         }
 
         function createNew() {
