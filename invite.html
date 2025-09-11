@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICS Event Generator - Proton Calendar Compatible</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --proton-purple: #6d4aff;
+            --proton-purple-dark: #5a3dd1;
+            --proton-purple-light: #8969ff;
+            --bg-light: #f8f9fa;
+            --text-dark: #1c1c1e;
+            --text-muted: #6c757d;
+            --border: #dee2e6;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --radius: 12px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: var(--text-dark);
+        }
+
+        .widget-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            max-width: 500px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .widget-header {
+            background: linear-gradient(135deg, var(--proton-purple) 0%, var(--proton-purple-dark) 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .widget-header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .widget-header p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .widget-body {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--proton-purple);
+            box-shadow: 0 0 0 3px rgba(109, 74, 255, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 14px 24px;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--proton-purple) 0%, var(--proton-purple-dark) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(109, 74, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--bg-light);
+            color: var(--text-dark);
+            margin-top: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+
+        .success-message {
+            background: #d1fae5;
+            border: 2px solid var(--success);
+            color: #065f46;
+            padding: 15px;
+            border-radius: var(--radius);
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .instruction-message {
+            background: #fef3c7;
+            border: 2px solid var(--warning);
+            color: #92400e;
+            padding: 15px;
+            border-radius: var(--radius);
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .instruction-message h4 {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .instruction-message ol {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .instruction-message li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="widget-container">
+        <div class="widget-header">
+            <h1>📅 ICS Event Generator</h1>
+            <p>Create and email calendar invites</p>
+        </div>
+        <div class="widget-body">
+            <div id="successMessage" class="success-message">✅ Event file created and email opened!</div>
+            <div id="instructionMessage" class="instruction-message">
+                <h4>📧 Next Steps:</h4>
+                <ol>
+                    <li>Your email client has opened with the invite details</li>
+                    <li>The ICS file "<span id="fileName"></span>" has been downloaded</li>
+                    <li>Attach the downloaded ICS file to your email</li>
+                    <li>Send the email to invite attendees</li>
+                </ol>
+            </div>
+            <form id="eventForm">
+                <div class="form-group">
+                    <label for="title">Event Title *</label>
+                    <input type="text" id="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input type="text" id="location">
+                </div>
+                <div class="form-group">
+                    <label for="date">Date *</label>
+                    <input type="date" id="date" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="time">Start Time *</label>
+                        <input type="time" id="time" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="endTime">End Time *</label>
+                        <input type="time" id="endTime" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="organizer">Your Email (organizer) *</label>
+                    <input type="email" id="organizer" placeholder="your-email@proton.me" required>
+                </div>
+                <div class="form-group">
+                    <label for="clientEmail">Client Proton Email *</label>
+                    <input type="email" id="clientEmail" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="attendees">Additional Attendee Emails (comma-separated)</label>
+                    <input type="text" id="attendees" placeholder="attendee1@example.com, attendee2@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description"></textarea>
+                </div>
+                <button type="button" class="btn btn-primary" onclick="generateAndEmail()">✉️ Create Invite & Open Email</button>
+                <button type="button" class="btn btn-secondary" onclick="resetForm()">Clear Form</button>
+            </form>
+        </div>
+    </div>
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const clientEmail = params.get('pe') || '';
+    const clientName = params.get('n') || '';
+
+    window.addEventListener('load', () => {
+        // Prefill client email and title
+        document.getElementById('clientEmail').value = clientEmail;
+        if (clientName) {
+            document.getElementById('title').value = `Follow-up with ${clientName}`;
+        }
+
+        // Set default date/time
+        const today = new Date();
+        document.getElementById('date').value = today.toISOString().split('T')[0];
+        const nextHour = new Date();
+        nextHour.setHours(nextHour.getHours() + 1, 0, 0);
+        document.getElementById('time').value = nextHour.toTimeString().slice(0,5);
+        const endHour = new Date(nextHour.getTime() + 60*60*1000);
+        document.getElementById('endTime').value = endHour.toTimeString().slice(0,5);
+    });
+
+    function generateAndEmail() {
+        const title = document.getElementById('title').value.trim();
+        const location = document.getElementById('location').value.trim();
+        const date = document.getElementById('date').value;
+        const time = document.getElementById('time').value;
+        const endTime = document.getElementById('endTime').value;
+        const organizer = document.getElementById('organizer').value.trim();
+        const description = document.getElementById('description').value.trim();
+        const additional = document.getElementById('attendees').value.trim();
+        if (!title || !date || !time || !endTime || !organizer || !clientEmail) {
+            alert('Please fill in all required fields');
+            return;
+        }
+        const start = `${date}T${time}`;
+        const end = `${date}T${endTime}`;
+        const dtstamp = new Date().toISOString().replace(/[-:]/g,'').split('.')[0] + 'Z';
+
+        const attendeeList = [clientEmail];
+        if (additional) {
+            additional.split(',').forEach(e => { const v = e.trim(); if (v) attendeeList.push(v); });
+        }
+
+        let ics = 'BEGIN:VCALENDAR\nVERSION:2.0\nMETHOD:REQUEST\nBEGIN:VEVENT\n';
+        ics += `SUMMARY:${title}\n`;
+        ics += `DTSTART:${start.replace(/[-:]/g,'')}Z\n`;
+        ics += `DTEND:${end.replace(/[-:]/g,'')}Z\n`;
+        ics += `DTSTAMP:${dtstamp}\n`;
+        ics += `ORGANIZER:mailto:${organizer}\n`;
+        attendeeList.forEach(email => {
+            ics += `ATTENDEE;CN=${email}:mailto:${email}\n`;
+        });
+        if (location) ics += `LOCATION:${location}\n`;
+        if (description) ics += `DESCRIPTION:${description.replace(/\n/g,'\\n')}\n`;
+        ics += 'END:VEVENT\nEND:VCALENDAR';
+
+        const blob = new Blob([ics], {type:'text/calendar;charset=utf-8'});
+        const filename = `${title.replace(/[^a-z0-9]/gi,'_').toLowerCase()}_${date}.ics`;
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        link.click();
+
+        let subject = `Calendar Invitation: ${title}`;
+        let body = `You're invited to: ${title}\n\n`;
+        body += `Date: ${date}\nTime: ${time} - ${endTime}\n`;
+        if (location) body += `Location: ${location}\n\n`; else body += '\n';
+        if (description) body += `${description}\n\n`;
+        body += 'Please see the attached ICS file to add this event to your calendar.';
+
+        const mailto = `mailto:${attendeeList.join(',')}` +
+            `?subject=${encodeURIComponent(subject)}` +
+            `&body=${encodeURIComponent(body)}`;
+        window.open(mailto, '_blank');
+
+        document.getElementById('fileName').textContent = filename;
+        document.getElementById('successMessage').style.display = 'block';
+        document.getElementById('instructionMessage').style.display = 'block';
+    }
+
+    function resetForm() {
+        document.getElementById('eventForm').reset();
+        document.getElementById('clientEmail').value = clientEmail;
+    }
+</script>
+</body>
+</html>
