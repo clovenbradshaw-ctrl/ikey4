@@ -578,8 +578,15 @@
         }
 
         .app-icon {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 15px;
+        }
+
+        .app-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         .app-card h3 {
@@ -714,9 +721,9 @@
             <span class="tab-icon">📡</span>
             Dispatch
         </button>
-        <button class="tab-btn" onclick="switchTab('apps')">
-            <span class="tab-icon">📦</span>
-            Apps
+        <button class="tab-btn" onclick="switchTab('apps')" aria-label="Apps">
+            <img src="https://static0.howtogeekimages.com/wordpress/wp-content/uploads/2023/11/38.png"
+                 alt="" style="width: 20px; height: 20px; object-fit: contain;">
         </button>
         <button class="tab-btn" onclick="switchTab('settings')">
             <span class="tab-icon">⚙️</span>
@@ -1109,45 +1116,64 @@
         <div class="container">
             <div class="apps-grid">
                 <a class="app-card" href="https://proton.me/mail" target="_blank" rel="noopener noreferrer">
-                    <div class="app-icon">📧</div>
-                    <h3>Email</h3>
+                    <div class="app-icon"><img src="https://pmecdn.protonweb.com/image-transformation/?s=c&amp;image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fmail_xxy4bg.svg" alt="Proton Mail"></div>
+                    <h3>Proton Mail</h3>
                     <p>Secure encrypted email.</p>
                 </a>
-                <a class="app-card" href="https://proton.me/calendar" target="_blank" rel="noopener noreferrer">
-                    <div class="app-icon">📅</div>
-                    <h3>Calendar</h3>
-                    <p>Private scheduling for your day.</p>
+                <a class="app-card" href="https://protonvpn.com/?ref=pme_lp_b2c_meet_submenu" target="_blank" rel="noopener noreferrer">
+                    <div class="app-icon"><img src="https://pmecdn.protonweb.com/image-transformation/?s=c&amp;image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fvpn_f9embt.svg" alt="Proton VPN"></div>
+                    <h3>Proton VPN</h3>
+                    <p>Secure VPN for your devices.</p>
                 </a>
                 <a class="app-card" href="https://proton.me/drive" target="_blank" rel="noopener noreferrer">
-                    <div class="app-icon">📁</div>
-                    <h3>Drive</h3>
+                    <div class="app-icon"><img src="https://pmecdn.protonweb.com/image-transformation/?s=c&amp;image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fdrive_wo2nx4.svg" alt="Proton Drive"></div>
+                    <h3>Proton Drive</h3>
                     <p>Store files with end-to-end encryption.</p>
                 </a>
-                <a class="app-card" href="https://proton.me/docs" target="_blank" rel="noopener noreferrer">
-                    <div class="app-icon">📄</div>
-                    <h3>Docs (Beta)</h3>
-                    <p>Collaborative editing with privacy.</p>
+                <a class="app-card" href="https://proton.me/calendar" target="_blank" rel="noopener noreferrer">
+                    <div class="app-icon"><img src="https://pmecdn.protonweb.com/image-transformation/?s=c&amp;image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fcalendar_ylg2jq.svg" alt="Proton Calendar"></div>
+                    <h3>Proton Calendar</h3>
+                    <p>Private scheduling for your day.</p>
                 </a>
                 <a class="app-card" href="https://proton.me/pass" target="_blank" rel="noopener noreferrer">
-                    <div class="app-icon">🔐</div>
-                    <h3>Pass</h3>
+                    <div class="app-icon"><img src="https://pmecdn.protonweb.com/image-transformation/?s=c&amp;image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fpass_wl1fk9.svg" alt="Proton Pass"></div>
+                    <h3>Proton Pass</h3>
                     <p>Manage passwords securely.</p>
                 </a>
                 <a class="app-card" href="https://proton.me/wallet" target="_blank" rel="noopener noreferrer">
-                    <div class="app-icon">💳</div>
-                    <h3>Wallet</h3>
+                    <div class="app-icon"><img src="https://pmecdn.protonweb.com/image-transformation/?s=c&amp;image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fwallet_hnlslt.svg" alt="Proton Wallet"></div>
+                    <h3>Proton Wallet</h3>
                     <p>Encrypted digital payments.</p>
                 </a>
-                <a class="app-card" href="https://protonvpn.com" target="_blank" rel="noopener noreferrer">
-                    <div class="app-icon">🛡️</div>
-                    <h3>VPN</h3>
-                    <p>Secure VPN for your devices.</p>
+                <a class="app-card" href="https://proton.me/authenticator" target="_blank" rel="noopener noreferrer">
+                    <div class="app-icon"><img src="https://pmecdn.protonweb.com/image-transformation/?s=c&amp;image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fauthenticator.svg" alt="Proton Authenticator"></div>
+                    <h3>Proton Authenticator</h3>
+                    <p>Two-factor authentication.</p>
                 </a>
-                <a class="app-card" href="https://proton.me/ai" target="_blank" rel="noopener noreferrer">
-                    <div class="app-icon">🤖</div>
-                    <h3>AI</h3>
-                    <p>Privacy-focused AI tools.</p>
-
+                <a class="app-card" href="https://proton.me/meet" target="_blank" rel="noopener noreferrer">
+                    <div class="app-icon"><img src="https://pmecdn.protonweb.com/image-transformation/?s=c&amp;image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fmeet.svg" alt="Proton Meet"></div>
+                    <h3>Proton Meet</h3>
+                    <p>Private video meetings.</p>
+                </a>
+                <a class="app-card" href="https://lumo.proton.me/?ref=pme_lp_b2c_meet_submenu" target="_blank" rel="noopener noreferrer">
+                    <div class="app-icon"><img src="https://pmecdn.protonweb.com/image-transformation/?s=c&amp;image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Flumo_k0nljk.svg" alt="Lumo"></div>
+                    <h3>Lumo</h3>
+                    <p>Proton's community hub.</p>
+                </a>
+                <a class="app-card" href="https://simplelogin.io/" target="_blank" rel="noopener noreferrer">
+                    <div class="app-icon"><img src="https://pmecdn.protonweb.com/image-transformation/?s=c&amp;image=image%2Fupload%2Fv1741968746%2Fstatic%2Flogos%2Fside-products%2Fsimple-login_cozggp.svg" alt="Simple Login"></div>
+                    <h3>Simple Login</h3>
+                    <p>Create email aliases.</p>
+                </a>
+                <a class="app-card" href="https://standardnotes.com/" target="_blank" rel="noopener noreferrer">
+                    <div class="app-icon"><img src="https://pmecdn.protonweb.com/image-transformation/?s=c&amp;image=image%2Fupload%2Fv1741972455%2Fstatic%2Flogos%2Fside-products%2Fstandard-notes_h81doh.svg" alt="Standard Notes"></div>
+                    <h3>Standard Notes</h3>
+                    <p>Encrypted note-taking.</p>
+                </a>
+                <a class="app-card" href="https://proton.me/business" target="_blank" rel="noopener noreferrer">
+                    <div class="app-icon"><img src="https://pmecdn.protonweb.com/image-transformation/?s=c&amp;image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fp-white-no-shadow_iwycfj.svg" alt="Proton for Business"></div>
+                    <h3>Proton for Business</h3>
+                    <p>Privacy tools for organizations.</p>
                 </a>
             </div>
         </div>
