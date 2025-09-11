@@ -78,6 +78,50 @@
             color: var(--secondary);
         }
 
+        #language-toggle {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        #language-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        #language-menu {
+            display: none;
+            position: absolute;
+            top: 35px;
+            right: 0;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-md);
+            padding: 4px;
+        }
+
+        #language-menu.show {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .lang-option {
+            background: none;
+            border: none;
+            padding: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .lang-option.active {
+            background: var(--primary);
+            color: white;
+            border-radius: var(--radius);
+        }
+
         /* Tab Navigation */
         .tab-nav {
             background: white;
@@ -1020,15 +1064,18 @@
 <body>
     <!-- Header -->
     <div class="app-header">
-        <select id="language-select" style="position: absolute; top: 10px; right: 10px;">
-            <option value="en">English</option>
-            <option value="es">Español</option>
-            <option value="ar">العربية</option>
-            <option value="ku">Kurdî</option>
-            <option value="so">Af-Soomaali</option>
-            <option value="zh">中文</option>
-        </select>
-        <button id="google-translate-btn" class="btn" style="position: absolute; top: 45px; right: 10px;" data-i18n="googleTranslate">Google Translate</button>
+        <div id="language-toggle">
+            <button id="language-btn" aria-label="Change language">🌐</button>
+            <div id="language-menu">
+                <button class="lang-option" data-lang="en" aria-label="English">EN</button>
+                <button class="lang-option" data-lang="es" aria-label="Español">ES</button>
+                <button class="lang-option" data-lang="ar" aria-label="العربية">ع</button>
+                <button class="lang-option" data-lang="ku" aria-label="Kurdî">Ku</button>
+                <button class="lang-option" data-lang="so" aria-label="Af-Soomaali">So</button>
+                <button class="lang-option" data-lang="zh" aria-label="中文">文</button>
+            </div>
+        </div>
+        <button id="google-translate-btn" class="btn" style="position: absolute; top: 45px; right: 10px;" aria-label="Google Translate">🔄</button>
         <h1 data-i18n="appLogo">🔐 iKey</h1>
         <p data-i18n="appTagline">Secure Location & Personal Safety Hub</p>
     </div>
@@ -3492,8 +3539,20 @@ Generated: ${new Date().toLocaleString()}`;
     </script>
 
     <script>
-        const languageSelect = document.getElementById('language-select');
+        const languageBtn = document.getElementById('language-btn');
+        const languageMenu = document.getElementById('language-menu');
         const googleTranslateBtn = document.getElementById('google-translate-btn');
+        if (languageBtn && languageMenu) {
+            languageBtn.addEventListener('click', () => {
+                languageMenu.classList.toggle('show');
+            });
+            document.querySelectorAll('.lang-option').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    setLanguage(btn.dataset.lang);
+                    languageMenu.classList.remove('show');
+                });
+            });
+        }
         if (googleTranslateBtn) {
             googleTranslateBtn.addEventListener('click', () => {
                 const url = `https://translate.google.com/translate?u=${encodeURIComponent(window.location.href)}`;
@@ -3506,12 +3565,6 @@ Generated: ${new Date().toLocaleString()}`;
             .then(data => {
                 translations = data;
                 const saved = localStorage.getItem('language') || 'en';
-                if (languageSelect) {
-                    languageSelect.value = saved;
-                    languageSelect.addEventListener('change', () => {
-                        setLanguage(languageSelect.value);
-                    });
-                }
                 setLanguage(saved);
             });
 
@@ -3519,6 +3572,9 @@ Generated: ${new Date().toLocaleString()}`;
             const dict = translations[lang] || {};
             document.documentElement.lang = lang;
             localStorage.setItem('language', lang);
+            document.querySelectorAll('.lang-option').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const parts = el.dataset.i18n.split('.');
                 let text = dict;
