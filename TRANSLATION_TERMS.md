@@ -88,6 +88,7 @@ List of user-visible strings requiring translation for full multilingual support
 - 📧 Email
 - 📋 Copy
 - 💬 Text
+- 🔳 Share QR
 - Close
 - Emergency Call 911
 - Tap to Call Emergency Services
