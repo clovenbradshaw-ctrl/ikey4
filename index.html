@@ -778,8 +778,8 @@
                         <h2>Secure Email</h2>
                         <p style="margin-bottom: 20px;"><strong>Why Proton?</strong> Proton uses zero-knowledge encryption so only you can access your data.</p>
                         <div class="form-group">
-                            <label for="proton-email">Secure Email *</label>
-                            <input type="email" id="proton-email" placeholder="you@proton.me" required>
+                            <label for="secure-email">Secure Email *</label>
+                            <input type="email" id="secure-email" placeholder="you@proton.me" required>
                         </div>
                         <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
                             <a href="https://account.proton.me/signup" target="_blank" class="btn btn-primary">Create Account</a>
@@ -1370,7 +1370,7 @@
 
         function validateStep(step) {
             if (step === 2) {
-                const email = document.getElementById('proton-email').value.trim();
+                const email = document.getElementById('secure-email').value.trim();
                 const regex = /^[a-zA-Z0-9._%+-]+@(proton\.me|protonmail\.com)$/;
                 if (!regex.test(email)) {
                     alert('Please enter a valid Proton email address');
@@ -1401,7 +1401,7 @@
         function showReview() {
             formData = {
                 v: 2, // Schema version
-                pe: document.getElementById('proton-email').value.trim(),
+                pe: document.getElementById('secure-email').value.trim(),
                 n: document.getElementById('name').value.trim(),
                 pr: document.getElementById('pronouns').value.trim(),
                 p: document.getElementById('phone').value.trim(),
@@ -1532,12 +1532,12 @@
                 ctx.font = '12px Arial';
                 ctx.fillText(`Name: ${formData.n}`, 170, 60);
                 let nextY = 90;
-                if (formData.pe) {
-                    ctx.fillText(`Email: ${formData.pe}`, 170, nextY);
-                    nextY += 30;
-                }
                 if (formData.p) {
                     ctx.fillText(`Phone: ${formData.p}`, 170, nextY);
+                    nextY += 30;
+                }
+                if (formData.pe) {
+                    ctx.fillText(`Secure Email: ${formData.pe}`, 170, nextY);
                     nextY += 30;
                 }
                 ctx.fillText('Scan for full info', 170, nextY);
@@ -1563,10 +1563,10 @@
         function copyMedicalInfo(dataObj = formData) {
             const data = dataObj || {};
             const lines = [];
-            if (data.pe) lines.push(`Secure Email: ${data.pe}`);
             if (data.n) lines.push(`Name: ${data.n}`);
-            if (data.pr) lines.push(`Pronouns: ${data.pr}`);
             if (data.p) lines.push(`Phone: ${data.p}`);
+            if (data.pe) lines.push(`Secure Email: ${data.pe}`);
+            if (data.pr) lines.push(`Pronouns: ${data.pr}`);
             if (data.d) lines.push(`Date of Birth: ${new Date(data.d).toLocaleDateString()}`);
             if (data.b) lines.push(`Blood Type: ${data.b}`);
             if (data.a) lines.push(`Allergies: ${data.a}`);
@@ -1639,7 +1639,7 @@ GPS: ${currentLocation.latitude}, ${currentLocation.longitude}
 ADDRESS: ${currentLocation.address}
 INTERSECTION: ${currentLocation.crossStreets}
 PLUS CODE: ${currentLocation.plusCode}
-MAPS: https://maps.google.com/?q=${currentLocation.latitude},${currentLocation.longitude}${formData.pe ? `\nPROTON EMAIL: ${formData.pe}` : ''}
+MAPS: https://maps.google.com/?q=${currentLocation.latitude},${currentLocation.longitude}${formData.pe ? `\nSECURE EMAIL: ${formData.pe}` : ''}
 
 Generated: ${new Date().toLocaleString()}`;
 
@@ -1982,7 +1982,7 @@ Generated: ${new Date().toLocaleString()}`;
                 try {
                     const decompressed = LZString.decompressFromEncodedURIComponent(hash);
                     const data = JSON.parse(decompressed);
-                    // `pe` was introduced in schema v2; older QR codes may omit it
+                    // `pe` (secure email) was introduced in schema v2; older QR codes may omit it
 
                     displayData = data;
 
