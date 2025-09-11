@@ -268,7 +268,7 @@
             color: var(--primary-dark);
         }
 
-        /* Medical QR Tab Styles */
+        /* iKey Tab Styles */
         .wizard-progress {
             display: flex;
             justify-content: space-between;
@@ -692,9 +692,9 @@
 
     <!-- Tab Navigation -->
     <nav class="tab-nav">
-        <button class="tab-btn active" onclick="switchTab('medical-qr')">
+        <button class="tab-btn active" onclick="switchTab('ikey')">
             <span class="tab-icon">🏥</span>
-            Medical ID
+            iKey
         </button>
         <button class="tab-btn" onclick="switchTab('emergency-911')">
             <span class="tab-icon">🚨</span>
@@ -724,8 +724,8 @@
         </button>
     </nav>
 
-    <!-- Medical QR Tab -->
-    <div id="medical-qr" class="tab-content active">
+    <!-- iKey Tab -->
+    <div id="ikey" class="tab-content active">
         <div class="container">
             <div class="card">
                 <!-- Wizard View -->
@@ -746,7 +746,7 @@
                         </div>
                         <div class="progress-step" data-step="4">
                             <div class="progress-dot">4</div>
-                            <div class="progress-label">Medical</div>
+                            <div class="progress-label">Health</div>
                         </div>
                         <div class="progress-step" data-step="5">
                             <div class="progress-dot">5</div>
@@ -760,12 +760,12 @@
 
                     <!-- Step 1: Welcome -->
                     <div class="wizard-step active" data-step="1">
-                        <h2>Create Your Medical ID</h2>
-                        <p style="margin: 20px 0;">Generate a secure QR code with your medical information for emergency responders:</p>
+                        <h2>Create Your iKey</h2>
+                        <p style="margin: 20px 0;">Generate a secure QR code with your essential information for emergency responders:</p>
                         <ul style="margin-left: 20px; color: var(--secondary); line-height: 2;">
                             <li>Name, pronouns and blood type</li>
                             <li>Critical allergies and medications</li>
-                            <li>Medical conditions</li>
+                            <li>Health conditions</li>
                             <li>Emergency & case manager contacts</li>
                         </ul>
                         <div style="background: #eff6ff; border: 1px solid #3b82f6; border-radius: 10px; padding: 15px; margin-top: 20px;">
@@ -802,6 +802,10 @@
                             <input type="text" id="pronouns" placeholder="they/them">
                         </div>
                         <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" placeholder="555-0123">
+                        </div>
+                        <div class="form-group">
                             <label for="dob">Date of Birth</label>
                             <input type="date" id="dob">
                         </div>
@@ -821,9 +825,9 @@
                         </div>
                     </div>
 
-                    <!-- Step 4: Medical Info -->
+                    <!-- Step 4: Health Info -->
                     <div class="wizard-step" data-step="4">
-                        <h2>Medical Information</h2>
+                        <h2>Health Information</h2>
                         <p style="margin-bottom: 20px; color: var(--secondary);">Keep entries brief - focus on critical information</p>
                         <div class="form-group">
                             <label for="allergies">Allergies</label>
@@ -836,7 +840,7 @@
                             <div class="char-counter good" id="medications-counter">0 / 200 characters</div>
                         </div>
                         <div class="form-group">
-                            <label for="conditions">Medical Conditions</label>
+                            <label for="conditions">Health Conditions</label>
                             <textarea id="conditions" placeholder="e.g., Type 2 Diabetes, Hypertension"></textarea>
                             <div class="char-counter good" id="conditions-counter">0 / 200 characters</div>
                         </div>
@@ -901,7 +905,7 @@
 
                 <!-- Display View (for existing data) -->
                 <div id="display-view" class="hidden">
-                    <h2>Emergency Medical Information</h2>
+                    <h2>Emergency Essential Info</h2>
                     <div id="display-content"></div>
                     <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
                         <button class="btn btn-primary" onclick="copyMedicalInfo(displayData)">📋 Copy Info</button>
@@ -911,7 +915,7 @@
 
                 <!-- QR Code View -->
                 <div id="qr-view" class="hidden">
-                    <h2 style="text-align: center; margin-bottom: 20px;">Your Medical ID is Ready!</h2>
+                    <h2 style="text-align: center; margin-bottom: 20px;">Your iKey is Ready!</h2>
                     
                     <div class="qr-container">
                         <div id="qrcode"></div>
@@ -1293,7 +1297,7 @@
             switchTab('dispatch');
         }
 
-        // Medical QR Code Functions
+        // iKey QR Code Functions
         let currentStep = 1;
         let formData = {};
         const baseURL = window.location.origin + window.location.pathname;
@@ -1400,6 +1404,7 @@
                 pe: document.getElementById('proton-email').value.trim(),
                 n: document.getElementById('name').value.trim(),
                 pr: document.getElementById('pronouns').value.trim(),
+                p: document.getElementById('phone').value.trim(),
                 d: document.getElementById('dob').value,
                 b: document.getElementById('blood').value,
                 a: document.getElementById('allergies').value.trim(),
@@ -1428,6 +1433,11 @@
                     <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Pronouns</div>
                     <div style="font-weight: 600;">${formData.pr}</div>
                 </div>` : ''}
+                ${formData.p ? `
+                <div class="info-card">
+                    <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Phone</div>
+                    <div style="font-weight: 600;">${formData.p}</div>
+                </div>` : ''}
                 ${formData.d ? `
                 <div class="info-card">
                     <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Date of Birth</div>
@@ -1450,7 +1460,7 @@
                 </div>` : ''}
                 ${formData.c ? `
                 <div class="info-card">
-                    <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Medical Conditions</div>
+                    <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Health Conditions</div>
                     <div style="font-weight: 600;">${formData.c}</div>
                 </div>` : ''}
                 <div class="info-card">
@@ -1518,23 +1528,27 @@
                 
                 ctx.fillStyle = 'black';
                 ctx.font = 'bold 16px Arial';
-                ctx.fillText('MEDICAL ID', 170, 30);
+                ctx.fillText('iKey', 170, 30);
                 ctx.font = '12px Arial';
                 ctx.fillText(`Name: ${formData.n}`, 170, 60);
                 let nextY = 90;
                 if (formData.pe) {
-                    ctx.fillText(`Email: ${formData.pe}`, 170, 90);
-                    nextY = 120;
+                    ctx.fillText(`Email: ${formData.pe}`, 170, nextY);
+                    nextY += 30;
+                }
+                if (formData.p) {
+                    ctx.fillText(`Phone: ${formData.p}`, 170, nextY);
+                    nextY += 30;
                 }
                 ctx.fillText('Scan for full info', 170, nextY);
-                
+
                 const link = document.createElement('a');
-                link.download = 'medical-id-wallet.png';
+                link.download = 'ikey-wallet.png';
                 link.href = walletCanvas.toDataURL();
                 link.click();
             } else {
                 const link = document.createElement('a');
-                link.download = 'medical-id-full.png';
+                link.download = 'ikey-full.png';
                 link.href = canvas.toDataURL();
                 link.click();
             }
@@ -1552,11 +1566,12 @@
             if (data.pe) lines.push(`Proton Email: ${data.pe}`);
             if (data.n) lines.push(`Name: ${data.n}`);
             if (data.pr) lines.push(`Pronouns: ${data.pr}`);
+            if (data.p) lines.push(`Phone: ${data.p}`);
             if (data.d) lines.push(`Date of Birth: ${new Date(data.d).toLocaleDateString()}`);
             if (data.b) lines.push(`Blood Type: ${data.b}`);
             if (data.a) lines.push(`Allergies: ${data.a}`);
             if (data.m) lines.push(`Medications: ${data.m}`);
-            if (data.c) lines.push(`Medical Conditions: ${data.c}`);
+            if (data.c) lines.push(`Health Conditions: ${data.c}`);
             if (data.ec) {
                 let ecLine = `Emergency Contact: ${data.ec}`;
                 if (data.ep) ecLine += ` (${data.ep})`;
@@ -1571,12 +1586,12 @@
             }
 
             navigator.clipboard.writeText(lines.join('\n')).then(() => {
-                alert('Medical info copied!');
+                alert('iKey info copied!');
             });
         }
 
         function createNew() {
-            if (confirm('Create a new Medical ID? This will take you to the base URL.')) {
+            if (confirm('Create a new iKey? This will take you to the base URL.')) {
                 window.location.href = baseURL;
             }
         }
@@ -1986,15 +2001,15 @@ Generated: ${new Date().toLocaleString()}`;
 
                     if (data.n) {
                         html += `<div class="info-card">
-                            <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Patient Name</div>
+                            <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Name</div>
                             <div style="font-weight: 600;">${data.n}</div>
                         </div>`;
                     }
 
-                    if (data.pe) {
+                    if (data.p) {
                         html += `<div class="info-card">
-                            <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Proton Email</div>
-                            <div style="font-weight: 600;">${data.pe}</div>
+                            <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Phone</div>
+                            <div style="font-weight: 600;"><a href="tel:${data.p}" style="color: var(--primary); text-decoration: none;">${data.p}</a></div>
                         </div>`;
                     }
 
@@ -2004,7 +2019,7 @@ Generated: ${new Date().toLocaleString()}`;
                             <div style="font-weight: 600;">${data.pr}</div>
                         </div>`;
                     }
-                    
+
                     if (data.b) {
                         html += `<div class="info-card" style="border-left: 4px solid var(--danger);">
                             <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Blood Type</div>
