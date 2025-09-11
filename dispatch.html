@@ -565,10 +565,25 @@
     </script>
 <script>
     (function() {
-        const saved = localStorage.getItem("textSize") || "normal";
-        const fontSize = saved === "grandma" ? "24px" : "16px";
+        const saved = localStorage.getItem("textSize") || "2020";
+        let fontSize = "16px";
+        let zoom = "1";
+        switch (saved) {
+            case "reading":
+                fontSize = "18px";
+                zoom = "1.2";
+                break;
+            case "whats":
+                fontSize = "20px";
+                zoom = "1.35";
+                break;
+            case "grandma":
+                fontSize = "24px";
+                zoom = "1.5";
+                break;
+        }
         document.documentElement.style.setProperty("--base-font-size", fontSize);
-        document.body.style.zoom = saved === "grandma" ? "1.5" : "1";
+        document.body.style.zoom = zoom;
     })();
 </script>
 </body>

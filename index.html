@@ -754,8 +754,8 @@
             <span class="tab-label">Dispatch</span>
         </button>
         <button class="tab-btn proton-btn" onclick="switchTab('apps')" aria-label="Apps">
-            <img src="https://static0.howtogeekimages.com/wordpress/wp-content/uploads/2023/11/38.png"
-                 alt="" class="proton-icon">
+            <img src="https://appfairness.org/wp-content/uploads/2021/09/logos-proton.jpg"
+                 alt="Proton" class="proton-icon">
         </button>
         <button class="tab-btn" onclick="switchTab('settings')" aria-label="Settings">
             <span class="tab-icon">⚙️</span>
@@ -1241,7 +1241,9 @@
                             <div style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;">Adjust interface text</div>
                         </div>
                         <select id="text-size-select" onchange="setTextSize(this.value)" style="padding: 6px; border-radius: 8px; border: 1px solid var(--border);">
-                            <option value="normal">Normal</option>
+                            <option value="2020">20/20</option>
+                            <option value="reading">Reading Glasses</option>
+                            <option value="whats">What's this say?</option>
                             <option value="grandma">Grandma</option>
                         </select>
                     </div>
@@ -2223,16 +2225,31 @@ Generated: ${new Date().toLocaleString()}`;
 
     <script>
         function applyTextSize(size) {
-            const fontSize = size === "grandma" ? "24px" : "16px";
+            let fontSize = "16px";
+            let zoom = "1";
+            switch (size) {
+                case "reading":
+                    fontSize = "18px";
+                    zoom = "1.2";
+                    break;
+                case "whats":
+                    fontSize = "20px";
+                    zoom = "1.35";
+                    break;
+                case "grandma":
+                    fontSize = "24px";
+                    zoom = "1.5";
+                    break;
+            }
             document.documentElement.style.setProperty("--base-font-size", fontSize);
-            document.body.style.zoom = size === "grandma" ? "1.5" : "1";
+            document.body.style.zoom = zoom;
         }
         function setTextSize(size) {
             applyTextSize(size);
             localStorage.setItem("textSize", size);
         }
         document.addEventListener("DOMContentLoaded", () => {
-            const saved = localStorage.getItem("textSize") || "normal";
+            const saved = localStorage.getItem("textSize") || "2020";
             applyTextSize(saved);
             const select = document.getElementById("text-size-select");
             if (select) {
