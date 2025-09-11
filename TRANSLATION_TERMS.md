@@ -1,0 +1,221 @@
+# Translation Terms
+
+List of user-visible strings requiring translation for full multilingual support.
+
+## index.html
+- iKey - Secure Location Hub
+- 🔐 iKey
+- Secure Location & Personal Safety Hub
+- iKey
+- Weather
+- WTTIN
+- Dispatch
+- Settings
+- Welcome
+- Secure Email
+- Basic
+- Health
+- Contacts
+- Review
+- Create Your iKey
+- Generate a secure QR code with your essential information for emergency responders:
+- Name, pronouns and blood type
+- Critical allergies and medications
+- Health conditions
+- Emergency & case manager contacts
+- 🔒 Privacy First:
+- Your data is encoded directly in the QR code. No cloud storage, no accounts needed.
+- Why a secure email?
+- Proton uses zero-knowledge encryption so only you can access your data.
+- Secure Email *
+- Create Account
+- Download Kit
+- After signing up, save the kit and share it with your case manager or someone you trust.
+- Basic Information
+- Full Name *
+- Pronouns
+- Date of Birth
+- Blood Type
+- Unknown / Not Sure
+- A+
+- A-
+- B+
+- B-
+- AB+
+- AB-
+- O+
+- O-
+- Your Phone Number
+- Health Information
+- Keep entries brief - focus on critical information
+- Allergies
+- 0 / 200 characters
+- Current Medications
+- Health Conditions
+- Emergency Contact Name *
+- Emergency Phone Number *
+- Relationship
+- Select...
+- Spouse/Partner
+- Parent
+- Child
+- Sibling
+- Friend
+- Other
+- Case Manager Name
+- Organization
+- Case Manager Phone
+- Review Your Information
+- ⚠️ Heads up:
+- Anyone who scans this QR code will be able to view the information you provide.
+- ✅ Ready to Generate:
+- Your QR code is permanent once created. To make changes, you'll need to create a new one.
+- ← Back
+- Next →
+- Generate QR Code
+- Emergency Essential Info
+- 📤 Share Info
+- 🆕 Create New QR Code
+- Your iKey is Ready!
+- 📱 Wallet Size
+- 📄 Full Page
+- 📋 Copy Link
+- 📋 Copy Info
+- 🆕 Create Another
+- Select Proton App
+- Share Contact Info
+- 💾 Save as .txt
+- 📧 Email
+- 📋 Copy
+- 💬 Text
+- Close
+- Emergency Call 911
+- Tap to Call Emergency Services
+- 📍 Your Secure Location
+- Acquiring secure location...
+- Please allow location access
+- GPS Coordinates
+- Loading...
+- Street Address
+- Locating...
+- Nearest Intersection
+- Plus Code
+- 📋 Copy All Location Info
+- 📤 Share Location
+- 🗺️ Open in Maps
+- Loading weather data...
+- Nashville
+- FEELS LIKE
+- HUMIDITY
+- WIND
+- -- mph
+- UV INDEX
+- Next 24 Hours
+- 7-Day Forecast
+- Proton Mail
+- Encrypted email service.
+- Proton Drive
+- Secure cloud storage.
+- Proton VPN
+- VPN dashboard.
+- Proton Pass
+- Password manager.
+- SimpleLogin
+- Email aliasing service.
+- Standard Notes
+- Encrypted notes app.
+- Proton Calendar
+- Private calendar.
+- Proton Authenticator
+- 2FA authenticator.
+- Proton Meet
+- Video conferencing.
+- Proton Wallet
+- Bitcoin wallet.
+- Lumo
+- Proton's secure AI.
+- External Tools
+- 📡 Nashville Police Dispatch
+- View active police dispatches in Nashville
+- 🏠 Where To Turn in Nashville
+- Community resources and support services
+- Accessibility
+- 📝 Text Size
+- Adjust interface text
+- Reading Glasses
+- What's this say?
+- Grandma
+- Emergency Resources
+- 💬 Crisis Support
+- Mental health and crisis resources
+- ☠️ Poison Control
+- 24/7 poison emergency help
+- About iKey
+- Version 1.0
+- iKey helps you keep your location secure while providing quick access to emergency services.
+                            Your privacy and safety are our top priorities.
+- iKey is not affiliated with Proton or any other services. Proton is referenced solely for privacy and convenience.
+                            No usage data is stored; users are responsible for securely backing up their data and for using strong passwords and two-factor authentication where necessary.
+- Apps
+- Proton
+- you@proton.me
+- John Smith
+- they/them
+- e.g., Penicillin, peanuts, latex
+- e.g., Metformin 500mg, Lisinopril 10mg
+- e.g., Type 2 Diabetes, Hypertension
+- Jane Smith
+- Spouse
+- Dr. Jones
+- Hospital or Agency
+- Enter city...
+- WTTIN Resources
+- Nashville Police Dispatch
+- reading
+- whats
+- grandma
+- Suicide & Crisis Lifeline: 988
+- Poison Control: 1-800-222-1222
+- Please enter a valid secure email address
+- Please enter your name
+- Please enter emergency contact name and phone
+- Link copied to clipboard!
+- iKey info copied!
+- GPS coordinates copied!
+- Plus Code copied!
+- All location info copied!
+
+## dispatch.html
+- Nashville Police Active Dispatches
+- 📡 Nashville Police Dispatches
+- Real-time incident monitoring • Updates every 30 seconds
+- Active
+- Latest
+- Updated
+- Loading dispatches...
+
+## invite.html
+- ICS Event Generator - Proton Calendar Compatible
+- 📅 ICS Event Generator
+- Create and email calendar invites
+- 📧 Please complete these steps:
+- Your email client has opened with the invite details
+- The ICS file  has been downloaded
+- Attach the downloaded ICS file to your email
+- Send the email to invite attendees
+- ⬅️ Back to Main Screen
+- Event Title *
+- Location
+- Date *
+- Start Time *
+- End Time *
+- Your Email (organizer) *
+- Client Proton Email *
+- Additional Attendee Emails (comma-separated)
+- Description
+- ✉️ Create Invite & Open Email
+- Clear Form
+- your-email@proton.me
+- attendee1@example.com, attendee2@example.com
+- Please fill in all required fields
+
