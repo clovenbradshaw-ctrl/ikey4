@@ -8,6 +8,8 @@ iKey Health is a client-side encrypted, progressive web application for storing 
 
 The home screen provides a grid of favorite apps for quick access. Four slots are available by default, and additional spaces can be added as needed. Tap an app once to open it. Long-press any bookmark to enter edit mode—icons shake and a remove button appears. The add dialog can populate the grid with all Proton apps or include built-in tools like Weather and Police Dispatch.
 
+Bookmarks can also launch direct calls, texts, or emails to specific contacts. These shortcuts ask for a name, number or email, optional description, and photo. **All bookmarks are stored only in this browser's memory**—they will be lost if the device is lost or browser data is cleared. For secure retention, store important details separately such as a note in Proton Drive or an email to yourself.
+
 ## Core Architecture
 
 ### Three-Tier Security Model

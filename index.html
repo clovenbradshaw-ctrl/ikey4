@@ -843,6 +843,11 @@
         .modal-app:hover {
             background: var(--light);
         }
+        .bookmark-warning {
+            font-size: 0.85rem;
+            color: var(--danger);
+            margin-bottom: 10px;
+        }
         .modal-actions {
             display: flex;
             flex-direction: column;
@@ -1115,6 +1120,7 @@
 <div id="bookmark-modal" class="modal hidden">
     <div class="modal-content">
         <h3>Select Favorite</h3>
+        <p class="bookmark-warning">⚠️ Bookmarks are saved only in this browser and will be lost if the device is lost or data is cleared. For secure backup, add a note in Proton Drive or save in an email.</p>
         <div id="modal-app-list"></div>
     </div>
 </div>
@@ -1888,6 +1894,12 @@ END:VCALENDAR`;
             { id: 'dispatch', name: 'Police Dispatch', url: '#dispatch', icon: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f6a8.svg' }
         ];
 
+        const CONTACT_ICONS = {
+            call: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4de.svg',
+            text: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4f2.svg',
+            email: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/2709.svg'
+        };
+
         const MAX_BOOKMARKS = 12;
         let bookmarkEditMode = false;
 
@@ -1937,6 +1949,16 @@ END:VCALENDAR`;
                             url = entry.url;
                             name = entry.name || entry.url;
                             icon = entry.icon || `https://www.google.com/s2/favicons?sz=64&domain_url=${entry.url}`;
+                        } else if (entry.type) {
+                            if (entry.type === 'call') {
+                                url = `tel:${entry.value}`;
+                            } else if (entry.type === 'text') {
+                                url = `sms:${entry.value}`;
+                            } else if (entry.type === 'email') {
+                                url = `mailto:${entry.value}`;
+                            }
+                            name = entry.name || entry.value;
+                            icon = entry.photo || CONTACT_ICONS[entry.type];
                         }
                     }
                     if (url) {
@@ -1945,6 +1967,9 @@ END:VCALENDAR`;
                         slot.innerHTML = html;
                         const card = slot.querySelector('.bookmark-card');
                         const removeBtn = slot.querySelector('.remove-bookmark');
+                        if (entry && entry.description) {
+                            card.title = entry.description;
+                        }
                         card.addEventListener('click', () => {
                             if (bookmarkEditMode) return;
                             if (url.startsWith('#')) {
@@ -2009,6 +2034,7 @@ END:VCALENDAR`;
             const modal = document.getElementById('bookmark-modal');
             if (!modal) return;
             modal.dataset.index = index;
+            modal.innerHTML = `<div class="modal-content"><h3>Select Favorite</h3><p class="bookmark-warning">⚠️ Bookmarks are saved only in this browser and will be lost if the device is lost or data is cleared. For secure backup, add a note in Proton Drive or save in an email.</p><div id="modal-app-list"></div></div>`;
             const list = document.getElementById('modal-app-list');
             if (list) {
                 const saved = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
@@ -2024,6 +2050,9 @@ END:VCALENDAR`;
                 INTERNAL_APPS.filter(app => !usedIds.includes(app.id)).forEach(app => {
                     items.push(`<div class="modal-app" data-id="${app.id}" data-type="internal"><img src="${app.icon}" alt="${app.name}" width="32" height="32"><span>${app.name}</span></div>`);
                 });
+                items.push('<div class="modal-app" id="add-call"><span>📞 Call Someone</span></div>');
+                items.push('<div class="modal-app" id="add-text"><span>💬 Text Someone</span></div>');
+                items.push('<div class="modal-app" id="add-email"><span>📧 Email Someone</span></div>');
                 items.push('<div class="modal-app" id="add-custom"><span>➕ Add Website</span></div>');
                 if (saved[index]) {
                     items.push('<div class="modal-app" data-remove="true" style="color: var(--danger);"><span>Remove</span></div>');
@@ -2045,6 +2074,7 @@ END:VCALENDAR`;
                         });
                     } else if (el.id === 'add-custom') {
                         el.addEventListener('click', () => {
+                            alert('These bookmarks are only saved in this browser and will be lost if the device or browser data is lost. For secure backup, add a note in Proton Drive or save in an email.');
                             const url = prompt('Enter website URL (including https://)');
                             if (!url) return;
                             try {
@@ -2059,6 +2089,10 @@ END:VCALENDAR`;
                             } catch (e) {
                                 alert('Invalid URL');
                             }
+                        });
+                    } else if (el.id === 'add-call' || el.id === 'add-text' || el.id === 'add-email') {
+                        el.addEventListener('click', () => {
+                            showContactForm(el.id.replace('add-',''), index);
                         });
                     } else if (el.dataset.remove) {
                         el.addEventListener('click', () => {
@@ -2081,6 +2115,44 @@ END:VCALENDAR`;
                 });
             }
             modal.classList.remove('hidden');
+        }
+
+        function showContactForm(type, index) {
+            const modal = document.getElementById('bookmark-modal');
+            if (!modal) return;
+            const actionNames = { call: 'Call', text: 'Text', email: 'Email' };
+            modal.innerHTML = `<div class="modal-content"><h3>${actionNames[type]} Contact</h3><p class="bookmark-warning">⚠️ Bookmarks are saved only in this browser and will be lost if the device is lost or data is cleared. For secure backup, add a note in Proton Drive or save in an email.</p><div class="modal-actions"><input id="contact-name" type="text" placeholder="Name"><input id="contact-value" type="${type === 'email' ? 'email' : 'tel'}" placeholder="${type === 'email' ? 'Email' : 'Phone Number'}"><input id="contact-desc" type="text" placeholder="Description (optional)"><input id="contact-photo" type="file" accept="image/*"><button class="btn btn-primary" id="save-contact">Save</button><button class="btn btn-secondary" id="cancel-contact">Cancel</button></div></div>`;
+            let photoData = '';
+            const photoInput = document.getElementById('contact-photo');
+            if (photoInput) {
+                photoInput.addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (ev) => {
+                            photoData = ev.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+            document.getElementById('save-contact').addEventListener('click', () => {
+                const name = document.getElementById('contact-name').value.trim();
+                const value = document.getElementById('contact-value').value.trim();
+                const desc = document.getElementById('contact-desc').value.trim();
+                if (!value) {
+                    alert('Please enter a ' + (type === 'email' ? 'email address' : 'phone number'));
+                    return;
+                }
+                const savedArr = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
+                savedArr[index] = { type, value, name, description: desc, photo: photoData };
+                localStorage.setItem('protonBookmarks', JSON.stringify(savedArr));
+                closeBookmarkModal();
+                renderBookmarkSlots();
+            });
+            document.getElementById('cancel-contact').addEventListener('click', () => {
+                closeBookmarkModal();
+            });
         }
 
         function closeBookmarkModal() {
