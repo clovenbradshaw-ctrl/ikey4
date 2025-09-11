@@ -1,8 +1,8 @@
-# iKey Health - Secure Tiered Medical Information System
+# iKey Health - Secure Tiered Essential Information System
 
 ## Overview
 
-iKey Health is a client-side encrypted, progressive web application for storing and managing personal medical information with three distinct security tiers. The system operates entirely in the browser with optional cloud backup via webhooks, ensuring users maintain complete control over their medical data while providing emergency access capabilities.
+iKey Health is a client-side encrypted, progressive web application for storing and managing essential health information with three distinct security tiers. The system operates entirely in the browser with optional cloud backup via webhooks, ensuring users maintain complete control over their essential data while providing emergency access capabilities.
 
 ## Core Architecture
 
@@ -10,9 +10,9 @@ iKey Health is a client-side encrypted, progressive web application for storing 
 
 The system implements a progressive disclosure model with two security levels:
 
-1. **Public Tier (Emergency Information)**
+1. **Public Tier (Essential Info)**
    - Accessible via QR code without authentication
-   - Contains critical emergency data: name, pronouns, blood type, allergies, medications, conditions, emergency and case manager contacts
+   - Contains critical emergency data: name, pronouns, phone number, blood type, allergies, medications, conditions, emergency and case manager contacts
    - Encrypted with a base key embedded in the QR code
    - Designed for first responders in emergency situations
 
@@ -73,6 +73,7 @@ state = {
         emergency: {
             name,
             pronouns,
+            phoneNumber,
             bloodType,
             allergies,
             medications,
