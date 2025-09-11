@@ -871,10 +871,9 @@
         .modal-app:hover {
             background: var(--light);
         }
-        .bookmark-warning {
-            font-size: 0.85rem;
-            color: var(--danger);
-            margin-bottom: 10px;
+        .info-icon {
+            cursor: help;
+            margin-left: 5px;
         }
         .modal-actions {
             display: flex;
@@ -1148,8 +1147,7 @@
 <!-- Bookmark Selection Modal -->
 <div id="bookmark-modal" class="modal hidden">
     <div class="modal-content">
-        <h3>Select Favorite</h3>
-        <p class="bookmark-warning">⚠️ Bookmarks are saved only in this browser and will be lost if the device is lost or data is cleared. For secure backup, add a note in Proton Drive or save in an email.</p>
+        <h3>Select Favorite <span class="info-icon" title="Bookmarks are saved only in this browser and will be lost if the device is lost or data is cleared. For secure backup, add a note in Proton Drive or save in an email.">ℹ️</span></h3>
         <div id="modal-app-list"></div>
     </div>
 </div>
@@ -1935,6 +1933,7 @@ END:VCALENDAR`;
         };
 
         const MAX_BOOKMARKS = 12;
+        const BOOKMARK_INFO = 'Bookmarks are saved only in this browser and will be lost if the device is lost or data is cleared. For secure backup, add a note in Proton Drive or save in an email.';
         let bookmarkEditMode = false;
 
         function getBookmarkCount() {
@@ -2082,7 +2081,7 @@ END:VCALENDAR`;
             const modal = document.getElementById('bookmark-modal');
             if (!modal) return;
             modal.dataset.index = index;
-            modal.innerHTML = `<div class="modal-content"><h3>Select Favorite</h3><p class="bookmark-warning">⚠️ Bookmarks are saved only in this browser and will be lost if the device is lost or data is cleared. For secure backup, add a note in Proton Drive or save in an email.</p><div id="modal-app-list"></div></div>`;
+            modal.innerHTML = `<div class="modal-content"><h3>Select Favorite <span class="info-icon" title="${BOOKMARK_INFO}">ℹ️</span></h3><div id="modal-app-list"></div></div>`;
             const list = document.getElementById('modal-app-list');
             if (list) {
                 const saved = JSON.parse(storage.get('protonBookmarks') || '[]');
@@ -2122,21 +2121,7 @@ END:VCALENDAR`;
                         });
                     } else if (el.id === 'add-custom') {
                         el.addEventListener('click', () => {
-                            alert('These bookmarks are only saved in this browser and will be lost if the device or browser data is lost. For secure backup, add a note in Proton Drive or save in an email.');
-                            const url = prompt('Enter website URL (including https://)');
-                            if (!url) return;
-                            try {
-                                const urlObj = new URL(url);
-                                const name = prompt('Enter a name for this website') || urlObj.hostname;
-                                const icon = `https://www.google.com/s2/favicons?sz=64&domain=${urlObj.hostname}`;
-                                const savedArr = JSON.parse(storage.get('protonBookmarks') || '[]');
-                                savedArr[index] = { url: urlObj.href, name, icon };
-                                storage.set('protonBookmarks', JSON.stringify(savedArr));
-                                closeBookmarkModal();
-                                renderBookmarkSlots();
-                            } catch (e) {
-                                alert('Invalid URL');
-                            }
+                            showWebsiteForm(index);
                         });
                     } else if (el.id === 'add-call' || el.id === 'add-text' || el.id === 'add-email') {
                         el.addEventListener('click', () => {
@@ -2169,7 +2154,7 @@ END:VCALENDAR`;
             const modal = document.getElementById('bookmark-modal');
             if (!modal) return;
             const actionNames = { call: 'Call', text: 'Text', email: 'Email' };
-            modal.innerHTML = `<div class="modal-content"><h3>${actionNames[type]} Contact</h3><p class="bookmark-warning">⚠️ Bookmarks are saved only in this browser and will be lost if the device is lost or data is cleared. For secure backup, add a note in Proton Drive or save in an email.</p><div class="modal-actions"><input id="contact-name" type="text" placeholder="Name"><input id="contact-value" type="${type === 'email' ? 'email' : 'tel'}" placeholder="${type === 'email' ? 'Email' : 'Phone Number'}"><input id="contact-desc" type="text" placeholder="Description (optional)"><input id="contact-photo" type="file" accept="image/*"><div id="photo-preview" class="photo-preview hidden"><img id="photo-preview-img" alt="Preview"></div><button class="btn btn-primary" id="save-contact">Save</button><button class="btn btn-secondary" id="cancel-contact">Cancel</button></div></div>`;
+            modal.innerHTML = `<div class="modal-content"><h3>${actionNames[type]} Contact <span class="info-icon" title="${BOOKMARK_INFO}">ℹ️</span></h3><div class="modal-actions"><input id="contact-name" type="text" placeholder="Name"><input id="contact-value" type="${type === 'email' ? 'email' : 'tel'}" placeholder="${type === 'email' ? 'Email' : 'Phone Number'}" required><input id="contact-desc" type="text" placeholder="Description (optional)"><input id="contact-photo" type="file" accept="image/*"><div id="photo-preview" class="photo-preview hidden"><img id="photo-preview-img" alt="Preview"></div><button class="btn btn-primary" id="save-contact">Save</button><button class="btn btn-secondary" id="cancel-contact">Cancel</button></div></div>`;
             let photoData = '';
             const photoInput = document.getElementById('contact-photo');
             if (photoInput) {
@@ -2190,14 +2175,15 @@ END:VCALENDAR`;
                     }
                 });
             }
+            const valueInput = document.getElementById('contact-value');
             document.getElementById('save-contact').addEventListener('click', () => {
                 const name = document.getElementById('contact-name').value.trim();
-                const value = document.getElementById('contact-value').value.trim();
                 const desc = document.getElementById('contact-desc').value.trim();
-                if (!value) {
-                    alert('Please enter a ' + (type === 'email' ? 'email address' : 'phone number'));
+                if (!valueInput.checkValidity()) {
+                    valueInput.reportValidity();
                     return;
                 }
+                const value = valueInput.value.trim();
                 const savedArr = JSON.parse(storage.get('protonBookmarks') || '[]');
                 savedArr[index] = { type, value, name, description: desc, photo: photoData };
                 storage.set('protonBookmarks', JSON.stringify(savedArr));
@@ -2205,6 +2191,35 @@ END:VCALENDAR`;
                 renderBookmarkSlots();
             });
             document.getElementById('cancel-contact').addEventListener('click', () => {
+                closeBookmarkModal();
+            });
+        }
+
+        function showWebsiteForm(index) {
+            const modal = document.getElementById('bookmark-modal');
+            if (!modal) return;
+            modal.dataset.index = index;
+            modal.innerHTML = `<div class="modal-content"><h3>Add Website <span class="info-icon" title="${BOOKMARK_INFO}">ℹ️</span></h3><div class="modal-actions"><input id="website-url" type="url" placeholder="https://example.com" required><input id="website-name" type="text" placeholder="Name (optional)"><button class="btn btn-primary" id="save-website">Save</button><button class="btn btn-secondary" id="cancel-website">Cancel</button></div></div>`;
+            document.getElementById('save-website').addEventListener('click', () => {
+                const urlInput = document.getElementById('website-url');
+                if (!urlInput.checkValidity()) {
+                    urlInput.reportValidity();
+                    return;
+                }
+                try {
+                    const urlObj = new URL(urlInput.value.trim());
+                    const nameInput = document.getElementById('website-name').value.trim();
+                    const icon = `https://www.google.com/s2/favicons?sz=64&domain=${urlObj.hostname}`;
+                    const savedArr = JSON.parse(storage.get('protonBookmarks') || '[]');
+                    savedArr[index] = { url: urlObj.href, name: nameInput || urlObj.hostname, icon };
+                    storage.set('protonBookmarks', JSON.stringify(savedArr));
+                    closeBookmarkModal();
+                    renderBookmarkSlots();
+                } catch (e) {
+                    urlInput.reportValidity();
+                }
+            });
+            document.getElementById('cancel-website').addEventListener('click', () => {
                 closeBookmarkModal();
             });
         }
