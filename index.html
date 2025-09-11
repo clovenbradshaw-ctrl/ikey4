@@ -802,10 +802,6 @@
                             <input type="text" id="pronouns" placeholder="they/them">
                         </div>
                         <div class="form-group">
-                            <label for="phone">Phone Number</label>
-                            <input type="tel" id="phone" placeholder="555-0123">
-                        </div>
-                        <div class="form-group">
                             <label for="dob">Date of Birth</label>
                             <input type="date" id="dob">
                         </div>
@@ -822,6 +818,10 @@
                                 <option value="O+">O+</option>
                                 <option value="O-">O-</option>
                             </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Your Phone Number</label>
+                            <input type="tel" id="phone" placeholder="555-0123">
                         </div>
                     </div>
 
@@ -907,6 +907,7 @@
                 <div id="display-view" class="hidden">
                     <h2>Emergency Essential Info</h2>
                     <div id="display-content"></div>
+                    <div id="communication-actions" style="margin-top: 20px;"></div>
                     <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
                         <button class="btn btn-primary" onclick="copyMedicalInfo(displayData)">📋 Copy Info</button>
                         <button class="btn btn-primary" onclick="createNew()">🆕 Create New QR Code</button>
@@ -1375,7 +1376,7 @@
                 pe: document.getElementById('proton-email').value.trim(),
                 n: document.getElementById('name').value.trim(),
                 pr: document.getElementById('pronouns').value.trim(),
-                p: document.getElementById('phone').value.trim(),
+                ph: document.getElementById('phone').value.trim(),
                 d: document.getElementById('dob').value,
                 b: document.getElementById('blood').value,
                 a: document.getElementById('allergies').value.trim(),
@@ -1404,10 +1405,10 @@
                     <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Pronouns</div>
                     <div style="font-weight: 600;">${formData.pr}</div>
                 </div>` : ''}
-                ${formData.p ? `
+                ${formData.ph ? `
                 <div class="info-card">
-                    <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Phone</div>
-                    <div style="font-weight: 600;">${formData.p}</div>
+                    <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Phone Number</div>
+                    <div style="font-weight: 600;">${formData.ph}</div>
                 </div>` : ''}
                 ${formData.d ? `
                 <div class="info-card">
@@ -1507,8 +1508,8 @@
                     ctx.fillText(`Email: ${formData.pe}`, 170, nextY);
                     nextY += 30;
                 }
-                if (formData.p) {
-                    ctx.fillText(`Phone: ${formData.p}`, 170, nextY);
+                if (formData.ph) {
+                    ctx.fillText(`Phone: ${formData.ph}`, 170, nextY);
                     nextY += 30;
                 }
                 ctx.fillText('Scan for full info', 170, nextY);
@@ -1537,7 +1538,7 @@
             if (data.pe) lines.push(`Proton Email: ${data.pe}`);
             if (data.n) lines.push(`Name: ${data.n}`);
             if (data.pr) lines.push(`Pronouns: ${data.pr}`);
-            if (data.p) lines.push(`Phone: ${data.p}`);
+            if (data.ph) lines.push(`Phone: ${data.ph}`);
             if (data.d) lines.push(`Date of Birth: ${new Date(data.d).toLocaleDateString()}`);
             if (data.b) lines.push(`Blood Type: ${data.b}`);
             if (data.a) lines.push(`Allergies: ${data.a}`);
@@ -1565,6 +1566,28 @@
             if (confirm('Create a new iKey? This will take you to the base URL.')) {
                 window.location.href = baseURL;
             }
+        }
+
+        function createCalendarEvent(data) {
+            const eventDate = new Date();
+            eventDate.setDate(eventDate.getDate() + 7); // Default to 1 week from now
+
+            const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+SUMMARY:Follow-up with ${data.n}
+DTSTART:${eventDate.toISOString().replace(/[-:]/g, '').split('.')[0]}Z
+DURATION:PT1H
+DESCRIPTION:Follow-up meeting with ${data.n}\\nContact: ${data.ph || data.pe || 'N/A'}
+END:VEVENT
+END:VCALENDAR`;
+
+            const blob = new Blob([icsContent], { type: 'text/calendar' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `follow-up-${data.n}.ics`;
+            link.click();
         }
 
         // 911 Services Functions
@@ -1954,10 +1977,90 @@ Generated: ${new Date().toLocaleString()}`;
                     const decompressed = LZString.decompressFromEncodedURIComponent(hash);
                     const data = JSON.parse(decompressed);
                     // `pe` was introduced in schema v2; older QR codes may omit it
+                    if (data.p && !data.ph) {
+                        data.ph = data.p;
+                    }
 
                     displayData = data;
 
-                    
+                    // Generate communication cards
+                    let commCards = '';
+
+                    // Text message card (only if phone number exists)
+                    if (data.ph) {
+                        const smsBody = encodeURIComponent("Hi, I obtained your number through your iKey.");
+                        commCards += `
+        <div class="location-card" style="margin-bottom: 15px; cursor: pointer;">
+            <a href="sms:${data.ph}?body=${smsBody}" style="text-decoration: none; color: inherit; display: block;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--success); font-weight: 700;">
+                            💬 Send Text Message
+                        </div>
+                        <div style="font-weight: 600; margin-top: 8px;">
+                            Text ${data.n || 'this person'} at ${data.ph}
+                        </div>
+                    </div>
+                    <span style="color: var(--success); font-size: 1.5rem;">→</span>
+                </div>
+            </a>
+        </div>`;
+                    }
+
+                    // Email card (only if email exists)
+                    if (data.pe) {
+                        const emailSubject = encodeURIComponent("Regarding your iKey Medical ID");
+                        const emailBody = encodeURIComponent("Hi,\n\nI obtained your contact information through your iKey Medical ID.\n\n");
+                        commCards += `
+        <div class="location-card" style="margin-bottom: 15px; cursor: pointer;">
+            <a href="mailto:${data.pe}?subject=${emailSubject}&body=${emailBody}" style="text-decoration: none; color: inherit; display: block;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--proton); font-weight: 700;">
+                            📧 Send Email
+                        </div>
+                        <div style="font-weight: 600; margin-top: 8px;">
+                            Email ${data.n || 'this person'} at ${data.pe}
+                        </div>
+                    </div>
+                    <span style="color: var(--proton); font-size: 1.5rem;">→</span>
+                </div>
+            </a>
+        </div>`;
+                    }
+
+                    // Calendar event placeholder card
+                    if (data.n) {
+                        commCards += `
+        <div class="location-card" style="margin-bottom: 15px; cursor: pointer; opacity: 0.7;" onclick="alert('Calendar integration coming soon! This will allow you to schedule a follow-up with ${data.n}.')">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--primary); font-weight: 700;">
+                        📅 Schedule Follow-up
+                    </div>
+                    <div style="font-weight: 600; margin-top: 8px;">
+                        Create calendar event with ${data.n}
+                    </div>
+                    <div style="font-size: 0.8rem; color: var(--secondary); margin-top: 4px;">
+                        Coming soon
+                    </div>
+                </div>
+                <span style="color: var(--primary); font-size: 1.5rem;">→</span>
+            </div>
+        </div>`;
+                    }
+
+                    // Add the communication cards to the page
+                    if (commCards) {
+                        // Wait for display content to be set, then add communication actions
+                        setTimeout(() => {
+                            const commActionsEl = document.getElementById('communication-actions');
+                            if (commActionsEl) {
+                                commActionsEl.innerHTML = commCards;
+                            }
+                        }, 100);
+                    }
+
                     // Display existing data
                     document.getElementById('wizard-view').classList.add('hidden');
                     document.getElementById('display-view').classList.remove('hidden');
@@ -1977,10 +2080,10 @@ Generated: ${new Date().toLocaleString()}`;
                         </div>`;
                     }
 
-                    if (data.p) {
+                    if (data.ph) {
                         html += `<div class="info-card">
-                            <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Phone</div>
-                            <div style="font-weight: 600;"><a href="tel:${data.p}" style="color: var(--primary); text-decoration: none;">${data.p}</a></div>
+                            <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Phone Number</div>
+                            <div style="font-weight: 600;"><a href="tel:${data.ph}" style="color: var(--primary); text-decoration: none;">${data.ph}</a></div>
                         </div>`;
                     }
 
