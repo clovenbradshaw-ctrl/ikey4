@@ -195,8 +195,8 @@ List of user-visible strings requiring translation for full multilingual support
 - Loading dispatches...
 
 ## invite.html
-- ICS Event Generator - Proton Calendar Compatible
-- 📅 ICS Event Generator
+- Calendar Event Creator
+- 📅 Calendar Event Creator
 - Create and email calendar invites
 - 📧 Please complete these steps:
 - Your email client has opened with the invite details
