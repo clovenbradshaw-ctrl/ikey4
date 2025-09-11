@@ -125,6 +125,10 @@
             font-size: 1.3rem;
         }
 
+        .tab-label {
+            font-size: 0.9rem;
+        }
+
         /* Tab Content */
         .tab-content {
             display: none;
@@ -674,6 +678,18 @@
             }
         }
 
+        @media (max-width: 480px) {
+            .tab-btn {
+                flex: 0 0 auto;
+                min-width: auto;
+                padding: 12px;
+            }
+
+            .tab-label {
+                display: none;
+            }
+        }
+
         .hidden {
             display: none !important;
         }
@@ -699,35 +715,35 @@
 
     <!-- Tab Navigation -->
     <nav class="tab-nav">
-        <button class="tab-btn active" onclick="switchTab('ikey')">
+        <button class="tab-btn active" onclick="switchTab('ikey')" aria-label="iKey">
             <span class="tab-icon">🏥</span>
-            iKey
+            <span class="tab-label">iKey</span>
         </button>
-        <button class="tab-btn" onclick="switchTab('emergency-911')">
+        <button class="tab-btn" onclick="switchTab('emergency-911')" aria-label="911">
             <span class="tab-icon">🚨</span>
-            911
+            <span class="tab-label">911</span>
         </button>
-        <button class="tab-btn" onclick="switchTab('weather')">
+        <button class="tab-btn" onclick="switchTab('weather')" aria-label="Weather">
             <span class="tab-icon">⛈️</span>
-            Weather
+            <span class="tab-label">Weather</span>
         </button>
-        <button class="tab-btn" onclick="switchTab('wttin')">
+        <button class="tab-btn" onclick="switchTab('wttin')" aria-label="WTTIN">
             <img src="https://wttin.org/wp-content/uploads/2024/05/Group-184-1.png"
                  alt="WTTIN"
                  style="width: 20px; height: 20px; object-fit: contain;">
-            WTTIN
+            <span class="tab-label">WTTIN</span>
         </button>
-        <button id="dispatch-tab-btn" class="tab-btn" style="display: none;" onclick="switchTab('dispatch')">
+        <button id="dispatch-tab-btn" class="tab-btn" style="display: none;" onclick="switchTab('dispatch')" aria-label="Dispatch">
             <span class="tab-icon">📡</span>
-            Dispatch
+            <span class="tab-label">Dispatch</span>
         </button>
         <button class="tab-btn" onclick="switchTab('apps')" aria-label="Apps">
             <img src="https://static0.howtogeekimages.com/wordpress/wp-content/uploads/2023/11/38.png"
                  alt="" style="width: 40px; height: 40px; object-fit: contain;">
         </button>
-        <button class="tab-btn" onclick="switchTab('settings')">
+        <button class="tab-btn" onclick="switchTab('settings')" aria-label="Settings">
             <span class="tab-icon">⚙️</span>
-            Settings
+            <span class="tab-label">Settings</span>
         </button>
     </nav>
 
