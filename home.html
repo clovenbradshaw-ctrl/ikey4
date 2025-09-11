@@ -78,6 +78,7 @@
     .favorite { position: relative; width: 60px; height: 60px; border-radius: 12px; background: #f0f0f0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     .favorite .delete { display: none; position: absolute; top: -8px; right: -8px; width: 24px; height: 24px; border: none; border-radius: 50%; background: var(--emergency-color); color: white; }
     .favorites.editing .delete { display: block; }
+    .favorite.add-favorite { font-size: 32px; cursor: pointer; }
 
     .loading {
       background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
@@ -164,7 +165,7 @@
     };
 
     let editMode = false;
-    let favoriteApps = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
+    let favoriteApps = JSON.parse(localStorage.getItem('protonBookmarks') || '[]').filter(Boolean);
 
     const PROTON_APPS = [
       { id: 'mail', name: 'Proton Mail', url: 'https://account.proton.me/mail', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fmail_xxy4bg.svg' },
@@ -191,7 +192,7 @@
       let app = null, url = '', name = '', icon = '';
       if (!entry) return null;
       if (typeof entry === 'string') {
-        app = PROTON_APPS.find(a => a.id === entry);
+        app = PROTON_APPS.find(a => a.id === entry) || INTERNAL_APPS.find(a => a.id === entry);
       } else if (entry.id) {
         app = PROTON_APPS.find(a => a.id === entry.id) || INTERNAL_APPS.find(a => a.id === entry.id);
       }
@@ -274,18 +275,20 @@
     function renderQuickAccess(apps) {
       const details = apps.map((app, index) => ({ info: getBookmarkDetails(app), index }))
                           .filter(d => d.info);
-      if (details.length === 0) {
+      if (details.length === 0 && !editMode) {
         return `<div class="text-body">No favorites yet</div>`;
       }
-      return `
-        <div class="favorites ${editMode ? 'editing' : ''}" id="favorites">
-          ${details.map(d => `
+      const listHtml = details.map(d => `
             <div class="favorite" draggable="${editMode}" data-index="${d.index}" data-url="${d.info.url}">
               <span class="icon"><img src="${d.info.icon}" alt="${d.info.name}" width="32" height="32"></span>
               <span class="label">${d.info.name}</span>
               <button class="delete" onclick="event.stopPropagation(); deleteFavorite(${d.index})">✕</button>
             </div>
-          `).join('')}
+          `).join('');
+      const addTile = editMode ? '<div class="favorite add-favorite" onclick="addFavorite()">+</div>' : '';
+      return `
+        <div class="favorites ${editMode ? 'editing' : ''}" id="favorites">
+          ${listHtml}${addTile}
         </div>
         ${editMode ? '<div class="button-group"><button onclick="exitEdit()">Done</button></div>' : ''}
       `;
@@ -296,7 +299,7 @@
     }
 
     function deleteFavorite(index) {
-      favoriteApps[index] = null;
+      favoriteApps.splice(index, 1);
       saveFavorites();
       renderHome();
     }
@@ -319,6 +322,7 @@
       if (!container) return;
 
       container.querySelectorAll('.favorite').forEach(item => {
+        if (item.classList.contains('add-favorite')) return;
         let pressTimer;
         const index = Number(item.dataset.index);
 
@@ -362,6 +366,39 @@
           moveFavorite(from, to);
         });
       });
+    }
+
+    function addFavorite() {
+      const type = prompt('Add proton app id, "dispatch", "website", "call", "text", or "email"');
+      if (!type) return;
+      if (PROTON_APPS.find(a => a.id === type)) {
+        favoriteApps.push(type);
+      } else if (INTERNAL_APPS.find(a => a.id === type)) {
+        favoriteApps.push(type);
+      } else if (type === 'website') {
+        let url = prompt('Enter website URL (https:// optional)');
+        if (!url) return;
+        if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+        try {
+          const u = new URL(url);
+          const name = prompt('Enter name') || u.hostname;
+          const icon = `https://www.google.com/s2/favicons?sz=64&domain=${u.hostname}`;
+          favoriteApps.push({ url: u.href, name, icon });
+        } catch (e) {
+          alert('Invalid URL');
+          return;
+        }
+      } else if (['call','text','email'].includes(type)) {
+        const value = prompt(type === 'email' ? 'Enter email address' : 'Enter phone number');
+        if (!value) return;
+        const name = prompt('Enter name') || value;
+        favoriteApps.push({ type, value, name });
+      } else {
+        alert('Unknown option');
+        return;
+      }
+      saveFavorites();
+      renderHome();
     }
 
     function renderHome() {
