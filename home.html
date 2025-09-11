@@ -36,32 +36,6 @@
       margin-bottom: 16px;
     }
 
-    .emergency-strip {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      display: flex;
-      justify-content: space-around;
-      background: var(--emergency-color);
-      padding: 4px 0;
-      z-index: 1000;
-    }
-
-    .emergency-strip button {
-      height: 44px;
-      font-size: 16px;
-      font-weight: 700;
-      min-width: 44px;
-      min-height: 44px;
-      border: none;
-      background: var(--emergency-color);
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
 
     button, a, .clickable {
       min-height: 44px;
@@ -166,22 +140,7 @@
   </style>
 </head>
 <body>
-  <div class="emergency-strip">
-    <button onclick="call911()">
-      <span class="icon">🚨</span>
-      <span class="label">911</span>
-    </button>
-    <button onclick="quickShare()">
-      <span class="icon">📍</span>
-      <span class="label">Location</span>
-    </button>
-    <button onclick="showQR()">
-      <span class="icon">🏥</span>
-      <span class="label">Medical</span>
-    </button>
-  </div>
-
-  <div id="card-container" class="home-container" style="padding-top: 64px;">
+  <div id="card-container" class="home-container">
     <div class="loading"></div>
   </div>
 
@@ -189,13 +148,12 @@
 
   <script>
     const CARD_PRIORITY = {
-      emergency_strip: 0,
-      medical_alert: 1,
-      current_location: 2,
-      emergency_contacts: 3,
-      weather_alerts: 4,
-      quick_access: 5,
-      backup_restore: 6
+      medical_alert: 0,
+      current_location: 1,
+      emergency_contacts: 2,
+      weather_alerts: 3,
+      quick_access: 4,
+      backup_restore: 5
     };
 
     const ERROR_MESSAGES = {
@@ -376,9 +334,6 @@
     function fix_offline() { showToast('Retrying…'); }
     function fix_qr_invalid() { showToast('Generating new QR…'); }
 
-    function call911() { showToast('Calling 911…'); }
-    function quickShare() { showToast('Sharing location…'); }
-    function showQR() { showToast('Showing medical QR…'); }
 
     document.addEventListener('DOMContentLoaded', () => {
       setTimeout(renderHome, 1000);

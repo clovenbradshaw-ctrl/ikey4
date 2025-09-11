@@ -893,49 +893,6 @@
             z-index: 1000;
         }
 
-        /* Emergency Strip Styles */
-        .emergency-strip {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 20px;
-            background: white;
-            padding: 16px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow-lg);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .emergency-action {
-            height: 80px;
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            transition: transform 0.2s;
-        }
-
-        .emergency-action:active {
-            transform: scale(0.95);
-        }
-
-        .emergency-action .icon {
-            font-size: 32px;
-        }
-
-        .emergency-action .label {
-            font-size: 14px;
-            text-transform: uppercase;
-        }
 
         /* Status Cards */
         .status-container {
@@ -1092,22 +1049,6 @@
     <!-- Home Tab -->
     <div id="home" class="tab-content">
         <div class="container">
-            <!-- Emergency Strip - Always visible -->
-            <div class="emergency-strip">
-                <button class="emergency-action" onclick="call911()">
-                    <span class="icon">🚨</span>
-                    <span class="label">911</span>
-                </button>
-                <button class="emergency-action" onclick="quickShareLocation()">
-                    <span class="icon">📍</span>
-                    <span class="label">Share</span>
-                </button>
-                <button class="emergency-action" onclick="quickMedical()">
-                    <span class="icon">🏥</span>
-                    <span class="label">Medical</span>
-                </button>
-            </div>
-
             <!-- Status Cards Container -->
             <div id="status-cards" class="status-container">
                 <!-- Populated by JavaScript -->
@@ -2852,62 +2793,6 @@ Generated: ${new Date().toLocaleString()}`;
 
         let displayData = null;
 
-        // Add these new functions
-        function quickShareLocation() {
-            // Get current location and share immediately
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    position => {
-                        const lat = position.coords.latitude;
-                        const lon = position.coords.longitude;
-                        const shareText = `Emergency Location:\n${lat}, ${lon}\nhttps://maps.google.com/?q=${lat},${lon}`;
-
-                        if (navigator.share) {
-                            navigator.share({
-                                title: 'Emergency Location',
-                                text: shareText
-                            });
-                        } else {
-                            navigator.clipboard.writeText(shareText);
-                            alert('Location copied to clipboard!');
-                        }
-                    },
-                    error => {
-                        alert('Cannot access location. Please enable location services.');
-                    }
-                );
-            }
-        }
-
-        function quickMedical() {
-            if (displayData) {
-                // Show QR modal
-                const modal = document.createElement('div');
-                modal.className = 'modal';
-                modal.innerHTML = `
-            <div class="modal-content" style="text-align: center;">
-                <h2>Medical Information</h2>
-                <div id="quick-qr"></div>
-                <button class="btn btn-primary" onclick="this.closest('.modal').remove()">Close</button>
-            </div>
-        `;
-                document.body.appendChild(modal);
-
-                // Generate QR in modal
-                new QRCode(document.getElementById('quick-qr'), {
-                    text: window.location.href,
-                    width: 200,
-                    height: 200
-                });
-            } else {
-                // Redirect to iKey tab to create
-                switchTab('ikey');
-            }
-        }
-
-        function call911() {
-            window.location.href = 'tel:911';
-        }
 
         function renderHomeStatus() {
             const container = document.getElementById('status-cards');
