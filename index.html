@@ -1222,6 +1222,118 @@
                             <label for="cm-phone">Case Manager Phone</label>
                             <input type="tel" id="cm-phone" placeholder="555-0456">
                         </div>
+
+                        <div style="margin-top: 20px;">
+                            <h3>Important Documents (Optional)</h3>
+                            <p style="margin: 10px 0; color: var(--secondary);">
+                                Upload these to your secure drive and paste public share links below.
+                                Consider including:
+                            </p>
+                            <ul style="margin-left: 20px; color: var(--secondary); line-height: 1.8;">
+                                <li>Medical Power of Attorney (copy)</li>
+                                <li>Advance Directive/Living Will</li>
+                                <li>DNR (Do Not Resuscitate) Order</li>
+                                <li>Emergency Contact List</li>
+                                <li>Current Medications List</li>
+                                <li>Allergy and Medical Conditions Card</li>
+                                <li>Blood Type Card</li>
+                                <li>Temporary Guardianship Authorization</li>
+                                <li>Pet Emergency Care Instructions</li>
+                                <li>Organ Donor Card/Designation</li>
+                                <li>Doctor and Specialist Contact Sheet</li>
+                                <li>Emergency Cash Envelope Note</li>
+                            </ul>
+
+                            <div class="document-group">
+                                <div class="form-group">
+                                    <label for="doc1-type">Document 1</label>
+                                    <select id="doc1-type" class="doc-type">
+                                        <option value="">Select document</option>
+                                        <option>Medical Power of Attorney</option>
+                                        <option>Advance Directive/Living Will</option>
+                                        <option>DNR Order</option>
+                                        <option>Emergency Contact List</option>
+                                        <option>Current Medications List</option>
+                                        <option>Allergy and Medical Conditions Card</option>
+                                        <option>Blood Type Card</option>
+                                        <option>Temporary Guardianship Authorization</option>
+                                        <option>Pet Emergency Care Instructions</option>
+                                        <option>Organ Donor Designation</option>
+                                        <option>Doctor and Specialist Contact Sheet</option>
+                                        <option>Emergency Cash Envelope Note</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="form-group hidden" id="doc1-other-group">
+                                    <label for="doc1-other">Document Type</label>
+                                    <input type="text" id="doc1-other" placeholder="e.g., Insurance Card">
+                                </div>
+                                <div class="form-group">
+                                    <label for="doc1-link">Link</label>
+                                    <input type="url" id="doc1-link" placeholder="https://example.com/document">
+                                </div>
+                            </div>
+
+                            <div class="document-group">
+                                <div class="form-group">
+                                    <label for="doc2-type">Document 2</label>
+                                    <select id="doc2-type" class="doc-type">
+                                        <option value="">Select document</option>
+                                        <option>Medical Power of Attorney</option>
+                                        <option>Advance Directive/Living Will</option>
+                                        <option>DNR Order</option>
+                                        <option>Emergency Contact List</option>
+                                        <option>Current Medications List</option>
+                                        <option>Allergy and Medical Conditions Card</option>
+                                        <option>Blood Type Card</option>
+                                        <option>Temporary Guardianship Authorization</option>
+                                        <option>Pet Emergency Care Instructions</option>
+                                        <option>Organ Donor Designation</option>
+                                        <option>Doctor and Specialist Contact Sheet</option>
+                                        <option>Emergency Cash Envelope Note</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="form-group hidden" id="doc2-other-group">
+                                    <label for="doc2-other">Document Type</label>
+                                    <input type="text" id="doc2-other" placeholder="e.g., Insurance Card">
+                                </div>
+                                <div class="form-group">
+                                    <label for="doc2-link">Link</label>
+                                    <input type="url" id="doc2-link" placeholder="https://example.com/document">
+                                </div>
+                            </div>
+
+                            <div class="document-group">
+                                <div class="form-group">
+                                    <label for="doc3-type">Document 3</label>
+                                    <select id="doc3-type" class="doc-type">
+                                        <option value="">Select document</option>
+                                        <option>Medical Power of Attorney</option>
+                                        <option>Advance Directive/Living Will</option>
+                                        <option>DNR Order</option>
+                                        <option>Emergency Contact List</option>
+                                        <option>Current Medications List</option>
+                                        <option>Allergy and Medical Conditions Card</option>
+                                        <option>Blood Type Card</option>
+                                        <option>Temporary Guardianship Authorization</option>
+                                        <option>Pet Emergency Care Instructions</option>
+                                        <option>Organ Donor Designation</option>
+                                        <option>Doctor and Specialist Contact Sheet</option>
+                                        <option>Emergency Cash Envelope Note</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="form-group hidden" id="doc3-other-group">
+                                    <label for="doc3-other">Document Type</label>
+                                    <input type="text" id="doc3-other" placeholder="e.g., Insurance Card">
+                                </div>
+                                <div class="form-group">
+                                    <label for="doc3-link">Link</label>
+                                    <input type="url" id="doc3-link" placeholder="https://example.com/document">
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Step 6: Review -->
@@ -1830,6 +1942,22 @@
             });
         }
 
+        function setupDocumentDropdowns() {
+            [1,2,3].forEach(i => {
+                const typeSelect = document.getElementById(`doc${i}-type`);
+                const otherGroup = document.getElementById(`doc${i}-other-group`);
+                if (typeSelect && otherGroup) {
+                    typeSelect.addEventListener('change', () => {
+                        if (typeSelect.value === 'Other') {
+                            otherGroup.classList.remove('hidden');
+                        } else {
+                            otherGroup.classList.add('hidden');
+                        }
+                    });
+                }
+            });
+        }
+
         function nextStep() {
             if (validateStep(currentStep)) {
                 if (currentStep === 5) {
@@ -1904,8 +2032,23 @@
         }
 
         function showReview() {
+            const docs = [];
+            for (let i = 1; i <= 3; i++) {
+                const typeSelect = document.getElementById(`doc${i}-type`);
+                const linkInput = document.getElementById(`doc${i}-link`);
+                const otherInput = document.getElementById(`doc${i}-other`);
+                const link = linkInput.value.trim();
+                let type = typeSelect.value;
+                if (type === 'Other') {
+                    type = otherInput.value.trim();
+                }
+                if (link && type) {
+                    docs.push({ t: type, l: link });
+                }
+            }
+
             formData = {
-                v: 2, // Schema version
+                v: 3, // Schema version
                 pe: document.getElementById('secure-email').value.trim(),
                 n: document.getElementById('name').value.trim(),
                 pr: document.getElementById('pronouns').value.trim(),
@@ -1920,8 +2063,18 @@
                 er: document.getElementById('ec-relationship').value,
                 cm: document.getElementById('cm-name').value.trim(),
                 co: document.getElementById('cm-org').value.trim(),
-                cp: document.getElementById('cm-phone').value.trim()
+                cp: document.getElementById('cm-phone').value.trim(),
+                docs
             };
+
+            let docsHTML = '';
+            if (formData.docs.length) {
+                docsHTML = '<div class="info-card"><div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Documents</div><ul style="margin-left: 20px;">';
+                formData.docs.forEach(d => {
+                    docsHTML += `<li><a href="${d.l}" target="_blank">${d.t}</a></li>`;
+                });
+                docsHTML += '</ul></div>';
+            }
 
             const reviewHTML = `
                 <div class="info-card">
@@ -1985,6 +2138,7 @@
                         ${formData.cp ? `📞 ${formData.cp}` : ''}
                     </div>
                 </div>` : ''}
+                ${docsHTML}
             `;
 
             document.getElementById('review-content').innerHTML = reviewHTML;
@@ -3040,6 +3194,7 @@ Generated: ${new Date().toLocaleString()}`;
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             setupCharacterCounters();
+            setupDocumentDropdowns();
 
             // Initialize home page status cards
             if (document.getElementById('status-cards')) {
@@ -3209,6 +3364,13 @@ Generated: ${new Date().toLocaleString()}`;
                         html += `<div class="info-card" style="border-left: 4px solid #6d4aff;">
                             <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Secure Email</div>
                             <div style="font-weight: 600;">${data.pe}</div>
+                        </div>`;
+                    }
+
+                    if (data.docs && data.docs.length) {
+                        html += `<div class="info-card">
+                            <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Documents</div>
+                            <ul style="margin-left: 20px;">${data.docs.map(d => `<li><a href="${d.l}" target="_blank" style="color: var(--primary); text-decoration: none;">📄 ${d.t}</a></li>`).join('')}</ul>
                         </div>`;
                     }
 

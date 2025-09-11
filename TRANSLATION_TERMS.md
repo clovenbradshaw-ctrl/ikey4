@@ -79,6 +79,30 @@ List of user-visible strings requiring translation for full multilingual support
 - Case Manager Name
 - Organization
 - Case Manager Phone
+- Important Documents (Optional)
+- Upload these to your secure drive and paste public share links below.
+                                Consider including:
+- Medical Power of Attorney (copy)
+- Advance Directive/Living Will
+- DNR (Do Not Resuscitate) Order
+- Emergency Contact List
+- Current Medications List
+- Allergy and Medical Conditions Card
+- Blood Type Card
+- Temporary Guardianship Authorization
+- Pet Emergency Care Instructions
+- Organ Donor Card/Designation
+- Doctor and Specialist Contact Sheet
+- Emergency Cash Envelope Note
+- Document 1
+- Select document
+- Medical Power of Attorney
+- DNR Order
+- Organ Donor Designation
+- Document Type
+- Link
+- Document 2
+- Document 3
 - Review Your Information
 - ⚠️ Heads up:
 - Anyone who scans this QR code will be able to view the information you provide.
@@ -195,6 +219,8 @@ List of user-visible strings requiring translation for full multilingual support
 - Spouse
 - Dr. Jones
 - Hospital or Agency
+- e.g., Insurance Card
+- https://example.com/document
 - Enter city...
 - WTTIN Resources
 - Meals Resources
@@ -211,6 +237,7 @@ List of user-visible strings requiring translation for full multilingual support
 - iKey info copied!
 - These bookmarks are only saved in this browser and will be lost if the device or browser data is lost. For secure backup, add a note in Proton Drive or save in an email.
 - Invalid URL
+- Some Proton apps are already bookmarked
 - GPS coordinates copied!
 - Plus Code copied!
 - All location info copied!
