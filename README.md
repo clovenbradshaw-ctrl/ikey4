@@ -6,7 +6,7 @@ iKey Health is a client-side encrypted, progressive web application for storing 
 
 ## Internationalization
 
-The interface includes a built-in language selector that loads translations from `TRANSLATION_TERMS.md`. Available languages include English, Español, العربية, Kurdî, Af‑Soomaali, and 中文. The selection is stored locally and applied without relying on Google Translate.
+The interface includes a built-in language selector that loads translations from `translations.json`. Available languages include English, Español, العربية, Kurdî, Af‑Soomaali, and 中文. The selection is stored locally and applied without using external translation services.
 
 ## Favorite Apps
 
