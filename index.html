@@ -745,7 +745,7 @@
                         </div>
                         <div class="progress-step" data-step="2">
                             <div class="progress-dot">2</div>
-                            <div class="progress-label">Proton Email</div>
+                            <div class="progress-label">Secure Email</div>
                         </div>
                         <div class="progress-step" data-step="3">
                             <div class="progress-dot">3</div>
@@ -780,13 +780,13 @@
                         </div>
                     </div>
 
-                    <!-- Step 2: Proton Email -->
+                    <!-- Step 2: Secure Email -->
                     <div class="wizard-step" data-step="2">
-                        <h2>Proton Email</h2>
-                        <p style="margin-bottom: 20px;"><strong>Why Proton?</strong> Proton uses zero-knowledge encryption so only you can access your data.</p>
+                        <h2>Secure Email</h2>
+                        <p style="margin-bottom: 20px;"><strong>Why a secure email?</strong> Proton uses zero-knowledge encryption so only you can access your data.</p>
                         <div class="form-group">
-                            <label for="proton-email">Proton Email *</label>
-                            <input type="email" id="proton-email" placeholder="you@proton.me" required>
+                            <label for="secure-email">Secure Email *</label>
+                            <input type="email" id="secure-email" placeholder="you@proton.me" required>
                         </div>
                         <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
                             <a href="https://account.proton.me/signup" target="_blank" class="btn btn-primary">Create Account</a>
@@ -1368,10 +1368,10 @@
 
         function validateStep(step) {
             if (step === 2) {
-                const email = document.getElementById('proton-email').value.trim();
-                const regex = /^[a-zA-Z0-9._%+-]+@(proton\.me|protonmail\.com)$/;
+                const email = document.getElementById('secure-email').value.trim();
+                const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 if (!regex.test(email)) {
-                    alert('Please enter a valid Proton email address');
+                    alert('Please enter a valid secure email address');
                     return false;
                 }
             }
@@ -1399,7 +1399,7 @@
         function showReview() {
             formData = {
                 v: 2, // Schema version
-                pe: document.getElementById('proton-email').value.trim(),
+                pe: document.getElementById('secure-email').value.trim(),
                 n: document.getElementById('name').value.trim(),
                 pr: document.getElementById('pronouns').value.trim(),
                 ph: document.getElementById('phone').value.trim(),
@@ -1423,7 +1423,7 @@
                 </div>
                 ${formData.pe ? `
                 <div class="info-card" style="border-left: 4px solid #6d4aff;">
-                    <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Proton Email</div>
+                    <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Secure Email</div>
                     <div style="font-weight: 600;">${formData.pe}</div>
                 </div>` : ''}
                 ${formData.pr ? `
@@ -1561,7 +1561,6 @@
         function copyMedicalInfo(dataObj = formData) {
             const data = dataObj || {};
             const lines = [];
-            if (data.pe) lines.push(`Proton Email: ${data.pe}`);
             if (data.n) lines.push(`Name: ${data.n}`);
             if (data.pr) lines.push(`Pronouns: ${data.pr}`);
             if (data.ph) lines.push(`Phone: ${data.ph}`);
@@ -1582,6 +1581,7 @@
                 if (data.cp) cmLine += ` (${data.cp})`;
                 lines.push(cmLine);
             }
+            if (data.pe) lines.push(`Secure Email: ${data.pe}`);
 
             navigator.clipboard.writeText(lines.join('\n')).then(() => {
                 alert('iKey info copied!');
@@ -2092,12 +2092,6 @@ Generated: ${new Date().toLocaleString()}`;
                     document.getElementById('display-view').classList.remove('hidden');
                     
                     let html = '';
-                    if (data.pe) {
-                        html += `<div class="info-card" style="border-left: 4px solid #6d4aff;">
-                            <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Proton Email</div>
-                            <div style="font-weight: 600;">${data.pe}</div>
-                        </div>`;
-                    }
 
                     if (data.n) {
                         html += `<div class="info-card">
@@ -2156,7 +2150,14 @@ Generated: ${new Date().toLocaleString()}`;
                             </div>
                         </div>`;
                     }
-                    
+
+                    if (data.pe) {
+                        html += `<div class="info-card" style="border-left: 4px solid #6d4aff;">
+                            <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Secure Email</div>
+                            <div style="font-weight: 600;">${data.pe}</div>
+                        </div>`;
+                    }
+
                     document.getElementById('display-content').innerHTML = html;
                 } catch (e) {
                     console.error('Failed to parse URL data:', e);
