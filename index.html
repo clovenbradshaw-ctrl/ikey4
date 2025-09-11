@@ -771,6 +771,7 @@
             align-items: center;
             text-decoration: none;
             color: inherit;
+            position: relative;
         }
         .bookmark-card img {
             width: 48px;
@@ -780,6 +781,34 @@
             margin-top: 8px;
             font-weight: 600;
             text-align: center;
+        }
+        .remove-bookmark {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: var(--danger);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border: none;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            line-height: 20px;
+            cursor: pointer;
+        }
+        .bookmark-grid.editing .bookmark-card {
+            animation: shake 0.3s infinite;
+        }
+        .bookmark-grid.editing .remove-bookmark {
+            display: flex;
+        }
+        @keyframes shake {
+            0% { transform: rotate(-3deg); }
+            50% { transform: rotate(3deg); }
+            100% { transform: rotate(-3deg); }
         }
         /* Share Modal */
         .modal {
@@ -1047,19 +1076,10 @@
                 <div id="display-view" class="hidden">
                     <h2>Emergency Essential Info</h2>
                     <div id="display-content"></div>
-                    <div id="bookmark-grid" class="bookmark-grid">
-                        <div class="bookmark-slot" data-index="0"></div>
-                        <div class="bookmark-slot" data-index="1"></div>
-                        <div class="bookmark-slot" data-index="2"></div>
-                        <div class="bookmark-slot" data-index="3"></div>
-                        <div class="bookmark-slot" data-index="4"></div>
-                        <div class="bookmark-slot" data-index="5"></div>
-                        <div class="bookmark-slot" data-index="6"></div>
-                        <div class="bookmark-slot" data-index="7"></div>
-                        <div class="bookmark-slot" data-index="8"></div>
-                        <div class="bookmark-slot" data-index="9"></div>
-                        <div class="bookmark-slot" data-index="10"></div>
-                        <div class="bookmark-slot" data-index="11"></div>
+                    <div id="bookmark-grid" class="bookmark-grid"></div>
+                    <div style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button id="add-slot-btn" class="btn btn-secondary">Add Space</button>
+                        <button id="bookmark-done" class="btn btn-primary hidden">Done</button>
                     </div>
                     <div id="communication-actions" style="margin-top: 20px;"></div>
                     <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
@@ -1393,20 +1413,7 @@
 
                 <div class="settings-section">
                     <h3 style="margin-bottom: 15px; color: var(--primary);">Favorite Apps</h3>
-                    <div id="settings-bookmark-grid" class="bookmark-grid">
-                        <div class="bookmark-slot" data-index="0"></div>
-                        <div class="bookmark-slot" data-index="1"></div>
-                        <div class="bookmark-slot" data-index="2"></div>
-                        <div class="bookmark-slot" data-index="3"></div>
-                        <div class="bookmark-slot" data-index="4"></div>
-                        <div class="bookmark-slot" data-index="5"></div>
-                        <div class="bookmark-slot" data-index="6"></div>
-                        <div class="bookmark-slot" data-index="7"></div>
-                        <div class="bookmark-slot" data-index="8"></div>
-                        <div class="bookmark-slot" data-index="9"></div>
-                        <div class="bookmark-slot" data-index="10"></div>
-                        <div class="bookmark-slot" data-index="11"></div>
-                    </div>
+                    <div id="settings-bookmark-grid" class="bookmark-grid"></div>
                 </div>
 
                 <div class="settings-section">
@@ -1876,38 +1883,126 @@ END:VCALENDAR`;
             { id: 'simplelogin', name: 'SimpleLogin', url: 'https://app.simplelogin.io/dashboard/', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fv1741968746%2Fstatic%2Flogos%2Fside-products%2Fsimple-login_cozggp.svg' }
         ];
 
+        const INTERNAL_APPS = [
+            { id: 'weather', name: 'Weather', url: '#weather', icon: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/2600.svg' },
+            { id: 'dispatch', name: 'Police Dispatch', url: '#dispatch', icon: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f6a8.svg' }
+        ];
+
+        const MAX_BOOKMARKS = 12;
+        let bookmarkEditMode = false;
+
+        function getBookmarkCount() {
+            return Math.min(parseInt(localStorage.getItem('bookmarkCount')) || 4, MAX_BOOKMARKS);
+        }
+
+        function setBookmarkCount(n) {
+            localStorage.setItem('bookmarkCount', Math.min(n, MAX_BOOKMARKS));
+        }
+
+        function renderBookmarkSlots() {
+            const count = getBookmarkCount();
+            const grids = [document.getElementById('bookmark-grid'), document.getElementById('settings-bookmark-grid')];
+            grids.forEach(grid => {
+                if (!grid) return;
+                grid.innerHTML = '';
+                for (let i = 0; i < count; i++) {
+                    const slot = document.createElement('div');
+                    slot.className = 'bookmark-slot';
+                    slot.dataset.index = i;
+                    grid.appendChild(slot);
+                }
+            });
+            loadBookmarks();
+        }
+
         function loadBookmarks() {
             const saved = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
-            for (let i = 0; i < 12; i++) {
-                const slots = document.querySelectorAll(`.bookmark-slot[data-index="${i}"]`);
-                slots.forEach(slot => {
+            const count = getBookmarkCount();
+            for (let i = 0; i < count; i++) {
+                document.querySelectorAll(`.bookmark-slot[data-index="${i}"]`).forEach(slot => {
                     slot.classList.remove('empty');
-                    slot.onclick = () => openBookmarkModal(i);
                     const entry = saved[i];
-                    let html = '';
+                    let app = null, html = '', url = '', name = '', icon = '';
                     if (entry) {
-                        let app = null;
                         if (typeof entry === 'string') {
                             app = PROTON_APPS.find(a => a.id === entry);
                         } else if (entry.id) {
-                            app = PROTON_APPS.find(a => a.id === entry.id);
+                            app = PROTON_APPS.find(a => a.id === entry.id) || INTERNAL_APPS.find(a => a.id === entry.id);
                         }
                         if (app) {
-                            html = `<a href="${app.url}" target="_blank" rel="noopener noreferrer" class="bookmark-card"><img src="${app.icon}" alt="${app.name}"><span>${app.name}</span></a>`;
+                            url = app.url;
+                            name = app.name;
+                            icon = app.icon;
                         } else if (entry.url) {
-                            const icon = entry.icon || `https://www.google.com/s2/favicons?sz=64&domain_url=${entry.url}`;
-                            const name = entry.name || entry.url;
-                            html = `<a href="${entry.url}" target="_blank" rel="noopener noreferrer" class="bookmark-card"><img src="${icon}" alt="${name}"><span>${name}</span></a>`;
+                            url = entry.url;
+                            name = entry.name || entry.url;
+                            icon = entry.icon || `https://www.google.com/s2/favicons?sz=64&domain_url=${entry.url}`;
                         }
                     }
-                    if (html) {
+                    if (url) {
+                        slot.onclick = null;
+                        html = `<div class="bookmark-card"><img src="${icon}" alt="${name}"><span>${name}</span><button class="remove-bookmark" aria-label="Remove">×</button></div>`;
                         slot.innerHTML = html;
+                        const card = slot.querySelector('.bookmark-card');
+                        const removeBtn = slot.querySelector('.remove-bookmark');
+                        card.addEventListener('click', () => {
+                            if (bookmarkEditMode) return;
+                            if (url.startsWith('#')) {
+                                switchTab(url.substring(1));
+                            } else {
+                                window.open(url, '_blank');
+                            }
+                        });
+                        addLongPress(card, enterBookmarkEditMode);
+                        removeBtn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            const savedArr = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
+                            savedArr[i] = null;
+                            localStorage.setItem('protonBookmarks', JSON.stringify(savedArr));
+                            loadBookmarks();
+                        });
                     } else {
                         slot.classList.add('empty');
                         slot.innerHTML = '<span class="placeholder">+</span>';
+                        slot.onclick = () => openBookmarkModal(i);
                     }
                 });
             }
+        }
+
+        function addLongPress(el, callback) {
+            let timer;
+            el.addEventListener('pointerdown', () => {
+                timer = setTimeout(callback, 600);
+            });
+            ['pointerup', 'pointerleave', 'pointercancel'].forEach(evt => {
+                el.addEventListener(evt, () => clearTimeout(timer));
+            });
+        }
+
+        function enterBookmarkEditMode() {
+            if (bookmarkEditMode) return;
+            bookmarkEditMode = true;
+            const grid = document.getElementById('bookmark-grid');
+            if (grid) grid.classList.add('editing');
+            const doneBtn = document.getElementById('bookmark-done');
+            if (doneBtn) doneBtn.classList.remove('hidden');
+        }
+
+        function exitBookmarkEditMode() {
+            bookmarkEditMode = false;
+            const grid = document.getElementById('bookmark-grid');
+            if (grid) grid.classList.remove('editing');
+            const doneBtn = document.getElementById('bookmark-done');
+            if (doneBtn) doneBtn.classList.add('hidden');
+        }
+
+        function addBookmarkSlot() {
+            let count = getBookmarkCount();
+            if (count >= MAX_BOOKMARKS) return;
+            setBookmarkCount(count + 1);
+            renderBookmarkSlots();
+            openBookmarkModal(count);
         }
 
         function openBookmarkModal(index) {
@@ -1921,9 +2016,14 @@ END:VCALENDAR`;
                     if (idx === index || !entry) return null;
                     return typeof entry === 'string' ? entry : entry.id;
                 }).filter(Boolean);
-                const items = PROTON_APPS
-                    .filter(app => !usedIds.includes(app.id))
-                    .map(app => `<div class="modal-app" data-id="${app.id}"><img src="${app.icon}" alt="${app.name}" width="32" height="32"><span>${app.name}</span></div>`);
+                const items = [];
+                items.push('<div class="modal-app" id="add-all-proton"><span>Add All Proton Apps</span></div>');
+                PROTON_APPS.filter(app => !usedIds.includes(app.id)).forEach(app => {
+                    items.push(`<div class="modal-app" data-id="${app.id}" data-type="proton"><img src="${app.icon}" alt="${app.name}" width="32" height="32"><span>${app.name}</span></div>`);
+                });
+                INTERNAL_APPS.filter(app => !usedIds.includes(app.id)).forEach(app => {
+                    items.push(`<div class="modal-app" data-id="${app.id}" data-type="internal"><img src="${app.icon}" alt="${app.name}" width="32" height="32"><span>${app.name}</span></div>`);
+                });
                 items.push('<div class="modal-app" id="add-custom"><span>➕ Add Website</span></div>');
                 if (saved[index]) {
                     items.push('<div class="modal-app" data-remove="true" style="color: var(--danger);"><span>Remove</span></div>');
@@ -1932,10 +2032,16 @@ END:VCALENDAR`;
                 list.querySelectorAll('.modal-app').forEach(el => {
                     if (el.dataset.id) {
                         el.addEventListener('click', () => {
-                            saved[index] = { id: el.dataset.id };
-                            localStorage.setItem('protonBookmarks', JSON.stringify(saved));
+                            const savedArr = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
+                            if (el.dataset.type === 'proton') {
+                                savedArr[index] = { id: el.dataset.id };
+                            } else if (el.dataset.type === 'internal') {
+                                const app = INTERNAL_APPS.find(a => a.id === el.dataset.id);
+                                savedArr[index] = { id: app.id, url: app.url, name: app.name, icon: app.icon };
+                            }
+                            localStorage.setItem('protonBookmarks', JSON.stringify(savedArr));
                             closeBookmarkModal();
-                            loadBookmarks();
+                            renderBookmarkSlots();
                         });
                     } else if (el.id === 'add-custom') {
                         el.addEventListener('click', () => {
@@ -1945,20 +2051,31 @@ END:VCALENDAR`;
                                 const urlObj = new URL(url);
                                 const name = prompt('Enter a name for this website') || urlObj.hostname;
                                 const icon = `https://www.google.com/s2/favicons?sz=64&domain=${urlObj.hostname}`;
-                                saved[index] = { url: urlObj.href, name, icon };
-                                localStorage.setItem('protonBookmarks', JSON.stringify(saved));
+                                const savedArr = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
+                                savedArr[index] = { url: urlObj.href, name, icon };
+                                localStorage.setItem('protonBookmarks', JSON.stringify(savedArr));
                                 closeBookmarkModal();
-                                loadBookmarks();
+                                renderBookmarkSlots();
                             } catch (e) {
                                 alert('Invalid URL');
                             }
                         });
                     } else if (el.dataset.remove) {
                         el.addEventListener('click', () => {
-                            saved[index] = null;
-                            localStorage.setItem('protonBookmarks', JSON.stringify(saved));
+                            const savedArr = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
+                            savedArr[index] = null;
+                            localStorage.setItem('protonBookmarks', JSON.stringify(savedArr));
                             closeBookmarkModal();
-                            loadBookmarks();
+                            renderBookmarkSlots();
+                        });
+                    } else if (el.id === 'add-all-proton') {
+                        el.addEventListener('click', () => {
+                            const savedArr = [];
+                            PROTON_APPS.forEach(app => savedArr.push({ id: app.id }));
+                            localStorage.setItem('protonBookmarks', JSON.stringify(savedArr));
+                            setBookmarkCount(Math.max(getBookmarkCount(), PROTON_APPS.length));
+                            closeBookmarkModal();
+                            renderBookmarkSlots();
                         });
                     }
                 });
@@ -2520,7 +2637,7 @@ Generated: ${new Date().toLocaleString()}`;
                 }
             });
 
-            loadBookmarks();
+            renderBookmarkSlots();
             const modal = document.getElementById('bookmark-modal');
             if (modal) {
                 modal.addEventListener('click', function(e) {
@@ -2529,6 +2646,10 @@ Generated: ${new Date().toLocaleString()}`;
                     }
                 });
             }
+            const addBtn = document.getElementById('add-slot-btn');
+            if (addBtn) addBtn.addEventListener('click', addBookmarkSlot);
+            const doneBtn = document.getElementById('bookmark-done');
+            if (doneBtn) doneBtn.addEventListener('click', exitBookmarkEditMode);
         });
 
         // Cleanup on page unload
