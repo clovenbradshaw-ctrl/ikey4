@@ -1075,7 +1075,6 @@
                 <button class="lang-option" data-lang="zh" aria-label="中文">文</button>
             </div>
         </div>
-        <button id="google-translate-btn" class="btn" style="position: absolute; top: 45px; right: 10px;" aria-label="Google Translate">🔄</button>
         <h1 data-i18n="appLogo">🔐 iKey</h1>
         <p data-i18n="appTagline">Secure Location & Personal Safety Hub</p>
     </div>
@@ -3532,7 +3531,6 @@ Generated: ${new Date().toLocaleString()}`;
     <script>
         const languageBtn = document.getElementById('language-btn');
         const languageMenu = document.getElementById('language-menu');
-        const googleTranslateBtn = document.getElementById('google-translate-btn');
         if (languageBtn && languageMenu) {
             languageBtn.addEventListener('click', () => {
                 languageMenu.classList.toggle('show');
@@ -3542,12 +3540,6 @@ Generated: ${new Date().toLocaleString()}`;
                     setLanguage(btn.dataset.lang);
                     languageMenu.classList.remove('show');
                 });
-            });
-        }
-        if (googleTranslateBtn) {
-            googleTranslateBtn.addEventListener('click', () => {
-                const url = `https://translate.google.com/translate?u=${encodeURIComponent(window.location.href)}`;
-                window.open(url, '_blank');
             });
         }
         let translations = {};
