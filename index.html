@@ -716,7 +716,7 @@
             display: none !important;
         }
 
-        .char-counter {
+        .char-counter { 
             text-align: right;
             font-size: 0.85rem;
             margin-top: 5px;
@@ -725,6 +725,92 @@
         .char-counter.good { color: var(--success); }
         .char-counter.warning { color: var(--warning); }
         .char-counter.danger { color: var(--danger); }
+
+        .info-details {
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 10px;
+            background: white;
+        }
+        .info-details summary {
+            cursor: pointer;
+            list-style: none;
+        }
+        .info-details summary::-webkit-details-marker {
+            display: none;
+        }
+        .info-details .details-body {
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .bookmark-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .bookmark-slot {
+            background: var(--light);
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .bookmark-slot.empty .placeholder {
+            font-size: 2rem;
+            color: var(--secondary);
+        }
+        .bookmark-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+        }
+        .bookmark-card img {
+            width: 48px;
+            height: 48px;
+        }
+        .bookmark-card span {
+            margin-top: 8px;
+            font-weight: 600;
+            text-align: center;
+        }
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.hidden {
+            display: none;
+        }
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: var(--radius);
+            max-width: 320px;
+            width: 90%;
+        }
+        .modal-app {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: var(--radius);
+            cursor: pointer;
+        }
+        .modal-app:hover {
+            background: var(--light);
+        }
     </style>
 </head>
 <body>
@@ -952,6 +1038,12 @@
                 <div id="display-view" class="hidden">
                     <h2>Emergency Essential Info</h2>
                     <div id="display-content"></div>
+                    <div id="bookmark-grid" class="bookmark-grid">
+                        <div class="bookmark-slot" data-index="0"></div>
+                        <div class="bookmark-slot" data-index="1"></div>
+                        <div class="bookmark-slot" data-index="2"></div>
+                        <div class="bookmark-slot" data-index="3"></div>
+                    </div>
                     <div id="communication-actions" style="margin-top: 20px;"></div>
                     <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
                         <button class="btn btn-primary" onclick="copyMedicalInfo(displayData)">📋 Copy Info</button>
@@ -979,6 +1071,14 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Bookmark Selection Modal -->
+    <div id="bookmark-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Select Proton App</h3>
+            <div id="modal-app-list"></div>
         </div>
     </div>
 
@@ -1677,6 +1777,61 @@ END:VCALENDAR`;
         // 911 Services Functions
         let currentLocation = null;
         let watchId = null;
+
+        const PROTON_APPS = [
+            { id: 'mail', name: 'Proton Mail', url: 'https://account.proton.me/mail', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fmail_xxy4bg.svg' },
+            { id: 'drive', name: 'Proton Drive', url: 'https://drive.proton.me/', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fdrive_wo2nx4.svg' },
+            { id: 'vpn', name: 'Proton VPN', url: 'https://account.protonvpn.com/dashboard', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fvpn_f9embt.svg' },
+            { id: 'pass', name: 'Proton Pass', url: 'https://account.proton.me/pass', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fpass_wl1fk9.svg' },
+            { id: 'simplelogin', name: 'SimpleLogin', url: 'https://app.simplelogin.io/dashboard/', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fv1741968746%2Fstatic%2Flogos%2Fside-products%2Fsimple-login_cozggp.svg' }
+        ];
+
+        function loadBookmarks() {
+            const saved = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
+            for (let i = 0; i < 4; i++) {
+                const slot = document.querySelector(`.bookmark-slot[data-index="${i}"]`);
+                if (!slot) continue;
+                slot.classList.remove('empty');
+                slot.onclick = null;
+
+                const app = PROTON_APPS.find(a => a.id === saved[i]);
+                if (app) {
+                    slot.innerHTML = `<a href="${app.url}" target="_blank" rel="noopener noreferrer" class="bookmark-card"><img src="${app.icon}" alt="${app.name}"><span>${app.name}</span></a>`;
+                } else {
+                    slot.classList.add('empty');
+                    slot.innerHTML = '<span class="placeholder">+</span>';
+                    slot.onclick = () => openBookmarkModal(i);
+                }
+            }
+        }
+
+        function openBookmarkModal(index) {
+            const modal = document.getElementById('bookmark-modal');
+            if (!modal) return;
+            modal.dataset.index = index;
+            const list = document.getElementById('modal-app-list');
+            if (list) {
+                list.innerHTML = PROTON_APPS.map(app => `<div class="modal-app" data-id="${app.id}"><img src="${app.icon}" alt="${app.name}" width="32" height="32"><span>${app.name}</span></div>`).join('');
+                list.querySelectorAll('.modal-app').forEach(el => {
+                    el.addEventListener('click', () => {
+                        const saved = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
+                        saved[index] = el.dataset.id;
+                        localStorage.setItem('protonBookmarks', JSON.stringify(saved));
+                        closeBookmarkModal();
+                        loadBookmarks();
+                    });
+                });
+            }
+            modal.classList.remove('hidden');
+        }
+
+        function closeBookmarkModal() {
+            const modal = document.getElementById('bookmark-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+            }
+        }
+
         const CODE_ALPHABET = '23456789CFGHJMPQRVWX';
 
         function encodePlusCode(latitude, longitude) {
@@ -2149,14 +2304,7 @@ Generated: ${new Date().toLocaleString()}`;
                     document.getElementById('wizard-view').classList.add('hidden');
                     document.getElementById('display-view').classList.remove('hidden');
                     
-                    let html = '';
-
-                    if (data.n) {
-                        html += `<div class="info-card">
-                            <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Name</div>
-                            <div style="font-weight: 600;">${data.n}</div>
-                        </div>`;
-                    }
+                    let html = `<details class="info-details"><summary style="font-size: 1.2rem; font-weight: 600;">${data.n || 'Details'}</summary><div class="details-body">`;
 
                     if (data.ph) {
                         html += `<div class="info-card">
@@ -2216,6 +2364,8 @@ Generated: ${new Date().toLocaleString()}`;
                         </div>`;
                     }
 
+                    html += '</div></details>';
+
                     document.getElementById('display-content').innerHTML = html;
                 } catch (e) {
                     console.error('Failed to parse URL data:', e);
@@ -2228,6 +2378,16 @@ Generated: ${new Date().toLocaleString()}`;
                     changeWeatherLocation();
                 }
             });
+
+            loadBookmarks();
+            const modal = document.getElementById('bookmark-modal');
+            if (modal) {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        closeBookmarkModal();
+                    }
+                });
+            }
         });
 
         // Cleanup on page unload
