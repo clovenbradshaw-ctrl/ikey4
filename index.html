@@ -892,6 +892,155 @@
             box-shadow: var(--shadow-md);
             z-index: 1000;
         }
+
+        /* Emergency Strip Styles */
+        .emergency-strip {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+            background: white;
+            padding: 16px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .emergency-action {
+            height: 80px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            transition: transform 0.2s;
+        }
+
+        .emergency-action:active {
+            transform: scale(0.95);
+        }
+
+        .emergency-action .icon {
+            font-size: 32px;
+        }
+
+        .emergency-action .label {
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        /* Status Cards */
+        .status-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .status-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow-md);
+            position: relative;
+        }
+
+        .status-card[data-source="qr"] {
+            border-left: 4px solid var(--success);
+        }
+
+        .status-card[data-source="device"] {
+            border-left: 4px solid var(--secondary);
+            opacity: 0.9;
+        }
+
+        .status-card[data-source="live"] {
+            border-left: 4px solid var(--primary);
+        }
+
+        .card-badge {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--secondary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .card-content {
+            font-size: 16px;
+        }
+
+        .card-content .main-text {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .card-content .sub-text {
+            color: var(--secondary);
+            font-size: 14px;
+        }
+
+        /* Quick Access */
+        .quick-access-container {
+            background: var(--light);
+            border-radius: var(--radius);
+            padding: 16px;
+        }
+
+        .quick-access-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .quick-access-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 12px;
+        }
+
+        .quick-access-item {
+            background: white;
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quick-access-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .quick-access-item img {
+            width: 32px;
+            height: 32px;
+        }
+
+        .quick-access-item span {
+            font-size: 11px;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -943,12 +1092,30 @@
     <!-- Home Tab -->
     <div id="home" class="tab-content">
         <div class="container">
-            <h2>Bookmarks</h2>
-            <div id="bookmark-grid" class="bookmark-grid"></div>
-            <div style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
-                <button id="add-slot-btn" class="btn btn-secondary">Add Space</button>
-                <button id="remove-slot-btn" class="btn btn-secondary">Remove Space</button>
-                <button id="bookmark-done" class="btn btn-primary hidden">Done</button>
+            <!-- Emergency Strip - Always visible -->
+            <div class="emergency-strip">
+                <button class="emergency-action" onclick="call911()">
+                    <span class="icon">🚨</span>
+                    <span class="label">911</span>
+                </button>
+                <button class="emergency-action" onclick="quickShareLocation()">
+                    <span class="icon">📍</span>
+                    <span class="label">Share</span>
+                </button>
+                <button class="emergency-action" onclick="quickMedical()">
+                    <span class="icon">🏥</span>
+                    <span class="label">Medical</span>
+                </button>
+            </div>
+
+            <!-- Status Cards Container -->
+            <div id="status-cards" class="status-container">
+                <!-- Populated by JavaScript -->
+            </div>
+
+            <!-- Quick Access Section -->
+            <div id="quick-access" class="quick-access-container">
+                <!-- Populated by JavaScript -->
             </div>
         </div>
     </div>
@@ -1557,7 +1724,9 @@
             }
 
             // Initialize tab-specific content
-            if (tabName === 'weather') {
+            if (tabName === 'home') {
+                renderHomeStatus();
+            } else if (tabName === 'weather') {
                 if (!window.weatherLoaded) {
                     loadWeatherForCity('Nashville');
                     window.weatherLoaded = true;
@@ -1976,17 +2145,15 @@ END:VCALENDAR`;
 
         function renderBookmarkSlots() {
             const count = getBookmarkCount();
-            const grids = [document.getElementById('bookmark-grid'), document.getElementById('settings-bookmark-grid')];
-            grids.forEach(grid => {
-                if (!grid) return;
-                grid.innerHTML = '';
-                for (let i = 0; i < count; i++) {
-                    const slot = document.createElement('div');
-                    slot.className = 'bookmark-slot';
-                    slot.dataset.index = i;
-                    grid.appendChild(slot);
-                }
-            });
+            const grid = document.getElementById('settings-bookmark-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            for (let i = 0; i < count; i++) {
+                const slot = document.createElement('div');
+                slot.className = 'bookmark-slot';
+                slot.dataset.index = i;
+                grid.appendChild(slot);
+            }
             loadBookmarks();
         }
 
@@ -2666,9 +2833,160 @@ Generated: ${new Date().toLocaleString()}`;
 
         let displayData = null;
 
+        // Add these new functions
+        function quickShareLocation() {
+            // Get current location and share immediately
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
+                        const shareText = `Emergency Location:\n${lat}, ${lon}\nhttps://maps.google.com/?q=${lat},${lon}`;
+
+                        if (navigator.share) {
+                            navigator.share({
+                                title: 'Emergency Location',
+                                text: shareText
+                            });
+                        } else {
+                            navigator.clipboard.writeText(shareText);
+                            alert('Location copied to clipboard!');
+                        }
+                    },
+                    error => {
+                        alert('Cannot access location. Please enable location services.');
+                    }
+                );
+            }
+        }
+
+        function quickMedical() {
+            if (displayData) {
+                // Show QR modal
+                const modal = document.createElement('div');
+                modal.className = 'modal';
+                modal.innerHTML = `
+            <div class="modal-content" style="text-align: center;">
+                <h2>Medical Information</h2>
+                <div id="quick-qr"></div>
+                <button class="btn btn-primary" onclick="this.closest('.modal').remove()">Close</button>
+            </div>
+        `;
+                document.body.appendChild(modal);
+
+                // Generate QR in modal
+                new QRCode(document.getElementById('quick-qr'), {
+                    text: window.location.href,
+                    width: 200,
+                    height: 200
+                });
+            } else {
+                // Redirect to iKey tab to create
+                switchTab('ikey');
+            }
+        }
+
+        function call911() {
+            window.location.href = 'tel:911';
+        }
+
+        function renderHomeStatus() {
+            const container = document.getElementById('status-cards');
+            if (!container) return;
+
+            container.innerHTML = '';
+
+            // Card 1: Medical Info Status
+            if (displayData) {
+                const alerts = [];
+                if (displayData.a) alerts.push('Allergies');
+                if (displayData.m) alerts.push('Medications');
+                if (displayData.c) alerts.push('Conditions');
+
+                container.innerHTML += `
+            <div class="status-card" data-source="qr">
+                <div class="card-badge">🔒 Medical ID Active</div>
+                <div class="card-content">
+                    <div class="main-text">${displayData.n}</div>
+                    <div class="sub-text">${alerts.length ? alerts.join(' • ') : 'No alerts'}</div>
+                    ${displayData.b ? `<div class="sub-text">Blood Type: ${displayData.b}</div>` : ''}
+                </div>
+            </div>
+        `;
+            } else {
+                container.innerHTML += `
+            <div class="status-card" style="background: #fef3c7; border-left: 4px solid var(--warning);">
+                <div class="card-badge">⚠️ No Medical ID</div>
+                <div class="card-content">
+                    <div class="main-text">Create Your Medical ID</div>
+                    <div class="sub-text">Tap to add emergency information</div>
+                </div>
+                <button class="btn btn-primary" style="margin-top: 12px; width: 100%;" onclick="switchTab('ikey')">
+                    Create Medical ID
+                </button>
+            </div>
+        `;
+            }
+
+            // Card 2: Location Status (optional - only if location available)
+            if (navigator.geolocation) {
+                container.innerHTML += `
+            <div class="status-card" data-source="live">
+                <div class="card-badge">📍 Location Services</div>
+                <div class="card-content">
+                    <div class="sub-text">Ready for emergency sharing</div>
+                </div>
+            </div>
+        `;
+            }
+
+            // Card 3: Quick Access
+            renderQuickAccess();
+        }
+
+        function renderQuickAccess() {
+            const container = document.getElementById('quick-access');
+            if (!container) return;
+
+            const savedBookmarks = JSON.parse(storage.get('protonBookmarks') || '[]').filter(Boolean);
+
+            if (savedBookmarks.length === 0) return;
+
+            container.innerHTML = `
+        <div class="quick-access-header">
+            <h3 style="margin: 0; font-size: 16px;">Quick Access</h3>
+            <span style="font-size: 12px; color: var(--secondary);">📱 Device Only</span>
+        </div>
+        <div class="quick-access-grid" id="quick-grid"></div>
+    `;
+
+            const grid = document.getElementById('quick-grid');
+            savedBookmarks.slice(0, 6).forEach(bookmark => {
+                // Use existing bookmark rendering logic
+                let html = '';
+                if (bookmark.id) {
+                    const app = PROTON_APPS.find(a => a.id === bookmark.id);
+                    if (app) {
+                        html = `
+                    <a href="${app.url}" class="quick-access-item" target="_blank">
+                        <img src="${app.icon}" alt="${app.name}">
+                        <span>${app.name}</span>
+                    </a>
+                `;
+                    }
+                }
+                grid.innerHTML += html;
+            });
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             setupCharacterCounters();
+
+            // Initialize home page status cards
+            if (document.getElementById('status-cards')) {
+                renderHomeStatus();
+            }
 
             const dispatchFrame = document.querySelector('#dispatch iframe');
             if (dispatchFrame) {
