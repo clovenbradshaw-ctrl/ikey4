@@ -79,6 +79,23 @@
     .device-data { border-left: 4px solid var(--temporary-color); }
     .live-data { border-left: 4px solid var(--live-color); }
 
+    .data-badge { display: flex; align-items: center; margin-bottom: 8px; }
+    .badge-icon { margin-right: 4px; }
+    .badge.green { color: var(--permanent-color); }
+    .badge.gray { color: var(--temporary-color); }
+    .badge.blue { color: var(--live-color); }
+
+    .error-card {
+      background: #fee2e2;
+      border: 2px solid var(--emergency-color);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .medical-card .always-visible { font-weight: 600; }
+    .medical-card details { margin-top: 8px; }
+
     .text-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
     .text-body { font-size: 16px; line-height: 1.5; }
     .text-caption { font-size: 14px; color: var(--secondary); }
@@ -159,18 +176,8 @@
     </button>
   </div>
 
-  <div class="home-container" style="padding-top: 80px;">
-    <div class="card qr-data">
-      <div class="text-title">Example Card</div>
-      <div class="text-body">This card uses the permanent data style.</div>
-    </div>
-
+  <div id="card-container" class="home-container" style="padding-top: 80px;">
     <div class="loading"></div>
-
-    <div class="empty-state">
-      <p>No data yet</p>
-      <button class="action">Add Info</button>
-    </div>
   </div>
 
   <div id="toast" class="toast" style="display: none"></div>
@@ -193,6 +200,12 @@
       qr_invalid: "QR code damaged - create a new one"
     };
 
+    const cards = [
+      { type: 'medical_alert', source: 'qr', data: { allergies: 'Peanuts', bloodType: 'O+' } },
+      { type: 'current_location', source: 'live', data: 'Locating…' },
+      { type: 'quick_access', source: 'device', data: 'No bookmarks yet' }
+    ];
+
     function showToast(msg) {
       const t = document.getElementById('toast');
       t.textContent = msg;
@@ -200,20 +213,86 @@
       setTimeout(() => t.style.display = 'none', 3000);
     }
 
-    function showError(type) {
-      const msg = ERROR_MESSAGES[type] || 'Unknown error';
-      showToast(msg);
+    function renderContent(data, type) {
+      if (type === 'medical_alert') return renderMedicalInfo(data);
+      return `<div class="text-body">${data}</div>`;
     }
 
-    function call911() {
-      showToast('Calling 911…');
+    function renderDataCard(card) {
+      const badges = {
+        qr: { icon: '🔒', text: 'Permanent', color: 'green', class: 'qr-data' },
+        device: { icon: '📱', text: 'Device Only', color: 'gray', class: 'device-data' },
+        live: { icon: '🔄', text: 'Live', color: 'blue', class: 'live-data' }
+      };
+      const b = badges[card.source];
+      return `
+        <div class="card data-card ${b.class}" data-source="${card.source}">
+          <div class="data-badge badge ${b.color}">
+            <span class="badge-icon">${b.icon}</span>
+            <span class="badge-text">${b.text}</span>
+          </div>
+          <div class="data-content">
+            ${renderContent(card.data, card.type)}
+          </div>
+        </div>
+      `;
     }
-    function quickShare() {
-      showToast('Sharing location…');
+
+    function renderMedicalInfo(data) {
+      const critical = data.allergies || data.bloodType;
+      return `
+        <div class="medical-card">
+          <div class="always-visible">
+            ${critical ? `⚠️ ${critical}` : 'No critical alerts'}
+          </div>
+          <details class="additional-info">
+            <summary>View all medical info</summary>
+            ${renderFullMedical(data)}
+          </details>
+        </div>
+      `;
     }
-    function showQR() {
-      showToast('Showing medical QR…');
+
+    function renderFullMedical(data) {
+      return `<pre class="text-body">${JSON.stringify(data, null, 2)}</pre>`;
     }
+
+    function renderHome() {
+      const container = document.getElementById('card-container');
+      container.innerHTML = '';
+      if (cards.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <p>No data yet</p>
+            <button class="action">Add Info</button>
+          </div>`;
+        return;
+      }
+      cards.sort((a, b) => CARD_PRIORITY[a.type] - CARD_PRIORITY[b.type]);
+      cards.forEach(card => { container.innerHTML += renderDataCard(card); });
+    }
+
+    function showError(type) {
+      const container = document.getElementById('card-container');
+      container.innerHTML += `
+        <div class="error-card">
+          <p>${ERROR_MESSAGES[type]}</p>
+          <button onclick="fix_${type}()">Fix This</button>
+        </div>`;
+    }
+
+    function fix_location_denied() { showToast('Requesting location…'); }
+    function fix_storage_full() { showToast('Opening settings…'); }
+    function fix_offline() { showToast('Retrying…'); }
+    function fix_qr_invalid() { showToast('Generating new QR…'); }
+
+    function call911() { showToast('Calling 911…'); }
+    function quickShare() { showToast('Sharing location…'); }
+    function showQR() { showToast('Showing medical QR…'); }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(renderHome, 1000);
+    });
   </script>
 </body>
 </html>
