@@ -2123,10 +2123,11 @@ END:VCALENDAR`;
                     } else if (el.id === 'add-custom') {
                         el.addEventListener('click', () => {
                             alert('These bookmarks are only saved in this browser and will be lost if the device or browser data is lost. For secure backup, add a note in Proton Drive or save in an email.');
-                            const url = prompt('Enter website URL (including https://)');
-                            if (!url) return;
+                            const urlInput = prompt('Enter website URL (https:// optional)');
+                            if (!urlInput) return;
                             try {
-                                const urlObj = new URL(url);
+                                const normalizedUrl = /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(urlInput.trim()) ? urlInput.trim() : `https://${urlInput.trim()}`;
+                                const urlObj = new URL(normalizedUrl);
                                 const name = prompt('Enter a name for this website') || urlObj.hostname;
                                 const icon = `https://www.google.com/s2/favicons?sz=64&domain=${urlObj.hostname}`;
                                 const savedArr = JSON.parse(storage.get('protonBookmarks') || '[]');
