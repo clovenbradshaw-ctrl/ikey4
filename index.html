@@ -849,6 +849,15 @@
             gap: 10px;
             margin-top: 20px;
         }
+
+        #custom-bookmark-form {
+            margin-top: 15px;
+            text-align: left;
+        }
+        #custom-bookmark-form .modal-actions {
+            flex-direction: row;
+            justify-content: space-between;
+        }
     </style>
 </head>
 <body>
@@ -1114,8 +1123,22 @@
 <!-- Bookmark Selection Modal -->
 <div id="bookmark-modal" class="modal hidden">
     <div class="modal-content">
-        <h3>Select Favorite</h3>
+        <h3 id="bookmark-modal-title">Select Favorite</h3>
         <div id="modal-app-list"></div>
+        <div id="custom-bookmark-form" class="hidden">
+            <div class="form-group">
+                <label for="custom-url">Website URL</label>
+                <input type="text" id="custom-url" placeholder="e.g., google.com">
+            </div>
+            <div class="form-group">
+                <label for="custom-name">Name</label>
+                <input type="text" id="custom-name" placeholder="Optional">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-primary" id="save-custom-bookmark">Save</button>
+                <button class="btn btn-secondary" id="cancel-custom-bookmark">Cancel</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -1309,6 +1332,11 @@
                     <h3>Proton Mail</h3>
                     <p>Encrypted email service.</p>
                 </a>
+                <a class="app-card" href="https://account.proton.me/calendar" target="_blank" rel="noopener noreferrer">
+                    <div class="app-icon"><img src="https://pmecdn.protonweb.com/image-transformation/?s=c&amp;image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fcalendar_ylg2jq.svg" alt="Proton Calendar"></div>
+                    <h3>Proton Calendar</h3>
+                    <p>Private calendar.</p>
+                </a>
                 <a class="app-card" href="https://drive.proton.me/" target="_blank" rel="noopener noreferrer">
                     <div class="app-icon"><img src="https://pmecdn.protonweb.com/image-transformation/?s=c&amp;image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fdrive_wo2nx4.svg" alt="Proton Drive"></div>
                     <h3>Proton Drive</h3>
@@ -1334,14 +1362,9 @@
                     <h3>Standard Notes</h3>
                     <p>Encrypted notes app.</p>
                 </a>
-                <a class="app-card" href="https://account.proton.me/calendar" target="_blank" rel="noopener noreferrer">
-                    <div class="app-icon"><img src="https://pmecdn.protonweb.com/image-transformation/?s=c&amp;image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fcalendar_ylg2jq.svg" alt="Proton Calendar"></div>
-                    <h3>Proton Calendar</h3>
-                    <p>Private calendar.</p>
-                </a>
                 <a class="app-card" href="invite.html">
-                    <div class="app-icon"><img src="https://pmecdn.protonweb.com/image-transformation/?s=c&amp;image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fcalendar_ylg2jq.svg" alt="Calendar #2"></div>
-                    <h3>Calendar #2</h3>
+                    <div class="app-icon"><img src="https://pmecdn.protonweb.com/image-transformation/?s=c&amp;image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fcalendar_ylg2jq.svg" alt="Calendar Event Creator"></div>
+                    <h3>Calendar Event Creator</h3>
                     <p>Invite generator.</p>
                 </a>
                 <a class="app-card" href="https://account.proton.me/authenticator" target="_blank" rel="noopener noreferrer">
@@ -1877,10 +1900,16 @@ END:VCALENDAR`;
 
         const PROTON_APPS = [
             { id: 'mail', name: 'Proton Mail', url: 'https://account.proton.me/mail', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fmail_xxy4bg.svg' },
+            { id: 'calendar', name: 'Proton Calendar', url: 'https://account.proton.me/calendar', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fcalendar_ylg2jq.svg' },
             { id: 'drive', name: 'Proton Drive', url: 'https://drive.proton.me/', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fdrive_wo2nx4.svg' },
             { id: 'vpn', name: 'Proton VPN', url: 'https://account.protonvpn.com/dashboard', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fvpn_f9embt.svg' },
             { id: 'pass', name: 'Proton Pass', url: 'https://account.proton.me/pass', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fpass_wl1fk9.svg' },
-            { id: 'simplelogin', name: 'SimpleLogin', url: 'https://app.simplelogin.io/dashboard/', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fv1741968746%2Fstatic%2Flogos%2Fside-products%2Fsimple-login_cozggp.svg' }
+            { id: 'simplelogin', name: 'SimpleLogin', url: 'https://app.simplelogin.io/dashboard/', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fv1741968746%2Fstatic%2Flogos%2Fside-products%2Fsimple-login_cozggp.svg' },
+            { id: 'standardnotes', name: 'Standard Notes', url: 'https://app.standardnotes.com/', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fv1741972455%2Fstatic%2Flogos%2Fside-products%2Fstandard-notes_h81doh.svg' },
+            { id: 'authenticator', name: 'Proton Authenticator', url: 'https://account.proton.me/authenticator', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fauthenticator.svg' },
+            { id: 'meet', name: 'Proton Meet', url: 'https://meet.proton.me/', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fmeet.svg' },
+            { id: 'wallet', name: 'Proton Wallet', url: 'https://account.proton.me/wallet', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fwallet_hnlslt.svg' },
+            { id: 'lumo', name: 'Lumo', url: 'https://lumo.proton.me/', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Flumo_k0nljk.svg' }
         ];
 
         const INTERNAL_APPS = [
@@ -2005,10 +2034,72 @@ END:VCALENDAR`;
             openBookmarkModal(count);
         }
 
+        function guessSiteName(hostname) {
+            const host = hostname.replace(/^www\./, '').split('.')[0];
+            return host.charAt(0).toUpperCase() + host.slice(1);
+        }
+
+        function normalizeURL(input) {
+            let url = input.trim();
+            if (!/^https?:\/\//i.test(url)) {
+                url = 'https://' + url;
+            }
+            try {
+                return new URL(url);
+            } catch {
+                return null;
+            }
+        }
+
+        function openCustomBookmark(index, existing = null) {
+            const modal = document.getElementById('bookmark-modal');
+            const title = document.getElementById('bookmark-modal-title');
+            const list = document.getElementById('modal-app-list');
+            const form = document.getElementById('custom-bookmark-form');
+            if (!modal || !title || !list || !form) return;
+            modal.dataset.index = index;
+            list.classList.add('hidden');
+            form.classList.remove('hidden');
+            title.textContent = existing ? 'Edit Website' : 'Add Website';
+            document.getElementById('custom-url').value = existing ? existing.url : '';
+            document.getElementById('custom-name').value = existing ? existing.name : '';
+        }
+
+        function closeCustomBookmark() {
+            const title = document.getElementById('bookmark-modal-title');
+            const list = document.getElementById('modal-app-list');
+            const form = document.getElementById('custom-bookmark-form');
+            if (!title || !list || !form) return;
+            form.classList.add('hidden');
+            list.classList.remove('hidden');
+            title.textContent = 'Select Favorite';
+        }
+
+        function saveCustomBookmark() {
+            const modal = document.getElementById('bookmark-modal');
+            const index = parseInt(modal.dataset.index, 10);
+            const urlInput = document.getElementById('custom-url');
+            const nameInput = document.getElementById('custom-name');
+            const urlObj = normalizeURL(urlInput.value);
+            if (!urlObj) {
+                alert('Invalid URL');
+                return;
+            }
+            const name = nameInput.value.trim() || guessSiteName(urlObj.hostname);
+            const icon = `https://www.google.com/s2/favicons?sz=64&domain=${urlObj.hostname}`;
+            const savedArr = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
+            savedArr[index] = { url: urlObj.href, name, icon };
+            localStorage.setItem('protonBookmarks', JSON.stringify(savedArr));
+            closeCustomBookmark();
+            closeBookmarkModal();
+            renderBookmarkSlots();
+        }
+
         function openBookmarkModal(index) {
             const modal = document.getElementById('bookmark-modal');
             if (!modal) return;
             modal.dataset.index = index;
+            closeCustomBookmark();
             const list = document.getElementById('modal-app-list');
             if (list) {
                 const saved = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
@@ -2025,6 +2116,9 @@ END:VCALENDAR`;
                     items.push(`<div class="modal-app" data-id="${app.id}" data-type="internal"><img src="${app.icon}" alt="${app.name}" width="32" height="32"><span>${app.name}</span></div>`);
                 });
                 items.push('<div class="modal-app" id="add-custom"><span>➕ Add Website</span></div>');
+                if (saved[index] && !saved[index].id) {
+                    items.push('<div class="modal-app" id="edit-custom"><span>Edit Website</span></div>');
+                }
                 if (saved[index]) {
                     items.push('<div class="modal-app" data-remove="true" style="color: var(--danger);"><span>Remove</span></div>');
                 }
@@ -2045,20 +2139,12 @@ END:VCALENDAR`;
                         });
                     } else if (el.id === 'add-custom') {
                         el.addEventListener('click', () => {
-                            const url = prompt('Enter website URL (including https://)');
-                            if (!url) return;
-                            try {
-                                const urlObj = new URL(url);
-                                const name = prompt('Enter a name for this website') || urlObj.hostname;
-                                const icon = `https://www.google.com/s2/favicons?sz=64&domain=${urlObj.hostname}`;
-                                const savedArr = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
-                                savedArr[index] = { url: urlObj.href, name, icon };
-                                localStorage.setItem('protonBookmarks', JSON.stringify(savedArr));
-                                closeBookmarkModal();
-                                renderBookmarkSlots();
-                            } catch (e) {
-                                alert('Invalid URL');
-                            }
+                            openCustomBookmark(index);
+                        });
+                    } else if (el.id === 'edit-custom') {
+                        el.addEventListener('click', () => {
+                            const savedArr = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
+                            openCustomBookmark(index, savedArr[index]);
                         });
                     } else if (el.dataset.remove) {
                         el.addEventListener('click', () => {
@@ -2086,6 +2172,7 @@ END:VCALENDAR`;
         function closeBookmarkModal() {
             const modal = document.getElementById('bookmark-modal');
             if (modal) {
+                closeCustomBookmark();
                 modal.classList.add('hidden');
             }
         }
@@ -2650,6 +2737,10 @@ Generated: ${new Date().toLocaleString()}`;
             if (addBtn) addBtn.addEventListener('click', addBookmarkSlot);
             const doneBtn = document.getElementById('bookmark-done');
             if (doneBtn) doneBtn.addEventListener('click', exitBookmarkEditMode);
+            const saveBtn = document.getElementById('save-custom-bookmark');
+            if (saveBtn) saveBtn.addEventListener('click', saveCustomBookmark);
+            const cancelBtn = document.getElementById('cancel-custom-bookmark');
+            if (cancelBtn) cancelBtn.addEventListener('click', closeCustomBookmark);
         });
 
         // Cleanup on page unload
