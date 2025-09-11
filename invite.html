@@ -153,16 +153,6 @@
             background: #e9ecef;
         }
 
-        .success-message {
-            background: #d1fae5;
-            border: 2px solid var(--success);
-            color: #065f46;
-            padding: 15px;
-            border-radius: var(--radius);
-            margin-bottom: 20px;
-            display: none;
-        }
-
         .instruction-message {
             background: #fef3c7;
             border: 2px solid var(--warning);
@@ -197,9 +187,8 @@
             <p>Create and email calendar invites</p>
         </div>
         <div class="widget-body">
-            <div id="successMessage" class="success-message">✅ Event file created and email opened!</div>
             <div id="instructionMessage" class="instruction-message">
-                <h4>📧 Next Steps:</h4>
+                <h4>📧 Please complete these steps:</h4>
                 <ol>
                     <li>Your email client has opened with the invite details</li>
                     <li>The ICS file "<span id="fileName"></span>" has been downloaded</li>
@@ -291,7 +280,7 @@
         const end = `${date}T${endTime}`;
         const dtstamp = new Date().toISOString().replace(/[-:]/g,'').split('.')[0] + 'Z';
 
-        const attendeeList = [clientEmail];
+        const attendeeList = [organizer, clientEmail];
         if (additional) {
             additional.split(',').forEach(e => { const v = e.trim(); if (v) attendeeList.push(v); });
         }
@@ -316,12 +305,11 @@
         link.download = filename;
         link.click();
 
-        let subject = `Calendar Invitation: ${title}`;
-        let body = `You're invited to: ${title}\n\n`;
-        body += `Date: ${date}\nTime: ${time} - ${endTime}\n`;
-        if (location) body += `Location: ${location}\n\n`; else body += '\n';
-        if (description) body += `${description}\n\n`;
-        body += 'Please see the attached ICS file to add this event to your calendar.';
+        let subject = `${title} on ${date} at ${time}`;
+        let body = `Event: ${title}\nDate: ${date}\nTime: ${time} - ${endTime}\n`;
+        if (location) body += `Location: ${location}\n`;
+        if (description) body += `Description: ${description}\n`;
+        body += `\nPlease attach the ICS file (${filename}) to add this event to your calendar.`;
 
         const mailto = `mailto:${attendeeList.join(',')}` +
             `?subject=${encodeURIComponent(subject)}` +
@@ -329,7 +317,6 @@
         window.open(mailto, '_blank');
 
         document.getElementById('fileName').textContent = filename;
-        document.getElementById('successMessage').style.display = 'block';
         document.getElementById('instructionMessage').style.display = 'block';
     }
 
