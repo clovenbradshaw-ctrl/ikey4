@@ -897,15 +897,10 @@
                         </div>
                     </div>
 
-                    <!-- Step 5: Review -->
-                    <div class="wizard-step" data-step="5">
-                        <h2 style="color: var(--proton);">Review Your Information</h2>
-                        <div id="review-content" class="review-card"></div>
-
                     <!-- Step 6: Review -->
                     <div class="wizard-step" data-step="6">
                         <h2>Review Your Information</h2>
-                        <div id="review-content"></div>
+                        <div id="review-content" class="review-card"></div>
 
                         <div style="background: #fef3c7; border: 1px solid #facc15; border-radius: 10px; padding: 15px; margin-top: 20px;">
                             <strong>⚠️ Heads up:</strong> Anyone who scans this QR code will be able to view the information you provide.
@@ -1365,11 +1360,12 @@
 
         function updateWizardDisplay() {
             // Update progress dots
-            document.querySelectorAll('.progress-step').forEach((step, index) => {
+            document.querySelectorAll('.progress-step').forEach(step => {
                 step.classList.remove('active', 'completed');
-                if (index + 1 < currentStep) {
+                const stepNum = parseInt(step.dataset.step);
+                if (stepNum < currentStep) {
                     step.classList.add('completed');
-                } else if (index + 1 === currentStep) {
+                } else if (stepNum === currentStep) {
                     step.classList.add('active');
                 }
             });
