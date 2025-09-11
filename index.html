@@ -1387,9 +1387,9 @@
         }
 
         function validateStep(step) {
-            // Require `pe` (permission/consent field) to be present when advancing
-            const peField = document.getElementById('pe');
-            if (peField && !peField.value.trim()) {
+            // Require permission field to be present when advancing
+            const permissionField = document.getElementById('pe');
+            if (permissionField && !permissionField.value.trim()) {
                 alert('Please provide the required permission information');
                 return false;
             }
@@ -1429,17 +1429,13 @@
 
         function showReview() {
             formData = {
-
-                // Schema version bumped for `pe` addition
-                v: 2,
-                pe: document.getElementById('pe') ? document.getElementById('pe').value.trim() : '',
-
-                v: 1,
-                pe: document.getElementById('proton-email').value.trim(),
+                // Schema version 2 includes distinct permission field
+                version: 2,
+                protonEmail: document.getElementById('proton-email').value.trim(),
+                permission: document.getElementById('pe') ? document.getElementById('pe').value.trim() : '',
 
                 n: document.getElementById('name').value.trim(),
                 pr: document.getElementById('pronouns').value.trim(),
-                pe: document.getElementById('pe').value.trim(),
                 d: document.getElementById('dob').value,
                 b: document.getElementById('blood').value,
                 a: document.getElementById('allergies').value.trim(),
@@ -1458,20 +1454,20 @@
                     <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Name</div>
                     <div style="font-weight: 600;">${formData.n || 'Not provided'}</div>
                 </div>
-                ${formData.pe ? `
+                ${formData.protonEmail ? `
                 <div class="info-card">
                     <div style=\"font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;\">Proton Email</div>
-                    <div style=\"font-weight: 600;\">${formData.pe}</div>
+                    <div style=\"font-weight: 600;\">${formData.protonEmail}</div>
                 </div>` : ''}
                 ${formData.pr ? `
                 <div class="info-card">
                     <div style=\"font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;\">Pronouns</div>
                     <div style=\"font-weight: 600;\">${formData.pr}</div>
                 </div>` : ''}
-                ${formData.pe ? `
+                ${formData.permission ? `
                 <div class="info-card" style=\"border-left: 4px solid #6d4aff;\">
-                    <div style=\"font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;\">Proton Email</div>
-                    <div style=\"font-weight: 600;\">${formData.pe}</div>
+                    <div style=\"font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;\">Permission</div>
+                    <div style=\"font-weight: 600;\">${formData.permission}</div>
                 </div>` : ''}
                 ${formData.d ? `
                 <div class="info-card">
@@ -1568,8 +1564,8 @@
                 ctx.font = '12px Arial';
                 ctx.fillText(`Name: ${formData.n}`, 170, 60);
                 let nextY = 90;
-                if (formData.pe) {
-                    ctx.fillText(`Email: ${formData.pe}`, 170, 90);
+                if (formData.protonEmail) {
+                    ctx.fillText(`Email: ${formData.protonEmail}`, 170, 90);
                     nextY = 120;
                 }
                 ctx.fillText('Scan for full info', 170, nextY);
@@ -1595,7 +1591,8 @@
         function copyMedicalInfo(dataObj = formData) {
             const data = dataObj || {};
             const lines = [];
-            if (data.pe) lines.push(`Proton Email: ${data.pe}`);
+            if (data.protonEmail) lines.push(`Proton Email: ${data.protonEmail}`);
+            if (data.permission) lines.push(`Permission: ${data.permission}`);
             if (data.n) lines.push(`Name: ${data.n}`);
             if (data.pr) lines.push(`Pronouns: ${data.pr}`);
             if (data.d) lines.push(`Date of Birth: ${new Date(data.d).toLocaleDateString()}`);
@@ -1670,7 +1667,7 @@ GPS: ${currentLocation.latitude}, ${currentLocation.longitude}
 ADDRESS: ${currentLocation.address}
 INTERSECTION: ${currentLocation.crossStreets}
 PLUS CODE: ${currentLocation.plusCode}
-MAPS: https://maps.google.com/?q=${currentLocation.latitude},${currentLocation.longitude}${formData.pe ? `\nPROTON EMAIL: ${formData.pe}` : ''}
+MAPS: https://maps.google.com/?q=${currentLocation.latitude},${currentLocation.longitude}${formData.protonEmail ? `\nPROTON EMAIL: ${formData.protonEmail}` : ''}
 
 Generated: ${new Date().toLocaleString()}`;
 
@@ -2013,20 +2010,29 @@ Generated: ${new Date().toLocaleString()}`;
                 try {
                     const decompressed = LZString.decompressFromEncodedURIComponent(hash);
                     const data = JSON.parse(decompressed);
-                    // `pe` was introduced in schema v2; older QR codes may omit it
+
+                    // Legacy support for older keys
+                    if (data.pe && !data.protonEmail) data.protonEmail = data.pe;
+                    if (data.v && !data.version) data.version = data.v;
 
                     displayData = data;
 
-                    
                     // Display existing data
                     document.getElementById('wizard-view').classList.add('hidden');
                     document.getElementById('display-view').classList.remove('hidden');
-                    
+
                     let html = '';
-                    if (data.pe) {
+                    if (data.protonEmail) {
                         html += `<div class="info-card" style="border-left: 4px solid #6d4aff;">
                             <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Proton Email</div>
-                            <div style="font-weight: 600;">${data.pe}</div>
+                            <div style="font-weight: 600;">${data.protonEmail}</div>
+                        </div>`;
+                    }
+
+                    if (data.permission) {
+                        html += `<div class="info-card">
+                            <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Permission</div>
+                            <div style="font-weight: 600;">${data.permission}</div>
                         </div>`;
                     }
 
@@ -2034,13 +2040,6 @@ Generated: ${new Date().toLocaleString()}`;
                         html += `<div class="info-card">
                             <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Patient Name</div>
                             <div style="font-weight: 600;">${data.n}</div>
-                        </div>`;
-                    }
-
-                    if (data.pe) {
-                        html += `<div class="info-card">
-                            <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Proton Email</div>
-                            <div style="font-weight: 600;">${data.pe}</div>
                         </div>`;
                     }
 
