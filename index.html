@@ -747,7 +747,7 @@
 
         .bookmark-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 15px;
             margin-top: 20px;
         }
@@ -1052,6 +1052,14 @@
                         <div class="bookmark-slot" data-index="1"></div>
                         <div class="bookmark-slot" data-index="2"></div>
                         <div class="bookmark-slot" data-index="3"></div>
+                        <div class="bookmark-slot" data-index="4"></div>
+                        <div class="bookmark-slot" data-index="5"></div>
+                        <div class="bookmark-slot" data-index="6"></div>
+                        <div class="bookmark-slot" data-index="7"></div>
+                        <div class="bookmark-slot" data-index="8"></div>
+                        <div class="bookmark-slot" data-index="9"></div>
+                        <div class="bookmark-slot" data-index="10"></div>
+                        <div class="bookmark-slot" data-index="11"></div>
                     </div>
                     <div id="communication-actions" style="margin-top: 20px;"></div>
                     <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
@@ -1086,7 +1094,7 @@
 <!-- Bookmark Selection Modal -->
 <div id="bookmark-modal" class="modal hidden">
     <div class="modal-content">
-        <h3>Select Proton App</h3>
+        <h3>Select Favorite</h3>
         <div id="modal-app-list"></div>
     </div>
 </div>
@@ -1377,6 +1385,24 @@
                         </select>
                     </div>
                   </div>
+
+                <div class="settings-section">
+                    <h3 style="margin-bottom: 15px; color: var(--primary);">Favorite Apps</h3>
+                    <div id="settings-bookmark-grid" class="bookmark-grid">
+                        <div class="bookmark-slot" data-index="0"></div>
+                        <div class="bookmark-slot" data-index="1"></div>
+                        <div class="bookmark-slot" data-index="2"></div>
+                        <div class="bookmark-slot" data-index="3"></div>
+                        <div class="bookmark-slot" data-index="4"></div>
+                        <div class="bookmark-slot" data-index="5"></div>
+                        <div class="bookmark-slot" data-index="6"></div>
+                        <div class="bookmark-slot" data-index="7"></div>
+                        <div class="bookmark-slot" data-index="8"></div>
+                        <div class="bookmark-slot" data-index="9"></div>
+                        <div class="bookmark-slot" data-index="10"></div>
+                        <div class="bookmark-slot" data-index="11"></div>
+                    </div>
+                </div>
 
                 <div class="settings-section">
                     <h3 style="margin-bottom: 15px; color: var(--primary);">Emergency Resources</h3>
@@ -1846,20 +1872,35 @@ END:VCALENDAR`;
 
         function loadBookmarks() {
             const saved = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
-            for (let i = 0; i < 4; i++) {
-                const slot = document.querySelector(`.bookmark-slot[data-index="${i}"]`);
-                if (!slot) continue;
-                slot.classList.remove('empty');
-                slot.onclick = null;
-
-                const app = PROTON_APPS.find(a => a.id === saved[i]);
-                if (app) {
-                    slot.innerHTML = `<a href="${app.url}" target="_blank" rel="noopener noreferrer" class="bookmark-card"><img src="${app.icon}" alt="${app.name}"><span>${app.name}</span></a>`;
-                } else {
-                    slot.classList.add('empty');
-                    slot.innerHTML = '<span class="placeholder">+</span>';
+            for (let i = 0; i < 12; i++) {
+                const slots = document.querySelectorAll(`.bookmark-slot[data-index="${i}"]`);
+                slots.forEach(slot => {
+                    slot.classList.remove('empty');
                     slot.onclick = () => openBookmarkModal(i);
-                }
+                    const entry = saved[i];
+                    let html = '';
+                    if (entry) {
+                        let app = null;
+                        if (typeof entry === 'string') {
+                            app = PROTON_APPS.find(a => a.id === entry);
+                        } else if (entry.id) {
+                            app = PROTON_APPS.find(a => a.id === entry.id);
+                        }
+                        if (app) {
+                            html = `<a href="${app.url}" target="_blank" rel="noopener noreferrer" class="bookmark-card"><img src="${app.icon}" alt="${app.name}"><span>${app.name}</span></a>`;
+                        } else if (entry.url) {
+                            const icon = entry.icon || `https://www.google.com/s2/favicons?sz=64&domain_url=${entry.url}`;
+                            const name = entry.name || entry.url;
+                            html = `<a href="${entry.url}" target="_blank" rel="noopener noreferrer" class="bookmark-card"><img src="${icon}" alt="${name}"><span>${name}</span></a>`;
+                        }
+                    }
+                    if (html) {
+                        slot.innerHTML = html;
+                    } else {
+                        slot.classList.add('empty');
+                        slot.innerHTML = '<span class="placeholder">+</span>';
+                    }
+                });
             }
         }
 
@@ -1869,15 +1910,51 @@ END:VCALENDAR`;
             modal.dataset.index = index;
             const list = document.getElementById('modal-app-list');
             if (list) {
-                list.innerHTML = PROTON_APPS.map(app => `<div class="modal-app" data-id="${app.id}"><img src="${app.icon}" alt="${app.name}" width="32" height="32"><span>${app.name}</span></div>`).join('');
+                const saved = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
+                const usedIds = saved.map((entry, idx) => {
+                    if (idx === index || !entry) return null;
+                    return typeof entry === 'string' ? entry : entry.id;
+                }).filter(Boolean);
+                const items = PROTON_APPS
+                    .filter(app => !usedIds.includes(app.id))
+                    .map(app => `<div class="modal-app" data-id="${app.id}"><img src="${app.icon}" alt="${app.name}" width="32" height="32"><span>${app.name}</span></div>`);
+                items.push('<div class="modal-app" id="add-custom"><span>➕ Add Website</span></div>');
+                if (saved[index]) {
+                    items.push('<div class="modal-app" data-remove="true" style="color: var(--danger);"><span>Remove</span></div>');
+                }
+                list.innerHTML = items.join('');
                 list.querySelectorAll('.modal-app').forEach(el => {
-                    el.addEventListener('click', () => {
-                        const saved = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
-                        saved[index] = el.dataset.id;
-                        localStorage.setItem('protonBookmarks', JSON.stringify(saved));
-                        closeBookmarkModal();
-                        loadBookmarks();
-                    });
+                    if (el.dataset.id) {
+                        el.addEventListener('click', () => {
+                            saved[index] = { id: el.dataset.id };
+                            localStorage.setItem('protonBookmarks', JSON.stringify(saved));
+                            closeBookmarkModal();
+                            loadBookmarks();
+                        });
+                    } else if (el.id === 'add-custom') {
+                        el.addEventListener('click', () => {
+                            const url = prompt('Enter website URL (including https://)');
+                            if (!url) return;
+                            try {
+                                const urlObj = new URL(url);
+                                const name = prompt('Enter a name for this website') || urlObj.hostname;
+                                const icon = `https://www.google.com/s2/favicons?sz=64&domain=${urlObj.hostname}`;
+                                saved[index] = { url: urlObj.href, name, icon };
+                                localStorage.setItem('protonBookmarks', JSON.stringify(saved));
+                                closeBookmarkModal();
+                                loadBookmarks();
+                            } catch (e) {
+                                alert('Invalid URL');
+                            }
+                        });
+                    } else if (el.dataset.remove) {
+                        el.addEventListener('click', () => {
+                            saved[index] = null;
+                            localStorage.setItem('protonBookmarks', JSON.stringify(saved));
+                            closeBookmarkModal();
+                            loadBookmarks();
+                        });
+                    }
                 });
             }
             modal.classList.remove('hidden');
