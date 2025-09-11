@@ -601,7 +601,7 @@
             border-color: var(--primary);
         }
 
-        /* WTTIN Tab */
+        /* Resources Tab */
         .iframe-container {
             position: relative;
             width: 100%;
@@ -1097,11 +1097,11 @@
             <span class="tab-icon">⛈️</span>
             <span class="tab-label" data-i18n="nav.weather">Weather</span>
         </button>
-        <button class="tab-btn" onclick="switchTab('wttin')" aria-label="WTTIN" data-i18n-aria="nav.wttin">
+        <button class="tab-btn" onclick="switchTab('wttin')" aria-label="Resources" data-i18n-aria="nav.wttin">
             <img src="https://wttin.org/wp-content/uploads/2024/05/Group-184-1.png"
-                 alt="WTTIN"
+                 alt="Resources"
                  style="width: 20px; height: 20px; object-fit: contain;">
-            <span class="tab-label" data-i18n="nav.wttin">WTTIN</span>
+            <span class="tab-label" data-i18n="nav.wttin">Resources</span>
         </button>
         <button class="tab-btn" onclick="switchTab('meals')" aria-label="Meals" data-i18n-aria="nav.meals">
             <span class="tab-icon">🍽️</span>
@@ -1627,14 +1627,14 @@
         </div>
     </div>
 
-    <!-- WTTIN Tab -->
+    <!-- Resources Tab -->
     <div id="wttin" class="tab-content">
         <div style="height: calc(100vh - 120px); display: flex; flex-direction: column;">
             <div style="flex: 1; position: relative;">
                 <iframe
                     src="https://wttin.org"
                     sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-                    title="WTTIN Resources"
+                    title="Resources"
                     loading="lazy"
                     style="width: 100%; height: 100%; border: none;">
                 </iframe>
@@ -1709,11 +1709,6 @@
                     <h3>Proton Calendar</h3>
                     <p>Private calendar.</p>
                 </a>
-                <a class="app-card" href="invite.html">
-                    <div class="app-icon"><img src="https://pmecdn.protonweb.com/image-transformation/?s=c&amp;image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fcalendar_ylg2jq.svg" alt="Calendar #2"></div>
-                    <h3>Calendar #2</h3>
-                    <p>Invite generator.</p>
-                </a>
                 <a class="app-card" href="https://account.proton.me/authenticator" target="_blank" rel="noopener noreferrer">
                     <div class="app-icon"><img src="https://pmecdn.protonweb.com/image-transformation/?s=c&amp;image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fauthenticator.svg" alt="Proton Authenticator"></div>
                     <h3>Proton Authenticator</h3>
@@ -1785,18 +1780,6 @@
                     <h3 style="margin-bottom: 15px; color: var(--primary);">Tab Visibility</h3>
                     <div class="settings-item" style="cursor: default;">
                         <div>
-                            <div style="font-weight: 600;">🏠 Home</div>
-                        </div>
-                        <input type="checkbox" class="tab-visibility-toggle" data-tab="home" checked>
-                    </div>
-                    <div class="settings-item" style="cursor: default;">
-                        <div>
-                            <div style="font-weight: 600;">🏥 iKey</div>
-                        </div>
-                        <input type="checkbox" class="tab-visibility-toggle" data-tab="ikey" checked>
-                    </div>
-                    <div class="settings-item" style="cursor: default;">
-                        <div>
                             <div style="font-weight: 600;">🚨 911</div>
                         </div>
                         <input type="checkbox" class="tab-visibility-toggle" data-tab="emergency-911" checked>
@@ -1809,7 +1792,7 @@
                     </div>
                     <div class="settings-item" style="cursor: default;">
                         <div>
-                            <div style="font-weight: 600;">WTTIN</div>
+                            <div style="font-weight: 600;" data-i18n="nav.wttin">Resources</div>
                         </div>
                         <input type="checkbox" class="tab-visibility-toggle" data-tab="wttin" checked>
                     </div>
@@ -1931,7 +1914,8 @@
         }
 
         // Tab visibility settings
-        const allTabs = ['home', 'ikey', 'emergency-911', 'weather', 'wttin', 'apps'];
+        const allTabs = ['emergency-911', 'weather', 'wttin', 'apps'];
+        const nonHideableTabs = ['home', 'ikey', 'settings'];
 
         function getTabButton(tabName) {
             return Array.from(document.querySelectorAll('.tab-btn')).find(btn =>
@@ -1940,7 +1924,9 @@
         }
 
         function applyHiddenTabs() {
-            const hidden = JSON.parse(localStorage.getItem('hiddenTabs') || '[]');
+            let hidden = JSON.parse(localStorage.getItem('hiddenTabs') || '[]');
+            hidden = hidden.filter(tab => !nonHideableTabs.includes(tab));
+            localStorage.setItem('hiddenTabs', JSON.stringify(hidden));
             allTabs.forEach(tab => {
                 const btn = getTabButton(tab);
                 if (btn) {
@@ -1958,6 +1944,7 @@
         }
 
         function toggleTabVisibility(tab, isVisible) {
+            if (nonHideableTabs.includes(tab)) return;
             let hidden = JSON.parse(localStorage.getItem('hiddenTabs') || '[]');
             if (!isVisible) {
                 if (!hidden.includes(tab)) hidden.push(tab);
