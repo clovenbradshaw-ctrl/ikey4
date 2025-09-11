@@ -37,7 +37,12 @@
             --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
             --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
             --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+            --base-font-size: 16px;
         }
+        html {
+            font-size: var(--base-font-size);
+        }
+
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
@@ -1222,6 +1227,20 @@
                     </a>
                 </div>
                 
+                  <div class="settings-section">
+                    <h3 style="margin-bottom: 15px; color: var(--primary);">Accessibility</h3>
+                    <div class="settings-item">
+                        <div>
+                            <div style="font-weight: 600;">📝 Text Size</div>
+                            <div style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;">Adjust interface text</div>
+                        </div>
+                        <select id="text-size-select" onchange="setTextSize(this.value)" style="padding: 6px; border-radius: 8px; border: 1px solid var(--border);">
+                            <option value="normal">Normal</option>
+                            <option value="grandma">Grandma</option>
+                        </select>
+                    </div>
+                  </div>
+
                 <div class="settings-section">
                     <h3 style="margin-bottom: 15px; color: var(--primary);">Emergency Resources</h3>
                     <div class="settings-item" onclick="alert('Suicide & Crisis Lifeline: 988')">
@@ -2192,6 +2211,26 @@ Generated: ${new Date().toLocaleString()}`;
         window.addEventListener('unload', () => {
             if (watchId) {
                 navigator.geolocation.clearWatch(watchId);
+            }
+        });
+    </script>
+
+    <script>
+        function applyTextSize(size) {
+            const fontSize = size === "grandma" ? "24px" : "16px";
+            document.documentElement.style.setProperty("--base-font-size", fontSize);
+            document.body.style.zoom = size === "grandma" ? "1.5" : "1";
+        }
+        function setTextSize(size) {
+            applyTextSize(size);
+            localStorage.setItem("textSize", size);
+        }
+        document.addEventListener("DOMContentLoaded", () => {
+            const saved = localStorage.getItem("textSize") || "normal";
+            applyTextSize(saved);
+            const select = document.getElementById("text-size-select");
+            if (select) {
+                select.value = saved;
             }
         });
     </script>
