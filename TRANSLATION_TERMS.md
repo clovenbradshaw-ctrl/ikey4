@@ -2,13 +2,27 @@
 
 List of user-visible strings requiring translation for full multilingual support.
 
+## dispatch.html
+- Nashville Police Active Dispatches
+- 📡 Nashville Police Dispatches
+- Real-time incident monitoring • Updates every 30 seconds
+- Active
+- Latest
+- Updated
+- Loading dispatches...
+
+## home.html
+- iKey Home
+
 ## index.html
 - iKey - Secure Location Hub
 - 🔐 iKey
 - Secure Location & Personal Safety Hub
+- Home
 - iKey
 - Weather
 - WTTIN
+- Meals
 - Dispatch
 - Settings
 - Welcome
@@ -74,6 +88,7 @@ List of user-visible strings requiring translation for full multilingual support
 - Next →
 - Generate QR Code
 - Emergency Essential Info
+- Done
 - 📤 Share Info
 - 🆕 Create New QR Code
 - Your iKey is Ready!
@@ -82,7 +97,8 @@ List of user-visible strings requiring translation for full multilingual support
 - 📋 Copy Link
 - 📋 Copy Info
 - 🆕 Create Another
-- Select Proton App
+- Select Favorite
+- ⚠️ Bookmarks are saved only in this browser and will be lost if the device is lost or data is cleared. For secure backup, add a note in Proton Drive or save in an email.
 - Share Contact Info
 - 💾 Save as .txt
 - 📧 Email
@@ -127,6 +143,8 @@ List of user-visible strings requiring translation for full multilingual support
 - Encrypted notes app.
 - Proton Calendar
 - Private calendar.
+- Calendar #2
+- Invite generator.
 - Proton Authenticator
 - 2FA authenticator.
 - Proton Meet
@@ -146,6 +164,14 @@ List of user-visible strings requiring translation for full multilingual support
 - Reading Glasses
 - What's this say?
 - Grandma
+- Tab Visibility
+- 🏠 Home
+- 🏥 iKey
+- ⛈️ Weather
+- 📱 Apps
+- Favorite Apps
+- Add Space
+- Remove Space
 - Emergency Resources
 - 💬 Crisis Support
 - Mental health and crisis resources
@@ -171,6 +197,7 @@ List of user-visible strings requiring translation for full multilingual support
 - Hospital or Agency
 - Enter city...
 - WTTIN Resources
+- Meals Resources
 - Nashville Police Dispatch
 - reading
 - whats
@@ -182,18 +209,11 @@ List of user-visible strings requiring translation for full multilingual support
 - Please enter emergency contact name and phone
 - Link copied to clipboard!
 - iKey info copied!
+- These bookmarks are only saved in this browser and will be lost if the device or browser data is lost. For secure backup, add a note in Proton Drive or save in an email.
+- Invalid URL
 - GPS coordinates copied!
 - Plus Code copied!
 - All location info copied!
-
-## dispatch.html
-- Nashville Police Active Dispatches
-- 📡 Nashville Police Dispatches
-- Real-time incident monitoring • Updates every 30 seconds
-- Active
-- Latest
-- Updated
-- Loading dispatches...
 
 ## invite.html
 - ICS Event Generator - Proton Calendar Compatible
@@ -214,7 +234,8 @@ List of user-visible strings requiring translation for full multilingual support
 - Client Proton Email *
 - Additional Attendee Emails (comma-separated)
 - Description
-- ✉️ Create Invite & Open Email
+- 📧 Send Email Only
+- 📅 Create Invite & Email
 - Clear Form
 - your-email@proton.me
 - attendee1@example.com, attendee2@example.com
