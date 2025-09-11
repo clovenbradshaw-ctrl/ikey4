@@ -1032,6 +1032,10 @@
                  style="width: 20px; height: 20px; object-fit: contain;">
             <span class="tab-label">WTTIN</span>
         </button>
+        <button class="tab-btn" onclick="switchTab('meals')" aria-label="Meals">
+            <span class="tab-icon">🍽️</span>
+            <span class="tab-label">Meals</span>
+        </button>
         <button id="dispatch-tab-btn" class="tab-btn" style="display: none;" onclick="switchTab('dispatch')" aria-label="Dispatch">
             <span class="tab-icon">📡</span>
             <span class="tab-label">Dispatch</span>
@@ -1448,6 +1452,20 @@
                     src="https://wttin.org"
                     sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
                     title="WTTIN Resources"
+                    loading="lazy"
+                    style="width: 100%; height: 100%; border: none;">
+                </iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Meals Tab -->
+    <div id="meals" class="tab-content">
+        <div style="height: calc(100vh - 120px); display: flex; flex-direction: column;">
+            <div style="flex: 1; position: relative;">
+                <iframe
+                    src="https://docs.google.com/document/d/e/2PACX-1vQlUKhgsxno1aW5dQXRhmT0Zfh-kTjoYO4hZHcICi4XI0mNJqjC2aok0OiM3s4e28gn13R4MCo4nsEl/pub?embedded=true"
+                    title="Meals Resources"
                     loading="lazy"
                     style="width: 100%; height: 100%; border: none;">
                 </iframe>
