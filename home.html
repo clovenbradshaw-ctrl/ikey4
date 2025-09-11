@@ -9,7 +9,7 @@
       --permanent-color: #10b981;
       --temporary-color: #64748b;
       --live-color: #3b82f6;
-      --emergency-color: #ef4444;
+      --emergency-color: #f87171;
       --secondary: #666;
       --primary: var(--live-color);
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
@@ -44,13 +44,13 @@
       display: flex;
       justify-content: space-around;
       background: var(--emergency-color);
-      padding: 8px 0;
+      padding: 4px 0;
       z-index: 1000;
     }
 
     .emergency-strip button {
-      height: 60px;
-      font-size: 18px;
+      height: 44px;
+      font-size: 16px;
       font-weight: 700;
       min-width: 44px;
       min-height: 44px;
@@ -99,6 +99,11 @@
     .text-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
     .text-body { font-size: 16px; line-height: 1.5; }
     .text-caption { font-size: 14px; color: var(--secondary); }
+
+    .favorites { display: flex; flex-wrap: wrap; gap: 12px; }
+    .favorite { position: relative; width: 60px; height: 60px; border-radius: 12px; background: #f0f0f0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .favorite .delete { display: none; position: absolute; top: -8px; right: -8px; width: 24px; height: 24px; border: none; border-radius: 50%; background: var(--emergency-color); color: white; }
+    .favorites.editing .delete { display: block; }
 
     .loading {
       background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
@@ -176,7 +181,7 @@
     </button>
   </div>
 
-  <div id="card-container" class="home-container" style="padding-top: 80px;">
+  <div id="card-container" class="home-container" style="padding-top: 64px;">
     <div class="loading"></div>
   </div>
 
@@ -200,10 +205,13 @@
       qr_invalid: "QR code damaged - create a new one"
     };
 
+    let editMode = false;
+    let favoriteApps = JSON.parse(localStorage.getItem('favoriteApps') || '[]');
+
     const cards = [
       { type: 'medical_alert', source: 'qr', data: { allergies: 'Peanuts', bloodType: 'O+' } },
       { type: 'current_location', source: 'live', data: 'Locating…' },
-      { type: 'quick_access', source: 'device', data: 'No bookmarks yet' }
+      { type: 'quick_access', source: 'device', data: favoriteApps }
     ];
 
     function showToast(msg) {
@@ -215,6 +223,7 @@
 
     function renderContent(data, type) {
       if (type === 'medical_alert') return renderMedicalInfo(data);
+      if (type === 'quick_access') return renderQuickAccess(data);
       return `<div class="text-body">${data}</div>`;
     }
 
@@ -257,6 +266,85 @@
       return `<pre class="text-body">${JSON.stringify(data, null, 2)}</pre>`;
     }
 
+    function renderQuickAccess(apps) {
+      if (!apps || apps.length === 0) {
+        return `<div class="text-body">No favorites yet</div>`;
+      }
+      return `
+        <div class="favorites ${editMode ? 'editing' : ''}" id="favorites">
+          ${apps.map((app, index) => `
+            <div class="favorite" draggable="${editMode}" data-index="${index}">
+              <span class="icon">${app.icon || '⭐'}</span>
+              <span class="label">${app.name}</span>
+              <button class="delete" onclick="deleteFavorite(${index})">✕</button>
+            </div>
+          `).join('')}
+        </div>
+        ${editMode ? '<div class="button-group"><button onclick="exitEdit()">Done</button></div>' : ''}
+      `;
+    }
+
+    function saveFavorites() {
+      localStorage.setItem('favoriteApps', JSON.stringify(favoriteApps));
+    }
+
+    function deleteFavorite(index) {
+      favoriteApps.splice(index, 1);
+      saveFavorites();
+      renderHome();
+    }
+
+    function moveFavorite(from, to) {
+      if (from === to) return;
+      const [moved] = favoriteApps.splice(from, 1);
+      favoriteApps.splice(to, 0, moved);
+      saveFavorites();
+      renderHome();
+    }
+
+    function exitEdit() {
+      editMode = false;
+      renderHome();
+    }
+
+    function attachFavoriteHandlers() {
+      const container = document.getElementById('favorites');
+      if (!container) return;
+
+      container.querySelectorAll('.favorite').forEach(item => {
+        let pressTimer;
+        const index = Number(item.dataset.index);
+
+        function startPress() {
+          pressTimer = setTimeout(() => { editMode = true; renderHome(); }, 500);
+        }
+
+        function cancelPress() { clearTimeout(pressTimer); }
+
+        item.addEventListener('mousedown', startPress);
+        item.addEventListener('touchstart', startPress);
+        item.addEventListener('mouseup', cancelPress);
+        item.addEventListener('mouseleave', cancelPress);
+        item.addEventListener('touchend', cancelPress);
+
+        item.addEventListener('dragstart', e => {
+          e.dataTransfer.effectAllowed = 'move';
+          e.dataTransfer.setData('text/plain', index);
+        });
+
+        item.addEventListener('dragover', e => {
+          e.preventDefault();
+        });
+
+        item.addEventListener('drop', e => {
+          e.preventDefault();
+          const from = Number(e.dataTransfer.getData('text/plain'));
+          const to = Number(e.currentTarget.dataset.index);
+          moveFavorite(from, to);
+        });
+      });
+    }
+
     function renderHome() {
       const container = document.getElementById('card-container');
       container.innerHTML = '';
@@ -268,8 +356,10 @@
           </div>`;
         return;
       }
+      cards.find(c => c.type === 'quick_access').data = favoriteApps;
       cards.sort((a, b) => CARD_PRIORITY[a.type] - CARD_PRIORITY[b.type]);
       cards.forEach(card => { container.innerHTML += renderDataCard(card); });
+      attachFavoriteHandlers();
     }
 
     function showError(type) {
