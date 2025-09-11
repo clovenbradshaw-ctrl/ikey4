@@ -2698,7 +2698,9 @@ Generated: ${new Date().toLocaleString()}`;
                     document.getElementById('wizard-view').classList.add('hidden');
                     document.getElementById('display-view').classList.remove('hidden');
                     
-                    let html = `<details class="info-details"><summary style="font-size: 1.2rem; font-weight: 600;">${data.n || 'Details'}</summary><div class="details-body">`;
+                    const infoDetailsPref = localStorage.getItem('infoDetailsOpen');
+                    const detailsOpenAttr = infoDetailsPref === null || infoDetailsPref === 'true' ? ' open' : '';
+                    let html = `<details class="info-details"${detailsOpenAttr}><summary style="font-size: 1.2rem; font-weight: 600;">${data.n || 'Details'}</summary><div class="details-body">`;
 
                     if (data.ph) {
                         html += `<div class="info-card">
@@ -2761,6 +2763,12 @@ Generated: ${new Date().toLocaleString()}`;
                     html += '</div></details>';
 
                     document.getElementById('display-content').innerHTML = html;
+                    const infoDetailsEl = document.querySelector('#display-content .info-details');
+                    if (infoDetailsEl) {
+                        infoDetailsEl.addEventListener('toggle', () => {
+                            localStorage.setItem('infoDetailsOpen', infoDetailsEl.open);
+                        });
+                    }
                 } catch (e) {
                     console.error('Failed to parse URL data:', e);
                 }
