@@ -6,7 +6,7 @@
     <meta name="description" content="iKey - Keep your location secure with emergency access capabilities">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>iKey - Secure Location Hub</title>
+    <title data-i18n="appTitle">iKey - Secure Location Hub</title>
     <link rel="icon" href="https://storage.googleapis.com/art_homelessness/favicon-32x32.png" type="image/png">
     <link rel="apple-touch-icon" href="https://storage.googleapis.com/art_homelessness/favicon-32x32.png">
 
@@ -1003,50 +1003,57 @@
 <body>
     <!-- Header -->
     <div class="app-header">
-        <div id="google_translate_element" style="position: absolute; top: 10px; right: 10px;"></div>
-        <h1>🔐 iKey</h1>
-        <p>Secure Location & Personal Safety Hub</p>
+        <select id="language-select" style="position: absolute; top: 10px; right: 10px;">
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="ar">العربية</option>
+            <option value="ku">Kurdî</option>
+            <option value="so">Af-Soomaali</option>
+            <option value="zh">中文</option>
+        </select>
+        <h1 data-i18n="appLogo">🔐 iKey</h1>
+        <p data-i18n="appTagline">Secure Location & Personal Safety Hub</p>
     </div>
 
     <!-- Tab Navigation -->
     <nav class="tab-nav">
-        <button class="tab-btn" onclick="switchTab('home')" aria-label="Home">
+        <button class="tab-btn" onclick="switchTab('home')" aria-label="Home" data-i18n-aria="nav.home">
             <span class="tab-icon">🏠</span>
-            <span class="tab-label">Home</span>
+            <span class="tab-label" data-i18n="nav.home">Home</span>
         </button>
-        <button class="tab-btn active" onclick="switchTab('ikey')" aria-label="iKey">
+        <button class="tab-btn active" onclick="switchTab('ikey')" aria-label="iKey" data-i18n-aria="nav.iKey">
             <span class="tab-icon">🏥</span>
-            <span class="tab-label">iKey</span>
+            <span class="tab-label" data-i18n="nav.iKey">iKey</span>
         </button>
         <button class="tab-btn" onclick="switchTab('emergency-911')" aria-label="911">
             <span class="tab-icon">🚨</span>
             <span class="tab-label">911</span>
         </button>
-        <button class="tab-btn" onclick="switchTab('weather')" aria-label="Weather">
+        <button class="tab-btn" onclick="switchTab('weather')" aria-label="Weather" data-i18n-aria="nav.weather">
             <span class="tab-icon">⛈️</span>
-            <span class="tab-label">Weather</span>
+            <span class="tab-label" data-i18n="nav.weather">Weather</span>
         </button>
-        <button class="tab-btn" onclick="switchTab('wttin')" aria-label="WTTIN">
+        <button class="tab-btn" onclick="switchTab('wttin')" aria-label="WTTIN" data-i18n-aria="nav.wttin">
             <img src="https://wttin.org/wp-content/uploads/2024/05/Group-184-1.png"
                  alt="WTTIN"
                  style="width: 20px; height: 20px; object-fit: contain;">
-            <span class="tab-label">WTTIN</span>
+            <span class="tab-label" data-i18n="nav.wttin">WTTIN</span>
         </button>
-        <button class="tab-btn" onclick="switchTab('meals')" aria-label="Meals">
+        <button class="tab-btn" onclick="switchTab('meals')" aria-label="Meals" data-i18n-aria="nav.meals">
             <span class="tab-icon">🍽️</span>
-            <span class="tab-label">Meals</span>
+            <span class="tab-label" data-i18n="nav.meals">Meals</span>
         </button>
-        <button id="dispatch-tab-btn" class="tab-btn" style="display: none;" onclick="switchTab('dispatch')" aria-label="Dispatch">
+        <button id="dispatch-tab-btn" class="tab-btn" style="display: none;" onclick="switchTab('dispatch')" aria-label="Dispatch" data-i18n-aria="nav.dispatch">
             <span class="tab-icon">📡</span>
-            <span class="tab-label">Dispatch</span>
+            <span class="tab-label" data-i18n="nav.dispatch">Dispatch</span>
         </button>
         <button class="tab-btn proton-btn" onclick="switchTab('apps')" aria-label="Apps">
             <img src="https://appfairness.org/wp-content/uploads/2021/09/logos-proton.jpg"
                  alt="Proton" class="proton-icon">
         </button>
-        <button class="tab-btn" onclick="switchTab('settings')" aria-label="Settings">
+        <button class="tab-btn" onclick="switchTab('settings')" aria-label="Settings" data-i18n-aria="nav.settings">
             <span class="tab-icon">⚙️</span>
-            <span class="tab-label">Settings</span>
+            <span class="tab-label" data-i18n="nav.settings">Settings</span>
         </button>
     </nav>
 
@@ -1671,7 +1678,7 @@
     <div id="settings" class="tab-content">
         <div class="container">
             <div class="card">
-                <h2 style="margin-bottom: 25px;">Settings</h2>
+        <h2 style="margin-bottom: 25px;" data-i18n="nav.settings">Settings</h2>
                 
                 <div class="settings-section">
                     <h3 style="margin-bottom: 15px; color: var(--primary);">External Tools</h3>
@@ -3464,18 +3471,40 @@ Generated: ${new Date().toLocaleString()}`;
         });
     </script>
 
-    <script type="text/javascript">
-        function googleTranslateElementInit() {
-            new google.translate.TranslateElement(
-                {
-                    pageLanguage: 'en',
-                    includedLanguages: 'es,ar,ckb,so,my',
-                    layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-                },
-                'google_translate_element'
-            );
+    <script>
+        const languageSelect = document.getElementById('language-select');
+        let translations = {};
+        fetch('TRANSLATION_TERMS.md')
+            .then(resp => resp.json())
+            .then(data => {
+                translations = data;
+                const saved = localStorage.getItem('language') || 'en';
+                if (languageSelect) {
+                    languageSelect.value = saved;
+                    languageSelect.addEventListener('change', () => {
+                        setLanguage(languageSelect.value);
+                    });
+                }
+                setLanguage(saved);
+            });
+
+        function setLanguage(lang) {
+            const dict = translations[lang] || {};
+            document.documentElement.lang = lang;
+            localStorage.setItem('language', lang);
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const parts = el.dataset.i18n.split('.');
+                let text = dict;
+                parts.forEach(k => { if (text) text = text[k]; });
+                if (text) el.textContent = text;
+            });
+            document.querySelectorAll('[data-i18n-aria]').forEach(el => {
+                const parts = el.dataset.i18nAria.split('.');
+                let text = dict;
+                parts.forEach(k => { if (text) text = text[k]; });
+                if (text) el.setAttribute('aria-label', text);
+            });
         }
     </script>
-    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>

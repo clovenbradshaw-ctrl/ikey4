@@ -4,6 +4,10 @@
 
 iKey Health is a client-side encrypted, progressive web application for storing and managing essential health information with three distinct security tiers. The system operates entirely in the browser with optional cloud backup via webhooks, ensuring users maintain complete control over their essential data while providing emergency access capabilities.
 
+## Internationalization
+
+The interface includes a built-in language selector that loads translations from `TRANSLATION_TERMS.md`. Available languages include English, Español, العربية, Kurdî, Af‑Soomaali, and 中文. The selection is stored locally and applied without relying on Google Translate.
+
 ## Favorite Apps
 
 The home screen provides a grid of favorite apps for quick access. Four slots are available by default, and additional spaces can be added or removed from the **Settings** tab. Tap an app once to open it. Long-press any bookmark to enter edit mode—icons shake and a remove button appears. The add dialog can populate the grid with all Proton apps or include built-in tools like Weather and Police Dispatch.
