@@ -1011,6 +1011,7 @@
             <option value="so">Af-Soomaali</option>
             <option value="zh">中文</option>
         </select>
+        <button id="google-translate-btn" class="btn" style="position: absolute; top: 45px; right: 10px;" data-i18n="googleTranslate">Google Translate</button>
         <h1 data-i18n="appLogo">🔐 iKey</h1>
         <p data-i18n="appTagline">Secure Location & Personal Safety Hub</p>
     </div>
@@ -3475,6 +3476,13 @@ Generated: ${new Date().toLocaleString()}`;
 
     <script>
         const languageSelect = document.getElementById('language-select');
+        const googleTranslateBtn = document.getElementById('google-translate-btn');
+        if (googleTranslateBtn) {
+            googleTranslateBtn.addEventListener('click', () => {
+                const url = `https://translate.google.com/translate?u=${encodeURIComponent(window.location.href)}`;
+                window.open(url, '_blank');
+            });
+        }
         let translations = {};
         fetch('TRANSLATION_TERMS.md')
             .then(resp => resp.json())
