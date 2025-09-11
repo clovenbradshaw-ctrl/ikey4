@@ -1121,8 +1121,6 @@
                     <div id="display-content"></div>
                     <div id="bookmark-grid" class="bookmark-grid"></div>
                     <div style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
-                        <button id="add-slot-btn" class="btn btn-secondary">Add Space</button>
-                        <button id="remove-slot-btn" class="btn btn-secondary">Remove Space</button>
                         <button id="bookmark-done" class="btn btn-primary hidden">Done</button>
                     </div>
                     <div id="communication-actions" style="margin-top: 20px;"></div>
@@ -1459,6 +1457,10 @@
                 <div class="settings-section">
                     <h3 style="margin-bottom: 15px; color: var(--primary);">Favorite Apps</h3>
                     <div id="settings-bookmark-grid" class="bookmark-grid"></div>
+                    <div style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button id="add-slot-btn" class="btn btn-secondary">Add Space</button>
+                        <button id="remove-slot-btn" class="btn btn-secondary">Remove Space</button>
+                    </div>
                 </div>
 
                 <div class="settings-section">
@@ -2133,6 +2135,22 @@ END:VCALENDAR`;
                     } else if (el.id === 'add-custom') {
                         el.addEventListener('click', () => {
                             showWebsiteForm(index);
+                            alert('These bookmarks are only saved in this browser and will be lost if the device or browser data is lost. For secure backup, add a note in Proton Drive or save in an email.');
+                            const urlInput = prompt('Enter website URL (https:// optional)');
+                            if (!urlInput) return;
+                            try {
+                                const normalizedUrl = /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(urlInput.trim()) ? urlInput.trim() : `https://${urlInput.trim()}`;
+                                const urlObj = new URL(normalizedUrl);
+                                const name = prompt('Enter a name for this website') || urlObj.hostname;
+                                const icon = `https://www.google.com/s2/favicons?sz=64&domain=${urlObj.hostname}`;
+                                const savedArr = JSON.parse(storage.get('protonBookmarks') || '[]');
+                                savedArr[index] = { url: urlObj.href, name, icon };
+                                storage.set('protonBookmarks', JSON.stringify(savedArr));
+                                closeBookmarkModal();
+                                renderBookmarkSlots();
+                            } catch (e) {
+                                alert('Invalid URL');
+                            }
                         });
                     } else if (el.id === 'add-call' || el.id === 'add-text' || el.id === 'add-email') {
                         el.addEventListener('click', () => {
@@ -2739,7 +2757,9 @@ Generated: ${new Date().toLocaleString()}`;
                     document.getElementById('wizard-view').classList.add('hidden');
                     document.getElementById('display-view').classList.remove('hidden');
                     
-                    let html = `<details class="info-details"><summary style="font-size: 1.2rem; font-weight: 600;">${data.n || 'Details'}</summary><div class="details-body">`;
+                    const infoDetailsPref = localStorage.getItem('infoDetailsOpen');
+                    const detailsOpenAttr = infoDetailsPref === null || infoDetailsPref === 'true' ? ' open' : '';
+                    let html = `<details class="info-details"${detailsOpenAttr}><summary style="font-size: 1.2rem; font-weight: 600;">${data.n || 'Details'}</summary><div class="details-body">`;
 
                     if (data.ph) {
                         html += `<div class="info-card">
@@ -2802,6 +2822,12 @@ Generated: ${new Date().toLocaleString()}`;
                     html += '</div></details>';
 
                     document.getElementById('display-content').innerHTML = html;
+                    const infoDetailsEl = document.querySelector('#display-content .info-details');
+                    if (infoDetailsEl) {
+                        infoDetailsEl.addEventListener('toggle', () => {
+                            localStorage.setItem('infoDetailsOpen', infoDetailsEl.open);
+                        });
+                    }
                 } catch (e) {
                     console.error('Failed to parse URL data:', e);
                 }
