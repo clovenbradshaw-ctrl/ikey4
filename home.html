@@ -164,7 +164,54 @@
     };
 
     let editMode = false;
-    let favoriteApps = JSON.parse(localStorage.getItem('favoriteApps') || '[]');
+    let favoriteApps = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
+
+    const PROTON_APPS = [
+      { id: 'mail', name: 'Proton Mail', url: 'https://account.proton.me/mail', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fmail_xxy4bg.svg' },
+      { id: 'drive', name: 'Proton Drive', url: 'https://drive.proton.me/', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fdrive_wo2nx4.svg' },
+      { id: 'calendar', name: 'Proton Calendar', url: 'https://calendar.proton.me/', icon: 'https://www.google.com/s2/favicons?sz=64&domain=calendar.proton.me' },
+      { id: 'vpn', name: 'Proton VPN', url: 'https://account.protonvpn.com/dashboard', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fvpn_f9embt.svg' },
+      { id: 'pass', name: 'Proton Pass', url: 'https://account.proton.me/pass', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fpass_wl1fk9.svg' },
+      { id: 'docs', name: 'Proton Docs', url: 'https://docs.proton.me/', icon: 'https://www.google.com/s2/favicons?sz=64&domain=docs.proton.me' },
+      { id: 'simplelogin', name: 'SimpleLogin', url: 'https://app.simplelogin.io/dashboard/', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fv1741968746%2Fstatic%2Flogos%2Fside-products%2Fsimple-login_cozggp.svg' }
+    ];
+
+    const INTERNAL_APPS = [
+      { id: 'weather', name: 'Weather', url: '#weather', icon: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/2600.svg' },
+      { id: 'dispatch', name: 'Police Dispatch', url: '#dispatch', icon: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f6a8.svg' }
+    ];
+
+    const CONTACT_ICONS = {
+      call: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4de.svg',
+      text: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4f2.svg',
+      email: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/2709.svg'
+    };
+
+    function getBookmarkDetails(entry) {
+      let app = null, url = '', name = '', icon = '';
+      if (!entry) return null;
+      if (typeof entry === 'string') {
+        app = PROTON_APPS.find(a => a.id === entry);
+      } else if (entry.id) {
+        app = PROTON_APPS.find(a => a.id === entry.id) || INTERNAL_APPS.find(a => a.id === entry.id);
+      }
+      if (app) {
+        url = app.url;
+        name = app.name;
+        icon = app.icon;
+      } else if (entry.url) {
+        url = entry.url;
+        name = entry.name || entry.url;
+        icon = entry.icon || `https://www.google.com/s2/favicons?sz=64&domain_url=${entry.url}`;
+      } else if (entry.type) {
+        if (entry.type === 'call') url = `tel:${entry.value}`;
+        else if (entry.type === 'text') url = `sms:${entry.value}`;
+        else if (entry.type === 'email') url = `mailto:${entry.value}`;
+        name = entry.name || entry.value;
+        icon = entry.photo || CONTACT_ICONS[entry.type];
+      }
+      return { url, name, icon };
+    }
 
     const cards = [
       { type: 'medical_alert', source: 'qr', data: { allergies: 'Peanuts', bloodType: 'O+' } },
@@ -225,16 +272,18 @@
     }
 
     function renderQuickAccess(apps) {
-      if (!apps || apps.length === 0) {
+      const details = apps.map((app, index) => ({ info: getBookmarkDetails(app), index }))
+                          .filter(d => d.info);
+      if (details.length === 0) {
         return `<div class="text-body">No favorites yet</div>`;
       }
       return `
         <div class="favorites ${editMode ? 'editing' : ''}" id="favorites">
-          ${apps.map((app, index) => `
-            <div class="favorite" draggable="${editMode}" data-index="${index}">
-              <span class="icon">${app.icon || '⭐'}</span>
-              <span class="label">${app.name}</span>
-              <button class="delete" onclick="deleteFavorite(${index})">✕</button>
+          ${details.map(d => `
+            <div class="favorite" draggable="${editMode}" data-index="${d.index}" data-url="${d.info.url}">
+              <span class="icon"><img src="${d.info.icon}" alt="${d.info.name}" width="32" height="32"></span>
+              <span class="label">${d.info.name}</span>
+              <button class="delete" onclick="event.stopPropagation(); deleteFavorite(${d.index})">✕</button>
             </div>
           `).join('')}
         </div>
@@ -243,11 +292,11 @@
     }
 
     function saveFavorites() {
-      localStorage.setItem('favoriteApps', JSON.stringify(favoriteApps));
+      localStorage.setItem('protonBookmarks', JSON.stringify(favoriteApps));
     }
 
     function deleteFavorite(index) {
-      favoriteApps.splice(index, 1);
+      favoriteApps[index] = null;
       saveFavorites();
       renderHome();
     }
@@ -284,6 +333,18 @@
         item.addEventListener('mouseup', cancelPress);
         item.addEventListener('mouseleave', cancelPress);
         item.addEventListener('touchend', cancelPress);
+
+        item.addEventListener('click', () => {
+          if (editMode) return;
+          const url = item.dataset.url;
+          if (url) {
+            if (url.startsWith('#')) {
+              window.location.href = url;
+            } else {
+              window.open(url, '_blank');
+            }
+          }
+        });
 
         item.addEventListener('dragstart', e => {
           e.dataTransfer.effectAllowed = 'move';
