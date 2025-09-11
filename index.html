@@ -789,99 +789,6 @@
             gap: 10px;
         }
 
-        .bookmark-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-top: 20px;
-        }
-        .bookmark-slot {
-            background: var(--light);
-            border: 2px dashed var(--border);
-            border-radius: var(--radius);
-            height: 120px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-        .bookmark-slot.empty .placeholder {
-            font-size: 2rem;
-            color: var(--secondary);
-        }
-        .bookmark-card {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-decoration: none;
-            color: inherit;
-            position: relative;
-        }
-        .bookmark-card img {
-            width: 48px;
-            height: 48px;
-        }
-        .bookmark-photo-wrapper {
-            position: relative;
-        }
-        .bookmark-card img.contact-photo {
-            border-radius: 50%;
-            object-fit: cover;
-        }
-        .contact-type-icon {
-            position: absolute;
-            bottom: -4px;
-            right: -4px;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: white;
-        }
-        .photo-preview {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            overflow: hidden;
-            margin: 10px auto;
-        }
-        .photo-preview img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .bookmark-card span {
-            margin-top: 8px;
-            font-weight: 600;
-            text-align: center;
-        }
-        .remove-bookmark {
-            position: absolute;
-            top: 4px;
-            right: 4px;
-            background: var(--danger);
-            color: white;
-            width: 20px;
-            height: 20px;
-            border: none;
-            border-radius: 50%;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            line-height: 20px;
-            cursor: pointer;
-        }
-        .bookmark-grid.editing .bookmark-card {
-            animation: shake 0.3s infinite;
-        }
-        .bookmark-grid.editing .remove-bookmark {
-            display: flex;
-        }
-        @keyframes shake {
-            0% { transform: rotate(-3deg); }
-            50% { transform: rotate(3deg); }
-            100% { transform: rotate(-3deg); }
-        }
         /* Share Modal */
         .modal {
             position: fixed;
@@ -914,11 +821,6 @@
         }
         .modal-app:hover {
             background: var(--light);
-        }
-        .bookmark-warning {
-            font-size: 0.85rem;
-            color: var(--danger);
-            margin-bottom: 10px;
         }
         .modal-actions {
             display: flex;
@@ -1010,55 +912,6 @@
             font-size: 14px;
         }
 
-        /* Quick Access */
-        .quick-access-container {
-            background: var(--light);
-            border-radius: var(--radius);
-            padding: 16px;
-        }
-
-        .quick-access-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .quick-access-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            gap: 12px;
-        }
-
-        .quick-access-item {
-            background: white;
-            border-radius: 12px;
-            padding: 12px;
-            text-align: center;
-            cursor: pointer;
-            transition: transform 0.2s;
-            text-decoration: none;
-            color: inherit;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .quick-access-item:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .quick-access-item img {
-            width: 32px;
-            height: 32px;
-        }
-
-        .quick-access-item span {
-            font-size: 11px;
-            font-weight: 600;
-        }
     </style>
 </head>
 <body>
@@ -1130,10 +983,6 @@
                 <!-- Populated by JavaScript -->
             </div>
 
-            <!-- Quick Access Section -->
-            <div id="quick-access" class="quick-access-container">
-                <!-- Populated by JavaScript -->
-            </div>
         </div>
     </div>
 
@@ -1432,10 +1281,6 @@
                 <div id="display-view" class="hidden">
                     <h2>Emergency Essential Info</h2>
                     <div id="display-content"></div>
-                    <div id="bookmark-grid" class="bookmark-grid"></div>
-                    <div style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
-                        <button id="bookmark-done" class="btn btn-primary hidden">Done</button>
-                    </div>
                     <div id="communication-actions" style="margin-top: 20px;"></div>
                     <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
                         <button class="btn btn-primary" onclick="openShareModal()">📤 Share Info</button>
@@ -1466,14 +1311,6 @@
         </div>
     </div>
 
-<!-- Bookmark Selection Modal -->
-<div id="bookmark-modal" class="modal hidden">
-    <div class="modal-content">
-        <h3>Select Favorite</h3>
-        <p class="bookmark-warning">⚠️ Bookmarks are saved only in this browser and will be lost if the device is lost or data is cleared. For secure backup, add a note in Proton Drive or save in an email.</p>
-        <div id="modal-app-list"></div>
-    </div>
-</div>
 
 <!-- Share Modal -->
 <div id="share-modal" class="modal hidden">
@@ -1805,14 +1642,6 @@
                     </div>
                 </div>
 
-                <div class="settings-section">
-                    <h3 style="margin-bottom: 15px; color: var(--primary);">Favorite Apps</h3>
-                    <div id="settings-bookmark-grid" class="bookmark-grid"></div>
-                    <div style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
-                        <button id="add-slot-btn" class="btn btn-secondary">Add Space</button>
-                        <button id="remove-slot-btn" class="btn btn-secondary">Remove Space</button>
-                    </div>
-                </div>
 
                 <div class="settings-section">
                     <h3 style="margin-bottom: 15px; color: var(--primary);">Emergency Resources</h3>
@@ -2422,385 +2251,6 @@ END:VCALENDAR`;
             { id: 'dispatch', name: 'Police Dispatch', url: '#dispatch', icon: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f6a8.svg' }
         ];
 
-        const CONTACT_ICONS = {
-            call: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4de.svg',
-            text: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4f2.svg',
-            email: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/2709.svg'
-        };
-
-        const MAX_BOOKMARKS = 12;
-        let bookmarkEditMode = false;
-
-        function getBookmarkCount() {
-            return Math.min(parseInt(storage.get('bookmarkCount')) || 4, MAX_BOOKMARKS);
-        }
-
-        function setBookmarkCount(n) {
-            storage.set('bookmarkCount', Math.min(n, MAX_BOOKMARKS));
-        }
-
-        function renderBookmarkSlots() {
-            const count = getBookmarkCount();
-            const grids = [
-                document.getElementById('settings-bookmark-grid'),
-                document.getElementById('bookmark-grid')
-            ];
-            grids.forEach(grid => {
-                if (!grid) return;
-                grid.innerHTML = '';
-                for (let i = 0; i < count; i++) {
-                    const slot = document.createElement('div');
-                    slot.className = 'bookmark-slot';
-                    slot.dataset.index = i;
-                    grid.appendChild(slot);
-                }
-            });
-            loadBookmarks();
-        }
-
-        function loadBookmarks() {
-            const saved = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
-            const count = getBookmarkCount();
-            for (let i = 0; i < count; i++) {
-                document.querySelectorAll(`.bookmark-slot[data-index="${i}"]`).forEach(slot => {
-                    slot.classList.remove('empty');
-                    slot.ondragover = e => {
-                        if (!bookmarkEditMode) return;
-                        e.preventDefault();
-                    };
-                    slot.ondrop = e => {
-                        if (!bookmarkEditMode) return;
-                        e.preventDefault();
-                        const from = Number(e.dataTransfer.getData('text/plain'));
-                        const to = Number(slot.dataset.index);
-                        moveBookmark(from, to);
-                    };
-                    const entry = saved[i];
-                    let app = null, html = '', url = '', name = '', icon = '';
-                    if (entry) {
-                        if (typeof entry === 'string') {
-                            app = PROTON_APPS.find(a => a.id === entry);
-                        } else if (entry.id) {
-                            app = PROTON_APPS.find(a => a.id === entry.id) || INTERNAL_APPS.find(a => a.id === entry.id);
-                        }
-                        if (app) {
-                            url = app.url;
-                            name = app.name;
-                            icon = app.icon;
-                        } else if (entry.url) {
-                            url = entry.url;
-                            name = entry.name || entry.url;
-                            icon = entry.icon || `https://www.google.com/s2/favicons?sz=64&domain_url=${entry.url}`;
-                        } else if (entry.type) {
-                            if (entry.type === 'call') {
-                                url = `tel:${entry.value}`;
-                            } else if (entry.type === 'text') {
-                                url = `sms:${entry.value}`;
-                            } else if (entry.type === 'email') {
-                                url = `mailto:${entry.value}`;
-                            }
-                            name = entry.name || entry.value;
-                            icon = entry.photo || CONTACT_ICONS[entry.type];
-                        }
-                    }
-                    if (url) {
-                        slot.onclick = null;
-                        let imgHtml = `<img src="${icon}" alt="${name}">`;
-                        if (entry && entry.type && entry.photo) {
-                            imgHtml = `<div class="bookmark-photo-wrapper"><img src="${icon}" alt="${name}" class="contact-photo"><img src="${CONTACT_ICONS[entry.type]}" class="contact-type-icon" alt="${entry.type}"></div>`;
-                        }
-                        html = `<div class="bookmark-card">${imgHtml}<span>${name}</span><button class="remove-bookmark" aria-label="Remove">×</button></div>`;
-                        slot.innerHTML = html;
-                        const card = slot.querySelector('.bookmark-card');
-                        const removeBtn = slot.querySelector('.remove-bookmark');
-                        if (entry && entry.description) {
-                            card.title = entry.description;
-                        }
-                        card.addEventListener('click', () => {
-                            if (bookmarkEditMode) return;
-                            if (url.startsWith('#')) {
-                                switchTab(url.substring(1));
-                            } else {
-                                window.open(url, '_blank');
-                            }
-                        });
-                        addLongPress(card, enterBookmarkEditMode);
-                        card.setAttribute('draggable', bookmarkEditMode);
-                        card.ondragstart = e => {
-                            if (!bookmarkEditMode) {
-                                e.preventDefault();
-                                return;
-                            }
-                            e.dataTransfer.effectAllowed = 'move';
-                            e.dataTransfer.setData('text/plain', slot.dataset.index);
-                        };
-                        removeBtn.addEventListener('click', (e) => {
-                            e.stopPropagation();
-                            const savedArr = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
-                            savedArr[i] = null;
-                            localStorage.setItem('protonBookmarks', JSON.stringify(savedArr));
-                            refreshAllBookmarkGrids();
-                        });
-                    } else {
-                        slot.classList.add('empty');
-                        slot.innerHTML = '<span class="placeholder">+</span>';
-                        slot.onclick = () => openBookmarkModal(i);
-                    }
-                });
-            }
-        }
-
-        function refreshAllBookmarkGrids() {
-            renderBookmarkSlots();
-            renderHomeStatus();
-        }
-
-        function addLongPress(el, callback) {
-            let timer;
-            el.addEventListener('pointerdown', () => {
-                timer = setTimeout(callback, 600);
-            });
-            ['pointerup', 'pointerleave', 'pointercancel'].forEach(evt => {
-                el.addEventListener(evt, () => clearTimeout(timer));
-            });
-        }
-
-        function enterBookmarkEditMode() {
-            if (bookmarkEditMode) return;
-            bookmarkEditMode = true;
-            const grid = document.getElementById('bookmark-grid');
-            if (grid) grid.classList.add('editing');
-            const doneBtn = document.getElementById('bookmark-done');
-            if (doneBtn) doneBtn.classList.remove('hidden');
-            document.querySelectorAll('.bookmark-card').forEach(card => card.setAttribute('draggable', 'true'));
-        }
-
-        function exitBookmarkEditMode() {
-            bookmarkEditMode = false;
-            const grid = document.getElementById('bookmark-grid');
-            if (grid) grid.classList.remove('editing');
-            const doneBtn = document.getElementById('bookmark-done');
-            if (doneBtn) doneBtn.classList.add('hidden');
-            document.querySelectorAll('.bookmark-card').forEach(card => card.removeAttribute('draggable'));
-        }
-
-        function addBookmarkSlot() {
-            let count = getBookmarkCount();
-            if (count >= MAX_BOOKMARKS) return;
-            setBookmarkCount(count + 1);
-            refreshAllBookmarkGrids();
-            openBookmarkModal(count);
-        }
-
-        function removeBookmarkSlot() {
-            let count = getBookmarkCount();
-            if (count <= 1) return;
-            const savedArr = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
-            savedArr.splice(count - 1, 1);
-            localStorage.setItem('protonBookmarks', JSON.stringify(savedArr));
-            setBookmarkCount(count - 1);
-            refreshAllBookmarkGrids();
-        }
-
-        function moveBookmark(from, to) {
-            const savedArr = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
-            if (from === to || from < 0 || to < 0 || from >= savedArr.length || to >= savedArr.length) return;
-            const [moved] = savedArr.splice(from, 1);
-            savedArr.splice(to, 0, moved);
-            localStorage.setItem('protonBookmarks', JSON.stringify(savedArr));
-            refreshAllBookmarkGrids();
-        }
-
-        function openBookmarkModal(index) {
-            const modal = document.getElementById('bookmark-modal');
-            if (!modal) return;
-            modal.dataset.index = index;
-            modal.innerHTML = `<div class="modal-content"><h3>Select Favorite</h3><p class="bookmark-warning">⚠️ Bookmarks are saved only in this browser and will be lost if the device is lost or data is cleared. For secure backup, add a note in Proton Drive or save in an email.</p><div id="modal-app-list"></div></div>`;
-            const list = document.getElementById('modal-app-list');
-            if (list) {
-                const saved = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
-                const usedIds = saved.map((entry, idx) => {
-                    if (idx === index || !entry) return null;
-                    return typeof entry === 'string' ? entry : entry.id;
-                }).filter(Boolean);
-                const items = [];
-                items.push('<div class="modal-app" id="add-all-proton"><span>Add All Proton Apps</span></div>');
-                PROTON_APPS.filter(app => !usedIds.includes(app.id)).forEach(app => {
-                    items.push(`<div class="modal-app" data-id="${app.id}" data-type="proton"><img src="${app.icon}" alt="${app.name}" width="32" height="32"><span>${app.name}</span></div>`);
-                });
-                INTERNAL_APPS.filter(app => !usedIds.includes(app.id)).forEach(app => {
-                    items.push(`<div class="modal-app" data-id="${app.id}" data-type="internal"><img src="${app.icon}" alt="${app.name}" width="32" height="32"><span>${app.name}</span></div>`);
-                });
-                items.push('<div class="modal-app" id="add-call"><span>📞 Call Someone</span></div>');
-                items.push('<div class="modal-app" id="add-text"><span>💬 Text Someone</span></div>');
-                items.push('<div class="modal-app" id="add-email"><span>📧 Email Someone</span></div>');
-                items.push('<div class="modal-app" id="add-custom"><span>➕ Add Website</span></div>');
-                if (saved[index]) {
-                    items.push('<div class="modal-app" data-remove="true" style="color: var(--danger);"><span>Remove</span></div>');
-                }
-                list.innerHTML = items.join('');
-                list.querySelectorAll('.modal-app').forEach(el => {
-                    if (el.dataset.id) {
-                        el.addEventListener('click', () => {
-                            const savedArr = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
-                            if (el.dataset.type === 'proton') {
-                                savedArr[index] = { id: el.dataset.id };
-                            } else if (el.dataset.type === 'internal') {
-                                const app = INTERNAL_APPS.find(a => a.id === el.dataset.id);
-                                savedArr[index] = { id: app.id, url: app.url, name: app.name, icon: app.icon };
-                            }
-                            localStorage.setItem('protonBookmarks', JSON.stringify(savedArr));
-                            closeBookmarkModal();
-                            refreshAllBookmarkGrids();
-                        });
-                    } else if (el.id === 'add-custom') {
-                        el.addEventListener('click', () => {
-                            showWebsiteForm(index);
-                            alert('These bookmarks are only saved in this browser and will be lost if the device or browser data is lost. For secure backup, add a note in Proton Drive or save in an email.');
-                            const urlInput = prompt('Enter website URL (https:// optional)');
-                            if (!urlInput) return;
-                            try {
-                                const normalizedUrl = /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(urlInput.trim()) ? urlInput.trim() : `https://${urlInput.trim()}`;
-                                const urlObj = new URL(normalizedUrl);
-                                const name = prompt('Enter a name for this website') || urlObj.hostname;
-                                const icon = `https://www.google.com/s2/favicons?sz=64&domain=${urlObj.hostname}`;
-                                const savedArr = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
-                                savedArr[index] = { url: urlObj.href, name, icon };
-                                localStorage.setItem('protonBookmarks', JSON.stringify(savedArr));
-                                closeBookmarkModal();
-                                refreshAllBookmarkGrids();
-                            } catch (e) {
-                                alert('Invalid URL');
-                            }
-                        });
-                    } else if (el.id === 'add-call' || el.id === 'add-text' || el.id === 'add-email') {
-                        el.addEventListener('click', () => {
-                            showContactForm(el.id.replace('add-',''), index);
-                        });
-                    } else if (el.dataset.remove) {
-                        el.addEventListener('click', () => {
-                            const savedArr = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
-                            savedArr[index] = null;
-                            localStorage.setItem('protonBookmarks', JSON.stringify(savedArr));
-                            closeBookmarkModal();
-                            refreshAllBookmarkGrids();
-                        });
-                    } else if (el.id === 'add-all-proton') {
-                        el.addEventListener('click', () => {
-                            const savedArr = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
-                            const hasProtonApps = savedArr.some(b => b?.id && PROTON_APPS.find(a => a.id === b.id));
-                            if (hasProtonApps) {
-                                alert('Some Proton apps are already bookmarked');
-                                return;
-                            }
-                            PROTON_APPS.forEach(app => savedArr.push({ id: app.id }));
-                            localStorage.setItem('protonBookmarks', JSON.stringify(savedArr));
-                            setBookmarkCount(Math.max(getBookmarkCount(), savedArr.length));
-                            closeBookmarkModal();
-                            refreshAllBookmarkGrids();
-                        });
-                    }
-                });
-            }
-            modal.classList.remove('hidden');
-        }
-
-        function showWebsiteForm(index) {
-            const modal = document.getElementById('bookmark-modal');
-            if (!modal) return;
-            modal.dataset.index = index;
-            modal.innerHTML = `<div class="modal-content"><h3>Add Website</h3><p class="bookmark-warning">⚠️ Bookmarks are saved only in this browser and will be lost if the device is lost or data is cleared. For secure backup, add a note in Proton Drive or save in an email.</p><div class="modal-actions"><label for="custom-url">URL</label><input id="custom-url" type="text" placeholder="example.com (https:// optional)"><label for="custom-name">Name (optional)</label><input id="custom-name" type="text" placeholder="Website name"><button class="btn btn-primary" id="save-custom">Save</button><button class="btn btn-secondary" id="cancel-custom">Cancel</button></div></div>`;
-            const urlInput = document.getElementById('custom-url');
-            const nameInput = document.getElementById('custom-name');
-            document.getElementById('save-custom').addEventListener('click', () => {
-                let url = urlInput.value.trim();
-                if (!url) {
-                    showTooltip('Please enter a URL', urlInput);
-                    return;
-                }
-                if (!/^https?:\/\//i.test(url)) {
-                    url = 'https://' + url;
-                }
-                try {
-                    const urlObj = new URL(url);
-                    const name = nameInput.value.trim() || urlObj.hostname;
-                    const icon = `https://www.google.com/s2/favicons?sz=64&domain=${urlObj.hostname}`;
-                    const savedArr = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
-                    savedArr[index] = { url: urlObj.href, name, icon };
-                    localStorage.setItem('protonBookmarks', JSON.stringify(savedArr));
-                    closeBookmarkModal();
-                    refreshAllBookmarkGrids();
-                } catch (e) {
-                    showTooltip('Invalid URL', urlInput);
-                }
-            });
-            document.getElementById('cancel-custom').addEventListener('click', () => {
-                closeBookmarkModal();
-            });
-        }
-
-        function showContactForm(type, index) {
-            const modal = document.getElementById('bookmark-modal');
-            if (!modal) return;
-            const actionNames = { call: 'Call', text: 'Text', email: 'Email' };
-            modal.innerHTML = `<div class="modal-content"><h3>${actionNames[type]} Contact</h3><p class="bookmark-warning">⚠️ Bookmarks are saved only in this browser and will be lost if the device is lost or data is cleared. For secure backup, add a note in Proton Drive or save in an email.</p><div class="modal-actions"><label for="contact-name">Name</label><input id="contact-name" type="text" placeholder="Name"><label for="contact-value">${type === 'email' ? 'Email' : 'Phone Number'}</label><input id="contact-value" type="${type === 'email' ? 'email' : 'tel'}" placeholder="${type === 'email' ? 'Email' : 'Phone Number'}"><label for="contact-desc">Description (optional)</label><input id="contact-desc" type="text" placeholder="Description (optional)"><label for="contact-photo">Photo (optional)</label><input id="contact-photo" type="file" accept="image/*"><div id="photo-preview" class="photo-preview hidden"><img id="photo-preview-img" alt="Preview"></div><button class="btn btn-primary" id="save-contact">Save</button><button class="btn btn-secondary" id="cancel-contact">Cancel</button></div></div>`;
-            let photoData = '';
-            const photoInput = document.getElementById('contact-photo');
-            if (photoInput) {
-                photoInput.addEventListener('change', (e) => {
-                    const file = e.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = (ev) => {
-                            photoData = ev.target.result;
-                            const prev = document.getElementById('photo-preview');
-                            const img = document.getElementById('photo-preview-img');
-                            if (img && prev) {
-                                img.src = photoData;
-                                prev.classList.remove('hidden');
-                            }
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                });
-            }
-            document.getElementById('save-contact').addEventListener('click', () => {
-                const name = document.getElementById('contact-name').value.trim();
-                const value = document.getElementById('contact-value').value.trim();
-                const desc = document.getElementById('contact-desc').value.trim();
-                if (!value) {
-                    showTooltip('Please enter a ' + (type === 'email' ? 'email address' : 'phone number'), document.getElementById('contact-value'));
-                    return;
-                }
-                const savedArr = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
-                savedArr[index] = { type, value, name, description: desc, photo: photoData };
-                localStorage.setItem('protonBookmarks', JSON.stringify(savedArr));
-                closeBookmarkModal();
-                refreshAllBookmarkGrids();
-            });
-            document.getElementById('cancel-contact').addEventListener('click', () => {
-                closeBookmarkModal();
-            });
-        }
-
-        function showTooltip(message, element) {
-            if (!element) return;
-            const tip = document.createElement('div');
-            tip.className = 'tooltip';
-            tip.textContent = message;
-            document.body.appendChild(tip);
-            const rect = element.getBoundingClientRect();
-            tip.style.left = rect.left + window.scrollX + rect.width / 2 - tip.offsetWidth / 2 + 'px';
-            tip.style.top = rect.top + window.scrollY - tip.offsetHeight - 8 + 'px';
-            setTimeout(() => tip.remove(), 2000);
-        }
-
-        function closeBookmarkModal() {
-            const modal = document.getElementById('bookmark-modal');
-            if (modal) {
-                modal.classList.add('hidden');
-            }
-        }
 
         const CODE_ALPHABET = '23456789CFGHJMPQRVWX';
 
@@ -3226,44 +2676,6 @@ Generated: ${new Date().toLocaleString()}`;
         `;
             }
 
-            // Card 3: Quick Access
-            renderQuickAccess();
-        }
-
-        function renderQuickAccess() {
-            const container = document.getElementById('quick-access');
-            if (!container) return;
-
-            const savedBookmarks = JSON.parse(localStorage.getItem('protonBookmarks') || '[]').filter(Boolean);
-
-            if (savedBookmarks.length === 0) return;
-
-            container.innerHTML = `
-        <div class="quick-access-header">
-            <h3 style="margin: 0; font-size: 16px;">Quick Access</h3>
-            <span style="font-size: 12px; color: var(--secondary);">📱 Device Only</span>
-        </div>
-        <div class="quick-access-grid" id="quick-grid"></div>
-    `;
-
-            const grid = document.getElementById('quick-grid');
-            savedBookmarks.slice(0, 6).forEach(bookmark => {
-                // Use existing bookmark rendering logic
-                let html = '';
-                if (bookmark.id) {
-                    const app = PROTON_APPS.find(a => a.id === bookmark.id);
-                    if (app) {
-                        html = `
-                    <a href="${app.url}" class="quick-access-item" target="_blank">
-                        <img src="${app.icon}" alt="${app.name}">
-                        <span>${app.name}</span>
-                    </a>
-                `;
-                    }
-                }
-                grid.innerHTML += html;
-            });
-        }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
@@ -3469,21 +2881,6 @@ Generated: ${new Date().toLocaleString()}`;
                 }
             });
 
-            refreshAllBookmarkGrids();
-            const modal = document.getElementById('bookmark-modal');
-            if (modal) {
-                modal.addEventListener('click', function(e) {
-                    if (e.target === modal) {
-                        closeBookmarkModal();
-                    }
-                });
-            }
-            const addBtn = document.getElementById('add-slot-btn');
-            if (addBtn) addBtn.addEventListener('click', addBookmarkSlot);
-            const removeBtn = document.getElementById('remove-slot-btn');
-            if (removeBtn) removeBtn.addEventListener('click', removeBookmarkSlot);
-            const doneBtn = document.getElementById('bookmark-done');
-            if (doneBtn) doneBtn.addEventListener('click', exitBookmarkEditMode);
         });
 
         // Cleanup on page unload
