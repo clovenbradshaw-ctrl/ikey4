@@ -438,3 +438,7 @@ const WEBHOOK_URL = 'https://n8n.intelechia.com/webhook/d5e99c29-2cf1-44c1-b5b4-
 ## License and Attribution
 
 This system is designed as a public good for personal health data management. Users maintain full ownership and control of their medical information. The encryption and security model ensures that even the application developers cannot access user data without explicit consent and keys.
+
+## Disclaimer
+
+iKey Health is not affiliated with Proton or any other service providers. Proton services are referenced solely to offer privacy and convenience. The project does not store usage data. Users are responsible for safeguarding and backing up their data, and for employing strong passwords and two-factor authentication where appropriate.
