@@ -882,6 +882,16 @@
             gap: 10px;
             margin-top: 20px;
         }
+        .tooltip {
+            position: absolute;
+            background: var(--danger);
+            color: white;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            box-shadow: var(--shadow-md);
+            z-index: 1000;
+        }
     </style>
 </head>
 <body>
@@ -2124,6 +2134,7 @@ END:VCALENDAR`;
                         });
                     } else if (el.id === 'add-custom') {
                         el.addEventListener('click', () => {
+                            showWebsiteForm(index);
                             alert('These bookmarks are only saved in this browser and will be lost if the device or browser data is lost. For secure backup, add a note in Proton Drive or save in an email.');
                             const urlInput = prompt('Enter website URL (https:// optional)');
                             if (!urlInput) return;
@@ -2168,6 +2179,40 @@ END:VCALENDAR`;
             modal.classList.remove('hidden');
         }
 
+        function showWebsiteForm(index) {
+            const modal = document.getElementById('bookmark-modal');
+            if (!modal) return;
+            modal.dataset.index = index;
+            modal.innerHTML = `<div class="modal-content"><h3>Add Website</h3><p class="bookmark-warning">⚠️ Bookmarks are saved only in this browser and will be lost if the device is lost or data is cleared. For secure backup, add a note in Proton Drive or save in an email.</p><div class="modal-actions"><label for="custom-url">URL</label><input id="custom-url" type="text" placeholder="example.com (https:// optional)"><label for="custom-name">Name (optional)</label><input id="custom-name" type="text" placeholder="Website name"><button class="btn btn-primary" id="save-custom">Save</button><button class="btn btn-secondary" id="cancel-custom">Cancel</button></div></div>`;
+            const urlInput = document.getElementById('custom-url');
+            const nameInput = document.getElementById('custom-name');
+            document.getElementById('save-custom').addEventListener('click', () => {
+                let url = urlInput.value.trim();
+                if (!url) {
+                    showTooltip('Please enter a URL', urlInput);
+                    return;
+                }
+                if (!/^https?:\/\//i.test(url)) {
+                    url = 'https://' + url;
+                }
+                try {
+                    const urlObj = new URL(url);
+                    const name = nameInput.value.trim() || urlObj.hostname;
+                    const icon = `https://www.google.com/s2/favicons?sz=64&domain=${urlObj.hostname}`;
+                    const savedArr = JSON.parse(storage.get('protonBookmarks') || '[]');
+                    savedArr[index] = { url: urlObj.href, name, icon };
+                    storage.set('protonBookmarks', JSON.stringify(savedArr));
+                    closeBookmarkModal();
+                    renderBookmarkSlots();
+                } catch (e) {
+                    showTooltip('Invalid URL', urlInput);
+                }
+            });
+            document.getElementById('cancel-custom').addEventListener('click', () => {
+                closeBookmarkModal();
+            });
+        }
+
         function showContactForm(type, index) {
             const modal = document.getElementById('bookmark-modal');
             if (!modal) return;
@@ -2198,7 +2243,7 @@ END:VCALENDAR`;
                 const value = document.getElementById('contact-value').value.trim();
                 const desc = document.getElementById('contact-desc').value.trim();
                 if (!value) {
-                    alert('Please enter a ' + (type === 'email' ? 'email address' : 'phone number'));
+                    showTooltip('Please enter a ' + (type === 'email' ? 'email address' : 'phone number'), document.getElementById('contact-value'));
                     return;
                 }
                 const savedArr = JSON.parse(storage.get('protonBookmarks') || '[]');
@@ -2210,6 +2255,18 @@ END:VCALENDAR`;
             document.getElementById('cancel-contact').addEventListener('click', () => {
                 closeBookmarkModal();
             });
+        }
+
+        function showTooltip(message, element) {
+            if (!element) return;
+            const tip = document.createElement('div');
+            tip.className = 'tooltip';
+            tip.textContent = message;
+            document.body.appendChild(tip);
+            const rect = element.getBoundingClientRect();
+            tip.style.left = rect.left + window.scrollX + rect.width / 2 - tip.offsetWidth / 2 + 'px';
+            tip.style.top = rect.top + window.scrollY - tip.offsetHeight - 8 + 'px';
+            setTimeout(() => tip.remove(), 2000);
         }
 
         function closeBookmarkModal() {
