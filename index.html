@@ -738,7 +738,7 @@
                         </div>
                         <div class="progress-step" data-step="2">
                             <div class="progress-dot">2</div>
-                            <div class="progress-label">Proton Email</div>
+                            <div class="progress-label">Secure Email</div>
                         </div>
                         <div class="progress-step" data-step="3">
                             <div class="progress-dot">3</div>
@@ -773,12 +773,12 @@
                         </div>
                     </div>
 
-                    <!-- Step 2: Proton Email -->
+                    <!-- Step 2: Secure Email -->
                     <div class="wizard-step" data-step="2">
-                        <h2>Proton Email</h2>
+                        <h2>Secure Email</h2>
                         <p style="margin-bottom: 20px;"><strong>Why Proton?</strong> Proton uses zero-knowledge encryption so only you can access your data.</p>
                         <div class="form-group">
-                            <label for="proton-email">Proton Email *</label>
+                            <label for="proton-email">Secure Email *</label>
                             <input type="email" id="proton-email" placeholder="you@proton.me" required>
                         </div>
                         <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
@@ -1423,20 +1423,20 @@
                     <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Name</div>
                     <div style="font-weight: 600;">${formData.n || 'Not provided'}</div>
                 </div>
+                ${formData.p ? `
+                <div class="info-card">
+                    <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Phone</div>
+                    <div style="font-weight: 600;">${formData.p}</div>
+                </div>` : ''}
                 ${formData.pe ? `
                 <div class="info-card" style="border-left: 4px solid #6d4aff;">
-                    <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Proton Email</div>
+                    <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Secure Email</div>
                     <div style="font-weight: 600;">${formData.pe}</div>
                 </div>` : ''}
                 ${formData.pr ? `
                 <div class="info-card">
                     <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Pronouns</div>
                     <div style="font-weight: 600;">${formData.pr}</div>
-                </div>` : ''}
-                ${formData.p ? `
-                <div class="info-card">
-                    <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Phone</div>
-                    <div style="font-weight: 600;">${formData.p}</div>
                 </div>` : ''}
                 ${formData.d ? `
                 <div class="info-card">
@@ -1563,7 +1563,7 @@
         function copyMedicalInfo(dataObj = formData) {
             const data = dataObj || {};
             const lines = [];
-            if (data.pe) lines.push(`Proton Email: ${data.pe}`);
+            if (data.pe) lines.push(`Secure Email: ${data.pe}`);
             if (data.n) lines.push(`Name: ${data.n}`);
             if (data.pr) lines.push(`Pronouns: ${data.pr}`);
             if (data.p) lines.push(`Phone: ${data.p}`);
@@ -1992,13 +1992,6 @@ Generated: ${new Date().toLocaleString()}`;
                     document.getElementById('display-view').classList.remove('hidden');
                     
                     let html = '';
-                    if (data.pe) {
-                        html += `<div class="info-card" style="border-left: 4px solid #6d4aff;">
-                            <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Proton Email</div>
-                            <div style="font-weight: 600;">${data.pe}</div>
-                        </div>`;
-                    }
-
                     if (data.n) {
                         html += `<div class="info-card">
                             <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Name</div>
@@ -2010,6 +2003,13 @@ Generated: ${new Date().toLocaleString()}`;
                         html += `<div class="info-card">
                             <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Phone</div>
                             <div style="font-weight: 600;"><a href="tel:${data.p}" style="color: var(--primary); text-decoration: none;">${data.p}</a></div>
+                        </div>`;
+                    }
+
+                    if (data.pe) {
+                        html += `<div class="info-card" style="border-left: 4px solid #6d4aff;">
+                            <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Secure Email</div>
+                            <div style="font-weight: 600;">${data.pe}</div>
                         </div>`;
                     }
 
