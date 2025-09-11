@@ -860,41 +860,361 @@
         }
 
 
-        /* Status Cards */
-        .status-container {
+        /* Enhanced Bookmark System Styles */
+        .favorites-container {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            margin: 15px;
+        }
+
+        .favorites {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+            gap: 20px 15px;
+            padding: 10px;
+            min-height: 100px;
+        }
+
+        .favorite {
+            position: relative;
+            width: 75px;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        .favorite .icon-wrapper {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 6px;
+            border-radius: 14px;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            transition: transform 0.2s;
+        }
+
+        .favorite:active:not(.editing) .icon-wrapper {
+            transform: scale(0.95);
+        }
+
+        .favorite .icon-img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .favorite .icon-emoji {
+            font-size: 32px;
+            line-height: 1;
+        }
+
+        .favorite .label {
+            font-size: 11px;
+            text-align: center;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin: 0 2px;
+        }
+
+        .favorite .delete-btn {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #ff3b30;
+            color: white;
+            border: 2px solid white;
+            font-size: 18px;
+            font-weight: bold;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .favorites.editing .favorite {
+            animation: shake 0.5s ease-in-out infinite;
+        }
+
+        .favorites.editing .delete-btn {
+            display: flex;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            10%, 30%, 50%, 70%, 90% { transform: rotate(-2deg); }
+            20%, 40%, 60%, 80% { transform: rotate(2deg); }
+        }
+
+        .add-bookmark-btn {
+            width: 75px;
+            cursor: pointer;
+        }
+
+        .add-bookmark-btn .icon-wrapper {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 6px;
+            border-radius: 14px;
+            border: 2px dashed rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+            transition: all 0.3s;
+        }
+
+        .add-bookmark-btn:hover .icon-wrapper {
+            background: rgba(255,255,255,0.3);
+            border-color: white;
+        }
+
+        .add-bookmark-btn .label {
+            font-size: 11px;
+            text-align: center;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .done-editing-btn {
+            margin: 15px;
+            width: calc(100% - 30px);
+            padding: 14px;
+            background: white;
+            color: var(--primary);
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Enhanced Modal Styles */
+        .bookmark-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.2s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .bookmark-modal-content {
+            background: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 420px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #e5e5e7;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #f2f2f7;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #8e8e93;
+        }
+
+        .bookmark-categories {
+            padding: 20px;
+        }
+
+        .category-section {
+            margin-bottom: 30px;
+        }
+
+        .category-title {
+            font-weight: 600;
+            color: #8e8e93;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            padding-left: 5px;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .bookmark-option {
             display: flex;
             flex-direction: column;
-            gap: 16px;
-            margin-bottom: 20px;
+            align-items: center;
+            padding: 10px 5px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .bookmark-option:hover {
+            background: #f2f2f7;
+            transform: scale(1.05);
+        }
+
+        .bookmark-option:active {
+            transform: scale(0.95);
+        }
+
+        .bookmark-option .option-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 6px;
+        }
+
+        .bookmark-option img {
+            width: 32px;
+            height: 32px;
+        }
+
+        .bookmark-option .option-emoji {
+            font-size: 28px;
+        }
+
+        .bookmark-option .option-label {
+            font-size: 11px;
+            text-align: center;
+            color: #3c3c43;
+        }
+
+        .custom-form {
+            padding: 20px;
+            border-top: 1px solid #e5e5e7;
+            background: #f2f2f7;
+        }
+
+        .form-field {
+            margin-bottom: 15px;
+        }
+
+        .form-field label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            font-size: 14px;
+            color: #3c3c43;
+        }
+
+        .form-field input,
+        .form-field select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e5e5e7;
+            border-radius: 10px;
+            font-size: 16px;
+            background: white;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .form-actions button {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* Improved Status Cards */
+        .status-container {
+            margin: 0 15px;
         }
 
         .status-card {
             background: white;
-            border-radius: var(--radius);
-            padding: 20px;
-            box-shadow: var(--shadow-md);
-            position: relative;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
         }
 
-        .status-card[data-source="qr"] {
-            border-left: 4px solid var(--success);
+        .status-card.warning {
+            background: #fff9e6;
+            border-left: 4px solid #ffb800;
         }
 
-        .status-card[data-source="device"] {
-            border-left: 4px solid var(--secondary);
-            opacity: 0.9;
-        }
-
-        .status-card[data-source="live"] {
-            border-left: 4px solid var(--primary);
+        .status-card.success {
+            background: #f0fdf4;
+            border-left: 4px solid #10b981;
         }
 
         .card-badge {
             font-size: 12px;
             font-weight: 600;
             text-transform: uppercase;
-            color: var(--secondary);
-            margin-bottom: 12px;
+            color: #8e8e93;
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -907,62 +1227,13 @@
         .card-content .main-text {
             font-size: 18px;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
+            color: #1c1c1e;
         }
 
         .card-content .sub-text {
-            color: var(--secondary);
+            color: #8e8e93;
             font-size: 14px;
-        }
-
-        /* Favorites Grid */
-        .favorites {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        .favorite {
-            position: relative;
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
-            background: #f0f0f0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            text-align: center;
-            padding: 4px;
-        }
-        .favorite .label {
-            margin-top: 4px;
-            font-size: 12px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            width: 100%;
-        }
-        .favorite .delete {
-            display: none;
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            width: 24px;
-            height: 24px;
-            border: none;
-            border-radius: 50%;
-            background: var(--danger);
-            color: white;
-            cursor: pointer;
-        }
-        .favorites.editing .delete {
-            display: block;
-        }
-        .favorite.add-favorite {
-            font-size: 32px;
-            cursor: pointer;
         }
 
     </style>
@@ -2287,191 +2558,612 @@ END:VCALENDAR`;
         let currentLocation = null;
         let watchId = null;
 
-        const PROTON_APPS = [
-            { id: 'mail', name: 'Proton Mail', url: 'https://account.proton.me/mail', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fmail_xxy4bg.svg' },
-            { id: 'drive', name: 'Proton Drive', url: 'https://drive.proton.me/', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fdrive_wo2nx4.svg' },
-            { id: 'vpn', name: 'Proton VPN', url: 'https://account.protonvpn.com/dashboard', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fvpn_f9embt.svg' },
-            { id: 'pass', name: 'Proton Pass', url: 'https://account.proton.me/pass', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fpass_wl1fk9.svg' },
-            { id: 'calendar', name: 'Proton Calendar', url: 'https://calendar.proton.me/', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fcalendar_ylg2jq.svg' },
-            { id: 'authenticator', name: 'Proton Authenticator', url: 'https://account.proton.me/authenticator', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fauthenticator.svg' },
-            { id: 'meet', name: 'Proton Meet', url: 'https://meet.proton.me/', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fmeet.svg' },
-            { id: 'wallet', name: 'Proton Wallet', url: 'https://account.proton.me/wallet', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fwallet_hnlslt.svg' },
-            { id: 'simplelogin', name: 'SimpleLogin', url: 'https://app.simplelogin.io/dashboard/', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fv1741968746%2Fstatic%2Flogos%2Fside-products%2Fsimple-login_cozggp.svg' },
-            { id: 'standardnotes', name: 'Standard Notes', url: 'https://app.standardnotes.com/', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fv1741972455%2Fstatic%2Flogos%2Fside-products%2Fstandard-notes_h81doh.svg' },
-            { id: 'lumo', name: 'Lumo', url: 'https://lumo.proton.me/', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Flumo_k0nljk.svg' }
-        ];
+        class BookmarkManager {
+            constructor() {
+                this.bookmarks = JSON.parse(localStorage.getItem('homeBookmarks') || '[]');
+                this.editMode = false;
+                this.longPressTimer = null;
+                this.draggedElement = null;
+                this.touchStartTime = null;
 
-        const INTERNAL_APPS = [
-            { id: 'weather', name: 'Weather', url: '#weather', icon: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/2600.svg' },
-            { id: 'dispatch', name: 'Police Dispatch', url: '#dispatch', icon: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f6a8.svg' }
-        ];
+                this.protonApps = {
+                    mail: { 
+                        name: 'Proton Mail', 
+                        url: 'https://account.proton.me/mail', 
+                        icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fmail_xxy4bg.svg' 
+                    },
+                    drive: { 
+                        name: 'Proton Drive', 
+                        url: 'https://drive.proton.me/', 
+                        icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fdrive_wo2nx4.svg' 
+                    },
+                    vpn: { 
+                        name: 'Proton VPN', 
+                        url: 'https://account.protonvpn.com/dashboard', 
+                        icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fvpn_f9embt.svg' 
+                    },
+                    pass: { 
+                        name: 'Proton Pass', 
+                        url: 'https://account.proton.me/pass', 
+                        icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fpass_wl1fk9.svg' 
+                    },
+                    calendar: { 
+                        name: 'Calendar', 
+                        url: 'https://account.proton.me/calendar', 
+                        icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fcalendar_ylg2jq.svg' 
+                    },
+                    authenticator: { 
+                        name: 'Authenticator', 
+                        url: 'https://account.proton.me/authenticator', 
+                        icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fauthenticator.svg' 
+                    },
+                    meet: { 
+                        name: 'Proton Meet', 
+                        url: 'https://meet.proton.me/', 
+                        icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fmeet.svg' 
+                    },
+                    wallet: { 
+                        name: 'Proton Wallet', 
+                        url: 'https://account.proton.me/wallet', 
+                        icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fwallet_hnlslt.svg' 
+                    },
+                    simplelogin: { 
+                        name: 'SimpleLogin', 
+                        url: 'https://app.simplelogin.io/dashboard/', 
+                        icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fv1741968746%2Fstatic%2Flogos%2Fside-products%2Fsimple-login_cozggp.svg' 
+                    },
+                    standardnotes: { 
+                        name: 'Standard Notes', 
+                        url: 'https://app.standardnotes.com/', 
+                        icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fv1741972455%2Fstatic%2Flogos%2Fside-products%2Fstandard-notes_h81doh.svg' 
+                    },
+                    lumo: { 
+                        name: 'Lumo', 
+                        url: 'https://lumo.proton.me/', 
+                        icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Flumo_k0nljk.svg' 
+                    }
+                };
 
-        let editMode = false;
-        let favoriteApps = JSON.parse(localStorage.getItem('protonBookmarks') || '[]').filter(Boolean);
-
-        const CONTACT_ICONS = {
-            call: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4de.svg',
-            text: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4f2.svg',
-            email: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/2709.svg'
-        };
-
-        function getBookmarkDetails(entry) {
-            let app = null, url = '', name = '', icon = '';
-            if (!entry) return null;
-            if (typeof entry === 'string') {
-                app = PROTON_APPS.find(a => a.id === entry) || INTERNAL_APPS.find(a => a.id === entry);
-            } else if (entry.id) {
-                app = PROTON_APPS.find(a => a.id === entry.id) || INTERNAL_APPS.find(a => a.id === entry.id);
+                this.init();
             }
-            if (app) {
-                url = app.url;
-                name = app.name;
-                icon = app.icon;
-            } else if (entry.url) {
-                url = entry.url;
-                name = entry.name || entry.url;
-                icon = entry.icon || `https://www.google.com/s2/favicons?sz=64&domain_url=${entry.url}`;
-            } else if (entry.type) {
-                if (entry.type === 'call') url = `tel:${entry.value}`;
-                else if (entry.type === 'text') url = `sms:${entry.value}`;
-                else if (entry.type === 'email') url = `mailto:${entry.value}`;
-                name = entry.name || entry.value;
-                icon = entry.photo || CONTACT_ICONS[entry.type];
+
+            init() {
+                this.render();
+                this.attachGlobalHandlers();
             }
-            return { url, name, icon };
-        }
 
-        function renderFavorites() {
-            const container = document.getElementById('favorites-section');
-            if (!container) return;
-            const details = favoriteApps.map((app, index) => ({ info: getBookmarkDetails(app), index })).filter(d => d.info);
-            if (details.length === 0 && !editMode) {
-                container.innerHTML = '<div class="text-body">No favorites yet</div>';
-                return;
-            }
-            const listHtml = details.map(d => `
-            <div class="favorite" draggable="${editMode}" data-index="${d.index}" data-url="${d.info.url}">
-              <span class="icon"><img src="${d.info.icon}" alt="${d.info.name}" width="32" height="32"></span>
-              <span class="label">${d.info.name}</span>
-              <button class="delete" onclick="event.stopPropagation(); deleteFavorite(${d.index})">✕</button>
-            </div>
-          `).join('');
-            const addTile = editMode ? '<div class="favorite add-favorite" onclick="addFavorite()">+</div>' : '';
-            container.innerHTML = `
-        <div class="favorites ${editMode ? 'editing' : ''}" id="favorites">
-          ${listHtml}${addTile}
-        </div>
-        ${editMode ? '<div class="button-group"><button onclick="exitEdit()">Done</button></div>' : ''}
-      `;
-            attachFavoriteHandlers();
-        }
-
-        function saveFavorites() {
-            localStorage.setItem('protonBookmarks', JSON.stringify(favoriteApps));
-        }
-
-        function deleteFavorite(index) {
-            favoriteApps.splice(index, 1);
-            saveFavorites();
-            renderFavorites();
-        }
-
-        function moveFavorite(from, to) {
-            if (from === to) return;
-            const [moved] = favoriteApps.splice(from, 1);
-            favoriteApps.splice(to, 0, moved);
-            saveFavorites();
-            renderFavorites();
-        }
-
-        function exitEdit() {
-            editMode = false;
-            renderFavorites();
-        }
-
-        function attachFavoriteHandlers() {
-            const container = document.getElementById('favorites');
-            if (!container) return;
-
-            container.querySelectorAll('.favorite').forEach(item => {
-                if (item.classList.contains('add-favorite')) return;
-                let pressTimer;
-                const index = Number(item.dataset.index);
-
-                function startPress() {
-                    pressTimer = setTimeout(() => { editMode = true; renderFavorites(); }, 500);
-                }
-
-                function cancelPress() { clearTimeout(pressTimer); }
-
-                item.addEventListener('mousedown', startPress);
-                item.addEventListener('touchstart', startPress);
-                item.addEventListener('mouseup', cancelPress);
-                item.addEventListener('mouseleave', cancelPress);
-                item.addEventListener('touchend', cancelPress);
-
-                item.addEventListener('click', () => {
-                    if (editMode) return;
-                    const url = item.dataset.url;
-                    if (url) {
-                        if (url.startsWith('#')) {
-                            window.location.href = url;
-                        } else {
-                            window.open(url, '_blank');
-                        }
+            attachGlobalHandlers() {
+                document.addEventListener('contextmenu', (e) => {
+                    if (e.target.closest('.favorite')) {
+                        e.preventDefault();
                     }
                 });
 
-                item.addEventListener('dragstart', e => {
-                    e.dataTransfer.effectAllowed = 'move';
-                    e.dataTransfer.setData('text/plain', index);
+                document.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('bookmark-modal')) {
+                        this.closeModal();
+                    }
+                });
+            }
+
+            render() {
+                const container = document.getElementById('favorites-section');
+                if (!container) return;
+
+                let html = '<div class="favorites-container">';
+                html += '<div class="favorites' + (this.editMode ? ' editing' : '') + '" id="favorites">';
+
+                this.bookmarks.forEach((bookmark, index) => {
+                    const info = this.getBookmarkInfo(bookmark);
+                    if (info) {
+                        const isEmoji = this.isEmoji(info.icon);
+                        html += `
+                    <div class="favorite" 
+                         data-index="${index}" 
+                         draggable="${this.editMode}"
+                         data-url="${info.url || ''}">
+                        <div class="delete-btn" onclick="event.stopPropagation(); bookmarkManager.removeBookmark(${index})">×</div>
+                        <div class="icon-wrapper">
+                            ${isEmoji ? 
+                                `<span class="icon-emoji">${info.icon}</span>` : 
+                                `<img src="${info.icon}" alt="${info.name}" class="icon-img" onerror="this.style.display='none'; this.parentElement.innerHTML='📱';">`
+                            }
+                        </div>
+                        <div class="label">${info.name}</div>
+                    </div>
+                `;
+                    }
                 });
 
-                item.addEventListener('dragover', e => {
+                html += `
+                    <div class="add-bookmark-btn" onclick="bookmarkManager.openAddModal()">
+                        <div class="icon-wrapper">+</div>
+                        <div class="label">Add</div>
+                    </div>
+                `;
+
+                html += '</div>';
+
+                if (this.editMode) {
+                    html += '<button class="done-editing-btn" onclick="bookmarkManager.exitEditMode()">Done</button>';
+                }
+
+                html += '</div>';
+
+                container.innerHTML = html;
+                this.attachHandlers();
+            }
+
+            attachHandlers() {
+                const favorites = document.querySelectorAll('.favorite');
+
+                favorites.forEach(fav => {
+                    fav.addEventListener('touchstart', (e) => this.handleTouchStart(e), { passive: true });
+                    fav.addEventListener('touchend', (e) => this.handleTouchEnd(e));
+
+                    fav.addEventListener('mousedown', (e) => this.handleMouseDown(e));
+                    fav.addEventListener('mouseup', (e) => this.handleMouseUp(e));
+                    fav.addEventListener('mouseleave', () => this.cancelLongPress());
+
+                    fav.addEventListener('click', (e) => this.handleClick(e));
+
+                    if (this.editMode) {
+                        fav.addEventListener('dragstart', (e) => this.handleDragStart(e));
+                        fav.addEventListener('dragover', (e) => this.handleDragOver(e));
+                        fav.addEventListener('drop', (e) => this.handleDrop(e));
+                        fav.addEventListener('dragend', (e) => this.handleDragEnd(e));
+                        fav.addEventListener('touchmove', (e) => this.handleTouchMove(e), { passive: false });
+                    }
+                });
+            }
+
+            handleTouchStart(e) {
+                this.touchStartTime = Date.now();
+                if (!this.editMode) {
+                    this.startLongPress();
+                }
+            }
+
+            handleTouchEnd(e) {
+                const touchDuration = Date.now() - this.touchStartTime;
+                if (touchDuration < 200 && !this.editMode) {
+                    this.cancelLongPress();
+                    this.handleClick(e);
+                } else {
+                    this.cancelLongPress();
+                }
+            }
+
+            handleMouseDown(e) {
+                if (!this.editMode && e.button === 0) {
+                    this.startLongPress();
+                }
+            }
+
+            handleMouseUp(e) {
+                this.cancelLongPress();
+            }
+
+            startLongPress() {
+                this.longPressTimer = setTimeout(() => {
+                    this.enterEditMode();
+                }, 500);
+            }
+
+            cancelLongPress() {
+                if (this.longPressTimer) {
+                    clearTimeout(this.longPressTimer);
+                    this.longPressTimer = null;
+                }
+            }
+
+            handleClick(e) {
+                if (this.editMode) {
                     e.preventDefault();
-                });
-
-                item.addEventListener('drop', e => {
-                    e.preventDefault();
-                    const from = Number(e.dataTransfer.getData('text/plain'));
-                    const to = Number(e.currentTarget.dataset.index);
-                    moveFavorite(from, to);
-                });
-            });
-        }
-
-        function addFavorite() {
-            const type = prompt('Add proton app id, "dispatch", "website", "call", "text", or "email"');
-            if (!type) return;
-            if (PROTON_APPS.find(a => a.id === type)) {
-                favoriteApps.push(type);
-            } else if (INTERNAL_APPS.find(a => a.id === type)) {
-                favoriteApps.push(type);
-            } else if (type === 'website') {
-                let url = prompt('Enter website URL (https:// optional)');
-                if (!url) return;
-                if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
-                try {
-                    const u = new URL(url);
-                    const name = prompt('Enter name') || u.hostname;
-                    const icon = `https://www.google.com/s2/favicons?sz=64&domain=${u.hostname}`;
-                    favoriteApps.push({ url: u.href, name, icon });
-                } catch (e) {
-                    alert('Invalid URL');
+                    e.stopPropagation();
                     return;
                 }
-            } else if (['call','text','email'].includes(type)) {
-                const value = prompt(type === 'email' ? 'Enter email address' : 'Enter phone number');
-                if (!value) return;
-                const name = prompt('Enter name') || value;
-                favoriteApps.push({ type, value, name });
-            } else {
-                alert('Unknown option');
-                return;
+
+                const fav = e.currentTarget;
+                const url = fav.dataset.url;
+
+                if (url) {
+                    if (url.startsWith('#')) {
+                        const tab = url.substring(1);
+                        if (typeof switchTab === 'function') {
+                            switchTab(tab);
+                        }
+                    } else if (url.startsWith('tel:') || url.startsWith('sms:') || url.startsWith('mailto:')) {
+                        window.location.href = url;
+                    } else {
+                        window.open(url, '_blank');
+                    }
+                }
             }
-            saveFavorites();
-            renderFavorites();
+
+            handleTouchMove(e) {
+                if (this.editMode) {
+                    e.preventDefault();
+                }
+            }
+
+            handleDragStart(e) {
+                this.draggedElement = e.currentTarget;
+                e.currentTarget.style.opacity = '0.5';
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/html', e.currentTarget.innerHTML);
+            }
+
+            handleDragOver(e) {
+                if (e.preventDefault) {
+                    e.preventDefault();
+                }
+                e.dataTransfer.dropEffect = 'move';
+                return false;
+            }
+
+            handleDrop(e) {
+                if (e.stopPropagation) {
+                    e.stopPropagation();
+                }
+
+                if (this.draggedElement !== e.currentTarget) {
+                    const fromIndex = parseInt(this.draggedElement.dataset.index);
+                    const toIndex = parseInt(e.currentTarget.dataset.index);
+                    this.moveBookmark(fromIndex, toIndex);
+                }
+
+                return false;
+            }
+
+            handleDragEnd(e) {
+                e.currentTarget.style.opacity = '';
+                this.draggedElement = null;
+            }
+
+            enterEditMode() {
+                this.editMode = true;
+                this.render();
+            }
+
+            exitEditMode() {
+                this.editMode = false;
+                this.render();
+            }
+
+            openAddModal() {
+                const existingModal = document.querySelector('.bookmark-modal');
+                if (existingModal) {
+                    existingModal.remove();
+                }
+
+                const modal = this.createModal();
+                document.body.appendChild(modal);
+
+                this.updateCustomForm();
+            }
+
+            createModal() {
+                const modal = document.createElement('div');
+                modal.className = 'bookmark-modal';
+                modal.innerHTML = `
+            <div class="bookmark-modal-content">
+                <div class="modal-header">
+                    <h3>Add Bookmark</h3>
+                    <button class="modal-close" onclick="bookmarkManager.closeModal()">×</button>
+                </div>
+                
+                <div class="bookmark-categories">
+                    <div class="category-section">
+                        <div class="category-title">Proton Apps</div>
+                        <div class="category-grid">
+                            ${this.getProtonAppsHTML()}
+                        </div>
+                    </div>
+                    
+                    <div class="category-section">
+                        <div class="category-title">Quick Actions</div>
+                        <div class="category-grid">
+                            ${this.getQuickActionsHTML()}
+                        </div>
+                    </div>
+                    
+                    <div class="category-section">
+                        <div class="category-title">App Features</div>
+                        <div class="category-grid">
+                            ${this.getInternalPagesHTML()}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="custom-form">
+                    <div class="category-title">Custom Bookmark</div>
+                    <div class="form-field">
+                        <label>Type</label>
+                        <select id="custom-type" onchange="bookmarkManager.updateCustomForm()">
+                            <option value="website">Website</option>
+                            <option value="call">Phone Call</option>
+                            <option value="text">Text Message</option>
+                            <option value="email">Email</option>
+                        </select>
+                    </div>
+                    <div id="custom-fields"></div>
+                    <div class="form-actions">
+                        <button class="btn btn-primary" onclick="bookmarkManager.addCustomBookmark()">Add Custom</button>
+                    </div>
+                </div>
+            </div>
+        `;
+                return modal;
+            }
+
+            getProtonAppsHTML() {
+                return Object.entries(this.protonApps).map(([id, app]) => `
+            <div class="bookmark-option" onclick="bookmarkManager.addProtonApp('${id}')">
+                <div class="option-icon">
+                    <img src="${app.icon}" alt="${app.name}">
+                </div>
+                <div class="option-label">${app.name.replace('Proton ', '')}</div>
+            </div>
+        `).join('');
+            }
+
+            getQuickActionsHTML() {
+                const actions = [
+                    { type: 'call-911', name: '911', icon: '🚨' },
+                    { type: 'call-988', name: 'Crisis', icon: '💬' },
+                    { type: 'call-poison', name: 'Poison', icon: '☠️' },
+                    { type: 'text-quick', name: 'Text', icon: '💬' }
+                ];
+
+                return actions.map(action => `
+            <div class="bookmark-option" onclick="bookmarkManager.addQuickAction('${action.type}')">
+                <div class="option-icon">
+                    <span class="option-emoji">${action.icon}</span>
+                </div>
+                <div class="option-label">${action.name}</div>
+            </div>
+        `).join('');
+            }
+
+            getInternalPagesHTML() {
+                const pages = [
+                    { id: 'ikey', name: 'Medical', icon: '🏥' },
+                    { id: 'emergency-911', name: 'Location', icon: '📍' },
+                    { id: 'weather', name: 'Weather', icon: '⛈️' },
+                    { id: 'wttin', name: 'Resources', icon: '🏠' },
+                    { id: 'dispatch', name: 'Dispatch', icon: '📡' },
+                    { id: 'meals', name: 'Meals', icon: '🍽️' },
+                    { id: 'apps', name: 'Apps', icon: '📱' },
+                    { id: 'settings', name: 'Settings', icon: '⚙️' }
+                ];
+
+                return pages.map(page => `
+            <div class="bookmark-option" onclick="bookmarkManager.addInternalPage('${page.id}')">
+                <div class="option-icon">
+                    <span class="option-emoji">${page.icon}</span>
+                </div>
+                <div class="option-label">${page.name}</div>
+            </div>
+        `).join('');
+            }
+
+            updateCustomForm() {
+                const type = document.getElementById('custom-type').value;
+                const fieldsDiv = document.getElementById('custom-fields');
+
+                let html = '';
+
+                switch(type) {
+                    case 'website':
+                        html = `
+                    <div class="form-field">
+                        <label>Website Name</label>
+                        <input type="text" id="custom-name" placeholder="Example: Google">
+                    </div>
+                    <div class="form-field">
+                        <label>URL</label>
+                        <input type="url" id="custom-url" placeholder="https://google.com">
+                    </div>
+                `;
+                        break;
+
+                    case 'call':
+                    case 'text':
+                        html = `
+                    <div class="form-field">
+                        <label>Contact Name</label>
+                        <input type="text" id="custom-name" placeholder="John Doe">
+                    </div>
+                    <div class="form-field">
+                        <label>Phone Number</label>
+                        <input type="tel" id="custom-phone" placeholder="555-0123">
+                    </div>
+                `;
+                        break;
+
+                    case 'email':
+                        html = `
+                    <div class="form-field">
+                        <label>Contact Name</label>
+                        <input type="text" id="custom-name" placeholder="John Doe">
+                    </div>
+                    <div class="form-field">
+                        <label>Email Address</label>
+                        <input type="email" id="custom-email" placeholder="john@example.com">
+                    </div>
+                `;
+                        break;
+                }
+
+                fieldsDiv.innerHTML = html;
+            }
+
+            addProtonApp(appId) {
+                const app = this.protonApps[appId];
+                if (app) {
+                    this.bookmarks.push({
+                        type: 'proton',
+                        id: appId,
+                        ...app
+                    });
+                    this.save();
+                    this.closeModal();
+                }
+            }
+
+            addQuickAction(actionType) {
+                const actions = {
+                    'call-911': { name: 'Emergency', url: 'tel:911', icon: '🚨' },
+                    'call-988': { name: 'Crisis Line', url: 'tel:988', icon: '💬' },
+                    'call-poison': { name: 'Poison Control', url: 'tel:18002221222', icon: '☠️' },
+                    'text-quick': { name: 'Quick Text', url: 'sms:', icon: '💬' }
+                };
+
+                const action = actions[actionType];
+                if (action) {
+                    this.bookmarks.push({
+                        type: 'action',
+                        ...action
+                    });
+                    this.save();
+                    this.closeModal();
+                }
+            }
+
+            addInternalPage(pageId) {
+                const pages = {
+                    ikey: { name: 'Medical ID', icon: '🏥' },
+                    'emergency-911': { name: 'Location', icon: '📍' },
+                    weather: { name: 'Weather', icon: '⛈️' },
+                    wttin: { name: 'Resources', icon: '🏠' },
+                    dispatch: { name: 'Dispatch', icon: '📡' },
+                    meals: { name: 'Meals', icon: '🍽️' },
+                    apps: { name: 'Apps', icon: '📱' },
+                    settings: { name: 'Settings', icon: '⚙️' }
+                };
+
+                const page = pages[pageId];
+                if (page) {
+                    this.bookmarks.push({
+                        type: 'internal',
+                        id: pageId,
+                        url: `#${pageId}`,
+                        ...page
+                    });
+                    this.save();
+                    this.closeModal();
+                }
+            }
+
+            addCustomBookmark() {
+                const type = document.getElementById('custom-type').value;
+                const name = document.getElementById('custom-name')?.value;
+
+                if (!name) {
+                    alert('Please enter a name');
+                    return;
+                }
+
+                let bookmark = { type: 'custom', name };
+
+                switch(type) {
+                    case 'website':
+                        const url = document.getElementById('custom-url').value;
+                        if (!url) {
+                            alert('Please enter a URL');
+                            return;
+                        }
+                        bookmark.url = url.startsWith('http') ? url : `https://${url}`;
+                        bookmark.icon = `https://www.google.com/s2/favicons?sz=64&domain=${new URL(bookmark.url).hostname}`;
+                        break;
+
+                    case 'call':
+                        const callPhone = document.getElementById('custom-phone').value;
+                        if (!callPhone) {
+                            alert('Please enter a phone number');
+                            return;
+                        }
+                        bookmark.url = `tel:${callPhone.replace(/\D/g, '')}`;
+                        bookmark.icon = '📞';
+                        break;
+
+                    case 'text':
+                        const textPhone = document.getElementById('custom-phone').value;
+                        if (!textPhone) {
+                            alert('Please enter a phone number');
+                            return;
+                        }
+                        bookmark.url = `sms:${textPhone.replace(/\D/g, '')}`;
+                        bookmark.icon = '💬';
+                        break;
+
+                    case 'email':
+                        const email = document.getElementById('custom-email').value;
+                        if (!email) {
+                            alert('Please enter an email address');
+                            return;
+                        }
+                        bookmark.url = `mailto:${email}`;
+                        bookmark.icon = '📧';
+                        break;
+                }
+
+                this.bookmarks.push(bookmark);
+                this.save();
+                this.closeModal();
+            }
+
+            removeBookmark(index) {
+                this.bookmarks.splice(index, 1);
+                this.save();
+            }
+
+            moveBookmark(fromIndex, toIndex) {
+                if (fromIndex === toIndex) return;
+
+                const [moved] = this.bookmarks.splice(fromIndex, 1);
+                this.bookmarks.splice(toIndex, 0, moved);
+                this.save();
+            }
+
+            getBookmarkInfo(bookmark) {
+                if (!bookmark) return null;
+
+                if (this.isEmoji(bookmark.icon)) {
+                    return {
+                        name: bookmark.name,
+                        url: bookmark.url,
+                        icon: bookmark.icon
+                    };
+                }
+
+                return {
+                    name: bookmark.name,
+                    url: bookmark.url,
+                    icon: bookmark.icon || 'https://via.placeholder.com/60'
+                };
+            }
+
+            isEmoji(str) {
+                if (!str) return false;
+                return str.length <= 4 && !/^http/i.test(str) && !/\.(jpg|jpeg|png|gif|svg|webp)/i.test(str);
+            }
+
+            closeModal() {
+                const modal = document.querySelector('.bookmark-modal');
+                if (modal) {
+                    modal.remove();
+                }
+            }
+
+            save() {
+                localStorage.setItem('homeBookmarks', JSON.stringify(this.bookmarks));
+                this.render();
+            }
         }
+
+        let bookmarkManager;
 
         const CODE_ALPHABET = '23456789CFGHJMPQRVWX';
 
@@ -2861,8 +3553,8 @@ Generated: ${new Date().toLocaleString()}`;
                 if (displayData.c) alerts.push('Conditions');
 
                 container.innerHTML += `
-            <div class="status-card" data-source="qr">
-                <div class="card-badge">🔒 Medical ID Active</div>
+            <div class="status-card">
+                <div class="card-badge">🔒 MEDICAL ID ACTIVE</div>
                 <div class="card-content">
                     <div class="main-text">${displayData.n}</div>
                     <div class="sub-text">${alerts.length ? alerts.join(' • ') : 'No alerts'}</div>
@@ -2872,8 +3564,8 @@ Generated: ${new Date().toLocaleString()}`;
         `;
             } else {
                 container.innerHTML += `
-            <div class="status-card" style="background: #fef3c7; border-left: 4px solid var(--warning);">
-                <div class="card-badge">⚠️ No Medical ID</div>
+            <div class="status-card warning">
+                <div class="card-badge">⚠️ NO MEDICAL ID</div>
                 <div class="card-content">
                     <div class="main-text">Create Your Medical ID</div>
                     <div class="sub-text">Tap to add emergency information</div>
@@ -2885,18 +3577,18 @@ Generated: ${new Date().toLocaleString()}`;
         `;
             }
 
-            // Card 2: Location Status (optional - only if location available)
+            // Card 2: Location Status
             if (navigator.geolocation) {
                 container.innerHTML += `
-            <div class="status-card" data-source="live">
-                <div class="card-badge">📍 Location Services</div>
+            <div class="status-card success">
+                <div class="card-badge">📍 LOCATION SERVICES</div>
                 <div class="card-content">
                     <div class="sub-text">Ready for emergency sharing</div>
                 </div>
             </div>
         `;
             }
-        }
+        } // This closing brace was missing!
 
 
         // Initialize
@@ -2909,7 +3601,7 @@ Generated: ${new Date().toLocaleString()}`;
                 renderHomeStatus();
             }
             if (document.getElementById('favorites-section')) {
-                renderFavorites();
+                bookmarkManager = new BookmarkManager();
             }
 
             const dispatchFrame = document.querySelector('#dispatch iframe');
