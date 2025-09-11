@@ -2164,15 +2164,20 @@ END:VCALENDAR`;
 
         function renderBookmarkSlots() {
             const count = getBookmarkCount();
-            const grid = document.getElementById('settings-bookmark-grid');
-            if (!grid) return;
-            grid.innerHTML = '';
-            for (let i = 0; i < count; i++) {
-                const slot = document.createElement('div');
-                slot.className = 'bookmark-slot';
-                slot.dataset.index = i;
-                grid.appendChild(slot);
-            }
+            const grids = [
+                document.getElementById('settings-bookmark-grid'),
+                document.getElementById('bookmark-grid')
+            ];
+            grids.forEach(grid => {
+                if (!grid) return;
+                grid.innerHTML = '';
+                for (let i = 0; i < count; i++) {
+                    const slot = document.createElement('div');
+                    slot.className = 'bookmark-slot';
+                    slot.dataset.index = i;
+                    grid.appendChild(slot);
+                }
+            });
             loadBookmarks();
         }
 
@@ -2182,6 +2187,17 @@ END:VCALENDAR`;
             for (let i = 0; i < count; i++) {
                 document.querySelectorAll(`.bookmark-slot[data-index="${i}"]`).forEach(slot => {
                     slot.classList.remove('empty');
+                    slot.ondragover = e => {
+                        if (!bookmarkEditMode) return;
+                        e.preventDefault();
+                    };
+                    slot.ondrop = e => {
+                        if (!bookmarkEditMode) return;
+                        e.preventDefault();
+                        const from = Number(e.dataTransfer.getData('text/plain'));
+                        const to = Number(slot.dataset.index);
+                        moveBookmark(from, to);
+                    };
                     const entry = saved[i];
                     let app = null, html = '', url = '', name = '', icon = '';
                     if (entry) {
@@ -2232,6 +2248,15 @@ END:VCALENDAR`;
                             }
                         });
                         addLongPress(card, enterBookmarkEditMode);
+                        card.setAttribute('draggable', bookmarkEditMode);
+                        card.ondragstart = e => {
+                            if (!bookmarkEditMode) {
+                                e.preventDefault();
+                                return;
+                            }
+                            e.dataTransfer.effectAllowed = 'move';
+                            e.dataTransfer.setData('text/plain', slot.dataset.index);
+                        };
                         removeBtn.addEventListener('click', (e) => {
                             e.stopPropagation();
                             const savedArr = JSON.parse(storage.get('protonBookmarks') || '[]');
@@ -2265,6 +2290,7 @@ END:VCALENDAR`;
             if (grid) grid.classList.add('editing');
             const doneBtn = document.getElementById('bookmark-done');
             if (doneBtn) doneBtn.classList.remove('hidden');
+            document.querySelectorAll('.bookmark-card').forEach(card => card.setAttribute('draggable', 'true'));
         }
 
         function exitBookmarkEditMode() {
@@ -2273,6 +2299,7 @@ END:VCALENDAR`;
             if (grid) grid.classList.remove('editing');
             const doneBtn = document.getElementById('bookmark-done');
             if (doneBtn) doneBtn.classList.add('hidden');
+            document.querySelectorAll('.bookmark-card').forEach(card => card.removeAttribute('draggable'));
         }
 
         function addBookmarkSlot() {
@@ -2291,6 +2318,15 @@ END:VCALENDAR`;
             localStorage.setItem('protonBookmarks', JSON.stringify(savedArr));
             setBookmarkCount(count - 1);
             renderBookmarkSlots();
+        }
+
+        function moveBookmark(from, to) {
+            const savedArr = JSON.parse(storage.get('protonBookmarks') || '[]');
+            if (from === to || from < 0 || to < 0 || from >= savedArr.length || to >= savedArr.length) return;
+            const [moved] = savedArr.splice(from, 1);
+            savedArr.splice(to, 0, moved);
+            storage.set('protonBookmarks', JSON.stringify(savedArr));
+            loadBookmarks();
         }
 
         function openBookmarkModal(index) {
