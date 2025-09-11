@@ -882,6 +882,23 @@
             gap: 10px;
             margin-top: 20px;
         }
+        .modal-actions label {
+            text-align: left;
+            font-weight: 600;
+        }
+        .modal-actions input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            -webkit-appearance: none;
+        }
+        .modal-actions input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
         .tooltip {
             position: absolute;
             background: var(--danger);
@@ -2687,7 +2704,7 @@ END:VCALENDAR`;
             const modal = document.getElementById('bookmark-modal');
             if (!modal) return;
             const actionNames = { call: 'Call', text: 'Text', email: 'Email' };
-            modal.innerHTML = `<div class="modal-content"><h3>${actionNames[type]} Contact</h3><p class="bookmark-warning">⚠️ Bookmarks are saved only in this browser and will be lost if the device is lost or data is cleared. For secure backup, add a note in Proton Drive or save in an email.</p><div class="modal-actions"><input id="contact-name" type="text" placeholder="Name"><input id="contact-value" type="${type === 'email' ? 'email' : 'tel'}" placeholder="${type === 'email' ? 'Email' : 'Phone Number'}"><input id="contact-desc" type="text" placeholder="Description (optional)"><input id="contact-photo" type="file" accept="image/*"><div id="photo-preview" class="photo-preview hidden"><img id="photo-preview-img" alt="Preview"></div><button class="btn btn-primary" id="save-contact">Save</button><button class="btn btn-secondary" id="cancel-contact">Cancel</button></div></div>`;
+            modal.innerHTML = `<div class="modal-content"><h3>${actionNames[type]} Contact</h3><p class="bookmark-warning">⚠️ Bookmarks are saved only in this browser and will be lost if the device is lost or data is cleared. For secure backup, add a note in Proton Drive or save in an email.</p><div class="modal-actions"><label for="contact-name">Name</label><input id="contact-name" type="text" placeholder="Name"><label for="contact-value">${type === 'email' ? 'Email' : 'Phone Number'}</label><input id="contact-value" type="${type === 'email' ? 'email' : 'tel'}" placeholder="${type === 'email' ? 'Email' : 'Phone Number'}"><label for="contact-desc">Description (optional)</label><input id="contact-desc" type="text" placeholder="Description (optional)"><label for="contact-photo">Photo (optional)</label><input id="contact-photo" type="file" accept="image/*"><div id="photo-preview" class="photo-preview hidden"><img id="photo-preview-img" alt="Preview"></div><button class="btn btn-primary" id="save-contact">Save</button><button class="btn btn-secondary" id="cancel-contact">Cancel</button></div></div>`;
             let photoData = '';
             const photoInput = document.getElementById('contact-photo');
             if (photoInput) {
