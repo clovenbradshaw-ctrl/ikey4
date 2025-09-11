@@ -1147,7 +1147,7 @@
 <!-- Bookmark Selection Modal -->
 <div id="bookmark-modal" class="modal hidden">
     <div class="modal-content">
-        <h3>Select Favorite <span class="info-icon" title="Bookmarks are saved only in this browser and will be lost if the device is lost or data is cleared. For secure backup, add a note in Proton Drive or save in an email.">ℹ️</span></h3>
+        <h3>Select Favorite <span class="info-icon" id="bookmark-info-icon">ℹ️</span></h3>
         <div id="modal-app-list"></div>
     </div>
 </div>
@@ -1934,6 +1934,7 @@ END:VCALENDAR`;
 
         const MAX_BOOKMARKS = 12;
         const BOOKMARK_INFO = 'Bookmarks are saved only in this browser and will be lost if the device is lost or data is cleared. For secure backup, add a note in Proton Drive or save in an email.';
+        document.getElementById('bookmark-info-icon')?.setAttribute('title', BOOKMARK_INFO);
         let bookmarkEditMode = false;
 
         function getBookmarkCount() {
