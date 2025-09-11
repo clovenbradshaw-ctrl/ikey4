@@ -3,7 +3,9 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 
 ATTRS = ["placeholder", "title", "alt", "value", "aria-label", "label"]
-files = ['index.html', 'dispatch.html', 'invite.html']
+# Automatically include all HTML files in the repository so new pages are
+# captured without needing to update this script manually.
+files = sorted([p.name for p in Path('.').glob('*.html')])
 sections = {}
 
 for file in files:
