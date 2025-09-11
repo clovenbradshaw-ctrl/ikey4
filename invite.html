@@ -236,7 +236,8 @@
                     <label for="description">Description</label>
                     <textarea id="description"></textarea>
                 </div>
-                <button type="button" class="btn btn-primary" onclick="generateAndEmail()">✉️ Create Invite & Open Email</button>
+                <button type="button" class="btn btn-primary" onclick="sendEmailOnly()">📧 Send Email Only</button>
+                <button type="button" class="btn btn-primary" onclick="generateAndEmail()">📅 Create Invite & Email</button>
                 <button type="button" class="btn btn-secondary" onclick="resetForm()">Clear Form</button>
             </form>
         </div>
@@ -281,9 +282,9 @@
         const end = `${date}T${endTime}`;
         const dtstamp = new Date().toISOString().replace(/[-:]/g,'').split('.')[0] + 'Z';
 
-        const attendeeList = [organizer, clientEmail];
+        const attendees = [clientEmail];
         if (additional) {
-            additional.split(',').forEach(e => { const v = e.trim(); if (v) attendeeList.push(v); });
+            additional.split(',').forEach(e => { const v = e.trim(); if (v) attendees.push(v); });
         }
 
         let ics = 'BEGIN:VCALENDAR\nVERSION:2.0\nMETHOD:REQUEST\nBEGIN:VEVENT\n';
@@ -292,7 +293,7 @@
         ics += `DTEND:${end.replace(/[-:]/g,'')}Z\n`;
         ics += `DTSTAMP:${dtstamp}\n`;
         ics += `ORGANIZER:mailto:${organizer}\n`;
-        attendeeList.forEach(email => {
+        attendees.forEach(email => {
             ics += `ATTENDEE;CN=${email}:mailto:${email}\n`;
         });
         if (location) ics += `LOCATION:${location}\n`;
@@ -310,15 +311,44 @@
         let body = `Event: ${title}\nDate: ${date}\nTime: ${time} - ${endTime}\n`;
         if (location) body += `Location: ${location}\n`;
         if (description) body += `Description: ${description}\n`;
-        body += `\nPlease attach the ICS file (${filename}) to add this event to your calendar.`;
+        body += `\nRemember to attach the ICS file (${filename}) to this email so the invite works.`;
 
-        const mailto = `mailto:${attendeeList.join(',')}` +
+        const mailto = `mailto:${attendees.join(',')}` +
             `?subject=${encodeURIComponent(subject)}` +
             `&body=${encodeURIComponent(body)}`;
         window.open(mailto, '_blank');
 
         document.getElementById('fileName').textContent = filename;
         document.getElementById('instructionMessage').style.display = 'block';
+    }
+
+    function sendEmailOnly() {
+        const title = document.getElementById('title').value.trim();
+        const location = document.getElementById('location').value.trim();
+        const date = document.getElementById('date').value;
+        const time = document.getElementById('time').value;
+        const endTime = document.getElementById('endTime').value;
+        const description = document.getElementById('description').value.trim();
+        const additional = document.getElementById('attendees').value.trim();
+        if (!title || !date || !time || !endTime || !clientEmail) {
+            alert('Please fill in all required fields');
+            return;
+        }
+
+        let subject = `${title} on ${date} at ${time}`;
+        let body = `Event: ${title}\nDate: ${date}\nTime: ${time} - ${endTime}\n`;
+        if (location) body += `Location: ${location}\n`;
+        if (description) body += `Description: ${description}\n`;
+
+        const recipients = [clientEmail];
+        if (additional) {
+            additional.split(',').forEach(e => { const v = e.trim(); if (v) recipients.push(v); });
+        }
+
+        const mailto = `mailto:${recipients.join(',')}` +
+            `?subject=${encodeURIComponent(subject)}` +
+            `&body=${encodeURIComponent(body)}`;
+        window.open(mailto, '_blank');
     }
 
     function resetForm() {
