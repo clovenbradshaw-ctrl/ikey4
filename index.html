@@ -1599,6 +1599,46 @@
                   </div>
 
                 <div class="settings-section">
+                    <h3 style="margin-bottom: 15px; color: var(--primary);">Tab Visibility</h3>
+                    <div class="settings-item" style="cursor: default;">
+                        <div>
+                            <div style="font-weight: 600;">🏠 Home</div>
+                        </div>
+                        <input type="checkbox" class="tab-visibility-toggle" data-tab="home" checked>
+                    </div>
+                    <div class="settings-item" style="cursor: default;">
+                        <div>
+                            <div style="font-weight: 600;">🏥 iKey</div>
+                        </div>
+                        <input type="checkbox" class="tab-visibility-toggle" data-tab="ikey" checked>
+                    </div>
+                    <div class="settings-item" style="cursor: default;">
+                        <div>
+                            <div style="font-weight: 600;">🚨 911</div>
+                        </div>
+                        <input type="checkbox" class="tab-visibility-toggle" data-tab="emergency-911" checked>
+                    </div>
+                    <div class="settings-item" style="cursor: default;">
+                        <div>
+                            <div style="font-weight: 600;">⛈️ Weather</div>
+                        </div>
+                        <input type="checkbox" class="tab-visibility-toggle" data-tab="weather" checked>
+                    </div>
+                    <div class="settings-item" style="cursor: default;">
+                        <div>
+                            <div style="font-weight: 600;">WTTIN</div>
+                        </div>
+                        <input type="checkbox" class="tab-visibility-toggle" data-tab="wttin" checked>
+                    </div>
+                    <div class="settings-item" style="cursor: default;">
+                        <div>
+                            <div style="font-weight: 600;">📱 Apps</div>
+                        </div>
+                        <input type="checkbox" class="tab-visibility-toggle" data-tab="apps" checked>
+                    </div>
+                </div>
+
+                <div class="settings-section">
                     <h3 style="margin-bottom: 15px; color: var(--primary);">Favorite Apps</h3>
                     <div id="settings-bookmark-grid" class="bookmark-grid"></div>
                     <div style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
@@ -1706,6 +1746,56 @@
             }
             switchTab('dispatch');
         }
+
+        // Tab visibility settings
+        const allTabs = ['home', 'ikey', 'emergency-911', 'weather', 'wttin', 'apps'];
+
+        function getTabButton(tabName) {
+            return Array.from(document.querySelectorAll('.tab-btn')).find(btn =>
+                btn.onclick && btn.onclick.toString().includes(tabName)
+            );
+        }
+
+        function applyHiddenTabs() {
+            const hidden = JSON.parse(localStorage.getItem('hiddenTabs') || '[]');
+            allTabs.forEach(tab => {
+                const btn = getTabButton(tab);
+                if (btn) {
+                    btn.style.display = hidden.includes(tab) ? 'none' : 'flex';
+                }
+                const checkbox = document.querySelector(`.tab-visibility-toggle[data-tab="${tab}"]`);
+                if (checkbox) {
+                    checkbox.checked = !hidden.includes(tab);
+                }
+            });
+            const active = document.querySelector('.tab-content.active');
+            if (active && hidden.includes(active.id)) {
+                switchTab('home');
+            }
+        }
+
+        function toggleTabVisibility(tab, isVisible) {
+            let hidden = JSON.parse(localStorage.getItem('hiddenTabs') || '[]');
+            if (!isVisible) {
+                if (!hidden.includes(tab)) hidden.push(tab);
+                const active = document.querySelector('.tab-content.active');
+                if (active && active.id === tab) {
+                    switchTab('home');
+                }
+            } else {
+                hidden = hidden.filter(t => t !== tab);
+            }
+            localStorage.setItem('hiddenTabs', JSON.stringify(hidden));
+            applyHiddenTabs();
+        }
+
+        document.querySelectorAll('.tab-visibility-toggle').forEach(cb => {
+            cb.addEventListener('change', function() {
+                toggleTabVisibility(this.dataset.tab, this.checked);
+            });
+        });
+
+        applyHiddenTabs();
 
         // iKey QR Code Functions
         let currentStep = 1;
