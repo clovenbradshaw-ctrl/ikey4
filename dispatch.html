@@ -565,7 +565,9 @@
     </script>
 <script>
     (function() {
-        const saved = localStorage.getItem("textSize") || "2020";
+        const params = new URLSearchParams(window.location.search);
+        const storageKey = params.get('key') || 'default';
+        const saved = localStorage.getItem(`${storageKey}_textSize`) || "2020";
         let fontSize = "16px";
         let zoom = "1";
         switch (saved) {

@@ -1524,6 +1524,11 @@
         let currentStep = 1;
         let formData = {};
         const baseURL = window.location.origin + window.location.pathname;
+        const storagePrefix = window.location.hash.slice(1) || 'default';
+        const storage = {
+            get: (key) => localStorage.getItem(`${storagePrefix}_${key}`),
+            set: (key, value) => localStorage.setItem(`${storagePrefix}_${key}`, value)
+        };
 
         function setupCharacterCounters() {
             const fields = ['allergies', 'medications', 'conditions'];
@@ -1904,11 +1909,11 @@ END:VCALENDAR`;
         let bookmarkEditMode = false;
 
         function getBookmarkCount() {
-            return Math.min(parseInt(localStorage.getItem('bookmarkCount')) || 4, MAX_BOOKMARKS);
+            return Math.min(parseInt(storage.get('bookmarkCount')) || 4, MAX_BOOKMARKS);
         }
 
         function setBookmarkCount(n) {
-            localStorage.setItem('bookmarkCount', Math.min(n, MAX_BOOKMARKS));
+            storage.set('bookmarkCount', Math.min(n, MAX_BOOKMARKS));
         }
 
         function renderBookmarkSlots() {
@@ -1928,7 +1933,7 @@ END:VCALENDAR`;
         }
 
         function loadBookmarks() {
-            const saved = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
+            const saved = JSON.parse(storage.get('protonBookmarks') || '[]');
             const count = getBookmarkCount();
             for (let i = 0; i < count; i++) {
                 document.querySelectorAll(`.bookmark-slot[data-index="${i}"]`).forEach(slot => {
@@ -1981,9 +1986,9 @@ END:VCALENDAR`;
                         addLongPress(card, enterBookmarkEditMode);
                         removeBtn.addEventListener('click', (e) => {
                             e.stopPropagation();
-                            const savedArr = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
+                            const savedArr = JSON.parse(storage.get('protonBookmarks') || '[]');
                             savedArr[i] = null;
-                            localStorage.setItem('protonBookmarks', JSON.stringify(savedArr));
+                            storage.set('protonBookmarks', JSON.stringify(savedArr));
                             loadBookmarks();
                         });
                     } else {
@@ -2037,7 +2042,7 @@ END:VCALENDAR`;
             modal.innerHTML = `<div class="modal-content"><h3>Select Favorite</h3><p class="bookmark-warning">⚠️ Bookmarks are saved only in this browser and will be lost if the device is lost or data is cleared. For secure backup, add a note in Proton Drive or save in an email.</p><div id="modal-app-list"></div></div>`;
             const list = document.getElementById('modal-app-list');
             if (list) {
-                const saved = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
+                const saved = JSON.parse(storage.get('protonBookmarks') || '[]');
                 const usedIds = saved.map((entry, idx) => {
                     if (idx === index || !entry) return null;
                     return typeof entry === 'string' ? entry : entry.id;
@@ -2061,14 +2066,14 @@ END:VCALENDAR`;
                 list.querySelectorAll('.modal-app').forEach(el => {
                     if (el.dataset.id) {
                         el.addEventListener('click', () => {
-                            const savedArr = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
+                            const savedArr = JSON.parse(storage.get('protonBookmarks') || '[]');
                             if (el.dataset.type === 'proton') {
                                 savedArr[index] = { id: el.dataset.id };
                             } else if (el.dataset.type === 'internal') {
                                 const app = INTERNAL_APPS.find(a => a.id === el.dataset.id);
                                 savedArr[index] = { id: app.id, url: app.url, name: app.name, icon: app.icon };
                             }
-                            localStorage.setItem('protonBookmarks', JSON.stringify(savedArr));
+                            storage.set('protonBookmarks', JSON.stringify(savedArr));
                             closeBookmarkModal();
                             renderBookmarkSlots();
                         });
@@ -2081,9 +2086,9 @@ END:VCALENDAR`;
                                 const urlObj = new URL(url);
                                 const name = prompt('Enter a name for this website') || urlObj.hostname;
                                 const icon = `https://www.google.com/s2/favicons?sz=64&domain=${urlObj.hostname}`;
-                                const savedArr = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
+                                const savedArr = JSON.parse(storage.get('protonBookmarks') || '[]');
                                 savedArr[index] = { url: urlObj.href, name, icon };
-                                localStorage.setItem('protonBookmarks', JSON.stringify(savedArr));
+                                storage.set('protonBookmarks', JSON.stringify(savedArr));
                                 closeBookmarkModal();
                                 renderBookmarkSlots();
                             } catch (e) {
@@ -2096,9 +2101,9 @@ END:VCALENDAR`;
                         });
                     } else if (el.dataset.remove) {
                         el.addEventListener('click', () => {
-                            const savedArr = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
+                            const savedArr = JSON.parse(storage.get('protonBookmarks') || '[]');
                             savedArr[index] = null;
-                            localStorage.setItem('protonBookmarks', JSON.stringify(savedArr));
+                            storage.set('protonBookmarks', JSON.stringify(savedArr));
                             closeBookmarkModal();
                             renderBookmarkSlots();
                         });
@@ -2106,7 +2111,7 @@ END:VCALENDAR`;
                         el.addEventListener('click', () => {
                             const savedArr = [];
                             PROTON_APPS.forEach(app => savedArr.push({ id: app.id }));
-                            localStorage.setItem('protonBookmarks', JSON.stringify(savedArr));
+                            storage.set('protonBookmarks', JSON.stringify(savedArr));
                             setBookmarkCount(Math.max(getBookmarkCount(), PROTON_APPS.length));
                             closeBookmarkModal();
                             renderBookmarkSlots();
@@ -2144,9 +2149,9 @@ END:VCALENDAR`;
                     alert('Please enter a ' + (type === 'email' ? 'email address' : 'phone number'));
                     return;
                 }
-                const savedArr = JSON.parse(localStorage.getItem('protonBookmarks') || '[]');
+                const savedArr = JSON.parse(storage.get('protonBookmarks') || '[]');
                 savedArr[index] = { type, value, name, description: desc, photo: photoData };
-                localStorage.setItem('protonBookmarks', JSON.stringify(savedArr));
+                storage.set('protonBookmarks', JSON.stringify(savedArr));
                 closeBookmarkModal();
                 renderBookmarkSlots();
             });
@@ -2538,7 +2543,16 @@ Generated: ${new Date().toLocaleString()}`;
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             setupCharacterCounters();
-            
+
+            const dispatchFrame = document.querySelector('#dispatch iframe');
+            if (dispatchFrame) {
+                dispatchFrame.src = `dispatch.html?key=${encodeURIComponent(storagePrefix)}`;
+            }
+            const inviteAppLink = document.querySelector('a.app-card[href="invite.html"]');
+            if (inviteAppLink) {
+                inviteAppLink.href = `invite.html?key=${encodeURIComponent(storagePrefix)}`;
+            }
+
             // Check for existing QR data in URL
             const hash = window.location.hash.slice(1);
             if (hash) {
@@ -2600,7 +2614,7 @@ Generated: ${new Date().toLocaleString()}`;
 
                     // Calendar event card
                     if (data.n && data.pe) {
-                        const inviteUrl = `invite.html?pe=${encodeURIComponent(data.pe)}&n=${encodeURIComponent(data.n)}`;
+                        const inviteUrl = `invite.html?pe=${encodeURIComponent(data.pe)}&n=${encodeURIComponent(data.n)}&key=${encodeURIComponent(storagePrefix)}`;
                         commCards += `
         <a href="${inviteUrl}" style="text-decoration: none; color: inherit; display: block;">
             <div class="location-card" style="margin-bottom: 15px; cursor: pointer;">
@@ -2755,10 +2769,10 @@ Generated: ${new Date().toLocaleString()}`;
         }
         function setTextSize(size) {
             applyTextSize(size);
-            localStorage.setItem("textSize", size);
+            storage.set('textSize', size);
         }
         document.addEventListener("DOMContentLoaded", () => {
-            const saved = localStorage.getItem("textSize") || "2020";
+            const saved = storage.get('textSize') || "2020";
             applyTextSize(saved);
             const select = document.getElementById("text-size-select");
             if (select) {
