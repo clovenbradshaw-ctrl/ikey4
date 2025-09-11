@@ -2055,25 +2055,25 @@ Generated: ${new Date().toLocaleString()}`;
         </div>`;
                     }
 
-                    // Calendar event placeholder card
-                    if (data.n) {
+                    // Calendar event card
+                    if (data.n && data.pe) {
+                        const inviteUrl = `invite.html?pe=${encodeURIComponent(data.pe)}&n=${encodeURIComponent(data.n)}`;
                         commCards += `
-        <div class="location-card" style="margin-bottom: 15px; cursor: pointer; opacity: 0.7;" onclick="alert('Calendar integration coming soon! This will allow you to schedule a follow-up with ${data.n}.')">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--primary); font-weight: 700;">
-                        📅 Schedule Follow-up
+        <a href="${inviteUrl}" style="text-decoration: none; color: inherit; display: block;">
+            <div class="location-card" style="margin-bottom: 15px; cursor: pointer;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--primary); font-weight: 700;">
+                            📅 Schedule Follow-up
+                        </div>
+                        <div style="font-weight: 600; margin-top: 8px;">
+                            Create calendar event with ${data.n}
+                        </div>
                     </div>
-                    <div style="font-weight: 600; margin-top: 8px;">
-                        Create calendar event with ${data.n}
-                    </div>
-                    <div style="font-size: 0.8rem; color: var(--secondary); margin-top: 4px;">
-                        Coming soon
-                    </div>
+                    <span style="color: var(--primary); font-size: 1.5rem;">→</span>
                 </div>
-                <span style="color: var(--primary); font-size: 1.5rem;">→</span>
             </div>
-        </div>`;
+        </a>`;
                     }
 
                     // Add the communication cards to the page
