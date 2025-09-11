@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="iKey - Keep your location secure with emergency access capabilities">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -680,7 +680,13 @@
                 padding: 20px;
             }
 
+            .tab-nav {
+                flex-wrap: wrap;
+                overflow-x: hidden;
+            }
+
             .tab-btn {
+                flex: 1 0 50%;
                 padding: 16px 15px;
                 font-size: 0.85rem;
             }
@@ -696,7 +702,7 @@
 
         @media (max-width: 480px) {
             .tab-btn {
-                flex: 0 0 auto;
+                flex: 1 0 33.333%;
                 min-width: auto;
                 padding: 12px;
             }
