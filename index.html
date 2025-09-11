@@ -3165,9 +3165,18 @@ Generated: ${new Date().toLocaleString()}`;
         }
         let translations = {};
         fetch('TRANSLATION_TERMS.md')
-            .then(resp => resp.json())
-            .then(data => {
-                translations = data;
+            .then(resp => resp.text())
+            .then(text => {
+                try {
+                    translations = JSON.parse(text);
+                } catch (e) {
+                    console.error('Failed to parse translations:', e);
+                }
+            })
+            .catch(err => {
+                console.error('Failed to load translations:', err);
+            })
+            .finally(() => {
                 const saved = localStorage.getItem('language') || 'en';
                 setLanguage(saved);
             });
