@@ -121,6 +121,17 @@
             background: linear-gradient(to bottom, transparent, rgba(79, 70, 229, 0.05));
         }
 
+        .tab-btn.proton-btn {
+            padding: 0 20px;
+            height: 100%;
+        }
+
+        .tab-btn.proton-btn .proton-icon {
+            height: 100%;
+            width: auto;
+            object-fit: contain;
+        }
+
         .tab-icon {
             font-size: 1.3rem;
         }
@@ -721,9 +732,9 @@
             <span class="tab-icon">📡</span>
             Dispatch
         </button>
-        <button class="tab-btn" onclick="switchTab('apps')" aria-label="Apps">
+        <button class="tab-btn proton-btn" onclick="switchTab('apps')" aria-label="Apps">
             <img src="https://static0.howtogeekimages.com/wordpress/wp-content/uploads/2023/11/38.png"
-                 alt="" style="width: 40px; height: 40px; object-fit: contain;">
+                 alt="" class="proton-icon">
         </button>
         <button class="tab-btn" onclick="switchTab('settings')">
             <span class="tab-icon">⚙️</span>
