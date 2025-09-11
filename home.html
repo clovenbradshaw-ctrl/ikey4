@@ -437,9 +437,15 @@
     function fix_qr_invalid() { showToast('Generating new QR…'); }
 
 
-    document.addEventListener('DOMContentLoaded', () => {
+    function initHome() {
       setTimeout(renderHome, 1000);
-    });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initHome);
+    } else {
+      initHome();
+    }
   </script>
 </body>
 </html>
