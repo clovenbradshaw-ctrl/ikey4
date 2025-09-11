@@ -912,6 +912,56 @@
             font-size: 14px;
         }
 
+        /* Favorites Grid */
+        .favorites {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .favorite {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            text-align: center;
+            padding: 4px;
+        }
+        .favorite .label {
+            margin-top: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+        .favorite .delete {
+            display: none;
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 24px;
+            height: 24px;
+            border: none;
+            border-radius: 50%;
+            background: var(--danger);
+            color: white;
+            cursor: pointer;
+        }
+        .favorites.editing .delete {
+            display: block;
+        }
+        .favorite.add-favorite {
+            font-size: 32px;
+            cursor: pointer;
+        }
+
     </style>
 </head>
 <body>
@@ -978,6 +1028,9 @@
     <!-- Home Tab -->
     <div id="home" class="tab-content">
         <div class="container">
+            <!-- Favorites Grid -->
+            <div id="favorites-section"></div>
+
             <!-- Status Cards Container -->
             <div id="status-cards" class="status-container">
                 <!-- Populated by JavaScript -->
@@ -2251,6 +2304,172 @@ END:VCALENDAR`;
             { id: 'dispatch', name: 'Police Dispatch', url: '#dispatch', icon: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f6a8.svg' }
         ];
 
+        let editMode = false;
+        let favoriteApps = JSON.parse(localStorage.getItem('protonBookmarks') || '[]').filter(Boolean);
+
+        const CONTACT_ICONS = {
+            call: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4de.svg',
+            text: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4f2.svg',
+            email: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/2709.svg'
+        };
+
+        function getBookmarkDetails(entry) {
+            let app = null, url = '', name = '', icon = '';
+            if (!entry) return null;
+            if (typeof entry === 'string') {
+                app = PROTON_APPS.find(a => a.id === entry) || INTERNAL_APPS.find(a => a.id === entry);
+            } else if (entry.id) {
+                app = PROTON_APPS.find(a => a.id === entry.id) || INTERNAL_APPS.find(a => a.id === entry.id);
+            }
+            if (app) {
+                url = app.url;
+                name = app.name;
+                icon = app.icon;
+            } else if (entry.url) {
+                url = entry.url;
+                name = entry.name || entry.url;
+                icon = entry.icon || `https://www.google.com/s2/favicons?sz=64&domain_url=${entry.url}`;
+            } else if (entry.type) {
+                if (entry.type === 'call') url = `tel:${entry.value}`;
+                else if (entry.type === 'text') url = `sms:${entry.value}`;
+                else if (entry.type === 'email') url = `mailto:${entry.value}`;
+                name = entry.name || entry.value;
+                icon = entry.photo || CONTACT_ICONS[entry.type];
+            }
+            return { url, name, icon };
+        }
+
+        function renderFavorites() {
+            const container = document.getElementById('favorites-section');
+            if (!container) return;
+            const details = favoriteApps.map((app, index) => ({ info: getBookmarkDetails(app), index })).filter(d => d.info);
+            if (details.length === 0 && !editMode) {
+                container.innerHTML = '<div class="text-body">No favorites yet</div>';
+                return;
+            }
+            const listHtml = details.map(d => `
+            <div class="favorite" draggable="${editMode}" data-index="${d.index}" data-url="${d.info.url}">
+              <span class="icon"><img src="${d.info.icon}" alt="${d.info.name}" width="32" height="32"></span>
+              <span class="label">${d.info.name}</span>
+              <button class="delete" onclick="event.stopPropagation(); deleteFavorite(${d.index})">✕</button>
+            </div>
+          `).join('');
+            const addTile = editMode ? '<div class="favorite add-favorite" onclick="addFavorite()">+</div>' : '';
+            container.innerHTML = `
+        <div class="favorites ${editMode ? 'editing' : ''}" id="favorites">
+          ${listHtml}${addTile}
+        </div>
+        ${editMode ? '<div class="button-group"><button onclick="exitEdit()">Done</button></div>' : ''}
+      `;
+            attachFavoriteHandlers();
+        }
+
+        function saveFavorites() {
+            localStorage.setItem('protonBookmarks', JSON.stringify(favoriteApps));
+        }
+
+        function deleteFavorite(index) {
+            favoriteApps.splice(index, 1);
+            saveFavorites();
+            renderFavorites();
+        }
+
+        function moveFavorite(from, to) {
+            if (from === to) return;
+            const [moved] = favoriteApps.splice(from, 1);
+            favoriteApps.splice(to, 0, moved);
+            saveFavorites();
+            renderFavorites();
+        }
+
+        function exitEdit() {
+            editMode = false;
+            renderFavorites();
+        }
+
+        function attachFavoriteHandlers() {
+            const container = document.getElementById('favorites');
+            if (!container) return;
+
+            container.querySelectorAll('.favorite').forEach(item => {
+                if (item.classList.contains('add-favorite')) return;
+                let pressTimer;
+                const index = Number(item.dataset.index);
+
+                function startPress() {
+                    pressTimer = setTimeout(() => { editMode = true; renderFavorites(); }, 500);
+                }
+
+                function cancelPress() { clearTimeout(pressTimer); }
+
+                item.addEventListener('mousedown', startPress);
+                item.addEventListener('touchstart', startPress);
+                item.addEventListener('mouseup', cancelPress);
+                item.addEventListener('mouseleave', cancelPress);
+                item.addEventListener('touchend', cancelPress);
+
+                item.addEventListener('click', () => {
+                    if (editMode) return;
+                    const url = item.dataset.url;
+                    if (url) {
+                        if (url.startsWith('#')) {
+                            window.location.href = url;
+                        } else {
+                            window.open(url, '_blank');
+                        }
+                    }
+                });
+
+                item.addEventListener('dragstart', e => {
+                    e.dataTransfer.effectAllowed = 'move';
+                    e.dataTransfer.setData('text/plain', index);
+                });
+
+                item.addEventListener('dragover', e => {
+                    e.preventDefault();
+                });
+
+                item.addEventListener('drop', e => {
+                    e.preventDefault();
+                    const from = Number(e.dataTransfer.getData('text/plain'));
+                    const to = Number(e.currentTarget.dataset.index);
+                    moveFavorite(from, to);
+                });
+            });
+        }
+
+        function addFavorite() {
+            const type = prompt('Add proton app id, "dispatch", "website", "call", "text", or "email"');
+            if (!type) return;
+            if (PROTON_APPS.find(a => a.id === type)) {
+                favoriteApps.push(type);
+            } else if (INTERNAL_APPS.find(a => a.id === type)) {
+                favoriteApps.push(type);
+            } else if (type === 'website') {
+                let url = prompt('Enter website URL (https:// optional)');
+                if (!url) return;
+                if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+                try {
+                    const u = new URL(url);
+                    const name = prompt('Enter name') || u.hostname;
+                    const icon = `https://www.google.com/s2/favicons?sz=64&domain=${u.hostname}`;
+                    favoriteApps.push({ url: u.href, name, icon });
+                } catch (e) {
+                    alert('Invalid URL');
+                    return;
+                }
+            } else if (['call','text','email'].includes(type)) {
+                const value = prompt(type === 'email' ? 'Enter email address' : 'Enter phone number');
+                if (!value) return;
+                const name = prompt('Enter name') || value;
+                favoriteApps.push({ type, value, name });
+            } else {
+                alert('Unknown option');
+                return;
+            }
+            saveFavorites();
+            renderFavorites();
+        }
 
         const CODE_ALPHABET = '23456789CFGHJMPQRVWX';
 
@@ -2685,6 +2904,9 @@ Generated: ${new Date().toLocaleString()}`;
             // Initialize home page status cards
             if (document.getElementById('status-cards')) {
                 renderHomeStatus();
+            }
+            if (document.getElementById('favorites-section')) {
+                renderFavorites();
             }
 
             const dispatchFrame = document.querySelector('#dispatch iframe');
