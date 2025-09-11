@@ -195,6 +195,7 @@
                     <li>Attach the downloaded ICS file to your email</li>
                     <li>Send the email to invite attendees</li>
                 </ol>
+                <button type="button" class="btn btn-secondary" onclick="goHome()" style="margin-top:10px;">⬅️ Back to Main Screen</button>
             </div>
             <form id="eventForm">
                 <div class="form-group">
@@ -323,6 +324,10 @@
     function resetForm() {
         document.getElementById('eventForm').reset();
         document.getElementById('clientEmail').value = clientEmail;
+    }
+
+    function goHome() {
+        window.location.href = 'index.html';
     }
 </script>
 <script>
