@@ -1682,19 +1682,11 @@
                     <div id="display-content"></div>
                     <div id="communication-actions" style="margin-top: 20px;"></div>
                     <div class="share-actions">
-  <button onclick="openShareWizard('emergency')">
-    🚨 Emergency Card
-    <span class="subtitle">QR + critical info for first responders</span>
-  </button>
-  <button onclick="openShareWizard('records')">
-    📋 Medical Summary  
-    <span class="subtitle">Full text for medical records</span>
-  </button>
-  <button onclick="openShareWizard('contact')">
-    👤 Contact Card
-    <span class="subtitle">Just name & contact info</span>
-  </button>
-</div>
+                        <button onclick="openShareWizard()">
+                            🔗 Share
+                            <span class="subtitle">Choose what and how to share</span>
+                        </button>
+                    </div>
                     <div id="share-history" style="margin-top:10px; font-size:0.9rem; color: var(--secondary);"></div>
                     <div style="margin-top: 20px;">
                         <button class="btn btn-primary" onclick="createNew()">🆕 Create New QR Code</button>
@@ -1757,7 +1749,6 @@
     </label>
   </div>
   <div class="modal-actions">
-    <button class="btn btn-primary" onclick="goToShareMethods()">Next</button>
     <button class="btn btn-secondary" onclick="closeShareModal()">Cancel</button>
   </div>
 </div>
@@ -2678,25 +2669,22 @@
         function openShareWizard(type = null) {
             document.getElementById('share-modal').classList.remove('hidden');
             if (type) {
-                selectedShareType = type;
-                document.getElementById('share-step-1').classList.add('hidden');
-                document.getElementById('share-step-2').classList.remove('hidden');
-                renderShareMethods(type);
+                const radio = document.querySelector(`#share-step-1 input[value="${type}"]`);
+                if (radio) radio.checked = true;
+                showMethods(type);
             } else {
-                document.getElementById('share-step-1').classList.remove('hidden');
-                document.getElementById('share-step-2').classList.add('hidden');
+                backToShareOptions();
             }
         }
 
         function closeShareModal() {
             document.getElementById('share-modal').classList.add('hidden');
+            backToShareOptions();
         }
 
-        function goToShareMethods() {
-            const selected = document.querySelector('input[name="content"]:checked');
-            if (!selected) return;
-            selectedShareType = selected.value;
-            renderShareMethods(selectedShareType);
+        function showMethods(type) {
+            selectedShareType = type;
+            renderShareMethods(type);
             document.getElementById('share-step-1').classList.add('hidden');
             document.getElementById('share-step-2').classList.remove('hidden');
         }
@@ -2704,6 +2692,7 @@
         function backToShareOptions() {
             document.getElementById('share-step-1').classList.remove('hidden');
             document.getElementById('share-step-2').classList.add('hidden');
+            document.querySelectorAll('#share-step-1 input[name="content"]').forEach(r => r.checked = false);
         }
 
         function renderShareMethods(type) {
@@ -2711,17 +2700,25 @@
             let html = '';
             switch(type) {
                 case 'emergency':
-                    html = `<button class="btn btn-primary" onclick="previewShare('emergency')">Preview Emergency Card</button>`;
+                    html = `<button class="btn btn-primary" onclick="downloadEmergencyCard()">Download</button>` +
+                           `<button class="btn btn-primary" onclick="shareOptimized('emergency')">Share via...</button>` +
+                           `<button class="btn btn-secondary" onclick="window.print()">Print</button>`;
                     break;
                 case 'records':
-                    html = `<button class="btn btn-primary" onclick="previewShare('records')">Preview Medical Summary</button>`;
+                    html = `<button class="btn btn-primary" onclick="smartCopy()">Copy</button>` +
+                           `<button class="btn btn-primary" onclick="shareOptimized('records')">Share via...</button>`;
                     break;
                 case 'contact':
-                    html = `<button class="btn btn-primary" onclick="previewShare('contact')">Preview Contact Card</button>`;
+                    html = `<button class="btn btn-primary" onclick="downloadVCard()">Download vCard</button>` +
+                           `<button class="btn btn-primary" onclick="shareOptimized('contact')">Share via...</button>`;
                     break;
             }
             methods.innerHTML = html;
         }
+
+        document.querySelectorAll('#share-step-1 input[name="content"]').forEach(r =>
+            r.addEventListener('change', e => showMethods(e.target.value))
+        );
 
         function previewShare(type) {
             const modal = document.getElementById('preview-modal');
