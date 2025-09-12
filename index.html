@@ -1045,10 +1045,7 @@
         }
 
         .favorite .label {
-            font-size: 11px;
             text-align: center;
-            color: white;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -1347,11 +1344,15 @@
             font-size: 12px;
             font-weight: 600;
             text-transform: uppercase;
-            color: #8e8e93;
             margin-bottom: 8px;
             display: flex;
             align-items: center;
             gap: 6px;
+        }
+
+        .status-badge {
+            color: #475569;
+            font-weight: 600;
         }
 
         .card-content {
@@ -1366,11 +1367,22 @@
         }
 
         .card-content .sub-text {
-            color: #8e8e93;
+            color: #475569;
             font-size: 14px;
         }
 
-    </style>
+        .subtitle-text {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: #475569;
+        }
+
+        .icon-label {
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        </style>
 </head>
 <body>
     <!-- Header -->
@@ -2470,7 +2482,7 @@
 
             let docsHTML = '';
             if (formData.docs.length) {
-                docsHTML = '<div class="info-card"><div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Documents</div><ul style="margin-left: 20px;">';
+                docsHTML = '<div class="info-card"><div class="subtitle-text">Documents</div><ul style="margin-left: 20px;">';
                 formData.docs.forEach(d => {
                     docsHTML += `<li><a href="${d.l}" target="_blank">${d.t}</a></li>`;
                 });
@@ -2479,51 +2491,51 @@
 
             const reviewHTML = `
                 <div class="info-card">
-                    <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Name</div>
+                    <div class="subtitle-text">Name</div>
                     <div style="font-weight: 600;">${formData.n || 'Not provided'}</div>
                 </div>
                 ${formData.pe ? `
                 <div class="info-card" style="border-left: 4px solid #6d4aff;">
-                    <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Secure Email</div>
+                    <div class="subtitle-text">Secure Email</div>
                     <div style="font-weight: 600;">${formData.pe}</div>
                 </div>` : ''}
                 ${formData.pr ? `
                 <div class="info-card">
-                    <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Pronouns</div>
+                    <div class="subtitle-text">Pronouns</div>
                     <div style="font-weight: 600;">${formData.pr}</div>
                 </div>` : ''}
                 ${formData.ph ? `
                 <div class="info-card">
-                    <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Phone Number</div>
+                    <div class="subtitle-text">Phone Number</div>
                     <div style="font-weight: 600;">${formData.ph}</div>
                 </div>` : ''}
                 ${formData.d ? `
                 <div class="info-card">
-                    <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Date of Birth</div>
+                    <div class="subtitle-text">Date of Birth</div>
                     <div style="font-weight: 600;">${new Date(formData.d).toLocaleDateString()}</div>
                 </div>` : ''}
                 ${formData.b ? `
                 <div class="info-card">
-                    <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Blood Type</div>
+                    <div class="subtitle-text">Blood Type</div>
                     <div style="font-weight: 600;">${formData.b}</div>
                 </div>` : ''}
                 ${formData.a ? `
                 <div class="info-card">
-                    <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Allergies</div>
+                    <div class="subtitle-text">Allergies</div>
                     <div style="font-weight: 600;">${formData.a}</div>
                 </div>` : ''}
                 ${formData.m ? `
                 <div class="info-card">
-                    <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Medications</div>
+                    <div class="subtitle-text">Medications</div>
                     <div style="font-weight: 600;">${formData.m}</div>
                 </div>` : ''}
                 ${formData.c ? `
                 <div class="info-card">
-                    <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Health Conditions</div>
+                    <div class="subtitle-text">Health Conditions</div>
                     <div style="font-weight: 600;">${formData.c}</div>
                 </div>` : ''}
                 <div class="info-card">
-                    <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Emergency Contact</div>
+                    <div class="subtitle-text">Emergency Contact</div>
                     <div style="font-weight: 600;">
                         ${formData.ec}<br>
                         📞 ${formData.ep}
@@ -2532,7 +2544,7 @@
                 </div>
                 ${formData.cm ? `
                 <div class="info-card">
-                    <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Case Manager</div>
+                    <div class="subtitle-text">Case Manager</div>
                     <div style="font-weight: 600;">
                         ${formData.cm}<br>
                         ${formData.co ? `<small>${formData.co}</small><br>` : ''}
@@ -3141,7 +3153,7 @@ END:VCALENDAR`;
                         <div class="icon-wrapper">
                             <img src="https://cdn.iconscout.com/icon/free/png-256/free-qr-code-icon-svg-png-download-1569017.png" alt="QR Code Icon" class="icon-img" onerror="this.style.display='none'; this.parentElement.innerHTML='🔳';">
                         </div>
-                        <div class="label">My QR</div>
+                        <div class="label icon-label">My QR</div>
                     </div>
                 `;
 
@@ -3156,12 +3168,12 @@ END:VCALENDAR`;
                          data-url="${info.url || ''}">
                         <div class="delete-btn" onclick="event.stopPropagation(); bookmarkManager.removeBookmark(${index})">×</div>
                         <div class="icon-wrapper">
-                            ${isEmoji ? 
-                                `<span class="icon-emoji">${info.icon}</span>` : 
+                            ${isEmoji ?
+                                `<span class="icon-emoji">${info.icon}</span>` :
                                 `<img src="${info.icon}" alt="${info.name}" class="icon-img" onerror="this.style.display='none'; this.parentElement.innerHTML='📱';">`
                             }
                         </div>
-                        <div class="label">${info.name}</div>
+                        <div class="label icon-label">${info.name}</div>
                     </div>
                 `;
                     }
@@ -4070,7 +4082,7 @@ Generated: ${new Date().toLocaleString()}`;
 
                 container.innerHTML += `
             <div class="status-card">
-                <div class="card-badge">🔒 MEDICAL ID ACTIVE</div>
+                <div class="card-badge status-badge">🔒 MEDICAL ID ACTIVE</div>
                 <div class="card-content">
                     <div class="main-text">${displayData.n}</div>
                     <div class="sub-text">${alerts.length ? alerts.join(' • ') : 'No alerts'}</div>
@@ -4081,7 +4093,7 @@ Generated: ${new Date().toLocaleString()}`;
             } else {
                 container.innerHTML += `
             <div class="status-card warning">
-                <div class="card-badge">⚠️ NO MEDICAL ID</div>
+                <div class="card-badge status-badge">⚠️ NO MEDICAL ID</div>
                 <div class="card-content">
                     <div class="main-text">Create Your Medical ID</div>
                     <div class="sub-text">Tap to add emergency information</div>
@@ -4097,7 +4109,7 @@ Generated: ${new Date().toLocaleString()}`;
             if (navigator.geolocation) {
                 container.innerHTML += `
             <div class="status-card success">
-                <div class="card-badge">📍 LOCATION SERVICES</div>
+                <div class="card-badge status-badge">📍 LOCATION SERVICES</div>
                 <div class="card-content">
                     <div class="sub-text">Ready for emergency sharing</div>
                 </div>
@@ -4231,35 +4243,35 @@ Generated: ${new Date().toLocaleString()}`;
 
                     if (data.ph) {
                         html += `<div class="info-card">
-                            <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Phone Number</div>
+                            <div class="subtitle-text">Phone Number</div>
                             <div style="font-weight: 600;"><a href="tel:${data.ph}" style="color: var(--primary); text-decoration: none;">${data.ph}</a></div>
                         </div>`;
                     }
 
                     if (data.pr) {
                         html += `<div class="info-card">
-                            <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Pronouns</div>
+                            <div class="subtitle-text">Pronouns</div>
                             <div style="font-weight: 600;">${data.pr}</div>
                         </div>`;
                     }
 
                     if (data.b) {
                         html += `<div class="info-card" style="border-left: 4px solid var(--danger);">
-                            <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Blood Type</div>
+                            <div class="subtitle-text">Blood Type</div>
                             <div style="font-weight: 600; color: var(--danger);">${data.b}</div>
                         </div>`;
                     }
                     
                     if (data.a) {
                         html += `<div class="info-card" style="border-left: 4px solid var(--danger);">
-                            <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">⚠️ Allergies</div>
+                            <div class="subtitle-text">⚠️ Allergies</div>
                             <div style="font-weight: 600; color: var(--danger);">${data.a}</div>
                         </div>`;
                     }
                     
                     if (data.ec) {
                         html += `<div class="info-card" style="background: #dcfce7; border: 2px solid var(--success);">
-                            <div style="font-size: 0.75rem; text-transform: uppercase;">📞 Emergency Contact</div>
+                            <div class="subtitle-text">📞 Emergency Contact</div>
                             <div style="font-weight: 600; font-size: 1.2rem;">
                                 ${data.ec}<br>
                                 <a href="tel:${data.ep}" style="color: var(--primary); text-decoration: none;">
@@ -4271,7 +4283,7 @@ Generated: ${new Date().toLocaleString()}`;
                     
                     if (data.cm) {
                         html += `<div class="info-card" style="background: #eff6ff; border: 2px solid var(--primary);">
-                            <div style="font-size: 0.75rem; text-transform: uppercase;">👤 Case Manager</div>
+                            <div class="subtitle-text">👤 Case Manager</div>
                             <div style="font-weight: 600;">
                                 ${data.cm}<br>
                                 ${data.co ? `<small>${data.co}</small><br>` : ''}
@@ -4282,14 +4294,14 @@ Generated: ${new Date().toLocaleString()}`;
 
                     if (data.pe) {
                         html += `<div class="info-card" style="border-left: 4px solid #6d4aff;">
-                            <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Secure Email</div>
+                            <div class="subtitle-text">Secure Email</div>
                             <div style="font-weight: 600;">${data.pe}</div>
                         </div>`;
                     }
 
                     if (data.docs && data.docs.length) {
                         html += `<div class="info-card">
-                            <div style="font-size: 0.75rem; color: var(--secondary); text-transform: uppercase;">Documents</div>
+                            <div class="subtitle-text">Documents</div>
                             <ul style="margin-left: 20px;">${data.docs.map(d => `<li><a href="${d.l}" target="_blank" style="color: var(--primary); text-decoration: none;">📄 ${d.t}</a></li>`).join('')}</ul>
                         </div>`;
                     }
