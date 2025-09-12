@@ -381,6 +381,7 @@
             object-fit: cover;
             border: 2px solid #ddd;
             background: white;
+            aspect-ratio: 1 / 1;
         }
 
         .photo-placeholder-card {
@@ -404,12 +405,13 @@
             background: white;
             border-radius: 8px;
             border: 2px solid #ddd;
+            aspect-ratio: 1 / 1;
         }
 
         #qrcode canvas,
         #qrcode img {
             width: 100% !important;
-            height: 100% !important;
+            height: auto !important;
         }
 
         .email-display {
