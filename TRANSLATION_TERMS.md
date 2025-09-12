@@ -271,7 +271,7 @@
             "poisonControlNumber": "Poison Control: 1-800-222-1222"
         },
         "misc": {
-            "apps": "Apps",
+            "apps": "Proton Apps",
             "proton": "Proton",
             "reading": "reading",
             "whats": "whats",
@@ -550,7 +550,7 @@
             "poisonControlNumber": "Control de Venenos: 1-800-222-1222"
         },
         "misc": {
-            "apps": "Apps",
+            "apps": "Proton Apps",
             "proton": "Proton",
             "reading": "lectura",
             "whats": "qué",
@@ -829,7 +829,7 @@
             "poisonControlNumber": "مراقبة السموم: 1-800-222-1222"
         },
         "misc": {
-            "apps": "التطبيقات",
+            "apps": "Proton Apps",
             "proton": "Proton",
             "reading": "قراءة",
             "whats": "ماذا",
@@ -1108,7 +1108,7 @@
             "poisonControlNumber": "Kontrola Jehrê: 1-800-222-1222"
         },
         "misc": {
-            "apps": "Sepan",
+            "apps": "Proton Apps",
             "proton": "Proton",
             "reading": "xwendin",
             "whats": "çi",
@@ -1387,7 +1387,7 @@
             "poisonControlNumber": "Xakamaynta Sunta: 1-800-222-1222"
         },
         "misc": {
-            "apps": "Apps",
+            "apps": "Proton Apps",
             "proton": "Proton",
             "reading": "akhrinta",
             "whats": "maxay",
@@ -1666,7 +1666,7 @@
             "poisonControlNumber": "中毒控制：1-800-222-1222"
         },
         "misc": {
-            "apps": "应用",
+            "apps": "Proton Apps",
             "proton": "Proton",
             "reading": "阅读",
             "whats": "什么",
