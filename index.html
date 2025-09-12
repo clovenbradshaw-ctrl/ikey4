@@ -26,7 +26,8 @@
             --primary: #4f46e5;
             --primary-dark: #4338ca;
             --proton: #6d4aff;
-            --secondary: #64748b;
+            --secondary: #374151;
+            --secondary-light: #6b7280;
             --success: #10b981;
             --danger: #ef4444;
             --warning: #f59e0b;
@@ -51,6 +52,11 @@
             color: var(--dark);
             line-height: 1.6;
             touch-action: manipulation;
+        }
+
+        *:focus-visible {
+            outline: 3px solid #4f46e5;
+            outline-offset: 2px;
         }
 
         /* Header */
@@ -171,6 +177,11 @@
             color: var(--primary);
         }
 
+        .tab-btn:focus-visible {
+            background: var(--light);
+            box-shadow: inset 0 0 0 2px var(--primary);
+        }
+
         .tab-btn.active {
             color: #ffffff;
             background: #4f46e5;
@@ -235,12 +246,20 @@
             border-left: 4px solid #ef4444;
         }
         .card-critical .accent { color: #991b1b; }
+        .card-critical::before {
+            content: "⚠️ ";
+            font-size: 1.2em;
+        }
 
         .card-emergency {
             background: #f0fdf4;
             border-left: 4px solid #22c55e;
         }
         .card-emergency .accent { color: #166534; }
+        .card-emergency::before {
+            content: "✅ ";
+            font-size: 1.2em;
+        }
 
         .card-communication {
             background: #eff6ff;
@@ -283,6 +302,16 @@
 
         .btn:active {
             transform: scale(0.95);
+        }
+
+        .btn:focus-visible {
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.5);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            filter: grayscale(50%);
         }
 
         .btn-primary {
@@ -652,10 +681,11 @@
             align-items: center;
             justify-content: space-around;
             padding: 20px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: linear-gradient(135deg, #4f46e5, #6b21a8);
             border-radius: 20px;
             color: white;
             margin-bottom: 20px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
 
         .weather-icon-large {
@@ -1331,13 +1361,30 @@
         }
 
         .status-card.warning {
-            background: #fff9e6;
-            border-left: 4px solid #ffb800;
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            background-image: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(245, 158, 11, 0.05) 10px,
+                rgba(245, 158, 11, 0.05) 20px
+            );
         }
 
         .status-card.success {
             background: #f0fdf4;
             border-left: 4px solid #10b981;
+            position: relative;
+        }
+
+        .status-card.success::after {
+            content: "\2713";
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            color: #10b981;
+            font-size: 1.5em;
         }
 
         .card-badge {
@@ -1367,19 +1414,52 @@
         }
 
         .card-content .sub-text {
-            color: #475569;
+            color: var(--secondary);
             font-size: 14px;
         }
 
         .subtitle-text {
             font-size: 0.75rem;
             text-transform: uppercase;
-            color: #475569;
+            color: #1f2937;
+            font-weight: 600;
         }
 
         .icon-label {
-            color: #64748b;
+            color: var(--secondary);
             font-size: 0.875rem;
+        }
+
+        @media (prefers-contrast: high) {
+            :root {
+                --primary: #3730a3;
+                --danger: #b91c1c;
+                --success: #059669;
+            }
+
+            .card {
+                border: 2px solid #000;
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary: #818cf8;
+                --danger: #f87171;
+                --success: #4ade80;
+                --light: #1e293b;
+                --dark: #f1f5f9;
+                --border: #334155;
+            }
+
+            body {
+                background: #0f172a;
+                color: #f1f5f9;
+            }
+
+            .card {
+                background: #1e293b;
+            }
         }
 
         </style>
