@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iKey ID Card Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .main-logo {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 24px;
+            color: #667eea;
+        }
+
+        .controls {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            color: #333;
+            margin: 25px 0 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .section-title:first-child {
+            margin-top: 0;
+        }
+
+        .required-section {
+            background: #f0f2ff;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 2px solid #667eea;
+        }
+
+        .required-label {
+            font-size: 0.85rem;
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .photo-section {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .photo-preview {
+            width: 100px;
+            height: 120px;
+            border: 3px dashed #ddd;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .photo-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-placeholder {
+            text-align: center;
+            color: #999;
+            font-size: 0.85rem;
+        }
+
+        .photo-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .photo-btn {
+            padding: 10px 20px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .photo-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .remove-photo {
+            background: #ff4757;
+            color: white;
+            border-color: #ff4757;
+        }
+
+        .remove-photo:hover {
+            background: #ff3838;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .field-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .field-item {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .field-item.active {
+            border-color: #667eea;
+            background: #f0f2ff;
+        }
+
+        .field-item.required {
+            background: #f0f2ff;
+            border-color: #667eea;
+        }
+
+        .field-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .field-checkbox {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .field-label {
+            font-weight: 600;
+            color: #333;
+            flex: 1;
+        }
+
+        .field-label.required::after {
+            content: " *";
+            color: #667eea;
+        }
+
+        .char-counter {
+            font-size: 0.75rem;
+            color: #999;
+        }
+
+        .char-counter.warning {
+            color: #ff9800;
+        }
+
+        .char-counter.error {
+            color: #f44336;
+        }
+
+        .field-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            transition: border-color 0.3s;
+        }
+
+        .field-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .field-input:disabled {
+            background: #f5f5f5;
+            cursor: not-allowed;
+        }
+
+        select.field-input {
+            cursor: pointer;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            flex: 1;
+        }
+
+        .btn-success {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-info {
+            background: #2196F3;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .preview-container {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        .preview-title {
+            text-align: center;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .cards-display {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            width: 340px;
+            height: 214px;
+            border: 2px solid #333;
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .card-front {
+            padding: 15px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-logo {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .card-title {
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: #333;
+        }
+
+        .card-id {
+            font-size: 0.7rem;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .id-section {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .id-section.single {
+            justify-content: center;
+        }
+
+        .card-photo {
+            width: 90px;
+            height: 90px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 2px solid #ddd;
+            background: white;
+        }
+
+        .photo-placeholder-card {
+            width: 90px;
+            height: 90px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 0.7rem;
+            flex-direction: column;
+        }
+
+        #qrcode {
+            width: 90px !important;
+            height: 90px !important;
+            padding: 7px;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+        }
+
+        #qrcode canvas,
+        #qrcode img {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .email-display {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-align: center;
+            width: 100%;
+            max-width: 280px;
+        }
+
+        .card-back {
+            padding: 12px;
+            background: white;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .back-header {
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .back-content {
+            flex: 1;
+            font-size: 0.72rem;
+            overflow-y: auto;
+        }
+
+        .back-item {
+            margin-bottom: 5px;
+            display: flex;
+            align-items: baseline;
+        }
+
+        .back-label {
+            font-weight: 600;
+            color: #667eea;
+            min-width: 65px;
+        }
+
+        .back-value {
+            color: #333;
+            word-break: break-word;
+            flex: 1;
+        }
+
+        .back-value.critical {
+            color: #d32f2f;
+            font-weight: 600;
+        }
+
+        .emergency-box {
+            margin-top: auto;
+            padding: 8px;
+            background: #ffebee;
+            border-radius: 6px;
+            text-align: center;
+            border: 2px solid #ffcdd2;
+        }
+
+        .emergency-label {
+            color: #c62828;
+            font-weight: 700;
+            font-size: 0.7rem;
+        }
+
+        .emergency-value {
+            color: #d32f2f;
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .container > *:not(.preview-container) {
+                display: none;
+            }
+
+            .preview-container {
+                box-shadow: none;
+                padding: 0;
+            }
+
+            .preview-title {
+                display: none;
+            }
+
+            .card {
+                page-break-inside: avoid;
+            }
+
+            @page {
+                size: A4;
+                margin: 15mm;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                <div class="main-logo">iK</div>
+                iKey ID Card Generator
+            </h1>
+            <p>Minimalist secure medical ID with unique identifier</p>
+        </div>
+
+        <div class="controls">
+            <div class="section-title">Photo Upload (Optional)</div>
+            <div class="photo-section">
+                <div class="photo-preview" id="photoPreview">
+                    <div class="photo-placeholder">
+                        <div>📷</div>
+                        <div>No Photo</div>
+                    </div>
+                </div>
+                <div class="photo-controls">
+                    <button class="photo-btn" onclick="capturePhoto()">📸 Take Photo</button>
+                    <button class="photo-btn" onclick="document.getElementById('fileInput').click()">📁 Upload Photo</button>
+                    <button class="photo-btn remove-photo" onclick="removePhoto()" style="display:none;" id="removeBtn">❌ Remove</button>
+                    <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">
+                </div>
+            </div>
+
+            <div class="section-title">Required Information</div>
+            <div class="required-section">
+                <div class="required-label">
+                    ⚡ These fields are always included on your card
+                </div>
+                <div class="field-grid">
+                    <div class="field-item required">
+                        <div class="field-header">
+                            <label class="field-label required" style="margin-left: 30px;">Secure Email (UID)</label>
+                            <span class="char-counter" id="count_email">0/40</span>
+                        </div>
+                        <input type="email" class="field-input" id="field_email" maxlength="40" 
+                               placeholder="user@example.com" oninput="updateCharCount('email', 40)" required>
+                    </div>
+
+                    <div class="field-item required">
+                        <div class="field-header">
+                            <label class="field-label required" style="margin-left: 30px;">Full Name</label>
+                            <span class="char-counter" id="count_name">0/30</span>
+                        </div>
+                        <input type="text" class="field-input" id="field_name" maxlength="30" 
+                               placeholder="John Doe" oninput="updateCharCount('name', 30)" required>
+                    </div>
+
+                    <div class="field-item required">
+                        <div class="field-header">
+                            <label class="field-label required" style="margin-left: 30px;">Emergency Contact</label>
+                            <span class="char-counter" id="count_emergency">0/20</span>
+                        </div>
+                        <input type="tel" class="field-input" id="field_emergency" maxlength="20" 
+                               placeholder="+1-555-0123" oninput="updateCharCount('emergency', 20)" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title">Optional Medical Information (Back of Card)</div>
+            <div class="field-grid">
+                <div class="field-item active">
+                    <div class="field-header">
+                        <input type="checkbox" class="field-checkbox" id="check_dob" checked onchange="toggleField('dob')">
+                        <label class="field-label" for="check_dob">Date of Birth</label>
+                    </div>
+                    <input type="date" class="field-input" id="field_dob">
+                </div>
+
+                <div class="field-item active">
+                    <div class="field-header">
+                        <input type="checkbox" class="field-checkbox" id="check_blood" checked onchange="toggleField('blood')">
+                        <label class="field-label" for="check_blood">Blood Type</label>
+                    </div>
+                    <select class="field-input" id="field_blood">
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                        <option value="Unknown">Unknown</option>
+                    </select>
+                </div>
+
+                <div class="field-item active">
+                    <div class="field-header">
+                        <input type="checkbox" class="field-checkbox" id="check_allergies" checked onchange="toggleField('allergies')">
+                        <label class="field-label" for="check_allergies">Allergies</label>
+                        <span class="char-counter" id="count_allergies">0/40</span>
+                    </div>
+                    <input type="text" class="field-input" id="field_allergies" maxlength="40" 
+                           placeholder="Penicillin, Peanuts" oninput="updateCharCount('allergies', 40)">
+                </div>
+
+                <div class="field-item">
+                    <div class="field-header">
+                        <input type="checkbox" class="field-checkbox" id="check_conditions" onchange="toggleField('conditions')">
+                        <label class="field-label" for="check_conditions">Medical Conditions</label>
+                        <span class="char-counter" id="count_conditions">0/50</span>
+                    </div>
+                    <input type="text" class="field-input" id="field_conditions" maxlength="50" 
+                           placeholder="Diabetes Type 2, Hypertension" disabled
+                           oninput="updateCharCount('conditions', 50)">
+                </div>
+
+                <div class="field-item">
+                    <div class="field-header">
+                        <input type="checkbox" class="field-checkbox" id="check_medications" onchange="toggleField('medications')">
+                        <label class="field-label" for="check_medications">Current Medications</label>
+                        <span class="char-counter" id="count_medications">0/50</span>
+                    </div>
+                    <input type="text" class="field-input" id="field_medications" maxlength="50" 
+                           placeholder="Metformin 500mg daily" disabled
+                           oninput="updateCharCount('medications', 50)">
+                </div>
+
+                <div class="field-item">
+                    <div class="field-header">
+                        <input type="checkbox" class="field-checkbox" id="check_insurance" onchange="toggleField('insurance')">
+                        <label class="field-label" for="check_insurance">Insurance</label>
+                        <span class="char-counter" id="count_insurance">0/35</span>
+                    </div>
+                    <input type="text" class="field-input" id="field_insurance" maxlength="35" 
+                           placeholder="Blue Cross Blue Shield" disabled
+                           oninput="updateCharCount('insurance', 35)">
+                </div>
+
+                <div class="field-item">
+                    <div class="field-header">
+                        <input type="checkbox" class="field-checkbox" id="check_physician" onchange="toggleField('physician')">
+                        <label class="field-label" for="check_physician">Primary Physician</label>
+                        <span class="char-counter" id="count_physician">0/25</span>
+                    </div>
+                    <input type="text" class="field-input" id="field_physician" maxlength="25" 
+                           placeholder="Dr. Sarah Smith" disabled
+                           oninput="updateCharCount('physician', 25)">
+                </div>
+
+                <div class="field-item">
+                    <div class="field-header">
+                        <input type="checkbox" class="field-checkbox" id="check_donor" onchange="toggleField('donor')">
+                        <label class="field-label" for="check_donor">Organ Donor</label>
+                    </div>
+                    <select class="field-input" id="field_donor" disabled>
+                        <option value="">Not Specified</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="generateCard()">🎨 Generate Card</button>
+                <button class="btn btn-success" onclick="window.print()">🖨️ Print Card</button>
+                <button class="btn btn-info" onclick="downloadInfo()">💾 Download Info</button>
+            </div>
+        </div>
+
+        <div class="preview-container">
+            <div class="preview-title">Card Preview</div>
+            <div class="cards-display">
+                <div>
+                    <div style="text-align: center; margin-bottom: 10px; color: #666; font-weight: 600;">FRONT</div>
+                    <div class="card">
+                        <div class="card-front">
+                            <div class="card-header">
+                                <div class="logo-area">
+                                    <div class="card-logo">iK</div>
+                                    <div class="card-title">iKey</div>
+                                </div>
+                                <div class="card-id" id="display_cardId">IK-2025-00001</div>
+                            </div>
+
+                            <div class="id-section" id="idSection">
+                                <div id="cardPhotoContainer">
+                                    <div class="photo-placeholder-card">
+                                        <div>📷</div>
+                                        <div>No Photo</div>
+                                    </div>
+                                </div>
+                                <div id="qrcode"></div>
+                            </div>
+
+                            <div class="email-display" id="display_email"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div style="text-align: center; margin-bottom: 10px; color: #666; font-weight: 600;">BACK</div>
+                    <div class="card">
+                        <div class="card-back">
+                            <div class="back-header">Medical Information</div>
+
+                            <div class="back-content">
+                                <div class="back-item">
+                                    <span class="back-label">Name:</span>
+                                    <span class="back-value" id="display_name"></span>
+                                </div>
+
+                                <div class="back-item" id="back_dob">
+                                    <span class="back-label">DOB:</span>
+                                    <span class="back-value" id="display_dob"></span>
+                                </div>
+
+                                <div class="back-item" id="back_blood">
+                                    <span class="back-label">Blood:</span>
+                                    <span class="back-value critical" id="display_blood"></span>
+                                </div>
+
+                                <div class="back-item" id="back_allergies">
+                                    <span class="back-label">Allergies:</span>
+                                    <span class="back-value critical" id="display_allergies"></span>
+                                </div>
+
+                                <div class="back-item" id="back_conditions" style="display:none;">
+                                    <span class="back-label">Conditions:</span>
+                                    <span class="back-value" id="display_conditions"></span>
+                                </div>
+
+                                <div class="back-item" id="back_medications" style="display:none;">
+                                    <span class="back-label">Medications:</span>
+                                    <span class="back-value" id="display_medications"></span>
+                                </div>
+
+                                <div class="back-item" id="back_physician" style="display:none;">
+                                    <span class="back-label">Physician:</span>
+                                    <span class="back-value" id="display_physician"></span>
+                                </div>
+
+                                <div class="back-item" id="back_insurance" style="display:none;">
+                                    <span class="back-label">Insurance:</span>
+                                    <span class="back-value" id="display_insurance"></span>
+                                </div>
+
+                                <div class="back-item" id="back_donor" style="display:none;">
+                                    <span class="back-label">Donor:</span>
+                                    <span class="back-value" id="display_donor"></span>
+                                </div>
+                            </div>
+
+                            <div class="emergency-box">
+                                <div class="emergency-label">EMERGENCY CONTACT</div>
+                                <div class="emergency-value" id="display_emergency"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let qrCode = null;
+        let photoData = null;
+
+        window.onload = function() {
+            const hash = window.location.hash.slice(1);
+            if (hash) {
+                try {
+                    const decompressed = LZString.decompressFromEncodedURIComponent(hash);
+                    const data = JSON.parse(decompressed);
+                    document.getElementById('field_email').value = data.pe || '';
+                    document.getElementById('field_name').value = data.n || '';
+                    document.getElementById('field_emergency').value = data.ep || '';
+
+                    if (data.d) {
+                        document.getElementById('check_dob').checked = true;
+                        document.getElementById('field_dob').disabled = false;
+                        document.getElementById('field_dob').value = data.d;
+                        document.getElementById('field_dob').closest('.field-item').classList.add('active');
+                    }
+                    if (data.b) {
+                        document.getElementById('check_blood').checked = true;
+                        document.getElementById('field_blood').disabled = false;
+                        document.getElementById('field_blood').value = data.b;
+                        document.getElementById('field_blood').closest('.field-item').classList.add('active');
+                    }
+                    if (data.a) {
+                        document.getElementById('check_allergies').checked = true;
+                        document.getElementById('field_allergies').disabled = false;
+                        document.getElementById('field_allergies').value = data.a;
+                        document.getElementById('field_allergies').closest('.field-item').classList.add('active');
+                    }
+                    if (data.c) {
+                        document.getElementById('check_conditions').checked = true;
+                        document.getElementById('field_conditions').disabled = false;
+                        document.getElementById('field_conditions').value = data.c;
+                        document.getElementById('field_conditions').closest('.field-item').classList.add('active');
+                    }
+                    if (data.m) {
+                        document.getElementById('check_medications').checked = true;
+                        document.getElementById('field_medications').disabled = false;
+                        document.getElementById('field_medications').value = data.m;
+                        document.getElementById('field_medications').closest('.field-item').classList.add('active');
+                    }
+                    if (data.i) {
+                        document.getElementById('check_insurance').checked = true;
+                        document.getElementById('field_insurance').disabled = false;
+                        document.getElementById('field_insurance').value = data.i;
+                        document.getElementById('field_insurance').closest('.field-item').classList.add('active');
+                    }
+                    if (data.p) {
+                        document.getElementById('check_physician').checked = true;
+                        document.getElementById('field_physician').disabled = false;
+                        document.getElementById('field_physician').value = data.p;
+                        document.getElementById('field_physician').closest('.field-item').classList.add('active');
+                    }
+                    if (data.o) {
+                        document.getElementById('check_donor').checked = true;
+                        document.getElementById('field_donor').disabled = false;
+                        document.getElementById('field_donor').value = data.o;
+                        document.getElementById('field_donor').closest('.field-item').classList.add('active');
+                    }
+                } catch (e) {
+                    console.error('Failed to load data:', e);
+                }
+            }
+
+            const fields = ['email', 'name', 'emergency', 'allergies', 'conditions', 
+                          'medications', 'insurance', 'physician'];
+            const limits = [40, 30, 20, 40, 50, 50, 35, 25];
+
+            fields.forEach((field, i) => {
+                updateCharCount(field, limits[i]);
+            });
+
+            generateCardId();
+            generateCard();
+        };
+
+        function generateCardId() {
+            const email = document.getElementById('field_email').value;
+            if (email) {
+                let hash = 0;
+                for (let i = 0; i < email.length; i++) {
+                    hash = ((hash << 5) - hash) + email.charCodeAt(i);
+                    hash = hash & hash;
+                }
+                const cardId = `IK-2025-${Math.abs(hash).toString().substr(0, 5).padStart(5, '0')}`;
+                document.getElementById('display_cardId').textContent = cardId;
+            }
+        }
+
+        function toggleField(fieldName) {
+            const checkbox = document.getElementById(`check_${fieldName}`);
+            const input = document.getElementById(`field_${fieldName}`);
+            const fieldItem = checkbox.closest('.field-item');
+
+            if (checkbox.checked) {
+                input.disabled = false;
+                fieldItem.classList.add('active');
+            } else {
+                input.disabled = true;
+                fieldItem.classList.remove('active');
+            }
+
+            generateCard();
+        }
+
+        function updateCharCount(fieldName, limit) {
+            const input = document.getElementById(`field_${fieldName}`);
+            const counter = document.getElementById(`count_${fieldName}`);
+
+            if (input && counter) {
+                const length = input.value.length;
+                counter.textContent = `${length}/${limit}`;
+
+                counter.classList.remove('warning', 'error');
+                if (length > limit * 0.8) {
+                    counter.classList.add('warning');
+                }
+                if (length >= limit) {
+                    counter.classList.add('error');
+                }
+            }
+
+            if (fieldName === 'email') {
+                generateCardId();
+            }
+        }
+
+        function capturePhoto() {
+            const video = document.createElement('video');
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+
+            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
+                .then(stream => {
+                    video.srcObject = stream;
+                    video.play();
+
+                    const captureUI = document.createElement('div');
+                    captureUI.style.cssText = `
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        background: rgba(0,0,0,0.9);
+                        z-index: 9999;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                    `;
+
+                    video.style.cssText = `
+                        width: 250px;
+                        height: 300px;
+                        border-radius: 12px;
+                        object-fit: cover;
+                    `;
+
+                    const captureBtn = document.createElement('button');
+                    captureBtn.textContent = '📸 Capture';
+                    captureBtn.style.cssText = `
+                        margin-top: 20px;
+                        padding: 12px 30px;
+                        background: #4CAF50;
+                        color: white;
+                        border: none;
+                        border-radius: 8px;
+                        font-size: 1.1rem;
+                        cursor: pointer;
+                        font-weight: 600;
+                    `;
+
+                    const cancelBtn = document.createElement('button');
+                    cancelBtn.textContent = 'Cancel';
+                    cancelBtn.style.cssText = `
+                        margin-top: 10px;
+                        padding: 10px 25px;
+                        background: #666;
+                        color: white;
+                        border: none;
+                        border-radius: 8px;
+                        cursor: pointer;
+                    `;
+
+                    captureUI.appendChild(video);
+                    captureUI.appendChild(captureBtn);
+                    captureUI.appendChild(cancelBtn);
+                    document.body.appendChild(captureUI);
+
+                    captureBtn.onclick = () => {
+                        canvas.width = video.videoWidth;
+                        canvas.height = video.videoHeight;
+                        context.drawImage(video, 0, 0);
+
+                        photoData = canvas.toDataURL('image/jpeg');
+                        displayPhoto(photoData);
+
+                        stream.getTracks().forEach(track => track.stop());
+                        document.body.removeChild(captureUI);
+                    };
+
+                    cancelBtn.onclick = () => {
+                        stream.getTracks().forEach(track => track.stop());
+                        document.body.removeChild(captureUI);
+                    };
+                })
+                .catch(err => {
+                    alert('Camera access denied or not available');
+                    console.error(err);
+                });
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    photoData = e.target.result;
+                    displayPhoto(photoData);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function displayPhoto(data) {
+            const preview = document.getElementById('photoPreview');
+            preview.innerHTML = `<img src="${data}" alt="Photo">`;
+            document.getElementById('removeBtn').style.display = 'block';
+
+            updateCardDisplay();
+        }
+
+        function removePhoto() {
+            photoData = null;
+            const preview = document.getElementById('photoPreview');
+            preview.innerHTML = `
+                <div class="photo-placeholder">
+                    <div>📷</div>
+                    <div>No Photo</div>
+                </div>
+            `;
+            document.getElementById('removeBtn').style.display = 'none';
+            document.getElementById('fileInput').value = '';
+
+            updateCardDisplay();
+        }
+
+        function updateCardDisplay() {
+            const idSection = document.getElementById('idSection');
+            const cardPhotoContainer = document.getElementById('cardPhotoContainer');
+
+            if (photoData) {
+                idSection.classList.remove('single');
+                cardPhotoContainer.style.display = 'block';
+                cardPhotoContainer.innerHTML = `<img class="card-photo" src="${photoData}">`;
+            } else {
+                idSection.classList.add('single');
+                cardPhotoContainer.style.display = 'none';
+            }
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}/${date.getFullYear()}`;
+        }
+
+        function generateCard() {
+            const requiredFields = {
+                email: document.getElementById('field_email').value,
+                name: document.getElementById('field_name').value,
+                emergency: document.getElementById('field_emergency').value
+            };
+
+            const optionalFields = ['dob', 'blood', 'allergies', 'conditions', 
+                                   'medications', 'insurance', 'physician', 'donor'];
+
+            const activeFields = {...requiredFields};
+            optionalFields.forEach(field => {
+                const checkbox = document.getElementById(`check_${field}`);
+                if (checkbox && checkbox.checked) {
+                    const input = document.getElementById(`field_${field}`);
+                    activeFields[field] = input.value;
+                }
+            });
+
+            document.getElementById('display_email').textContent = activeFields.email;
+            document.getElementById('display_name').textContent = activeFields.name;
+            document.getElementById('display_emergency').textContent = activeFields.emergency;
+
+            optionalFields.forEach(field => {
+                const backItem = document.getElementById(`back_${field}`);
+                const display = document.getElementById(`display_${field}`);
+
+                if (activeFields[field] !== undefined && activeFields[field]) {
+                    if (backItem) backItem.style.display = 'flex';
+                    if (display) {
+                        if (field === 'dob') {
+                            display.textContent = formatDate(activeFields[field]);
+                        } else {
+                            display.textContent = activeFields[field];
+                        }
+                    }
+                } else {
+                    if (backItem) backItem.style.display = 'none';
+                }
+            });
+
+            updateCardDisplay();
+            generateQRCode(activeFields);
+        }
+
+        function generateQRCode(data) {
+            const qrData = {
+                uid: data.email,
+                n: data.name,
+                e: data.emergency,
+                d: data.dob || '',
+                b: data.blood || '',
+                a: data.allergies || '',
+                c: data.conditions || '',
+                m: data.medications || '',
+                p: data.physician || '',
+                i: data.insurance || '',
+                o: data.donor || ''
+            };
+
+            const qrString = JSON.stringify(qrData);
+
+            const qrContainer = document.getElementById('qrcode');
+            qrContainer.innerHTML = '';
+
+            qrCode = new QRCode(qrContainer, {
+                text: qrString,
+                width: 76,
+                height: 76,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.L
+            });
+        }
+
+        function downloadInfo() {
+            const data = {
+                email: document.getElementById('field_email').value,
+                name: document.getElementById('field_name').value,
+                emergency: document.getElementById('field_emergency').value
+            };
+
+            const optionalFields = ['dob', 'blood', 'allergies', 'conditions', 
+                                   'medications', 'insurance', 'physician', 'donor'];
+
+            optionalFields.forEach(field => {
+                const checkbox = document.getElementById(`check_${field}`);
+                if (checkbox && checkbox.checked) {
+                    const input = document.getElementById(`field_${field}`);
+                    data[field] = input.value;
+                }
+            });
+
+            const cardId = document.getElementById('display_cardId').textContent;
+
+            const content = `iKey Medical ID Card Information
+Generated: ${new Date().toLocaleString()}
+================================
+
+Card ID: ${cardId}
+Email (UID): ${data.email}
+Name: ${data.name}
+Emergency Contact: ${data.emergency}
+${data.dob ? `Date of Birth: ${formatDate(data.dob)}\n` : ''}${data.blood ? `Blood Type: ${data.blood}\n` : ''}${data.allergies ? `Allergies: ${data.allergies}\n` : ''}${data.conditions ? `Medical Conditions: ${data.conditions}\n` : ''}${data.medications ? `Current Medications: ${data.medications}\n` : ''}${data.physician ? `Primary Physician: ${data.physician}\n` : ''}${data.insurance ? `Insurance: ${data.insurance}\n` : ''}${data.donor ? `Organ Donor: ${data.donor}\n` : ''}
+
+================================
+⚠️ Keep this information secure
+📧 Your email serves as your unique identifier
+`;
+
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `iKey_${cardId}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
