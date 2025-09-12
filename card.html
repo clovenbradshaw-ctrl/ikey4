@@ -447,8 +447,9 @@
             padding: 12px;
             background: white;
             height: 100%;
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            row-gap: 8px;
         }
 
         .back-header {
@@ -461,11 +462,13 @@
         }
 
         .back-content {
-            flex: 1;
             font-size: 0.72rem;
             overflow-y: auto;
-            column-count: 2;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             column-gap: 12px;
+            row-gap: 5px;
+            padding-right: 4px;
         }
 
         .back-item {
@@ -493,7 +496,6 @@
         }
 
         .emergency-box {
-            margin-top: auto;
             padding: 8px;
             background: #ffebee;
             border-radius: 6px;
