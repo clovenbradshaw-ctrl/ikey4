@@ -741,7 +741,7 @@
                                     <div class="card-logo">iK</div>
                                     <div class="card-title">iKey</div>
                                 </div>
-                                <div class="card-id" id="display_cardId">IK-2025-00001</div>
+                                <div class="card-id" id="display_cardId">00000000-0000-0000-0000-000000000000</div>
                             </div>
 
                             <div class="id-section" id="idSection">
@@ -903,16 +903,14 @@
         };
 
         function generateCardId() {
-            const email = document.getElementById('field_email').value;
-            if (email) {
-                let hash = 0;
-                for (let i = 0; i < email.length; i++) {
-                    hash = ((hash << 5) - hash) + email.charCodeAt(i);
-                    hash = hash & hash;
-                }
-                const cardId = `IK-2025-${Math.abs(hash).toString().substr(0, 5).padStart(5, '0')}`;
-                document.getElementById('display_cardId').textContent = cardId;
-            }
+            const cardId = (typeof crypto.randomUUID === 'function')
+                ? crypto.randomUUID()
+                : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+                    const r = Math.random() * 16 | 0;
+                    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+                    return v.toString(16);
+                });
+            document.getElementById('display_cardId').textContent = cardId;
         }
 
         function toggleField(fieldName) {
@@ -948,9 +946,6 @@
                 }
             }
 
-            if (fieldName === 'email') {
-                generateCardId();
-            }
         }
 
         function capturePhoto() {
