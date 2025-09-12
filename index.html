@@ -2866,13 +2866,35 @@
 
         function shareOptimized(type) {
             recordShare({type: type, method:'share', date:new Date()});
-            if (navigator.share) {
-                navigator.share({text: 'iKey info'}).catch(()=>{});
-            } else if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-                showToast('Add to Wallet option coming soon');
+            const ua = navigator.userAgent;
+            if (navigator.share && navigator.canShare && navigator.canShare({files: []})) {
+                shareNativeWithImage();
+            } else if (/iPad|iPhone|iPod/.test(ua)) {
+                showWalletOption();
+            } else if (/Android/.test(ua)) {
+                createAndroidShortcut();
             } else {
-                showToast('Download to share');
+                showDesktopOptions();
             }
+        }
+
+        function shareNativeWithImage() {
+            navigator.share({
+                text: 'iKey info',
+                url: window.location.href
+            }).catch(()=>{});
+        }
+
+        function showWalletOption() {
+            showToast('Use the share button to add this card to your Apple Wallet');
+        }
+
+        function createAndroidShortcut() {
+            showToast('Add iKey to your home screen for quick access');
+        }
+
+        function showDesktopOptions() {
+            showToast('Download details or copy the link to share');
         }
 
         function createNew() {
