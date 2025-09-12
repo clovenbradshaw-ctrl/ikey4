@@ -515,6 +515,12 @@
 
             .card {
                 page-break-inside: avoid;
+                height: auto;
+                overflow: visible;
+            }
+
+            .back-content {
+                overflow: visible;
             }
 
             @page {
@@ -1143,11 +1149,30 @@
         async function downloadCardImages() {
             const frontCard = document.querySelector('.card-front').parentElement;
             const backCard = document.querySelector('.card-back').parentElement;
+            const backContent = backCard.querySelector('.back-content');
+
+            // Preserve original styles
+            const originalBackCardHeight = backCard.style.height;
+            const originalBackCardOverflow = backCard.style.overflow;
+            const originalContentHeight = backContent.style.height;
+            const originalContentOverflow = backContent.style.overflow;
+
+            // Expand back card to show all content
+            backCard.style.height = 'auto';
+            backCard.style.overflow = 'visible';
+            backContent.style.height = 'auto';
+            backContent.style.overflow = 'visible';
 
             const [frontCanvas, backCanvas] = await Promise.all([
                 html2canvas(frontCard),
                 html2canvas(backCard)
             ]);
+
+            // Restore original styles
+            backCard.style.height = originalBackCardHeight;
+            backCard.style.overflow = originalBackCardOverflow;
+            backContent.style.height = originalContentHeight;
+            backContent.style.overflow = originalContentOverflow;
 
             const frontLink = document.createElement('a');
             frontLink.href = frontCanvas.toDataURL('image/png');
