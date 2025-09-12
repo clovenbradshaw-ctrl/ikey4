@@ -1383,9 +1383,6 @@
         </button>
     </nav>
 
-    <!-- Embedded FAQ -->
-    <iframe id="faq-frame" src="faq.html" style="width:100%; border:none;"></iframe>
-
     <!-- Home Tab -->
     <div id="home" class="tab-content">
         <div class="container">
@@ -4207,15 +4204,6 @@ Generated: ${new Date().toLocaleString()}`;
                 select.value = saved;
             }
         });
-    </script>
-
-    <script>
-        const faqFrame = document.getElementById('faq-frame');
-        if (faqFrame) {
-            faqFrame.addEventListener('load', () => {
-                faqFrame.style.height = faqFrame.contentWindow.document.documentElement.scrollHeight + 'px';
-            });
-        }
     </script>
 
     <script src="scripts/translate.js"></script>
