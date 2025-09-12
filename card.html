@@ -6,6 +6,7 @@
     <title>iKey ID Card Generator</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -681,6 +682,7 @@
             <div class="action-buttons">
                 <button class="btn btn-primary" onclick="generateCard()">🎨 Generate Card</button>
                 <button class="btn btn-success" onclick="window.print()">🖨️ Print Card</button>
+                <button class="btn btn-info" onclick="downloadCardImages()">📥 Download Cards</button>
                 <button class="btn btn-info" onclick="downloadInfo()">💾 Download Info</button>
             </div>
         </div>
@@ -1123,6 +1125,26 @@
                 colorLight: "#ffffff",
                 correctLevel: QRCode.CorrectLevel.L
             });
+        }
+
+        async function downloadCardImages() {
+            const frontCard = document.querySelector('.card-front').parentElement;
+            const backCard = document.querySelector('.card-back').parentElement;
+
+            const [frontCanvas, backCanvas] = await Promise.all([
+                html2canvas(frontCard),
+                html2canvas(backCard)
+            ]);
+
+            const frontLink = document.createElement('a');
+            frontLink.href = frontCanvas.toDataURL('image/png');
+            frontLink.download = 'ikey-card-front.png';
+            frontLink.click();
+
+            const backLink = document.createElement('a');
+            backLink.href = backCanvas.toDataURL('image/png');
+            backLink.download = 'ikey-card-back.png';
+            backLink.click();
         }
 
         function downloadInfo() {
