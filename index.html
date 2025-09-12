@@ -1724,6 +1724,7 @@
                     <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 20px;">
                         <button class="btn btn-success" onclick="downloadQR('wallet')">📱 Wallet Size</button>
                         <button class="btn btn-success" onclick="downloadQR('full')">📄 Full Page</button>
+                        <button class="btn btn-primary" onclick="generatePhysicalCard()">💳 Physical Card</button>
                         <button class="btn btn-primary" onclick="copyURL()">📋 Copy Link</button>
                         <button class="btn btn-primary" onclick="smartCopy()">📋 Copy</button>
                     </div>
@@ -2013,6 +2014,13 @@
                         <div>
                             <div style="font-weight: 600;" data-i18n="createNewQR">🆕 Create New QR Code</div>
                             <div style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;">Generate a replacement iKey</div>
+                        </div>
+                        <span style="color: var(--secondary);">→</span>
+                    </div>
+                    <div class="settings-item" onclick="generatePhysicalCard()">
+                        <div>
+                            <div style="font-weight: 600;">💳 Generate Physical Card</div>
+                            <div style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;">Open card generator</div>
                         </div>
                         <span style="color: var(--secondary);">→</span>
                     </div>
@@ -2789,6 +2797,13 @@
             link.download = 'contact.vcf';
             link.click();
             logShare('contact_card', null, 'download');
+        }
+
+        function generatePhysicalCard(data = displayData || formData) {
+            const jsonStr = JSON.stringify(data);
+            const compressed = compressData(jsonStr);
+            const cardUrl = `card.html#${compressed}`;
+            window.open(cardUrl, '_blank');
         }
 
         function smartCopy() {
