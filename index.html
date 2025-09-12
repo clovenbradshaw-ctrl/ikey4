@@ -2539,8 +2539,26 @@
             document.getElementById('qr-allergies').textContent = formData.a || '';
         }
 
+        function getQRCodeCanvas(target = 'qrcode') {
+            let canvas = document.querySelector(`#${target} canvas`);
+            if (canvas) return canvas;
+            const img = document.querySelector(`#${target} img`);
+            if (!img) return null;
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = img.naturalWidth || img.width;
+            tempCanvas.height = img.naturalHeight || img.height;
+            const ctx = tempCanvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+            return tempCanvas;
+        }
+
+        function getQRCodeDataURL(target = 'qrcode') {
+            const canvas = getQRCodeCanvas(target);
+            return canvas ? canvas.toDataURL() : '';
+        }
+
         function downloadQR(size) {
-            const canvas = document.querySelector('#qrcode canvas');
+            const canvas = getQRCodeCanvas();
             if (!canvas) return;
 
             if (size === 'wallet') {
@@ -2637,7 +2655,7 @@
         }
 
         function shareQR(target = 'qrcode') {
-            const canvas = document.querySelector(`#${target} canvas`);
+            const canvas = getQRCodeCanvas(target);
             if (!canvas) return;
             canvas.toBlob(function(blob) {
                 const file = new File([blob], 'ikey-qr.png', { type: 'image/png' });
@@ -2740,8 +2758,7 @@
 
         function generateEmergencyCard() {
             const data = displayData || formData;
-            const canvas = document.querySelector('#qrcode canvas');
-            const qrImage = canvas ? canvas.toDataURL() : '';
+            const qrImage = getQRCodeDataURL();
             return `<div class=\"qr-display-card\">` +
                 `<div class=\"qr-header\"><h3>Medical ID - ${data.n || ''}</h3><p class=\"instruction\">Scan in emergency</p></div>` +
                 `<div class=\"qr-code-wrapper\"><img src=\"${qrImage}\" alt=\"QR\"></div>` +
@@ -2753,8 +2770,7 @@
         function generateMedicalSummary() {
             const text = getMedicalInfoText(displayData);
             const now = new Date().toLocaleString();
-            const canvas = document.querySelector('#qrcode canvas');
-            const qrImage = canvas ? canvas.toDataURL() : '';
+            const qrImage = getQRCodeDataURL();
             return `${text}\n\nGenerated: ${now}\nQR: ${qrImage}`;
         }
 
@@ -2820,8 +2836,7 @@
         }
 
         function generateOfflinePackage() {
-            const canvas = document.querySelector('#qrcode canvas');
-            const qrImage = canvas ? canvas.toDataURL() : '';
+            const qrImage = getQRCodeDataURL();
             const textSummary = generateMedicalSummary();
             const vCard = generateVCard();
             const html = `<html><body><img src='${qrImage}'/><pre>${textSummary}</pre></body></html>`;
