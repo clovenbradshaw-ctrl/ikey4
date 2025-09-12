@@ -1677,29 +1677,33 @@
                 </div>
 
                 <!-- Display View (for existing data) -->
-                <div id="display-view" class="hidden">
-                    <h2>Emergency Essential Info</h2>
-                    <div id="display-content"></div>
-                    <div id="communication-actions" style="margin-top: 20px;"></div>
-                    <div class="share-actions">
+                    <div id="display-view" class="hidden">
+                        <h2>Emergency Essential Info</h2>
+                        <div id="display-content"></div>
+                        <div id="communication-actions" style="margin-top: 20px;"></div>
+                        <div class="share-actions">
   <button onclick="openShareWizard('emergency')">
     🚨 Emergency Card
     <span class="subtitle">QR + critical info for first responders</span>
   </button>
   <button onclick="openShareWizard('records')">
-    📋 Medical Summary  
+    📋 Medical Summary
     <span class="subtitle">Full text for medical records</span>
   </button>
   <button onclick="openShareWizard('contact')">
     👤 Contact Card
     <span class="subtitle">Just name & contact info</span>
   </button>
+  <button id="send-qr-btn">
+    📤 Send QR to Contacts
+    <span class="subtitle">Share your code directly</span>
+  </button>
 </div>
-                    <div id="share-history" style="margin-top:10px; font-size:0.9rem; color: var(--secondary);"></div>
-                    <div style="margin-top: 20px;">
-                        <button class="btn btn-primary" onclick="createNew()">🆕 Create New QR Code</button>
+                        <div id="share-history" style="margin-top:10px; font-size:0.9rem; color: var(--secondary);"></div>
+                        <div style="margin-top: 20px;">
+                            <button class="btn btn-primary" onclick="createNew()">🆕 Create New QR Code</button>
+                        </div>
                     </div>
-                </div>
 
                 <!-- QR Code View -->
                 <div id="qr-view" class="hidden">
@@ -1727,6 +1731,7 @@
                         <button class="btn btn-success" onclick="downloadQR('full')">📄 Full Page</button>
                         <button class="btn btn-primary" onclick="copyURL()">📋 Copy Link</button>
                         <button class="btn btn-primary" onclick="smartCopy()">📋 Copy</button>
+                        <button class="btn btn-primary" id="share-contacts-btn">📤 Share with Contacts</button>
                     </div>
 
                     <div style="margin-top: 30px; text-align: center;">
@@ -1844,6 +1849,9 @@
                         </button>
                         <button class="btn btn-secondary" onclick="shareLocation()" style="width: 100%; justify-content: center;">
                             📤 Share Location
+                        </button>
+                        <button class="btn btn-secondary" onclick="textLocationInfo()" style="width: 100%; justify-content: center;">
+                            💬 Text Location + Info
                         </button>
                         <button class="btn btn-secondary" onclick="openInMaps()" style="width: 100%; justify-content: center;">
                             🗺️ Open in Maps
@@ -2673,6 +2681,20 @@
                     URL.revokeObjectURL(link.href);
                 }
             });
+        }
+
+        function shareQRFromURL() {
+            if (!document.querySelector('#qrcode canvas')) {
+                new QRCode(document.getElementById('qrcode'), {
+                    text: window.location.href,
+                    width: 256,
+                    height: 256,
+                    colorDark: '#000000',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.M
+                });
+            }
+            shareQR();
         }
 
         function openShareWizard(type = null) {
@@ -3569,13 +3591,13 @@ Generated: ${new Date().toLocaleString()}`;
 
         async function shareLocation() {
             if (!currentLocation) return;
-            
+
             const shareData = {
                 title: 'My Location',
                 text: `Location: ${currentLocation.address}\nGPS: ${currentLocation.latitude}, ${currentLocation.longitude}`,
                 url: `https://maps.google.com/?q=${currentLocation.latitude},${currentLocation.longitude}`
             };
-            
+
             try {
                 if (navigator.share) {
                     await navigator.share(shareData);
@@ -3586,6 +3608,23 @@ Generated: ${new Date().toLocaleString()}`;
                 console.error('Share failed:', err);
                 copyAll();
             }
+        }
+
+        function textLocationInfo() {
+            if (!currentLocation) {
+                alert('Location not available');
+                return;
+            }
+            const phone = (displayData && displayData.ep) || (formData && formData.ep);
+            if (!phone) {
+                alert('Emergency contact not available');
+                return;
+            }
+            const loc = currentLocation.address
+                ? `${currentLocation.address} (GPS: ${currentLocation.latitude}, ${currentLocation.longitude})`
+                : `${currentLocation.latitude}, ${currentLocation.longitude}`;
+            const message = `My location is ${loc}.\n${window.location.href}`;
+            window.location.href = `sms:${phone}?body=${encodeURIComponent(message)}`;
         }
 
         function text911() {
@@ -3978,6 +4017,15 @@ Generated: ${new Date().toLocaleString()}`;
                 inviteAppLink.href = `invite.html?key=${encodeURIComponent(storagePrefix)}`;
             }
             showLastShare();
+
+            const shareContactsBtn = document.getElementById('share-contacts-btn');
+            if (shareContactsBtn) {
+                shareContactsBtn.onclick = () => previewShare('contact');
+            }
+            const sendQrBtn = document.getElementById('send-qr-btn');
+            if (sendQrBtn) {
+                sendQrBtn.onclick = shareQRFromURL;
+            }
 
             // Check for existing QR data in URL
             const hash = decodeURIComponent(window.location.hash.slice(1));
