@@ -54,3 +54,20 @@
 - [ ] Total JS bundle under 50KB.
 - [ ] Core features work offline and without external dependencies.
 
+## Additional Features
+- [ ] Replace 911-only location button with generic location sharing.
+- [ ] Improve custom phone and text bookmarks.
+- [ ] Add share details bookmark.
+- [ ] Investigate adding contacts to bookmarks.
+- [ ] Add save settings widget.
+- [ ] Restrict QR code email option to Proton Mail.
+- [ ] Default to 10-digit phone numbers in wizard.
+- [ ] Remove document list that fills wizard space.
+- [ ] Collapse document add fields.
+- [ ] Ensure translations work on all fields.
+- [ ] Improve WTTIN and meals embeds.
+- [ ] Make QR code easy to pop up and share.
+- [ ] On emergency, reprompt for sharing location.
+- [ ] Add text-to-911 option.
+- [ ] Generate new QR code in settings pointing to base URL.
+
