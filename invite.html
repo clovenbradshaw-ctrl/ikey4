@@ -42,6 +42,11 @@
             color: var(--text-dark);
         }
 
+        *:focus-visible {
+            outline: 3px solid #4f46e5;
+            outline-offset: 2px;
+        }
+
         .widget-container {
             background: white;
             border-radius: 20px;
@@ -134,6 +139,16 @@
             justify-content: center;
         }
 
+        .btn:focus-visible {
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.5);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            filter: grayscale(50%);
+        }
+
         .btn-primary {
             background: linear-gradient(135deg, var(--proton-purple) 0%, var(--proton-purple-dark) 100%);
             color: white;
@@ -178,6 +193,27 @@
 
         .instruction-message li {
             margin-bottom: 5px;
+        }
+
+        @media (prefers-contrast: high) {
+            .widget-container {
+                border: 2px solid #000;
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #0f172a;
+                color: #f1f5f9;
+            }
+
+            .widget-container {
+                background: #1e293b;
+            }
+
+            .widget-header {
+                background: #818cf8;
+            }
         }
     </style>
 </head>

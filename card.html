@@ -21,6 +21,11 @@
             padding: 20px;
         }
 
+        *:focus-visible {
+            outline: 3px solid #4f46e5;
+            outline-offset: 2px;
+        }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -259,6 +264,16 @@
             cursor: pointer;
             transition: all 0.3s;
             font-weight: 600;
+        }
+
+        .btn:focus-visible {
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.5);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            filter: grayscale(50%);
         }
 
         .btn-primary {
@@ -526,6 +541,25 @@
             @page {
                 size: A4;
                 margin: 15mm;
+            }
+        }
+
+        @media (prefers-contrast: high) {
+            .controls,
+            .preview-container {
+                border: 2px solid #000;
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #0f172a;
+                color: #f1f5f9;
+            }
+
+            .controls,
+            .preview-container {
+                background: #1e293b;
             }
         }
     </style>
