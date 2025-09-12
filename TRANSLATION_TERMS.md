@@ -288,7 +288,7 @@
             "home": "Inicio",
             "iKey": "iKey",
             "weather": "Clima",
-            "wttin": "Resources",
+            "wttin": "Recursos",
             "meals": "Comidas",
             "dispatch": "Despacho",
             "emergency": "Emergencia",
@@ -545,7 +545,7 @@
             "fillRequiredFields": "Por favor completa todos los campos requeridos"
         },
         "resources": {
-            "wttin": "Resources",
+            "wttin": "Recursos",
             "meals": "Recursos de Comidas",
             "policeDispatch": "Despacho Policial de Nashville",
             "crisisLine": "Línea de Suicidio y Crisis: 988",
@@ -568,7 +568,7 @@
             "home": "الرئيسية",
             "iKey": "iKey",
             "weather": "الطقس",
-            "wttin": "Resources",
+            "wttin": "الموارد",
             "meals": "الوجبات",
             "dispatch": "الإرسال",
             "emergency": "الطوارئ",
@@ -825,7 +825,7 @@
             "fillRequiredFields": "يرجى ملء جميع الحقول المطلوبة"
         },
         "resources": {
-            "wttin": "Resources",
+            "wttin": "الموارد",
             "meals": "موارد الوجبات",
             "policeDispatch": "إرسال شرطة ناشفيل",
             "crisisLine": "خط الأزمات والانتحار: 988",
@@ -848,7 +848,7 @@
             "home": "Mal",
             "iKey": "iKey",
             "weather": "Hewa",
-            "wttin": "Resources",
+            "wttin": "Çavkaniyên",
             "meals": "Xwarin",
             "dispatch": "Şandin",
             "emergency": "Emergency",
@@ -1105,7 +1105,7 @@
             "fillRequiredFields": "Ji kerema xwe hemû qadên pêwîst dagirin"
         },
         "resources": {
-            "wttin": "Resources",
+            "wttin": "Çavkaniyên",
             "meals": "Çavkaniyên Xwarinan",
             "policeDispatch": "Şandina Polîsê Nashville",
             "crisisLine": "Xeta Xwekujtin û Krîzê: 988",
@@ -1128,7 +1128,7 @@
             "home": "Guri",
             "iKey": "iKey",
             "weather": "Cimilada",
-            "wttin": "Resources",
+            "wttin": "Ilaha",
             "meals": "Cunto",
             "dispatch": "Dirista",
             "emergency": "Emergency",
@@ -1385,7 +1385,7 @@
             "fillRequiredFields": "Fadlan buuxi dhammaan beeraha loo baahan yahay"
         },
         "resources": {
-            "wttin": "Resources",
+            "wttin": "Ilaha",
             "meals": "Ilaha Cuntada",
             "policeDispatch": "Dirista Booliska Nashville",
             "crisisLine": "Khadka Ismiidaaminta & Dhibaatada: 988",
@@ -1408,7 +1408,7 @@
             "home": "主页",
             "iKey": "iKey",
             "weather": "天气",
-            "wttin": "Resources",
+            "wttin": "资源",
             "meals": "餐食",
             "dispatch": "调度",
             "emergency": "紧急",
@@ -1665,7 +1665,7 @@
             "fillRequiredFields": "请填写所有必填字段"
         },
         "resources": {
-            "wttin": "Resources",
+            "wttin": "资源",
             "meals": "餐食资源",
             "policeDispatch": "纳什维尔警察调度",
             "crisisLine": "自杀与危机生命线：988",
