@@ -1129,7 +1129,8 @@
 
             const jsonStr = JSON.stringify(cleanData);
             const compressed = LZString.compressToEncodedURIComponent(jsonStr);
-            const baseURL = window.location.origin + window.location.pathname.replace('card.html', 'index.html');
+            const basePath = window.location.pathname.replace('card.html', '');
+            const baseURL = window.location.origin + basePath;
             const url = `${baseURL}#${compressed}`;
             const encodedUrl = encodeURI(url);
 
