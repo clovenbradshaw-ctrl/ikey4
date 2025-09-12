@@ -46,7 +46,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f8fafc;
             min-height: 100vh;
             color: var(--dark);
             line-height: 1.6;
@@ -55,11 +55,10 @@
 
         /* Header */
         .app-header {
-            background: #f8f3e8;
-            backdrop-filter: blur(20px);
+            background: #ffffff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             padding: 20px;
             text-align: center;
-            box-shadow: var(--shadow-lg);
             position: relative;
             z-index: 200;
         }
@@ -132,10 +131,10 @@
 
         /* Tab Navigation */
         .tab-nav {
-            background: #f8f3e8;
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
             display: flex;
             overflow-x: auto;
-            box-shadow: var(--shadow-md);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -148,7 +147,7 @@
             padding: 18px 20px;
             background: none;
             border: none;
-            color: var(--secondary);
+            color: #64748b;
             font-size: 0.9rem;
             font-weight: 600;
             cursor: pointer;
@@ -173,9 +172,10 @@
         }
 
         .tab-btn.active {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
-            background: linear-gradient(to bottom, transparent, rgba(79, 70, 229, 0.05));
+            color: #ffffff;
+            background: #4f46e5;
+            border-radius: 8px;
+            margin: 4px;
         }
 
         .tab-btn.proton-btn {
@@ -217,16 +217,54 @@
             max-width: 600px;
             margin: 0 auto;
             padding: 20px;
+            background: transparent;
         }
 
         /* Common Styles */
         .card {
-            background: white;
+            background: #ffffff;
             border-radius: var(--radius);
             padding: 25px;
-            box-shadow: var(--shadow-md);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             margin-bottom: 20px;
         }
+
+        /* Semantic card colors */
+        .card-critical {
+            background: #fef2f2;
+            border-left: 4px solid #ef4444;
+        }
+        .card-critical .accent { color: #991b1b; }
+
+        .card-emergency {
+            background: #f0fdf4;
+            border-left: 4px solid #22c55e;
+        }
+        .card-emergency .accent { color: #166534; }
+
+        .card-communication {
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+        }
+        .card-communication .accent { color: #1e40af; }
+
+        .card-secure {
+            background: #faf5ff;
+            border-left: 4px solid #a855f7;
+        }
+        .card-secure .accent { color: #6b21a8; }
+
+        .card-neutral {
+            background: #f9fafb;
+            border-left: 2px solid #d1d5db;
+        }
+        .card-neutral .accent { color: #374151; }
+
+        /* Section label colors */
+        .label-red { color: #dc2626; }
+        .label-green { color: #16a34a; }
+        .label-purple { color: #7c3aed; }
+        .label-gray { color: #6b7280; }
 
         .btn {
             padding: 14px 28px;
@@ -1456,7 +1494,7 @@
                         <h2>Secure Email</h2>
                         <p style="margin-bottom: 20px;"><strong>Why a secure email?</strong> Proton uses zero-knowledge encryption so only you can access your data.</p>
                         <div class="form-group">
-                            <label for="secure-email">Secure Email *</label>
+                            <label for="secure-email" class="label-purple">Secure Email *</label>
                             <input type="email" id="secure-email" placeholder="you@proton.me" required>
                         </div>
                         <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
@@ -1472,19 +1510,19 @@
                     <div class="wizard-step" data-step="3">
                         <h2>Basic Information</h2>
                         <div class="form-group">
-                            <label for="name">Full Name *</label>
+                            <label for="name" class="label-gray">Full Name *</label>
                             <input type="text" id="name" placeholder="John Smith" required>
                         </div>
                         <div class="form-group">
-                            <label for="pronouns">Pronouns</label>
+                            <label for="pronouns" class="label-gray">Pronouns</label>
                             <input type="text" id="pronouns" placeholder="they/them">
                         </div>
                         <div class="form-group">
-                            <label for="dob">Date of Birth</label>
+                            <label for="dob" class="label-gray">Date of Birth</label>
                             <input type="date" id="dob">
                         </div>
                         <div class="form-group">
-                            <label for="blood">Blood Type</label>
+                            <label for="blood" class="label-red">Blood Type</label>
                             <select id="blood">
                                 <option value="">Unknown / Not Sure</option>
                                 <option value="A+">A+</option>
@@ -1508,17 +1546,17 @@
                         <h2>Health Information</h2>
                         <p style="margin-bottom: 20px; color: var(--secondary);">Keep entries brief - focus on critical information</p>
                         <div class="form-group">
-                            <label for="allergies">Allergies</label>
+                            <label for="allergies" class="label-red">Allergies</label>
                             <textarea id="allergies" placeholder="e.g., Penicillin, peanuts, latex"></textarea>
                             <div class="char-counter good" id="allergies-counter">0 / 200 characters</div>
                         </div>
                         <div class="form-group">
-                            <label for="medications">Current Medications</label>
+                            <label for="medications" class="label-red">Current Medications</label>
                             <textarea id="medications" placeholder="e.g., Metformin 500mg, Lisinopril 10mg"></textarea>
                             <div class="char-counter good" id="medications-counter">0 / 200 characters</div>
                         </div>
                         <div class="form-group">
-                            <label for="conditions">Health Conditions</label>
+                            <label for="conditions" class="label-red">Health Conditions</label>
                             <textarea id="conditions" placeholder="e.g., Type 2 Diabetes, Hypertension"></textarea>
                             <div class="char-counter good" id="conditions-counter">0 / 200 characters</div>
                         </div>
@@ -1528,15 +1566,15 @@
                     <div class="wizard-step" data-step="5">
                         <h2>Contacts</h2>
                         <div class="form-group">
-                            <label for="ec-name">Emergency Contact Name *</label>
+                            <label for="ec-name" class="label-green">Emergency Contact Name *</label>
                             <input type="text" id="ec-name" placeholder="Jane Smith" required>
                         </div>
                         <div class="form-group">
-                            <label for="ec-phone">Emergency Phone Number *</label>
+                            <label for="ec-phone" class="label-green">Emergency Phone Number *</label>
                             <input type="tel" id="ec-phone" placeholder="555-555-5555" pattern="\d{3}-?\d{3}-?\d{4}" inputmode="tel" title="Enter a 10-digit phone number" required>
                         </div>
                         <div class="form-group">
-                            <label for="ec-relationship">Relationship</label>
+                            <label for="ec-relationship" class="label-green">Relationship</label>
                             <select id="ec-relationship">
                                 <option value="">Select...</option>
                                 <option value="Spouse">Spouse/Partner</option>
@@ -1548,15 +1586,15 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="cm-name">Case Manager Name</label>
+                            <label for="cm-name" class="label-green">Case Manager Name</label>
                             <input type="text" id="cm-name" placeholder="Dr. Jones">
                         </div>
                         <div class="form-group">
-                            <label for="cm-org">Organization</label>
+                            <label for="cm-org" class="label-green">Organization</label>
                             <input type="text" id="cm-org" placeholder="Hospital or Agency">
                         </div>
                         <div class="form-group">
-                            <label for="cm-phone">Case Manager Phone</label>
+                            <label for="cm-phone" class="label-green">Case Manager Phone</label>
                             <input type="tel" id="cm-phone" placeholder="555-555-5555" pattern="\d{3}-?\d{3}-?\d{4}" inputmode="tel" title="Enter a 10-digit phone number">
                         </div>
 
