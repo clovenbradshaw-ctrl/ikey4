@@ -2385,15 +2385,16 @@
             const jsonStr = JSON.stringify(cleanData);
             const compressed = compressData(jsonStr);
             const url = `${baseURL}#${compressed}`;
-            
+            const encodedUrl = encodeURI(url);
+
             window.history.replaceState(null, '', url);
-            
+
             document.getElementById('wizard-view').classList.add('hidden');
             document.getElementById('qr-view').classList.remove('hidden');
-            
+
             document.getElementById('qrcode').innerHTML = '';
             new QRCode(document.getElementById('qrcode'), {
-                text: url,
+                text: encodedUrl,
                 width: 256,
                 height: 256,
                 colorDark: '#000000',
@@ -2497,8 +2498,9 @@
         function openQRModal() {
             const container = document.getElementById('modal-qrcode');
             container.innerHTML = '';
+            const encodedUrl = encodeURI(window.location.href);
             new QRCode(container, {
-                text: window.location.href,
+                text: encodedUrl,
                 width: 300,
                 height: 300,
                 colorDark: '#000000',
@@ -3656,7 +3658,7 @@ Generated: ${new Date().toLocaleString()}`;
             }
 
             // Check for existing QR data in URL
-            const hash = window.location.hash.slice(1);
+            const hash = decodeURIComponent(window.location.hash.slice(1));
             if (hash) {
                 try {
                     const decompressed = decompressData(hash);
