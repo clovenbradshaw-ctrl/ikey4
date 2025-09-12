@@ -933,6 +933,14 @@
             outline: none;
             border-color: var(--primary);
         }
+        .qr-modal-content {
+            width: 90%;
+            max-width: 600px;
+        }
+        #qr-modal-code canvas {
+            width: 100% !important;
+            height: auto !important;
+        }
         .tooltip {
             position: absolute;
             background: var(--danger);
@@ -1389,6 +1397,9 @@
     <!-- Home Tab -->
     <div id="home" class="tab-content">
         <div class="container">
+            <div style="margin-bottom:16px;">
+                <button class="btn btn-primary" onclick="openQRModal()">🔳 Show My QR Code</button>
+            </div>
             <!-- Favorites Grid -->
             <div id="favorites-section"></div>
 
@@ -1696,9 +1707,6 @@
   </button>
 </div>
                     <div id="share-history" style="margin-top:10px; font-size:0.9rem; color: var(--secondary);"></div>
-                    <div style="margin-top: 20px;">
-                        <button class="btn btn-primary" onclick="createNew()">🆕 Create New QR Code</button>
-                    </div>
                 </div>
 
                 <!-- QR Code View -->
@@ -1729,9 +1737,6 @@
                         <button class="btn btn-primary" onclick="smartCopy()">📋 Copy</button>
                     </div>
 
-                    <div style="margin-top: 30px; text-align: center;">
-                        <button class="btn btn-secondary" onclick="createNew()">🆕 Create Another</button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -1777,6 +1782,16 @@
         <h3 id="preview-title"></h3>
         <div id="preview-body" style="margin-top:10px;"></div>
         <div class="modal-actions" id="preview-actions"></div>
+    </div>
+</div>
+
+<!-- QR Code Modal -->
+<div id="qr-modal" class="modal hidden">
+    <div class="modal-content qr-modal-content">
+        <div id="qr-modal-code"></div>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closeQRModal()">Close</button>
+        </div>
     </div>
 </div>
 
@@ -2034,7 +2049,18 @@
         <div class="container">
             <div class="card">
         <h2 style="margin-bottom: 25px;" data-i18n="nav.settings">Settings</h2>
-                
+
+                <div class="settings-section">
+                    <h3 style="margin-bottom: 15px; color: var(--primary);">QR Code</h3>
+                    <div class="settings-item" onclick="createNew()">
+                        <div>
+                            <div style="font-weight: 600;" data-i18n="createNewQR">🆕 Create New QR Code</div>
+                            <div style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;">Generate a replacement iKey</div>
+                        </div>
+                        <span style="color: var(--secondary);">→</span>
+                    </div>
+                </div>
+
                 <div class="settings-section">
                     <h3 style="margin-bottom: 15px; color: var(--primary);">External Tools</h3>
                     <div class="settings-item" onclick="openDispatchTab()">
@@ -2879,6 +2905,27 @@
             if (confirm('Create a new iKey? This will take you to the base URL.')) {
                 window.location.href = baseURL;
             }
+        }
+
+        function openQRModal() {
+            const modal = document.getElementById('qr-modal');
+            const container = document.getElementById('qr-modal-code');
+            if (!modal || !container) return;
+            container.innerHTML = '';
+            new QRCode(container, {
+                text: window.location.href,
+                width: 512,
+                height: 512,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.M
+            });
+            modal.classList.remove('hidden');
+        }
+
+        function closeQRModal() {
+            const modal = document.getElementById('qr-modal');
+            if (modal) modal.classList.add('hidden');
         }
 
         function createCalendarEvent(data) {
