@@ -471,7 +471,7 @@
             margin: 20px 0;
         }
 
-        /* 911 Tab Styles */
+        /* Location Tab Styles */
         .emergency-button {
             padding: 40px 30px;
             border: none;
@@ -1271,9 +1271,9 @@
             <span class="tab-icon">🏥</span>
             <span class="tab-label" data-i18n="nav.iKey">iKey</span>
         </button>
-        <button class="tab-btn" onclick="switchTab('emergency-911')" aria-label="911">
-            <span class="tab-icon">🚨</span>
-            <span class="tab-label">911</span>
+        <button class="tab-btn" onclick="switchTab('location')" aria-label="Location">
+            <span class="tab-icon">📍</span>
+            <span class="tab-label">Location</span>
         </button>
         <button class="tab-btn" onclick="switchTab('weather')" aria-label="Weather" data-i18n-aria="nav.weather">
             <span class="tab-icon">⛈️</span>
@@ -1643,19 +1643,24 @@
     </div>
 </div>
 
-    <!-- 911 Services Tab -->
-    <div id="emergency-911" class="tab-content">
+    <!-- Location Services Tab -->
+    <div id="location" class="tab-content">
         <div class="container">
             <a href="tel:911" class="emergency-button">
                 <span class="icon">📞</span>
-                <span>Emergency Call 911</span>
+                <span>Call 911</span>
                 <span style="font-size: 1rem; opacity: 0.9;">Tap to Call Emergency Services</span>
+            </a>
+            <a href="sms:911" class="emergency-button">
+                <span class="icon">💬</span>
+                <span>Text 911</span>
+                <span style="font-size: 1rem; opacity: 0.9;">Tap to Text Emergency Services</span>
             </a>
             
             <div class="card">
                 <h2 style="margin-bottom: 20px;">📍 Your Secure Location</h2>
                 
-                <div id="911-loading" class="loading">
+                <div id="location-loading" class="loading">
                     <div class="loading-spinner"></div>
                     <p>Acquiring secure location...</p>
                     <p style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;">Please allow location access</p>
@@ -1934,9 +1939,9 @@
                     <h3 style="margin-bottom: 15px; color: var(--primary);">Tab Visibility</h3>
                     <div class="settings-item" style="cursor: default;">
                         <div>
-                            <div style="font-weight: 600;">🚨 911</div>
+                            <div style="font-weight: 600;">📍 Location</div>
                         </div>
-                        <input type="checkbox" class="tab-visibility-toggle" data-tab="emergency-911" checked>
+                        <input type="checkbox" class="tab-visibility-toggle" data-tab="location" checked>
                     </div>
                     <div class="settings-item" style="cursor: default;">
                         <div>
@@ -2043,7 +2048,7 @@
                     loadWeatherForCity('Nashville');
                     window.weatherLoaded = true;
                 }
-            } else if (tabName === 'emergency-911') {
+            } else if (tabName === 'location') {
                 if (!window.locationLoaded) {
                     getLocation();
                     window.locationLoaded = true;
@@ -2060,7 +2065,7 @@
         }
 
         // Tab visibility settings
-        const allTabs = ['emergency-911', 'weather', 'wttin', 'apps'];
+        const allTabs = ['location', 'weather', 'wttin', 'apps'];
         const nonHideableTabs = ['home', 'ikey', 'settings'];
 
         function getTabButton(tabName) {
@@ -2544,7 +2549,7 @@ END:VCALENDAR`;
             link.click();
         }
 
-        // 911 Services Functions
+        // Location Functions
         let currentLocation = null;
         let watchId = null;
 
@@ -2901,6 +2906,7 @@ END:VCALENDAR`;
             getQuickActionsHTML() {
                 const actions = [
                     { type: 'call-911', name: '911', icon: '🚨' },
+                    { type: 'text-911', name: 'Text 911', icon: '✉️' },
                     { type: 'call-988', name: 'Crisis', icon: '💬' },
                     { type: 'call-poison', name: 'Poison', icon: '☠️' },
                     { type: 'text-quick', name: 'Text', icon: '💬' }
@@ -2919,7 +2925,7 @@ END:VCALENDAR`;
             getInternalPagesHTML() {
                 const pages = [
                     { id: 'ikey', name: 'Medical', icon: '🏥' },
-                    { id: 'emergency-911', name: 'Location', icon: '📍' },
+                    { id: 'location', name: 'Location', icon: '📍' },
                     { id: 'weather', name: 'Weather', icon: '⛈️' },
                     { id: 'wttin', name: 'Resources', icon: '🏠' },
                     { id: 'dispatch', name: 'Dispatch', icon: '📡' },
@@ -3005,6 +3011,7 @@ END:VCALENDAR`;
             addQuickAction(actionType) {
                 const actions = {
                     'call-911': { name: 'Emergency', url: 'tel:911', icon: '🚨' },
+                    'text-911': { name: 'Text 911', url: 'sms:911', icon: '💬' },
                     'call-988': { name: 'Crisis Line', url: 'tel:988', icon: '💬' },
                     'call-poison': { name: 'Poison Control', url: 'tel:18002221222', icon: '☠️' },
                     'text-quick': { name: 'Quick Text', url: 'sms:', icon: '💬' }
@@ -3024,7 +3031,7 @@ END:VCALENDAR`;
             addInternalPage(pageId) {
                 const pages = {
                     ikey: { name: 'Medical ID', icon: '🏥' },
-                    'emergency-911': { name: 'Location', icon: '📍' },
+                    'location': { name: 'Location', icon: '📍' },
                     weather: { name: 'Weather', icon: '⛈️' },
                     wttin: { name: 'Resources', icon: '🏠' },
                     dispatch: { name: 'Dispatch', icon: '📡' },
@@ -3291,7 +3298,7 @@ Generated: ${new Date().toLocaleString()}`;
                 crossStreets: crossStreets
             };
             
-            document.getElementById('911-loading').style.display = 'none';
+            document.getElementById('location-loading').style.display = 'none';
             document.getElementById('location-content').style.display = 'block';
         }
 
@@ -3303,7 +3310,7 @@ Generated: ${new Date().toLocaleString()}`;
                     },
                     error => {
                         console.error('Location error:', error);
-                        document.getElementById('911-loading').innerHTML = `
+                        document.getElementById('location-loading').innerHTML = `
                             <p style="color: var(--danger);">Unable to get location</p>
                             <p style="font-size: 0.85rem;">Please enable location services and refresh</p>
                         `;
