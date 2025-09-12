@@ -1035,6 +1035,10 @@
             animation: shake 0.5s ease-in-out infinite;
         }
 
+        .favorites.editing .favorite.qr-widget {
+            animation: none;
+        }
+
         .favorites.editing .delete-btn {
             display: flex;
         }
@@ -1387,9 +1391,6 @@
     <!-- Home Tab -->
     <div id="home" class="tab-content">
         <div class="container">
-            <div style="margin-bottom:16px;">
-                <button class="btn btn-primary" onclick="openQRModal()">🔳 Show My QR Code</button>
-            </div>
             <!-- Favorites Grid -->
             <div id="favorites-section"></div>
 
@@ -3019,12 +3020,19 @@ END:VCALENDAR`;
                 let html = '<div class="favorites-container">';
                 html += '<div class="favorites' + (this.editMode ? ' editing' : '') + '" id="favorites">';
 
+                html += `
+                    <div class="favorite qr-widget" data-action="qr" draggable="false">
+                        <div class="icon-wrapper"><span class="icon-emoji">🔳</span></div>
+                        <div class="label">My QR</div>
+                    </div>
+                `;
+
                 this.bookmarks.forEach((bookmark, index) => {
                     const info = this.getBookmarkInfo(bookmark);
                     if (info) {
                         const isEmoji = this.isEmoji(info.icon);
                         html += `
-                    <div class="favorite" 
+                    <div class="favorite"
                          data-index="${index}" 
                          draggable="${this.editMode}"
                          data-url="${info.url || ''}">
@@ -3064,6 +3072,11 @@ END:VCALENDAR`;
                 const favorites = document.querySelectorAll('.favorite');
 
                 favorites.forEach(fav => {
+                    if (fav.dataset.action === 'qr') {
+                        fav.addEventListener('click', openQRModal);
+                        return;
+                    }
+
                     fav.addEventListener('touchstart', (e) => this.handleTouchStart(e), { passive: true });
                     fav.addEventListener('touchend', (e) => this.handleTouchEnd(e));
 
