@@ -2769,7 +2769,7 @@
             if (d.ep) lines.push(`TEL:${d.ep}`);
             if (d.pe) lines.push(`EMAIL:${d.pe}`);
             lines.push('END:VCARD');
-            return lines.join('\\n');
+            return lines.join('\\r\\n') + '\\r\\n';
         }
 
         function downloadEmergencyCard() {
@@ -2783,7 +2783,7 @@
 
         function downloadVCard() {
             const text = generateVCard();
-            const blob = new Blob([text], {type:'text/vcard'});
+            const blob = new Blob([text], { type: 'text/vcard;charset=utf-8' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             link.download = 'contact.vcf';
@@ -2861,14 +2861,71 @@
             }
         }
 
-        function shareOptimized(type) {
-            logShare(type, null, 'share');
-            if (navigator.share) {
-                navigator.share({text: 'iKey info'}).catch(()=>{});
+        async function shareOptimized(type) {
+            if (type === 'emergency') {
+                const canvas = generateEmergencyCard();
+                canvas.toBlob(async blob => {
+                    const file = new File([blob], 'emergency-card.png', { type: 'image/png' });
+                    const shareData = { files: [file], title: 'Emergency Card' };
+                    if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+                        try {
+                            await navigator.share(shareData);
+                            logShare('emergency_card', null, 'share');
+                        } catch (err) {
+                            console.error('Share failed:', err);
+                        }
+                    } else {
+                        const link = document.createElement('a');
+                        link.href = URL.createObjectURL(blob);
+                        link.download = 'emergency-card.png';
+                        link.click();
+                        URL.revokeObjectURL(link.href);
+                        logShare('emergency_card', null, 'download');
+                    }
+                });
+            } else if (type === 'records') {
+                const { pdf } = generateMedicalSummary();
+                const blob = await (await fetch(pdf)).blob();
+                const file = new File([blob], 'medical-summary.pdf', { type: 'application/pdf' });
+                const shareData = { files: [file], title: 'Medical Summary' };
+                if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+                    try {
+                        await navigator.share(shareData);
+                        logShare('medical_summary', null, 'share');
+                    } catch (err) {
+                        console.error('Share failed:', err);
+                    }
+                } else {
+                    const link = document.createElement('a');
+                    link.href = pdf;
+                    link.download = 'medical-summary.pdf';
+                    link.click();
+                    logShare('medical_summary', null, 'download');
+                }
+            } else if (type === 'contact') {
+                const text = generateVCard();
+                const blob = new Blob([text], { type: 'text/vcard;charset=utf-8' });
+                const file = new File([blob], 'contact.vcf', { type: 'text/vcard;charset=utf-8' });
+                const shareData = { files: [file], title: 'Contact Card' };
+                if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+                    try {
+                        await navigator.share(shareData);
+                        logShare('contact_card', null, 'share');
+                    } catch (err) {
+                        console.error('Share failed:', err);
+                    }
+                } else {
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = 'contact.vcf';
+                    link.click();
+                    URL.revokeObjectURL(link.href);
+                    logShare('contact_card', null, 'download');
+                }
             } else if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
                 showToast('Add to Wallet option coming soon');
             } else {
-                showToast('Download to share');
+                showToast('Nothing to share');
             }
         }
 
