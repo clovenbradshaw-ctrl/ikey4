@@ -1097,28 +1097,39 @@
             generateQRCode(activeFields);
         }
 
+        
         function generateQRCode(data) {
             const qrData = {
-                uid: data.email,
+                v: 3,
+                pe: data.email,
                 n: data.name,
-                e: data.emergency,
-                d: data.dob || '',
-                b: data.blood || '',
-                a: data.allergies || '',
-                c: data.conditions || '',
-                m: data.medications || '',
-                p: data.physician || '',
-                i: data.insurance || '',
-                o: data.donor || ''
+                ep: data.emergency,
+                d: data.dob,
+                b: data.blood,
+                a: data.allergies,
+                c: data.conditions,
+                m: data.medications,
+                i: data.insurance,
+                p: data.physician,
+                o: data.donor
             };
 
-            const qrString = JSON.stringify(qrData);
+            const cleanData = {};
+            Object.keys(qrData).forEach(key => {
+                if (qrData[key]) cleanData[key] = qrData[key];
+            });
+
+            const jsonStr = JSON.stringify(cleanData);
+            const compressed = LZString.compressToEncodedURIComponent(jsonStr);
+            const baseURL = window.location.origin + window.location.pathname.replace('card.html', 'index.html');
+            const url = `${baseURL}#${compressed}`;
+            const encodedUrl = encodeURI(url);
 
             const qrContainer = document.getElementById('qrcode');
             qrContainer.innerHTML = '';
 
             qrCode = new QRCode(qrContainer, {
-                text: qrString,
+                text: encodedUrl,
                 width: 76,
                 height: 76,
                 colorDark: "#000000",
