@@ -2777,6 +2777,10 @@
             return `${text}\n\nGenerated: ${now}\nQR: ${qrImage}`;
         }
 
+        function generateTextSummary() {
+            return generateMedicalSummary();
+        }
+
         function generateVCard() {
             const d = displayData || {};
             return `BEGIN:VCARD\nVERSION:3.0\nFN:${d.n || ''}\nTEL:${d.ep || ''}\nEMAIL:${d.pe || ''}\nEND:VCARD`;
@@ -2838,12 +2842,20 @@
             console.log(msg);
         }
 
-        function generateOfflinePackage() {
+        function generateStandaloneHTML() {
             const qrImage = getQRCodeDataURL();
-            const textSummary = generateMedicalSummary();
-            const vCard = generateVCard();
-            const html = `<html><body><img src='${qrImage}'/><pre>${textSummary}</pre></body></html>`;
-            return { qrImage, textSummary, vCard, html };
+            const text = generateTextSummary();
+            return `<html><body><img src='${qrImage}'/><pre>${text}</pre></body></html>`;
+        }
+
+        function generateOfflinePackage() {
+            const canvas = getQRCodeCanvas();
+            return {
+                qrImage: canvas ? canvas.toDataURL() : '',
+                textSummary: generateTextSummary(),
+                vCard: generateVCard(),
+                html: generateStandaloneHTML()
+            };
         }
 
         function recordShare(entry) {
