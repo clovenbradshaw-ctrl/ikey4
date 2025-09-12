@@ -1651,7 +1651,7 @@
                 <span>Call 911</span>
                 <span style="font-size: 1rem; opacity: 0.9;">Tap to Call Emergency Services</span>
             </a>
-            <a href="sms:911" class="emergency-button">
+            <a href="#" onclick="text911()" class="emergency-button">
                 <span class="icon">💬</span>
                 <span>Text 911</span>
                 <span style="font-size: 1rem; opacity: 0.9;">Tap to Text Emergency Services</span>
@@ -2768,6 +2768,8 @@ END:VCALENDAR`;
                         if (typeof switchTab === 'function') {
                             switchTab(tab);
                         }
+                    } else if (url.startsWith('sms:911')) {
+                        text911();
                     } else if (url.startsWith('tel:') || url.startsWith('sms:') || url.startsWith('mailto:')) {
                         window.location.href = url;
                     } else {
@@ -3230,6 +3232,18 @@ Generated: ${new Date().toLocaleString()}`;
                 console.error('Share failed:', err);
                 copyAll();
             }
+        }
+
+        function text911() {
+            if (!currentLocation) {
+                alert('Location not available');
+                return;
+            }
+            const loc = currentLocation.address
+                ? `${currentLocation.address} (GPS: ${currentLocation.latitude}, ${currentLocation.longitude})`
+                : `${currentLocation.latitude}, ${currentLocation.longitude}`;
+            const message = `My location is ${loc}. The emergency is the following: `;
+            window.location.href = `sms:911?body=${encodeURIComponent(message)}`;
         }
 
         function openInMaps() {
