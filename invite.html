@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ICS Event Generator - Proton Calendar Compatible</title>
+    <title data-i18n="invite.title">ICS Event Generator - Proton Calendar Compatible</title>
+    <script src="scripts/translate.js"></script>
     <style>
         * {
             margin: 0;
@@ -183,62 +184,62 @@
 <body>
     <div class="widget-container">
         <div class="widget-header">
-            <h1>📅 ICS Event Generator</h1>
-            <p>Create and email calendar invites</p>
+            <h1 data-i18n="invite.header">📅 ICS Event Generator</h1>
+            <p data-i18n="invite.subtitle">Create and email calendar invites</p>
         </div>
         <div class="widget-body">
             <div id="instructionMessage" class="instruction-message">
-                <h4>📧 Please complete these steps:</h4>
+                <h4 data-i18n="invite.instructions">📧 Please complete these steps:</h4>
                 <ol>
-                    <li>Your email client has opened with the invite details</li>
-                    <li>The ICS file "<span id="fileName"></span>" has been downloaded</li>
-                    <li>Attach the downloaded ICS file to your email</li>
-                    <li>Send the email to invite attendees</li>
+                    <li data-i18n="invite.step1">Your email client has opened with the invite details</li>
+                    <li data-i18n="invite.step2">The ICS file "<span id="fileName"></span>" has been downloaded</li>
+                    <li data-i18n="invite.step3">Attach the downloaded ICS file to your email</li>
+                    <li data-i18n="invite.step4">Send the email to invite attendees</li>
                 </ol>
-                <button type="button" class="btn btn-secondary" onclick="goHome()" style="margin-top:10px;">⬅️ Back to Main Screen</button>
+                <button type="button" class="btn btn-secondary" onclick="goHome()" style="margin-top:10px;" data-i18n="invite.backToMain">⬅️ Back to Main Screen</button>
             </div>
             <form id="eventForm">
                 <div class="form-group">
-                    <label for="title">Event Title *</label>
-                    <input type="text" id="title" required>
+                    <label for="title" data-i18n="invite.eventTitle">Event Title *</label>
+                    <input type="text" id="title" required data-i18n-placeholder="placeholders.eventTitle">
                 </div>
                 <div class="form-group">
-                    <label for="location">Location</label>
-                    <input type="text" id="location">
+                    <label for="location" data-i18n="invite.location">Location</label>
+                    <input type="text" id="location" data-i18n-placeholder="placeholders.location">
                 </div>
                 <div class="form-group">
-                    <label for="date">Date *</label>
+                    <label for="date" data-i18n="invite.date">Date *</label>
                     <input type="date" id="date" required>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="time">Start Time *</label>
+                        <label for="time" data-i18n="invite.startTime">Start Time *</label>
                         <input type="time" id="time" required>
                     </div>
                     <div class="form-group">
-                        <label for="endTime">End Time *</label>
+                        <label for="endTime" data-i18n="invite.endTime">End Time *</label>
                         <input type="time" id="endTime" required>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="organizer">Your Email (organizer) *</label>
-                    <input type="email" id="organizer" placeholder="your-email@proton.me" required>
+                    <label for="organizer" data-i18n="invite.organizerEmail">Your Email (organizer) *</label>
+                    <input type="email" id="organizer" placeholder="your-email@proton.me" required data-i18n-placeholder="placeholders.organizerEmail">
                 </div>
                 <div class="form-group">
-                    <label for="clientEmail">Client Proton Email *</label>
-                    <input type="email" id="clientEmail" readonly>
+                    <label for="clientEmail" data-i18n="invite.clientEmail">Client Proton Email *</label>
+                    <input type="email" id="clientEmail" readonly data-i18n-placeholder="placeholders.email">
                 </div>
                 <div class="form-group">
-                    <label for="attendees">Additional Attendee Emails (comma-separated)</label>
-                    <input type="text" id="attendees" placeholder="attendee1@example.com, attendee2@example.com">
+                    <label for="attendees" data-i18n="invite.additionalEmails">Additional Attendee Emails (comma-separated)</label>
+                    <input type="text" id="attendees" placeholder="attendee1@example.com, attendee2@example.com" data-i18n-placeholder="placeholders.additionalEmails">
                 </div>
                 <div class="form-group">
-                    <label for="description">Description</label>
+                    <label for="description" data-i18n="invite.description">Description</label>
                     <textarea id="description"></textarea>
                 </div>
-                <button type="button" class="btn btn-primary" onclick="sendEmailOnly()">📧 Send Email Only</button>
-                <button type="button" class="btn btn-primary" onclick="generateAndEmail()">📅 Create Invite & Email</button>
-                <button type="button" class="btn btn-secondary" onclick="resetForm()">Clear Form</button>
+                <button type="button" class="btn btn-primary" onclick="sendEmailOnly()" data-i18n="invite.sendEmailOnly">📧 Send Email Only</button>
+                <button type="button" class="btn btn-primary" onclick="generateAndEmail()" data-i18n="invite.createInviteEmail">📅 Create Invite & Email</button>
+                <button type="button" class="btn btn-secondary" onclick="resetForm()" data-i18n="invite.clearForm">Clear Form</button>
             </form>
         </div>
     </div>

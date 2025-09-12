@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>iKey Home</title>
+  <title data-i18n="homeTitle">iKey Home</title>
+  <script src="scripts/translate.js"></script>
   <style>
     :root {
       --permanent-color: #10b981;
@@ -158,10 +159,10 @@
     };
 
     const ERROR_MESSAGES = {
-      location_denied: "Location access needed for emergency features",
-      storage_full: "Device storage full - bookmarks may not save",
-      offline: "Offline - showing cached information",
-      qr_invalid: "QR code damaged - create a new one"
+      location_denied: () => t('home.error.locationDenied', 'Location access needed for emergency features'),
+      storage_full: () => t('home.error.storageFull', 'Device storage full - bookmarks may not save'),
+      offline: () => t('home.error.offline', 'Offline - showing cached information'),
+      qr_invalid: () => t('home.error.qrInvalid', 'QR code damaged - create a new one')
     };
 
     let editMode = false;
@@ -239,9 +240,9 @@
 
     function renderDataCard(card) {
       const badges = {
-        qr: { icon: '🔒', text: 'Permanent', color: 'green', class: 'qr-data' },
-        device: { icon: '📱', text: 'Device Only', color: 'gray', class: 'device-data' },
-        live: { icon: '🔄', text: 'Live', color: 'blue', class: 'live-data' }
+        qr: { icon: '🔒', text: t('home.badges.permanent', 'Permanent'), color: 'green', class: 'qr-data' },
+        device: { icon: '📱', text: t('home.badges.deviceOnly', 'Device Only'), color: 'gray', class: 'device-data' },
+        live: { icon: '🔄', text: t('home.badges.live', 'Live'), color: 'blue', class: 'live-data' }
       };
       const b = badges[card.source];
       return `
@@ -262,10 +263,10 @@
       return `
         <div class="medical-card">
           <div class="always-visible">
-            ${critical ? `⚠️ ${critical}` : 'No critical alerts'}
+            ${critical ? `⚠️ ${critical}` : t('home.noCriticalAlerts', 'No critical alerts')}
           </div>
           <details class="additional-info">
-            <summary>View all medical info</summary>
+            <summary>${t('home.viewAllMedical', 'View all medical info')}</summary>
             ${renderFullMedical(data)}
           </details>
         </div>
@@ -280,7 +281,7 @@
       const details = apps.map((app, index) => ({ info: getBookmarkDetails(app), index }))
                           .filter(d => d.info);
       if (details.length === 0 && !editMode) {
-        return `<div class="text-body">No favorites yet</div>`;
+        return `<div class="text-body">${t('home.noFavorites', 'No favorites yet')}</div>`;
       }
       const listHtml = details.map(d => `
             <div class="favorite" draggable="${editMode}" data-index="${d.index}" data-url="${d.info.url}">
@@ -294,7 +295,7 @@
         <div class="favorites ${editMode ? 'editing' : ''}" id="favorites">
           ${listHtml}${addTile}
         </div>
-        ${editMode ? '<div class="button-group"><button onclick="exitEdit()">Done</button></div>' : ''}
+        ${editMode ? `<div class="button-group"><button onclick="exitEdit()">${t('common.done', 'Done')}</button></div>` : ''}
       `;
     }
 
@@ -373,32 +374,32 @@
     }
 
     function addFavorite() {
-      const type = prompt('Add proton app id, "dispatch", "website", "call", "text", or "email"');
+      const type = prompt(t('home.addPrompt', 'Add proton app id, "dispatch", "website", "call", "text", or "email"'));
       if (!type) return;
       if (PROTON_APPS.find(a => a.id === type)) {
         favoriteApps.push(type);
       } else if (INTERNAL_APPS.find(a => a.id === type)) {
         favoriteApps.push(type);
       } else if (type === 'website') {
-        let url = prompt('Enter website URL (https:// optional)');
+        let url = prompt(t('home.enterWebsite', 'Enter website URL (https:// optional)'));
         if (!url) return;
         if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
         try {
           const u = new URL(url);
-          const name = prompt('Enter name') || u.hostname;
+          const name = prompt(t('home.enterName', 'Enter name')) || u.hostname;
           const icon = `https://www.google.com/s2/favicons?sz=64&domain=${u.hostname}`;
           favoriteApps.push({ url: u.href, name, icon });
         } catch (e) {
-          alert('Invalid URL');
+          alert(t('home.invalidURL', 'Invalid URL'));
           return;
         }
       } else if (['call','text','email'].includes(type)) {
-        const value = prompt(type === 'email' ? 'Enter email address' : 'Enter phone number');
+        const value = prompt(type === 'email' ? t('home.enterEmail', 'Enter email address') : t('home.enterPhone', 'Enter phone number'));
         if (!value) return;
-        const name = prompt('Enter name') || value;
+        const name = prompt(t('home.enterName', 'Enter name')) || value;
         favoriteApps.push({ type, value, name });
       } else {
-        alert('Unknown option');
+        alert(t('home.unknownOption', 'Unknown option'));
         return;
       }
       saveFavorites();
@@ -411,8 +412,8 @@
       if (cards.length === 0) {
         container.innerHTML = `
           <div class="empty-state">
-            <p>No data yet</p>
-            <button class="action">Add Info</button>
+            <p>${t('home.noData', 'No data yet')}</p>
+            <button class="action">${t('home.addInfo', 'Add Info')}</button>
           </div>`;
         return;
       }
@@ -426,15 +427,15 @@
       const container = document.getElementById('card-container');
       container.innerHTML += `
         <div class="error-card">
-          <p>${ERROR_MESSAGES[type]}</p>
-          <button onclick="fix_${type}()">Fix This</button>
+          <p>${ERROR_MESSAGES[type]()}</p>
+          <button onclick="fix_${type}()">${t('home.fixThis', 'Fix This')}</button>
         </div>`;
     }
 
-    function fix_location_denied() { showToast('Requesting location…'); }
-    function fix_storage_full() { showToast('Opening settings…'); }
-    function fix_offline() { showToast('Retrying…'); }
-    function fix_qr_invalid() { showToast('Generating new QR…'); }
+    function fix_location_denied() { showToast(t('home.requestingLocation', 'Requesting location…')); }
+    function fix_storage_full() { showToast(t('home.openingSettings', 'Opening settings…')); }
+    function fix_offline() { showToast(t('home.retrying', 'Retrying…')); }
+    function fix_qr_invalid() { showToast(t('home.generatingQR', 'Generating new QR…')); }
 
 
     function initHome() {

@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nashville Police Active Dispatches</title>
+    <title data-i18n="dispatch.title">Nashville Police Active Dispatches</title>
+    <script src="scripts/translate.js"></script>
     <style>
         * {
             margin: 0;
@@ -324,34 +325,34 @@
 <body>
     <div class="container">
         <div class="header">
-            <div class="title">
+            <div class="title" data-i18n="dispatch.header">
                 📡 Nashville Police Dispatches
                 <span class="refresh-dot"></span>
             </div>
-            <div class="subtitle">Real-time incident monitoring • Updates every 30 seconds</div>
+            <div class="subtitle" data-i18n="dispatch.subtitle">Real-time incident monitoring • Updates every 30 seconds</div>
             <div class="stats">
                 <div class="stat">
-                    <div class="stat-label">Active</div>
+                    <div class="stat-label" data-i18n="dispatch.active">Active</div>
                     <div class="stat-value" id="totalCalls">0</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-label">Latest</div>
+                    <div class="stat-label" data-i18n="dispatch.latest">Latest</div>
                     <div class="stat-value small" id="mostRecent">--</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-label">Updated</div>
+                    <div class="stat-label" data-i18n="dispatch.updated">Updated</div>
                     <div class="stat-value small" id="lastUpdate">--:--</div>
                 </div>
             </div>
         </div>
         
         <div id="dispatchList">
-            <div class="loading">
-                <div class="loading-spinner"></div>
-                <div>Loading dispatches...</div>
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <div data-i18n="dispatch.loading">Loading dispatches...</div>
+                </div>
             </div>
         </div>
-    </div>
     
     <script>
         const API_URL = 'https://services2.arcgis.com/HdTo6HJqh92wn4D8/arcgis/rest/services/Metro_Nashville_Police_Department_Active_Dispatch_Table_view/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json';
@@ -485,8 +486,8 @@
                     dispatchList.innerHTML = `
                         <div class="empty">
                             <div class="empty-icon">✅</div>
-                            <div class="empty-title">All Clear</div>
-                            <div class="empty-subtitle">No active dispatches at this time</div>
+                            <div class="empty-title">${t('dispatch.allClear', 'All Clear')}</div>
+                            <div class="empty-subtitle">${t('dispatch.none', 'No active dispatches at this time')}</div>
                         </div>
                     `;
                     return;
@@ -514,7 +515,7 @@
                             <div class="dispatch-location">
                                 <div class="location-primary">
                                     <span class="location-icon">📍</span>
-                                    <span>${attr.Location || 'Location not specified'}</span>
+                                    <span>${attr.Location || t('dispatch.locationNotSpecified', 'Location not specified')}</span>
                                     ${attr.CityName ? `<span class="city-badge">${attr.CityName}</span>` : ''}
                                 </div>
                                 ${attr.LocationDescription ? `
