@@ -1414,7 +1414,7 @@
                         </div>
                         <div class="form-group">
                             <label for="phone">Your Phone Number</label>
-                            <input type="tel" id="phone" placeholder="555-0123">
+                            <input type="tel" id="phone" placeholder="555-555-5555" pattern="\d{3}-?\d{3}-?\d{4}" inputmode="tel" title="Enter a 10-digit phone number">
                         </div>
                     </div>
 
@@ -1448,7 +1448,7 @@
                         </div>
                         <div class="form-group">
                             <label for="ec-phone">Emergency Phone Number *</label>
-                            <input type="tel" id="ec-phone" placeholder="555-0123" required>
+                            <input type="tel" id="ec-phone" placeholder="555-555-5555" pattern="\d{3}-?\d{3}-?\d{4}" inputmode="tel" title="Enter a 10-digit phone number" required>
                         </div>
                         <div class="form-group">
                             <label for="ec-relationship">Relationship</label>
@@ -1472,29 +1472,14 @@
                         </div>
                         <div class="form-group">
                             <label for="cm-phone">Case Manager Phone</label>
-                            <input type="tel" id="cm-phone" placeholder="555-0456">
+                            <input type="tel" id="cm-phone" placeholder="555-555-5555" pattern="\d{3}-?\d{3}-?\d{4}" inputmode="tel" title="Enter a 10-digit phone number">
                         </div>
 
-                        <div style="margin-top: 20px;">
-                            <h3>Important Documents (Optional)</h3>
+                        <details style="margin-top: 20px;" class="document-section">
+                            <summary style="cursor: pointer; font-weight: 600;">Important Documents (Optional)</summary>
                             <p style="margin: 10px 0; color: var(--secondary);">
                                 Upload these to your secure drive and paste public share links below.
-                                Consider including:
                             </p>
-                            <ul style="margin-left: 20px; color: var(--secondary); line-height: 1.8;">
-                                <li>Medical Power of Attorney (copy)</li>
-                                <li>Advance Directive/Living Will</li>
-                                <li>DNR (Do Not Resuscitate) Order</li>
-                                <li>Emergency Contact List</li>
-                                <li>Current Medications List</li>
-                                <li>Allergy and Medical Conditions Card</li>
-                                <li>Blood Type Card</li>
-                                <li>Temporary Guardianship Authorization</li>
-                                <li>Pet Emergency Care Instructions</li>
-                                <li>Organ Donor Card/Designation</li>
-                                <li>Doctor and Specialist Contact Sheet</li>
-                                <li>Emergency Cash Envelope Note</li>
-                            </ul>
 
                             <div class="document-group">
                                 <div class="form-group">
@@ -1585,7 +1570,7 @@
                                     <input type="url" id="doc3-link" placeholder="https://example.com/document">
                                 </div>
                             </div>
-                        </div>
+                        </details>
                     </div>
 
                     <!-- Step 6: Review -->
