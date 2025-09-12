@@ -11,6 +11,7 @@
             "wttin": "Resources",
             "meals": "Meals",
             "dispatch": "Dispatch",
+            "emergency": "Emergency",
             "settings": "Settings"
         },
         "steps": {
@@ -290,6 +291,7 @@
             "wttin": "Resources",
             "meals": "Comidas",
             "dispatch": "Despacho",
+            "emergency": "Emergencia",
             "settings": "Configuración"
         },
         "steps": {
@@ -569,6 +571,7 @@
             "wttin": "Resources",
             "meals": "الوجبات",
             "dispatch": "الإرسال",
+            "emergency": "الطوارئ",
             "settings": "الإعدادات"
         },
         "steps": {
@@ -848,6 +851,7 @@
             "wttin": "Resources",
             "meals": "Xwarin",
             "dispatch": "Şandin",
+            "emergency": "Emergency",
             "settings": "Mîheng"
         },
         "steps": {
@@ -1127,6 +1131,7 @@
             "wttin": "Resources",
             "meals": "Cunto",
             "dispatch": "Dirista",
+            "emergency": "Emergency",
             "settings": "Dejinta"
         },
         "steps": {
@@ -1406,6 +1411,7 @@
             "wttin": "Resources",
             "meals": "餐食",
             "dispatch": "调度",
+            "emergency": "紧急",
             "settings": "设置"
         },
         "steps": {

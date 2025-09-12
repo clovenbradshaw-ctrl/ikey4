@@ -543,7 +543,7 @@
             margin: 20px 0;
         }
 
-        /* Location Tab Styles */
+        /* Emergency Tab Styles */
         .emergency-button {
             padding: 40px 30px;
             border: none;
@@ -581,7 +581,7 @@
             font-size: 1.5rem;
         }
 
-        .location-card {
+        .emergency-card {
             background: var(--light);
             border-radius: 14px;
             padding: 18px;
@@ -590,7 +590,7 @@
             transition: all 0.3s ease;
         }
 
-        .location-card.primary {
+        .emergency-card.primary {
             background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
             border: 2px solid #10b981;
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
@@ -1356,9 +1356,9 @@
             <span class="tab-icon">🏥</span>
             <span class="tab-label" data-i18n="nav.iKey">iKey</span>
         </button>
-        <button class="tab-btn" onclick="switchTab('location')" aria-label="Location">
+        <button class="tab-btn" onclick="switchTab('emergency')" aria-label="Emergency" data-i18n-aria="nav.emergency">
             <span class="tab-icon">📍</span>
-            <span class="tab-label">Location</span>
+            <span class="tab-label" data-i18n="nav.emergency">Emergency</span>
         </button>
         <button class="tab-btn" onclick="switchTab('weather')" aria-label="Weather" data-i18n-aria="nav.weather">
             <span class="tab-icon">⛈️</span>
@@ -1752,8 +1752,8 @@
     </div>
 </div>
 
-<!-- Location Services Tab -->
-<div id="location" class="tab-content">
+<!-- Emergency Services Tab -->
+<div id="emergency" class="tab-content">
         <div class="container">
             <a href="tel:911" class="emergency-button">
                 <span class="icon">📞</span>
@@ -1769,14 +1769,14 @@
             <div class="card">
                 <h2 style="margin-bottom: 20px;">📍 Your Secure Location</h2>
                 
-                <div id="location-loading" class="loading">
+                <div id="emergency-loading" class="loading">
                     <div class="loading-spinner"></div>
                     <p>Acquiring secure location...</p>
                     <p style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;">Please allow location access</p>
                 </div>
                 
-                <div id="location-content" style="display: none;">
-                    <div class="location-card primary">
+                <div id="emergency-content" style="display: none;">
+                    <div class="emergency-card primary">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                             <div style="font-size: 0.75rem; text-transform: uppercase; color: #047857; font-weight: 700;">
                                 GPS Coordinates
@@ -1786,21 +1786,21 @@
                         <div id="coordinates" style="font-family: monospace; font-size: 1.2rem; background: white; padding: 12px; border-radius: 10px; margin-top: 10px;">Loading...</div>
                     </div>
                     
-                    <div class="location-card">
+                    <div class="emergency-card">
                         <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--secondary); font-weight: 600; margin-bottom: 10px;">
                             Street Address
                         </div>
                         <div id="address" style="font-weight: 600;">Locating...</div>
                     </div>
                     
-                    <div class="location-card">
+                    <div class="emergency-card">
                         <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--secondary); font-weight: 600; margin-bottom: 10px;">
                             Nearest Intersection
                         </div>
                         <div id="crossStreets" style="font-weight: 600;">Locating...</div>
                     </div>
                     
-                    <div class="location-card">
+                    <div class="emergency-card">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                             <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--secondary); font-weight: 600;">
                                 Plus Code
@@ -2059,9 +2059,9 @@
                     <h3 style="margin-bottom: 15px; color: var(--primary);">Tab Visibility</h3>
                     <div class="settings-item" style="cursor: default;">
                         <div>
-                            <div style="font-weight: 600;">📍 Location</div>
+                            <div style="font-weight: 600;">📍 Emergency</div>
                         </div>
-                        <input type="checkbox" class="tab-visibility-toggle" data-tab="location" checked>
+                        <input type="checkbox" class="tab-visibility-toggle" data-tab="emergency" checked>
                     </div>
                     <div class="settings-item" style="cursor: default;">
                         <div>
@@ -2179,10 +2179,10 @@
                     loadWeatherForCity('Nashville');
                     window.weatherLoaded = true;
                 }
-            } else if (tabName === 'location') {
-                if (!window.locationLoaded) {
+            } else if (tabName === 'emergency') {
+                if (!window.emergencyLoaded) {
                     getLocation();
-                    window.locationLoaded = true;
+                    window.emergencyLoaded = true;
                 }
             }
         }
@@ -2196,7 +2196,7 @@
         }
 
         // Tab visibility settings
-        const allTabs = ['location', 'weather', 'wttin', 'apps'];
+        const allTabs = ['emergency', 'weather', 'wttin', 'apps'];
         const nonHideableTabs = ['home', 'ikey', 'settings'];
 
         function getTabButton(tabName) {
@@ -2921,7 +2921,7 @@ END:VCALENDAR`;
             link.click();
         }
 
-        // Location Functions
+        // Emergency Functions
         let currentLocation = null;
         let watchId = null;
 
@@ -3311,7 +3311,7 @@ END:VCALENDAR`;
             getInternalPagesHTML() {
                 const pages = [
                     { id: 'ikey', name: 'Medical', icon: '🏥' },
-                    { id: 'location', name: 'Location', icon: '📍' },
+                    { id: 'emergency', name: 'Emergency', icon: '📍' },
                     { id: 'weather', name: 'Weather', icon: '⛈️' },
                     { id: 'wttin', name: 'Resources', icon: '🏠' },
                     { id: 'dispatch', name: 'Dispatch', icon: '📡' },
@@ -3417,7 +3417,7 @@ END:VCALENDAR`;
             addInternalPage(pageId) {
                 const pages = {
                     ikey: { name: 'Medical ID', icon: '🏥' },
-                    'location': { name: 'Location', icon: '📍' },
+                    'emergency': { name: 'Emergency', icon: '📍' },
                     weather: { name: 'Weather', icon: '⛈️' },
                     wttin: { name: 'Resources', icon: '🏠' },
                     dispatch: { name: 'Dispatch', icon: '📡' },
@@ -3609,15 +3609,15 @@ Generated: ${new Date().toLocaleString()}`;
             try {
                 if (navigator.share) {
                     await navigator.share(shareData);
-                    logShare('location', null, 'share');
+                    logShare('emergency', null, 'share');
                 } else {
                     copyAll();
-                    logShare('location', null, 'copy');
+                    logShare('emergency', null, 'copy');
                 }
             } catch (err) {
                 console.error('Share failed:', err);
                 copyAll();
-                logShare('location', null, 'copy');
+                logShare('emergency', null, 'copy');
             }
         }
 
@@ -3699,8 +3699,8 @@ Generated: ${new Date().toLocaleString()}`;
                 crossStreets: crossStreets
             };
             
-            document.getElementById('location-loading').style.display = 'none';
-            document.getElementById('location-content').style.display = 'block';
+            document.getElementById('emergency-loading').style.display = 'none';
+            document.getElementById('emergency-content').style.display = 'block';
         }
 
         function getLocation() {
@@ -3711,7 +3711,7 @@ Generated: ${new Date().toLocaleString()}`;
                     },
                     error => {
                         console.error('Location error:', error);
-                        document.getElementById('location-loading').innerHTML = `
+                        document.getElementById('emergency-loading').innerHTML = `
                             <p style="color: var(--danger);">Unable to get location</p>
                             <p style="font-size: 0.85rem;">Please enable location services and refresh</p>
                         `;
@@ -4032,7 +4032,7 @@ Generated: ${new Date().toLocaleString()}`;
                     if (data.ph) {
                         const smsBody = encodeURIComponent("Hi, I obtained your number through your iKey.");
                         commCards += `
-        <div class="location-card" style="margin-bottom: 15px; cursor: pointer;">
+        <div class="emergency-card" style="margin-bottom: 15px; cursor: pointer;">
             <a href="sms:${data.ph}?body=${smsBody}" style="text-decoration: none; color: inherit; display: block;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <div>
@@ -4054,7 +4054,7 @@ Generated: ${new Date().toLocaleString()}`;
                         const emailSubject = encodeURIComponent("Regarding your iKey Medical ID");
                         const emailBody = encodeURIComponent("Hi,\n\nI obtained your contact information through your iKey Medical ID.\n\n");
                         commCards += `
-        <div class="location-card" style="margin-bottom: 15px; cursor: pointer;">
+        <div class="emergency-card" style="margin-bottom: 15px; cursor: pointer;">
             <a href="mailto:${data.pe}?subject=${emailSubject}&body=${emailBody}" style="text-decoration: none; color: inherit; display: block;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <div>
@@ -4076,7 +4076,7 @@ Generated: ${new Date().toLocaleString()}`;
                         const inviteUrl = `invite.html?pe=${encodeURIComponent(data.pe)}&n=${encodeURIComponent(data.n)}&key=${encodeURIComponent(storagePrefix)}`;
                         commCards += `
         <a href="${inviteUrl}" style="text-decoration: none; color: inherit; display: block;">
-            <div class="location-card" style="margin-bottom: 15px; cursor: pointer;">
+            <div class="emergency-card" style="margin-bottom: 15px; cursor: pointer;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <div>
                         <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--primary); font-weight: 700;">
