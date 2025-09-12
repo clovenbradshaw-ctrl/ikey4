@@ -454,6 +454,85 @@
             margin-bottom: 15px;
         }
 
+        .share-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .share-actions button {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--light);
+            cursor: pointer;
+        }
+
+        .share-actions .subtitle {
+            font-size: 0.8rem;
+            color: var(--secondary);
+        }
+
+        .share-wizard .share-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .share-wizard .share-options label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .qr-display-card {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            background: white;
+            max-width: 320px;
+            margin: 0 auto;
+        }
+
+        .qr-display-card .qr-header {
+            text-align: center;
+            padding: 10px;
+        }
+
+        .qr-display-card .qr-code-wrapper {
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .qr-display-card .critical-info {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .qr-display-card .privacy-note {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--secondary);
+            padding-bottom: 10px;
+        }
+
+        .share-methods button {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
         .qr-container {
             text-align: center;
             padding: 30px;
@@ -1599,9 +1678,22 @@
                     <h2>Emergency Essential Info</h2>
                     <div id="display-content"></div>
                     <div id="communication-actions" style="margin-top: 20px;"></div>
-                    <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
-                        <button class="btn btn-primary" onclick="openShareModal()">📤 Share Info</button>
-                        <button class="btn btn-primary" onclick="openQRModal()">🔳 Share QR</button>
+                    <div class="share-actions">
+  <button onclick="openShareWizard('emergency')">
+    🚨 Emergency Card
+    <span class="subtitle">QR + critical info for first responders</span>
+  </button>
+  <button onclick="openShareWizard('records')">
+    📋 Medical Summary  
+    <span class="subtitle">Full text for medical records</span>
+  </button>
+  <button onclick="openShareWizard('contact')">
+    👤 Contact Card
+    <span class="subtitle">Just name & contact info</span>
+  </button>
+</div>
+                    <div id="share-history" style="margin-top:10px; font-size:0.9rem; color: var(--secondary);"></div>
+                    <div style="margin-top: 20px;">
                         <button class="btn btn-primary" onclick="createNew()">🆕 Create New QR Code</button>
                     </div>
                 </div>
@@ -1609,16 +1701,29 @@
                 <!-- QR Code View -->
                 <div id="qr-view" class="hidden">
                     <h2 style="text-align: center; margin-bottom: 20px;">Your iKey is Ready!</h2>
-                    
-                    <div class="qr-container">
-                        <div id="qrcode"></div>
-                        
-                        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 20px;">
-                            <button class="btn btn-success" onclick="downloadQR('wallet')">📱 Wallet Size</button>
-                            <button class="btn btn-success" onclick="downloadQR('full')">📄 Full Page</button>
-                            <button class="btn btn-primary" onclick="copyURL()">📋 Copy Link</button>
-                            <button class="btn btn-primary" onclick="copyMedicalInfo()">📋 Copy Info</button>
-                        </div>
+
+                    <div class="qr-display-card">
+  <div class="qr-header">
+    <h3>Medical ID - <span id="qr-name"></span></h3>
+    <p class="instruction">Scan in emergency</p>
+  </div>
+  <div class="qr-code-wrapper">
+    <div id="qrcode"></div>
+  </div>
+  <div class="qr-footer">
+    <div class="critical-info">
+      <span class="blood-type" id="qr-blood"></span>
+      <span class="allergies" id="qr-allergies"></span>
+    </div>
+    <p class="privacy-note">Scanning reveals full medical info</p>
+  </div>
+</div>
+
+                    <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 20px;">
+                        <button class="btn btn-success" onclick="downloadQR('wallet')">📱 Wallet Size</button>
+                        <button class="btn btn-success" onclick="downloadQR('full')">📄 Full Page</button>
+                        <button class="btn btn-primary" onclick="copyURL()">📋 Copy Link</button>
+                        <button class="btn btn-primary" onclick="smartCopy()">📋 Copy</button>
                     </div>
 
                     <div style="margin-top: 30px; text-align: center;">
@@ -1629,31 +1734,46 @@
         </div>
     </div>
 
-
-<!-- Share Modal -->
+<!-- Share Wizard Modal -->
 <div id="share-modal" class="modal hidden">
     <div class="modal-content">
-        <h3>Share Contact Info</h3>
-        <div class="modal-actions">
-            <button class="btn btn-primary" onclick="downloadInfo()">💾 Save as .txt</button>
-            <button class="btn btn-primary" onclick="emailInfo()">📧 Email</button>
-            <button class="btn btn-primary" onclick="copyMedicalInfo(displayData)">📋 Copy</button>
-            <button class="btn btn-primary" onclick="smsInfo()">💬 Text</button>
-            <button class="btn btn-primary" onclick="shareQR()">🔳 Share QR</button>
-            <button class="btn btn-secondary" onclick="closeShareModal()">Close</button>
+        <div class="share-wizard" id="share-step-1">
+  <h3>What do you need to share?</h3>
+  <div class="share-options">
+    <label>
+      <input type="radio" name="content" value="emergency">
+      <div>Emergency Access (QR + Vitals)</div>
+    </label>
+    <label>
+      <input type="radio" name="content" value="records">
+      <div>Complete Medical Record</div>
+    </label>
+    <label>
+      <input type="radio" name="content" value="contact">
+      <div>Contact Info Only</div>
+    </label>
+  </div>
+  <div class="modal-actions">
+    <button class="btn btn-primary" onclick="goToShareMethods()">Next</button>
+    <button class="btn btn-secondary" onclick="closeShareModal()">Cancel</button>
+  </div>
+</div>
+        <div class="share-methods hidden" id="share-step-2">
+            <div id="share-methods"></div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="backToShareOptions()">Back</button>
+                <button class="btn btn-secondary" onclick="closeShareModal()">Cancel</button>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- QR Display Modal -->
-<div id="qr-modal" class="modal hidden">
+<!-- Share Preview Modal -->
+<div id="preview-modal" class="modal hidden">
     <div class="modal-content">
-        <h3>My QR Code</h3>
-        <div id="modal-qrcode" style="margin-top:10px;"></div>
-        <div class="modal-actions">
-            <button class="btn btn-primary" onclick="shareQR('modal-qrcode')">📤 Share QR</button>
-            <button class="btn btn-secondary" onclick="closeQRModal()">Close</button>
-        </div>
+        <h3 id="preview-title"></h3>
+        <div id="preview-body" style="margin-top:10px;"></div>
+        <div class="modal-actions" id="preview-actions"></div>
     </div>
 </div>
 
@@ -2146,6 +2266,7 @@
         // iKey QR Code Functions
         let currentStep = 1;
         let formData = {};
+        let selectedShareType = null;
         const baseURL = window.location.origin + window.location.pathname;
 
         function compressData(data) {
@@ -2413,6 +2534,9 @@
                 colorLight: '#ffffff',
                 correctLevel: QRCode.CorrectLevel.M
             });
+            document.getElementById('qr-name').textContent = formData.n || '';
+            document.getElementById('qr-blood').textContent = formData.b || '';
+            document.getElementById('qr-allergies').textContent = formData.a || '';
         }
 
         function downloadQR(size) {
@@ -2490,42 +2614,6 @@
             return lines.join('\n');
         }
 
-        function copyMedicalInfo(dataObj = formData) {
-            const text = getMedicalInfoText(dataObj);
-            navigator.clipboard.writeText(text).then(() => {
-                alert('iKey info copied!');
-            });
-        }
-
-        function openShareModal() {
-            const text = getMedicalInfoText(displayData);
-            navigator.clipboard.writeText(text);
-            document.getElementById('share-modal').classList.remove('hidden');
-        }
-
-        function closeShareModal() {
-            document.getElementById('share-modal').classList.add('hidden');
-        }
-
-        function openQRModal() {
-            const container = document.getElementById('modal-qrcode');
-            container.innerHTML = '';
-            const encodedUrl = encodeURI(window.location.href);
-            new QRCode(container, {
-                text: encodedUrl,
-                width: 300,
-                height: 300,
-                colorDark: '#000000',
-                colorLight: '#ffffff',
-                correctLevel: QRCode.CorrectLevel.M
-            });
-            document.getElementById('qr-modal').classList.remove('hidden');
-        }
-
-        function closeQRModal() {
-            document.getElementById('qr-modal').classList.add('hidden');
-        }
-
         function downloadInfo() {
             const text = getMedicalInfoText(displayData);
             const blob = new Blob([text], { type: 'text/plain' });
@@ -2564,6 +2652,209 @@
                     URL.revokeObjectURL(link.href);
                 }
             });
+        }
+
+        function openShareWizard(type = null) {
+            document.getElementById('share-modal').classList.remove('hidden');
+            if (type) {
+                selectedShareType = type;
+                document.getElementById('share-step-1').classList.add('hidden');
+                document.getElementById('share-step-2').classList.remove('hidden');
+                renderShareMethods(type);
+            } else {
+                document.getElementById('share-step-1').classList.remove('hidden');
+                document.getElementById('share-step-2').classList.add('hidden');
+            }
+        }
+
+        function closeShareModal() {
+            document.getElementById('share-modal').classList.add('hidden');
+        }
+
+        function goToShareMethods() {
+            const selected = document.querySelector('input[name="content"]:checked');
+            if (!selected) return;
+            selectedShareType = selected.value;
+            renderShareMethods(selectedShareType);
+            document.getElementById('share-step-1').classList.add('hidden');
+            document.getElementById('share-step-2').classList.remove('hidden');
+        }
+
+        function backToShareOptions() {
+            document.getElementById('share-step-1').classList.remove('hidden');
+            document.getElementById('share-step-2').classList.add('hidden');
+        }
+
+        function renderShareMethods(type) {
+            const methods = document.getElementById('share-methods');
+            let html = '';
+            switch(type) {
+                case 'emergency':
+                    html = `<button class="btn btn-primary" onclick="previewShare('emergency')">Preview Emergency Card</button>`;
+                    break;
+                case 'records':
+                    html = `<button class="btn btn-primary" onclick="previewShare('records')">Preview Medical Summary</button>`;
+                    break;
+                case 'contact':
+                    html = `<button class="btn btn-primary" onclick="previewShare('contact')">Preview Contact Card</button>`;
+                    break;
+            }
+            methods.innerHTML = html;
+        }
+
+        function previewShare(type) {
+            const modal = document.getElementById('preview-modal');
+            const titleEl = document.getElementById('preview-title');
+            const bodyEl = document.getElementById('preview-body');
+            const actionsEl = document.getElementById('preview-actions');
+            let content = '', title = '', actions = '';
+            if (type === 'emergency') {
+                title = 'Emergency Card Preview';
+                content = generateEmergencyCard();
+                actions = `<button class=\"btn btn-primary\" onclick=\"downloadEmergencyCard()\">Download</button>` +
+                          `<button class=\"btn btn-primary\" onclick=\"shareOptimized('emergency')\">Share via...</button>` +
+                          `<button class=\"btn btn-secondary\" onclick=\"window.print()\">Print</button>` +
+                          `<button class=\"btn btn-secondary\" onclick=\"closePreviewModal()\">Close</button>`;
+            } else if (type === 'records') {
+                title = 'Medical Summary Preview';
+                content = `<pre>${generateMedicalSummary()}</pre>`;
+                actions = `<button class=\"btn btn-primary\" onclick=\"smartCopy()\">Copy</button>` +
+                          `<button class=\"btn btn-primary\" onclick=\"shareOptimized('records')\">Share via...</button>` +
+                          `<button class=\"btn btn-secondary\" onclick=\"closePreviewModal()\">Close</button>`;
+            } else if (type === 'contact') {
+                title = 'Contact Card Preview';
+                content = `<pre>${generateVCard()}</pre>`;
+                actions = `<button class=\"btn btn-primary\" onclick=\"downloadVCard()\">Download</button>` +
+                          `<button class=\"btn btn-primary\" onclick=\"shareOptimized('contact')\">Share via...</button>` +
+                          `<button class=\"btn btn-secondary\" onclick=\"closePreviewModal()\">Close</button>`;
+            }
+            titleEl.textContent = title;
+            bodyEl.innerHTML = content;
+            actionsEl.innerHTML = actions;
+            modal.classList.remove('hidden');
+        }
+
+        function closePreviewModal() {
+            document.getElementById('preview-modal').classList.add('hidden');
+        }
+
+        function generateEmergencyCard() {
+            const data = displayData || formData;
+            const canvas = document.querySelector('#qrcode canvas');
+            const qrImage = canvas ? canvas.toDataURL() : '';
+            return `<div class=\"qr-display-card\">` +
+                `<div class=\"qr-header\"><h3>Medical ID - ${data.n || ''}</h3><p class=\"instruction\">Scan in emergency</p></div>` +
+                `<div class=\"qr-code-wrapper\"><img src=\"${qrImage}\" alt=\"QR\"></div>` +
+                `<div class=\"qr-footer\"><div class=\"critical-info\"><span class=\"blood-type\">${data.b || ''}</span>` +
+                `<span class=\"allergies\">${data.a || ''}</span></div><p class=\"privacy-note\">Scanning reveals full medical info</p>` +
+                `<div style=\"color:red; text-align:center; font-weight:bold;\">${data.ep || ''}</div></div></div>`;
+        }
+
+        function generateMedicalSummary() {
+            const text = getMedicalInfoText(displayData);
+            const now = new Date().toLocaleString();
+            const canvas = document.querySelector('#qrcode canvas');
+            const qrImage = canvas ? canvas.toDataURL() : '';
+            return `${text}\n\nGenerated: ${now}\nQR: ${qrImage}`;
+        }
+
+        function generateVCard() {
+            const d = displayData || {};
+            return `BEGIN:VCARD\nVERSION:3.0\nFN:${d.n || ''}\nTEL:${d.ep || ''}\nEMAIL:${d.pe || ''}\nEND:VCARD`;
+        }
+
+        function downloadEmergencyCard() {
+            const html = generateEmergencyCard();
+            const blob = new Blob([html], {type:'text/html'});
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'emergency-card.html';
+            link.click();
+            recordShare({type:'emergency_card', method:'download', date:new Date()});
+        }
+
+        function downloadVCard() {
+            const text = generateVCard();
+            const blob = new Blob([text], {type:'text/vcard'});
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'contact.vcf';
+            link.click();
+            recordShare({type:'contact_card', method:'download', date:new Date()});
+        }
+
+        function smartCopy() {
+            const context = detectUserIntent();
+            if (context === 'medical_professional') {
+                copyMedicalSummary();
+                showToast('Medical summary copied - ready to paste into EMR');
+            } else if (context === 'text_message') {
+                copyEmergencyBrief();
+                showToast('Emergency info copied for texting');
+            } else {
+                showCopyOptions();
+            }
+        }
+
+        function detectUserIntent() {
+            return navigator.userAgent.includes('Mobile') ? 'text_message' : 'medical_professional';
+        }
+
+        function copyMedicalSummary() {
+            const text = generateMedicalSummary();
+            navigator.clipboard.writeText(text);
+        }
+
+        function copyEmergencyBrief() {
+            const d = displayData || {};
+            const brief = `Name: ${d.n || ''}\nAllergies: ${d.a || ''}\nContact: ${d.ep || ''}`;
+            navigator.clipboard.writeText(brief);
+        }
+
+        function showCopyOptions() {
+            alert('Copy options not available in this context.');
+        }
+
+        function showToast(msg) {
+            console.log(msg);
+        }
+
+        function generateOfflinePackage() {
+            const canvas = document.querySelector('#qrcode canvas');
+            const qrImage = canvas ? canvas.toDataURL() : '';
+            const textSummary = generateMedicalSummary();
+            const vCard = generateVCard();
+            const html = `<html><body><img src='${qrImage}'/><pre>${textSummary}</pre></body></html>`;
+            return { qrImage, textSummary, vCard, html };
+        }
+
+        function recordShare(entry) {
+            const history = JSON.parse(localStorage.getItem('shareHistory') || '[]');
+            history.push(entry);
+            localStorage.setItem('shareHistory', JSON.stringify(history));
+            showLastShare();
+        }
+
+        function showLastShare() {
+            const history = JSON.parse(localStorage.getItem('shareHistory') || '[]');
+            if (!history.length) return;
+            const last = history[history.length - 1];
+            const container = document.getElementById('share-history');
+            if (container) {
+                const date = new Date(last.date).toLocaleDateString();
+                container.textContent = `Last shared: ${last.type.replace('_',' ')} via ${last.method} (${date})`;
+            }
+        }
+
+        function shareOptimized(type) {
+            recordShare({type: type, method:'share', date:new Date()});
+            if (navigator.share) {
+                navigator.share({text: 'iKey info'}).catch(()=>{});
+            } else if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+                showToast('Add to Wallet option coming soon');
+            } else {
+                showToast('Download to share');
+            }
         }
 
         function createNew() {
@@ -3668,6 +3959,7 @@ Generated: ${new Date().toLocaleString()}`;
             if (inviteAppLink) {
                 inviteAppLink.href = `invite.html?key=${encodeURIComponent(storagePrefix)}`;
             }
+            showLastShare();
 
             // Check for existing QR data in URL
             const hash = decodeURIComponent(window.location.hash.slice(1));
