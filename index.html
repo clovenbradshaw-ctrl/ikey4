@@ -2723,40 +2723,65 @@
             methods.innerHTML = html;
         }
 
-        function previewShare(type) {
+        function createPreviewModal() {
             const modal = document.getElementById('preview-modal');
             const titleEl = document.getElementById('preview-title');
             const bodyEl = document.getElementById('preview-body');
             const actionsEl = document.getElementById('preview-actions');
-            let content = '', title = '', actions = '';
-            if (type === 'emergency') {
-                title = 'Emergency Card Preview';
-                content = generateEmergencyCard();
-                actions = `<button class=\"btn btn-primary\" onclick=\"downloadEmergencyCard()\">Download</button>` +
-                          `<button class=\"btn btn-primary\" onclick=\"shareOptimized('emergency')\">Share via...</button>` +
-                          `<button class=\"btn btn-secondary\" onclick=\"window.print()\">Print</button>` +
-                          `<button class=\"btn btn-secondary\" onclick=\"closePreviewModal()\">Close</button>`;
-            } else if (type === 'records') {
-                title = 'Medical Summary Preview';
-                content = `<pre>${generateMedicalSummary()}</pre>`;
-                actions = `<button class=\"btn btn-primary\" onclick=\"smartCopy()\">Copy</button>` +
-                          `<button class=\"btn btn-primary\" onclick=\"shareOptimized('records')\">Share via...</button>` +
-                          `<button class=\"btn btn-secondary\" onclick=\"closePreviewModal()\">Close</button>`;
-            } else if (type === 'contact') {
-                title = 'Contact Card Preview';
-                content = `<pre>${generateVCard()}</pre>`;
-                actions = `<button class=\"btn btn-primary\" onclick=\"downloadVCard()\">Download</button>` +
-                          `<button class=\"btn btn-primary\" onclick=\"shareOptimized('contact')\">Share via...</button>` +
-                          `<button class=\"btn btn-secondary\" onclick=\"closePreviewModal()\">Close</button>`;
-            }
-            titleEl.textContent = title;
-            bodyEl.innerHTML = content;
-            actionsEl.innerHTML = actions;
-            modal.classList.remove('hidden');
+            return {
+                show({title, content, actions}) {
+                    titleEl.textContent = title;
+                    bodyEl.innerHTML = content;
+                    actionsEl.innerHTML = '';
+                    actions.forEach(action => {
+                        const btn = document.createElement('button');
+                        btn.className = action.className || 'btn btn-primary';
+                        btn.textContent = action.label;
+                        btn.onclick = action.onClick;
+                        actionsEl.appendChild(btn);
+                    });
+                    modal.classList.remove('hidden');
+                },
+                close() {
+                    modal.classList.add('hidden');
+                }
+            };
         }
 
-        function closePreviewModal() {
-            document.getElementById('preview-modal').classList.add('hidden');
+        function previewShare(type) {
+            const modal = createPreviewModal();
+            if (type === 'emergency') {
+                modal.show({
+                    title: 'Emergency Card Preview',
+                    content: generateEmergencyCard(),
+                    actions: [
+                        {label: 'Download', onClick: downloadEmergencyCard, className: 'btn btn-primary'},
+                        {label: 'Share via...', onClick: () => shareOptimized('emergency'), className: 'btn btn-primary'},
+                        {label: 'Print', onClick: () => window.print(), className: 'btn btn-secondary'},
+                        {label: 'Close', onClick: modal.close, className: 'btn btn-secondary'}
+                    ]
+                });
+            } else if (type === 'records') {
+                modal.show({
+                    title: 'Medical Summary Preview',
+                    content: `<pre>${generateMedicalSummary()}</pre>`,
+                    actions: [
+                        {label: 'Copy', onClick: smartCopy, className: 'btn btn-primary'},
+                        {label: 'Share via...', onClick: () => shareOptimized('records'), className: 'btn btn-primary'},
+                        {label: 'Close', onClick: modal.close, className: 'btn btn-secondary'}
+                    ]
+                });
+            } else if (type === 'contact') {
+                modal.show({
+                    title: 'Contact Card Preview',
+                    content: `<pre>${generateVCard()}</pre>`,
+                    actions: [
+                        {label: 'Download', onClick: downloadVCard, className: 'btn btn-primary'},
+                        {label: 'Share via...', onClick: () => shareOptimized('contact'), className: 'btn btn-primary'},
+                        {label: 'Close', onClick: modal.close, className: 'btn btn-secondary'}
+                    ]
+                });
+            }
         }
 
         function generateEmergencyCard() {
