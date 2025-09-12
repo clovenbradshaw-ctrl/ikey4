@@ -1600,6 +1600,7 @@
                     <div id="communication-actions" style="margin-top: 20px;"></div>
                     <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
                         <button class="btn btn-primary" onclick="openShareModal()">📤 Share Info</button>
+                        <button class="btn btn-primary" onclick="openQRModal()">🔳 Share QR</button>
                         <button class="btn btn-primary" onclick="createNew()">🆕 Create New QR Code</button>
                     </div>
                 </div>
@@ -1643,8 +1644,20 @@
     </div>
 </div>
 
-    <!-- Location Services Tab -->
-    <div id="location" class="tab-content">
+<!-- QR Display Modal -->
+<div id="qr-modal" class="modal hidden">
+    <div class="modal-content">
+        <h3>My QR Code</h3>
+        <div id="modal-qrcode" style="margin-top:10px;"></div>
+        <div class="modal-actions">
+            <button class="btn btn-primary" onclick="shareQR('modal-qrcode')">📤 Share QR</button>
+            <button class="btn btn-secondary" onclick="closeQRModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- Location Services Tab -->
+<div id="location" class="tab-content">
         <div class="container">
             <a href="tel:911" class="emergency-button">
                 <span class="icon">📞</span>
@@ -2481,6 +2494,24 @@
             document.getElementById('share-modal').classList.add('hidden');
         }
 
+        function openQRModal() {
+            const container = document.getElementById('modal-qrcode');
+            container.innerHTML = '';
+            new QRCode(container, {
+                text: window.location.href,
+                width: 300,
+                height: 300,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.M
+            });
+            document.getElementById('qr-modal').classList.remove('hidden');
+        }
+
+        function closeQRModal() {
+            document.getElementById('qr-modal').classList.add('hidden');
+        }
+
         function downloadInfo() {
             const text = getMedicalInfoText(displayData);
             const blob = new Blob([text], { type: 'text/plain' });
@@ -2503,8 +2534,8 @@
             window.location.href = `sms:?body=${text}`;
         }
 
-        function shareQR() {
-            const canvas = document.querySelector('#qrcode canvas');
+        function shareQR(target = 'qrcode') {
+            const canvas = document.querySelector(`#${target} canvas`);
             if (!canvas) return;
             canvas.toBlob(function(blob) {
                 const file = new File([blob], 'ikey-qr.png', { type: 'image/png' });
