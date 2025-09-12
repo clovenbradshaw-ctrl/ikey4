@@ -2803,11 +2803,11 @@
         }
 
         function smartCopy() {
-            const context = detectUserIntent();
-            if (context === 'medical_professional') {
+            const intent = detectUserIntent();
+            if (intent === 'medical_professional') {
                 copyMedicalSummary();
                 showToast('Medical summary copied - ready to paste into EMR');
-            } else if (context === 'text_message') {
+            } else if (intent === 'text_message') {
                 copyEmergencyBrief();
                 showToast('Emergency info copied for texting');
             } else {
@@ -2831,7 +2831,14 @@
         }
 
         function showCopyOptions() {
-            alert('Copy options not available in this context.');
+            const choice = prompt('Copy options:\n1. Full medical summary\n2. Emergency brief');
+            if (choice === '1') {
+                copyMedicalSummary();
+                showToast('Medical summary copied - ready to paste into EMR');
+            } else if (choice === '2') {
+                copyEmergencyBrief();
+                showToast('Emergency info copied for texting');
+            }
         }
 
         function showToast(msg) {
