@@ -2728,29 +2728,30 @@
             const titleEl = document.getElementById('preview-title');
             const bodyEl = document.getElementById('preview-body');
             const actionsEl = document.getElementById('preview-actions');
-            let content = '', title = '', actions = '';
+            bodyEl.innerHTML = '';
+            let title = '', actions = '';
             if (type === 'emergency') {
                 title = 'Emergency Card Preview';
-                content = generateEmergencyCard();
+                bodyEl.appendChild(generateEmergencyCard());
                 actions = `<button class=\"btn btn-primary\" onclick=\"downloadEmergencyCard()\">Download</button>` +
                           `<button class=\"btn btn-primary\" onclick=\"shareOptimized('emergency')\">Share via...</button>` +
                           `<button class=\"btn btn-secondary\" onclick=\"window.print()\">Print</button>` +
                           `<button class=\"btn btn-secondary\" onclick=\"closePreviewModal()\">Close</button>`;
             } else if (type === 'records') {
                 title = 'Medical Summary Preview';
-                content = `<pre>${generateMedicalSummary()}</pre>`;
+                const summary = generateMedicalSummary();
+                bodyEl.innerHTML = `<pre>${summary.text}</pre>`;
                 actions = `<button class=\"btn btn-primary\" onclick=\"smartCopy()\">Copy</button>` +
                           `<button class=\"btn btn-primary\" onclick=\"shareOptimized('records')\">Share via...</button>` +
                           `<button class=\"btn btn-secondary\" onclick=\"closePreviewModal()\">Close</button>`;
             } else if (type === 'contact') {
                 title = 'Contact Card Preview';
-                content = `<pre>${generateVCard()}</pre>`;
+                bodyEl.innerHTML = `<pre>${generateVCard()}</pre>`;
                 actions = `<button class=\"btn btn-primary\" onclick=\"downloadVCard()\">Download</button>` +
                           `<button class=\"btn btn-primary\" onclick=\"shareOptimized('contact')\">Share via...</button>` +
                           `<button class=\"btn btn-secondary\" onclick=\"closePreviewModal()\">Close</button>`;
             }
             titleEl.textContent = title;
-            bodyEl.innerHTML = content;
             actionsEl.innerHTML = actions;
             modal.classList.remove('hidden');
         }
@@ -2759,35 +2760,74 @@
             document.getElementById('preview-modal').classList.add('hidden');
         }
 
-        function generateEmergencyCard() {
-            const data = displayData || formData;
-            const qrImage = getQRCodeDataURL();
-            return `<div class=\"qr-display-card\">` +
-                `<div class=\"qr-header\"><h3>Medical ID - ${data.n || ''}</h3><p class=\"instruction\">Scan in emergency</p></div>` +
-                `<div class=\"qr-code-wrapper\"><img src=\"${qrImage}\" alt=\"QR\"></div>` +
-                `<div class=\"qr-footer\"><div class=\"critical-info\"><span class=\"blood-type\">${data.b || ''}</span>` +
-                `<span class=\"allergies\">${data.a || ''}</span></div><p class=\"privacy-note\">Scanning reveals full medical info</p>` +
-                `<div style=\"color:red; text-align:center; font-weight:bold;\">${data.ep || ''}</div></div></div>`;
+        function generateEmergencyCard(data = displayData || formData) {
+            const d = data || {};
+            const width = 336, height = 210; // wallet-sized at ~96dpi
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(0, 0, width, height);
+            ctx.strokeStyle = '#000';
+            ctx.strokeRect(0, 0, width, height);
+            ctx.fillStyle = '#000';
+            ctx.font = 'bold 16px sans-serif';
+            ctx.fillText('Emergency Info', 10, 20);
+            ctx.font = '14px sans-serif';
+            if (d.n) ctx.fillText(d.n, 10, 40);
+            if (d.b) ctx.fillText(`Blood: ${d.b}`, 10, 60);
+            if (d.a) ctx.fillText(`Allergies: ${d.a}`, 10, 80);
+            if (d.ep) ctx.fillText(`Contact: ${d.ep}`, 10, 100);
+            const qrCanvas = getQRCodeCanvas();
+            if (qrCanvas) {
+                ctx.drawImage(qrCanvas, width - 90, 20, 80, 80);
+            }
+            return canvas;
         }
 
-        function generateMedicalSummary() {
-            const text = getMedicalInfoText(displayData);
-            const now = new Date().toLocaleString();
-            const qrImage = getQRCodeDataURL();
-            return `${text}\n\nGenerated: ${now}\nQR: ${qrImage}`;
+        function generateMedicalSummary(data = displayData || formData) {
+            const text = getMedicalInfoText(data);
+            const pdf = (function(text) {
+                const escapePDF = s => s.replace(/\\/g, '\\\\').replace(/\(/g, '\\(').replace(/\)/g, '\\)');
+                const content = `BT /F1 12 Tf 72 720 Td (${escapePDF(text)}) Tj ET`;
+                const header = '%PDF-1.3\n';
+                const obj1 = '1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n';
+                const obj2 = '2 0 obj<</Type/Pages/Count 1/Kids[3 0 R]>>endobj\n';
+                const obj3 = '3 0 obj<</Type/Page/Parent 2 0 R/MediaBox[0 0 612 792]/Contents 4 0 R/Resources<</Font<</F1 5 0 R>>>>>>endobj\n';
+                const obj4 = `4 0 obj<</Length ${content.length}>>stream\n${content}\nendstream\nendobj\n`;
+                const obj5 = '5 0 obj<</Type/Font/Subtype/Type1/BaseFont/Helvetica>>endobj\n';
+                let offset = header.length;
+                const o1 = offset; offset += obj1.length;
+                const o2 = offset; offset += obj2.length;
+                const o3 = offset; offset += obj3.length;
+                const o4 = offset; offset += obj4.length;
+                const o5 = offset; offset += obj5.length;
+                const xrefOffset = offset;
+                const pad = n => String(n).padStart(10, '0');
+                const xref = `xref\n0 6\n0000000000 65535 f \n${pad(o1)} 00000 n \n${pad(o2)} 00000 n \n${pad(o3)} 00000 n \n${pad(o4)} 00000 n \n${pad(o5)} 00000 n \n`;
+                const trailer = `trailer<</Size 6/Root 1 0 R>>\nstartxref\n${xrefOffset}\n%%EOF`;
+                const pdf = header + obj1 + obj2 + obj3 + obj4 + obj5 + xref + trailer;
+                return `data:application/pdf;base64,${btoa(pdf)}`;
+            })(text);
+            return { text, pdf };
         }
 
-        function generateVCard() {
-            const d = displayData || {};
-            return `BEGIN:VCARD\nVERSION:3.0\nFN:${d.n || ''}\nTEL:${d.ep || ''}\nEMAIL:${d.pe || ''}\nEND:VCARD`;
+        function generateVCard(data = displayData || {}) {
+            const d = data || {};
+            const lines = ['BEGIN:VCARD', 'VERSION:3.0'];
+            if (d.n) lines.push(`FN:${d.n}`);
+            if (d.ep) lines.push(`TEL:${d.ep}`);
+            if (d.pe) lines.push(`EMAIL:${d.pe}`);
+            lines.push('END:VCARD');
+            return lines.join('\\n');
         }
 
         function downloadEmergencyCard() {
-            const html = generateEmergencyCard();
-            const blob = new Blob([html], {type:'text/html'});
+            const canvas = generateEmergencyCard();
             const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'emergency-card.html';
+            link.href = canvas.toDataURL('image/png');
+            link.download = 'emergency-card.png';
             link.click();
             recordShare({type:'emergency_card', method:'download', date:new Date()});
         }
@@ -2820,7 +2860,7 @@
         }
 
         function copyMedicalSummary() {
-            const text = generateMedicalSummary();
+            const { text } = generateMedicalSummary();
             navigator.clipboard.writeText(text);
         }
 
@@ -2840,10 +2880,10 @@
 
         function generateOfflinePackage() {
             const qrImage = getQRCodeDataURL();
-            const textSummary = generateMedicalSummary();
+            const { text: textSummary, pdf } = generateMedicalSummary();
             const vCard = generateVCard();
             const html = `<html><body><img src='${qrImage}'/><pre>${textSummary}</pre></body></html>`;
-            return { qrImage, textSummary, vCard, html };
+            return { qrImage, textSummary, vCard, html, pdf };
         }
 
         function recordShare(entry) {
