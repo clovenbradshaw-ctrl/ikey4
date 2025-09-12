@@ -1820,19 +1820,23 @@
                     <div id="display-content"></div>
                     <div id="communication-actions" style="margin-top: 20px;"></div>
                     <div class="share-actions">
-  <button onclick="shareForEmergency()">
-    🚨 Emergency Card
-    <span class="subtitle">QR + critical info for first responders</span>
-  </button>
-  <button onclick="shareForRecords()">
-    📋 Medical Summary
-    <span class="subtitle">Full text for medical records</span>
-  </button>
-  <button onclick="shareContact()">
-    👤 Contact Card
-    <span class="subtitle">Just name & contact info</span>
-  </button>
-</div>
+                        <button onclick="shareQR()">
+                            📤 Share
+                            <span class="subtitle">Use device share options</span>
+                        </button>
+                        <button onclick="smsInfo()">
+                            💬 Text
+                            <span class="subtitle">Send link via SMS</span>
+                        </button>
+                        <button onclick="emailInfo()">
+                            ✉️ Email
+                            <span class="subtitle">Send link via email</span>
+                        </button>
+                        <button onclick="saveQRImage()">
+                            💾 Save Image
+                            <span class="subtitle">Download QR code</span>
+                        </button>
+                    </div>
                     <div id="share-history" style="margin-top:10px; font-size:0.9rem; color: var(--secondary);"></div>
                 </div>
 
@@ -1869,15 +1873,6 @@
             </div>
         </div>
     </div>
-
-<!-- Share Preview Modal -->
-<div id="preview-modal" class="modal hidden">
-    <div class="modal-content">
-        <h3 id="preview-title"></h3>
-        <div id="preview-body" style="margin-top:10px;"></div>
-        <div class="modal-actions" id="preview-actions"></div>
-    </div>
-</div>
 
 <!-- QR Code Modal -->
 <div id="qr-modal" class="modal hidden">
@@ -2773,14 +2768,17 @@
         }
 
         function emailInfo() {
-            const to = displayData && displayData.pe ? displayData.pe : '';
-            const text = encodeURIComponent(getMedicalInfoText(displayData));
-            window.location.href = `mailto:${to}?subject=iKey%20Info&body=${text}`;
+            const url = window.location.href;
+            const subject = 'My Emergency Info';
+            const body = `Access my emergency info: ${url}`;
+            window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            logShare('qr_code', null, 'email');
         }
 
         function smsInfo() {
-            const text = encodeURIComponent(getMedicalInfoText(displayData));
-            window.location.href = `sms:?body=${text}`;
+            const url = window.location.href;
+            window.location.href = `sms:?body=${encodeURIComponent(url)}`;
+            logShare('qr_code', null, 'sms');
         }
 
         function shareQR(target = 'qrcode') {
@@ -2804,79 +2802,17 @@
             });
         }
 
-        function shareForEmergency() {
-            previewShare('emergency');
-        }
-
-        function shareForRecords() {
-            previewShare('records');
-        }
-
-        function shareContact() {
-            previewShare('contact');
-        }
-
-        function previewShare(type) {
-            const modal = document.getElementById('preview-modal');
-            const titleEl = document.getElementById('preview-title');
-            const bodyEl = document.getElementById('preview-body');
-            const actionsEl = document.getElementById('preview-actions');
-            bodyEl.innerHTML = '';
-            let title = '', actions = '';
-            if (type === 'emergency') {
-                title = 'Emergency Card Preview';
-                bodyEl.appendChild(generateEmergencyCard());
-                actions = `<button class=\"btn btn-primary\" onclick=\"downloadEmergencyCard()\">Download</button>` +
-                          `<button class=\"btn btn-primary\" onclick=\"shareOptimized('emergency')\">Share via...</button>` +
-                          `<button class=\"btn btn-secondary\" onclick=\"window.print()\">Print</button>` +
-                          `<button class=\"btn btn-secondary\" onclick=\"closePreviewModal()\">Close</button>`;
-            } else if (type === 'records') {
-                title = 'Medical Summary Preview';
-                const summary = generateMedicalSummary();
-                bodyEl.innerHTML = `<pre>${summary.text}</pre>`;
-                actions = `<button class=\"btn btn-primary\" onclick=\"smartCopy()\">Copy</button>` +
-                          `<button class=\"btn btn-primary\" onclick=\"shareOptimized('records')\">Share via...</button>` +
-                          `<button class=\"btn btn-secondary\" onclick=\"closePreviewModal()\">Close</button>`;
-            } else if (type === 'contact') {
-                title = 'Contact Card Preview';
-                bodyEl.innerHTML = `<pre>${generateVCard()}</pre>`;
-                actions = `<button class=\"btn btn-primary\" onclick=\"downloadVCard()\">Download</button>` +
-                          `<button class=\"btn btn-primary\" onclick=\"shareOptimized('contact')\">Share via...</button>` +
-                          `<button class=\"btn btn-secondary\" onclick=\"closePreviewModal()\">Close</button>`;
-            }
-            titleEl.textContent = title;
-            actionsEl.innerHTML = actions;
-            modal.classList.remove('hidden');
-        }
-
-        function closePreviewModal() {
-            document.getElementById('preview-modal').classList.add('hidden');
-        }
-
-        function generateEmergencyCard(data = displayData || formData) {
-            const d = data || {};
-            const width = 336, height = 210; // wallet-sized at ~96dpi
-            const canvas = document.createElement('canvas');
-            canvas.width = width;
-            canvas.height = height;
-            const ctx = canvas.getContext('2d');
-            ctx.fillStyle = '#fff';
-            ctx.fillRect(0, 0, width, height);
-            ctx.strokeStyle = '#000';
-            ctx.strokeRect(0, 0, width, height);
-            ctx.fillStyle = '#000';
-            ctx.font = 'bold 16px sans-serif';
-            ctx.fillText('Emergency Info', 10, 20);
-            ctx.font = '14px sans-serif';
-            if (d.n) ctx.fillText(d.n, 10, 40);
-            if (d.b) ctx.fillText(`Blood: ${d.b}`, 10, 60);
-            if (d.a) ctx.fillText(`Allergies: ${d.a}`, 10, 80);
-            if (d.ep) ctx.fillText(`Contact: ${d.ep}`, 10, 100);
-            const qrCanvas = getQRCodeCanvas();
-            if (qrCanvas) {
-                ctx.drawImage(qrCanvas, width - 90, 20, 80, 80);
-            }
-            return canvas;
+        function saveQRImage(target = 'qrcode') {
+            const canvas = getQRCodeCanvas(target);
+            if (!canvas) return;
+            canvas.toBlob(function(blob) {
+                const link = document.createElement('a');
+                link.download = 'ikey-qr.png';
+                link.href = URL.createObjectURL(blob);
+                link.click();
+                URL.revokeObjectURL(link.href);
+                logShare('qr_code', null, 'download');
+            });
         }
 
         function generateMedicalSummary(data = displayData || formData) {
@@ -2914,25 +2850,6 @@
             if (d.pe) lines.push(`EMAIL:${d.pe}`);
             lines.push('END:VCARD');
             return lines.join('\\r\\n') + '\\r\\n';
-        }
-
-        function downloadEmergencyCard() {
-            const canvas = generateEmergencyCard();
-            const link = document.createElement('a');
-            link.href = canvas.toDataURL('image/png');
-            link.download = 'emergency-card.png';
-            link.click();
-            logShare('emergency_card', null, 'download');
-        }
-
-        function downloadVCard() {
-            const text = generateVCard();
-            const blob = new Blob([text], { type: 'text/vcard;charset=utf-8' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'contact.vcf';
-            link.click();
-            logShare('contact_card', null, 'download');
         }
 
         function generatePhysicalCard(data = displayData || formData) {
@@ -3009,74 +2926,6 @@
                 const date = new Date(last.date).toLocaleDateString();
                 const recipient = last.recipient ? ` to ${last.recipient}` : '';
                 container.textContent = `Last shared: ${last.type.replace('_',' ')}${recipient} via ${last.method} (${date})`;
-            }
-        }
-
-        async function shareOptimized(type) {
-            if (type === 'emergency') {
-                const canvas = generateEmergencyCard();
-                canvas.toBlob(async blob => {
-                    const file = new File([blob], 'emergency-card.png', { type: 'image/png' });
-                    const shareData = { files: [file], title: 'Emergency Card' };
-                    if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
-                        try {
-                            await navigator.share(shareData);
-                            logShare('emergency_card', null, 'share');
-                        } catch (err) {
-                            console.error('Share failed:', err);
-                        }
-                    } else {
-                        const link = document.createElement('a');
-                        link.href = URL.createObjectURL(blob);
-                        link.download = 'emergency-card.png';
-                        link.click();
-                        URL.revokeObjectURL(link.href);
-                        logShare('emergency_card', null, 'download');
-                    }
-                });
-            } else if (type === 'records') {
-                const { pdf } = generateMedicalSummary();
-                const blob = await (await fetch(pdf)).blob();
-                const file = new File([blob], 'medical-summary.pdf', { type: 'application/pdf' });
-                const shareData = { files: [file], title: 'Medical Summary' };
-                if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
-                    try {
-                        await navigator.share(shareData);
-                        logShare('medical_summary', null, 'share');
-                    } catch (err) {
-                        console.error('Share failed:', err);
-                    }
-                } else {
-                    const link = document.createElement('a');
-                    link.href = pdf;
-                    link.download = 'medical-summary.pdf';
-                    link.click();
-                    logShare('medical_summary', null, 'download');
-                }
-            } else if (type === 'contact') {
-                const text = generateVCard();
-                const blob = new Blob([text], { type: 'text/vcard;charset=utf-8' });
-                const file = new File([blob], 'contact.vcf', { type: 'text/vcard;charset=utf-8' });
-                const shareData = { files: [file], title: 'Contact Card' };
-                if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
-                    try {
-                        await navigator.share(shareData);
-                        logShare('contact_card', null, 'share');
-                    } catch (err) {
-                        console.error('Share failed:', err);
-                    }
-                } else {
-                    const link = document.createElement('a');
-                    link.href = URL.createObjectURL(blob);
-                    link.download = 'contact.vcf';
-                    link.click();
-                    URL.revokeObjectURL(link.href);
-                    logShare('contact_card', null, 'download');
-                }
-            } else if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-                showToast('Add to Wallet option coming soon');
-            } else {
-                showToast('Nothing to share');
             }
         }
 
