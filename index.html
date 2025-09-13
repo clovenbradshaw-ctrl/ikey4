@@ -1947,19 +1947,19 @@
             <div class="weather-widget">
                 <div id="weather-loading" class="loading">
                     <div class="loading-spinner"></div>
-                    <p>Loading weather data...</p>
+                    <p data-i18n="weather.loading">Loading weather data...</p>
                 </div>
                 
                 <div id="weather-content" style="display: none;">
                     <div style="display: flex; align-items: center; margin-bottom: 25px;">
                         <div>
-                            <h2 id="weather-location">Nashville</h2>
+                            <h2 id="weather-location" data-i18n="weather.nashville">Nashville</h2>
                             <p id="weather-coords" style="color: var(--secondary); font-size: 0.9rem;"></p>
                         </div>
                     </div>
                     
                     <div style="margin-bottom: 20px;">
-                        <input type="text" id="city-input" placeholder="Enter city..." value="Nashville" 
+                        <input type="text" id="city-input" value="Nashville" data-i18n-placeholder="placeholders.enterCity"
                                style="width: 100%; padding: 12px 14px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem;">
                     </div>
                     
@@ -1978,31 +1978,31 @@
                         
                         <div class="weather-stats">
                             <div class="stat-card">
-                                <div style="font-size: 0.75rem; color: var(--secondary); margin-bottom: 5px;">FEELS LIKE</div>
+                                <div style="font-size: 0.75rem; color: var(--secondary); margin-bottom: 5px;" data-i18n="weather.feelsLike">FEELS LIKE</div>
                                 <div id="feels-like" style="font-size: 1.3rem; font-weight: 600;">--°</div>
                             </div>
                             <div class="stat-card">
-                                <div style="font-size: 0.75rem; color: var(--secondary); margin-bottom: 5px;">HUMIDITY</div>
+                                <div style="font-size: 0.75rem; color: var(--secondary); margin-bottom: 5px;" data-i18n="weather.humidity">HUMIDITY</div>
                                 <div id="humidity" style="font-size: 1.3rem; font-weight: 600;">--%</div>
                             </div>
                             <div class="stat-card">
-                                <div style="font-size: 0.75rem; color: var(--secondary); margin-bottom: 5px;">WIND</div>
+                                <div style="font-size: 0.75rem; color: var(--secondary); margin-bottom: 5px;" data-i18n="weather.wind">WIND</div>
                                 <div id="wind-speed" style="font-size: 1.3rem; font-weight: 600;">-- mph</div>
                             </div>
                             <div class="stat-card">
-                                <div style="font-size: 0.75rem; color: var(--secondary); margin-bottom: 5px;">UV INDEX</div>
+                                <div style="font-size: 0.75rem; color: var(--secondary); margin-bottom: 5px;" data-i18n="weather.uvIndex">UV INDEX</div>
                                 <div id="uv-index" style="font-size: 1.3rem; font-weight: 600;">--</div>
                             </div>
                         </div>
                     </div>
                     
                     <div class="hourly-forecast">
-                        <h3 style="margin-bottom: 15px;">Next 24 Hours</h3>
+                        <h3 style="margin-bottom: 15px;" data-i18n="weather.next24Hours">Next 24 Hours</h3>
                         <div class="hourly-container" id="hourly-container"></div>
                     </div>
                     
                     <div>
-                        <h3 style="margin-bottom: 15px;">7-Day Forecast</h3>
+                        <h3 style="margin-bottom: 15px;" data-i18n="weather.sevenDayForecast">7-Day Forecast</h3>
                         <div class="forecast-days" id="forecast-days"></div>
                     </div>
                 </div>
@@ -2123,71 +2123,71 @@
         <h2 style="margin-bottom: 25px;" data-i18n="nav.settings">Settings</h2>
 
                 <div class="settings-section">
-                    <h3 style="margin-bottom: 15px; color: var(--primary);">QR Code</h3>
+                    <h3 style="margin-bottom: 15px; color: var(--primary);" data-i18n="settings.qrCode">QR Code</h3>
                     <div class="settings-item" onclick="createNew()">
                         <div>
                             <div style="font-weight: 600;" data-i18n="createNewQR">🆕 Create New QR Code</div>
-                            <div style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;">Generate a replacement iKey</div>
+                            <div style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;" data-i18n="settings.generateReplacement">Generate a replacement iKey</div>
                         </div>
                         <span style="color: var(--secondary);">→</span>
                     </div>
                     <div class="settings-item" onclick="generatePhysicalCard()">
                         <div>
-                            <div style="font-weight: 600;">💳 Generate Physical Card</div>
-                            <div style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;">Open card generator</div>
+                            <div style="font-weight: 600;" data-i18n="settings.generatePhysicalCard">💳 Generate Physical Card</div>
+                            <div style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;" data-i18n="settings.openCardGenerator">Open card generator</div>
                         </div>
                         <span style="color: var(--secondary);">→</span>
                     </div>
                 </div>
 
                 <div class="settings-section">
-                    <h3 style="margin-bottom: 15px; color: var(--primary);">External Tools</h3>
+                    <h3 style="margin-bottom: 15px; color: var(--primary);" data-i18n="externalTools.title">External Tools</h3>
                     <div class="settings-item" onclick="openDispatchTab()">
                         <div>
-                            <div style="font-weight: 600;">📡 Nashville Police Dispatch</div>
-                            <div style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;">View active police dispatches in Nashville</div>
+                            <div style="font-weight: 600;" data-i18n="externalTools.policeDispatch">📡 Nashville Police Dispatch</div>
+                            <div style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;" data-i18n="externalTools.policeDispatchDesc">View active police dispatches in Nashville</div>
                         </div>
                         <span style="color: var(--secondary);">→</span>
                     </div>
-                    
-                    <a href="https://wttin.org" 
-                       target="_blank" 
+
+                    <a href="https://wttin.org"
+                       target="_blank"
                        class="settings-item">
                         <div>
-                            <div style="font-weight: 600;">🏠 Where To Turn in Nashville</div>
-                            <div style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;">Community resources and support services</div>
+                            <div style="font-weight: 600;" data-i18n="externalTools.wttin">🏠 Where To Turn in Nashville</div>
+                            <div style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;" data-i18n="externalTools.wttinDesc">Community resources and support services</div>
                         </div>
                         <span style="color: var(--secondary);">→</span>
                     </a>
                 </div>
                 
                   <div class="settings-section">
-                    <h3 style="margin-bottom: 15px; color: var(--primary);">Accessibility</h3>
+                    <h3 style="margin-bottom: 15px; color: var(--primary);" data-i18n="settings.accessibility">Accessibility</h3>
                     <div class="settings-item">
                         <div>
-                            <div style="font-weight: 600;">📝 Text Size</div>
-                            <div style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;">Adjust interface text</div>
+                            <div style="font-weight: 600;" data-i18n="settings.textSize">📝 Text Size</div>
+                            <div style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;" data-i18n="settings.textSizeDesc">Adjust interface text</div>
                         </div>
                         <select id="text-size-select" onchange="setTextSize(this.value)" style="padding: 6px; border-radius: 8px; border: 1px solid var(--border);">
                             <option value="2020">20/20</option>
-                            <option value="reading">Reading Glasses</option>
-                            <option value="whats">What's this say?</option>
-                            <option value="grandma">Grandma</option>
+                            <option value="reading" data-i18n="settings.readingGlasses">Reading Glasses</option>
+                            <option value="whats" data-i18n="settings.whatsThis">What's this say?</option>
+                            <option value="grandma" data-i18n="settings.grandma">Grandma</option>
                         </select>
                     </div>
                   </div>
 
                 <div class="settings-section">
-                    <h3 style="margin-bottom: 15px; color: var(--primary);">Tab Visibility</h3>
+                    <h3 style="margin-bottom: 15px; color: var(--primary);" data-i18n="settings.tabVisibility">Tab Visibility</h3>
                     <div class="settings-item" style="cursor: default;">
                         <div>
-                            <div style="font-weight: 600;">📍 Emergency</div>
+                            <div style="font-weight: 600;" data-i18n="nav.emergency">📍 Emergency</div>
                         </div>
                         <input type="checkbox" class="tab-visibility-toggle" data-tab="emergency" checked>
                     </div>
                     <div class="settings-item" style="cursor: default;">
                         <div>
-                            <div style="font-weight: 600;">⛈️ Weather</div>
+                            <div style="font-weight: 600;" data-i18n="nav.weather">⛈️ Weather</div>
                         </div>
                         <input type="checkbox" class="tab-visibility-toggle" data-tab="weather" checked>
                     </div>
@@ -2199,7 +2199,7 @@
                     </div>
                     <div class="settings-item" style="cursor: default;">
                         <div>
-                            <div style="font-weight: 600;">📱 Proton Apps</div>
+                            <div style="font-weight: 600;" data-i18n="misc.apps">📱 Proton Apps</div>
                         </div>
                         <input type="checkbox" class="tab-visibility-toggle" data-tab="apps" checked>
                     </div>
@@ -2207,19 +2207,19 @@
 
 
                 <div class="settings-section">
-                    <h3 style="margin-bottom: 15px; color: var(--primary);">Emergency Resources</h3>
+                    <h3 style="margin-bottom: 15px; color: var(--primary);" data-i18n="settings.emergencyResources">Emergency Resources</h3>
                     <div class="settings-item" onclick="alert('Suicide & Crisis Lifeline: 988')">
                         <div>
-                            <div style="font-weight: 600;">💬 Crisis Support</div>
-                            <div style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;">Mental health and crisis resources</div>
+                            <div style="font-weight: 600;" data-i18n="settings.crisisSupport">💬 Crisis Support</div>
+                            <div style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;" data-i18n="settings.crisisSupportDesc">Mental health and crisis resources</div>
                         </div>
                         <span style="color: var(--secondary);">→</span>
                     </div>
-                    
+
                     <div class="settings-item" onclick="alert('Poison Control: 1-800-222-1222')">
                         <div>
-                            <div style="font-weight: 600;">☠️ Poison Control</div>
-                            <div style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;">24/7 poison emergency help</div>
+                            <div style="font-weight: 600;" data-i18n="settings.poisonControl">☠️ Poison Control</div>
+                            <div style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;" data-i18n="settings.poisonControlDesc">24/7 poison emergency help</div>
                         </div>
                         <span style="color: var(--secondary);">→</span>
                     </div>
@@ -2244,10 +2244,10 @@
                 </div>
 
                 <div class="settings-section">
-                    <h3 style="margin-bottom: 15px; color: var(--primary);">About iKey</h3>
+                    <h3 style="margin-bottom: 15px; color: var(--primary);" data-i18n="settings.about">About iKey</h3>
                     <div style="background: var(--light); padding: 20px; border-radius: 12px;">
-                        <p style="color: var(--secondary); line-height: 1.8;">
-                            <strong>Version 1.0</strong><br>
+                        <p style="color: var(--secondary); line-height: 1.8;" data-i18n="settings.aboutText">
+                            <strong data-i18n="settings.version">Version 1.0</strong><br>
                             iKey helps you keep your location secure while providing quick access to emergency services.
                             Your privacy and safety are our top priorities.
                         </p>
@@ -2256,7 +2256,7 @@
 
                 <div class="settings-section">
                     <div style="background: var(--light); padding: 20px; border-radius: 12px;">
-                        <p style="color: var(--secondary); font-size: 0.85rem; line-height: 1.8;">
+                        <p style="color: var(--secondary); font-size: 0.85rem; line-height: 1.8;" data-i18n="settings.disclaimer">
                             iKey is not affiliated with Proton or any other services. Proton is referenced solely for privacy and convenience.
                             No usage data is stored; users are responsible for securely backing up their data and for using strong passwords and two-factor authentication where necessary.
                         </p>
@@ -3885,7 +3885,7 @@ Generated: ${new Date().toLocaleString()}`;
                 96: 'Thunderstorm with slight hail',
                 99: 'Thunderstorm with heavy hail'
             };
-            return descriptions[code] || 'Unknown';
+            return t(`weather.conditions.${code}`, descriptions[code] || 'Unknown');
         }
 
         function updateWeatherUI(weatherData, locationInfo) {
