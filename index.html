@@ -2910,6 +2910,13 @@
                         </div>
                         <span style="color: var(--secondary);">→</span>
                     </div>
+                    <div class="settings-item" onclick="resetMyKey()">
+                        <div>
+                            <div style="font-weight: 600;">♻️ Reset my iKey</div>
+                            <div style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;">Remove saved iKey from this device</div>
+                        </div>
+                        <span style="color: var(--secondary);">→</span>
+                    </div>
                 </div>
 
                 <div class="settings-section">
@@ -3207,6 +3214,16 @@ let currentQRCodeURL = '';
 let lastGeneratedDataString = null;
 let lastGeneratedPhoto = '';
 let dataListenersSet = false;
+let pendingMyKeyHash = null;
+
+function promptSetAsMyKey(email, hash, name) {
+    if (!email) return;
+    if (confirm('Set this as my iKey on this device?')) {
+        if (hash) localStorage.setItem('myKeyData', hash);
+        localStorage.setItem('myKeyEmail', email);
+        if (name) localStorage.setItem('myKeyName', name);
+    }
+}
 
         function compressData(data) {
             return LZString.compressToEncodedURIComponent(data);
@@ -3590,12 +3607,9 @@ let dataListenersSet = false;
 
             window.history.replaceState(null, '', url);
 
-            localStorage.setItem('myKeyData', compressed);
-            if (cleanData.pe) localStorage.setItem('myKeyEmail', cleanData.pe);
-            if (cleanData.n) localStorage.setItem('myKeyName', cleanData.n);
             displayData = cleanData;
-            isOwnKey = true;
             renderHomeStatus();
+            promptSetAsMyKey(cleanData.pe, compressed, cleanData.n);
             updateKeyBanner();
 
             document.getElementById('wizard-view').classList.add('hidden');
@@ -5444,6 +5458,10 @@ Generated: ${new Date().toLocaleString()}`;
             // Make emergency ID info available globally and update home status card
             displayData = data;
             renderHomeStatus();
+            if (pendingMyKeyHash && data.pe) {
+                promptSetAsMyKey(data.pe, pendingMyKeyHash, data.n);
+                pendingMyKeyHash = null;
+            }
             updateKeyBanner();
 
             // This sets up the regular display view that users can access via tabs
@@ -5724,6 +5742,19 @@ Generated: ${new Date().toLocaleString()}`;
             if (myHash) {
                 window.location.hash = myHash;
                 location.reload();
+            }
+        }
+
+        function resetMyKey() {
+            if (confirm('This will remove your saved iKey from this device. Continue?')) {
+                localStorage.removeItem('myKeyEmail');
+                localStorage.removeItem('myKeyData');
+                localStorage.removeItem('myKeyName');
+                localStorage.removeItem(photoKey);
+                displayData = null;
+                window.history.replaceState(null, '', baseURL);
+                renderHomeStatus();
+                updateKeyBanner();
             }
         }
 
@@ -6178,7 +6209,7 @@ Generated: ${new Date().toLocaleString()}`;
                     }
 
                     displayData = data;
-                    updateKeyBanner();
+                    pendingMyKeyHash = hash;
 
                     const scanKey = `scanned_${hash}`;
                     if (!localStorage.getItem(scanKey)) {
