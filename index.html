@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="iKey - Keep your location secure with emergency access capabilities">
+    <meta name="description" content="iKey - Safe location hub with quick emergency access">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title data-i18n="appTitle">iKey - Secure Location Hub</title>
@@ -28,9 +28,9 @@
             --proton: #6d4aff;
             --secondary: #374151;
             --secondary-light: #6b7280;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
+            --success: #0f5132;
+            --danger: #7f1d1d;
+            --warning: #92400e;
             --light: #f8fafc;
             --dark: #1e293b;
             --border: #e2e8f0;
@@ -39,6 +39,7 @@
             --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
             --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
             --base-font-size: 16px;
+            --touch-padding: 0.75rem 1rem;
         }
         html {
             font-size: var(--base-font-size);
@@ -171,7 +172,8 @@
         .tab-btn {
             flex: 0 0 auto;
             min-width: 4rem;
-            padding: 0.5rem 0.75rem;
+            padding: var(--touch-padding);
+            min-height: 44px;
             background: none;
             border: none;
             color: #64748b;
@@ -268,7 +270,8 @@
         .dropdown-menu button {
             background: none;
             border: none;
-            padding: 10px 14px;
+            padding: var(--touch-padding);
+            min-height: 44px;
             text-align: left;
             font-size: 15px;
             font-weight: 500;
@@ -1901,10 +1904,10 @@
 </head>
 <body>
     <!-- Emergency Info Modal -->
-    <div id="emergency-modal" class="modal hidden">
+    <div id="emergency-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="emergency-modal-title" tabindex="-1" aria-hidden="true">
         <div class="modal-content" style="max-width: 500px; max-height: 90vh; overflow-y: auto;">
             <div class="modal-header" style="position: sticky; top: 0; background: white; z-index: 100; padding: 20px; border-bottom: 2px solid var(--border);">
-                <h2 style="color: var(--danger); margin: 0;">🚨 iKey Emergency Information</h2>
+                <h2 id="emergency-modal-title" style="color: var(--danger); margin: 0;">🚨 iKey Emergency Information</h2>
                 <button class="modal-close" onclick="closeEmergencyModal()" style="position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; border-radius: 50%; border: none; background: var(--light); cursor: pointer; font-size: 24px;">×</button>
             </div>
             <div id="emergency-modal-content" style="padding: 20px;">
@@ -1931,7 +1934,7 @@
             </div>
         </div>
         <h1><img src="https://storage.googleapis.com/art_homelessness/1.png" alt="iKey logo" class="logo"> iKey</h1>
-        <p data-i18n="appTagline">Secure Location & Personal Safety Hub</p>
+        <p data-i18n="appTagline">Safe location and help hub</p>
     </div>
 
     <div id="key-banner" class="key-banner hidden">
@@ -1941,55 +1944,55 @@
 
     <!-- Tab Navigation -->
     <div class="nav-wrapper">
-        <nav class="tab-nav">
-        <button class="tab-btn" data-tab="home" onclick="switchTab('home')" aria-label="Home" data-i18n-aria="nav.home">
+        <nav class="tab-nav" role="tablist">
+        <button class="tab-btn" data-tab="home" id="tab-home" role="tab" aria-controls="home" aria-selected="false" tabindex="-1" onclick="switchTab('home')" aria-label="Home" data-i18n-aria="nav.home">
             <span class="tab-icon">🏠</span>
             <span class="tab-label" data-i18n="nav.home">Home</span>
         </button>
-        <button class="tab-btn active" data-tab="ikey" onclick="switchTab('ikey')" aria-label="iKey" data-i18n-aria="nav.iKey">
+        <button class="tab-btn active" data-tab="ikey" id="tab-ikey" role="tab" aria-controls="ikey" aria-selected="true" tabindex="0" onclick="switchTab('ikey')" aria-label="iKey" data-i18n-aria="nav.iKey">
             <span class="tab-icon">🏥</span>
             <span class="tab-label" data-i18n="nav.iKey">iKey</span>
         </button>
-        <button class="tab-btn" data-tab="emergency" onclick="switchTab('emergency')" aria-label="Emergency" data-i18n-aria="nav.emergency">
+        <button class="tab-btn" data-tab="emergency" id="tab-emergency" role="tab" aria-controls="emergency" aria-selected="false" tabindex="-1" onclick="switchTab('emergency')" aria-label="Emergency" data-i18n-aria="nav.emergency">
             <span class="tab-icon">🚨</span>
             <span class="tab-label" data-i18n="nav.emergency">Emergency</span>
         </button>
-        <button class="tab-btn" data-tab="share" onclick="switchTab('share')" aria-label="Share Location" data-i18n-aria="nav.share">
+        <button class="tab-btn" data-tab="share" id="tab-share" role="tab" aria-controls="share" aria-selected="false" tabindex="-1" onclick="switchTab('share')" aria-label="Share Location" data-i18n-aria="nav.share">
             <span class="tab-icon">📍</span>
             <span class="tab-label" data-i18n="nav.share">Share</span>
         </button>
-        <button class="tab-btn" data-tab="weather" onclick="switchTab('weather')" aria-label="Weather" data-i18n-aria="nav.weather">
+        <button class="tab-btn" data-tab="weather" id="tab-weather" role="tab" aria-controls="weather" aria-selected="false" tabindex="-1" onclick="switchTab('weather')" aria-label="Weather" data-i18n-aria="nav.weather">
             <span class="tab-icon">⛈️</span>
             <span class="tab-label" data-i18n="nav.weather">Weather</span>
         </button>
-        <button class="tab-btn" onclick="toggleResourceMenu()" aria-label="Resources">
+        <button class="tab-btn" id="resources-btn" onclick="toggleResourceMenu()" aria-label="Resources" aria-haspopup="true" aria-expanded="false" aria-controls="resource-menu">
             <span class="tab-icon">📚</span>
             <span class="tab-label">Resources</span>
         </button>
-        <button id="dispatch-tab-btn" class="tab-btn" data-tab="dispatch" style="display: none;" onclick="switchTab('dispatch')" aria-label="Dispatch" data-i18n-aria="nav.dispatch">
+        <button id="dispatch-tab-btn" class="tab-btn" data-tab="dispatch" role="tab" aria-controls="dispatch" aria-selected="false" tabindex="-1" style="display: none;" onclick="switchTab('dispatch')" aria-label="Dispatch" data-i18n-aria="nav.dispatch">
             <span class="tab-icon">📡</span>
             <span class="tab-label" data-i18n="nav.dispatch">Dispatch</span>
         </button>
-        <button class="tab-btn" data-tab="settings" onclick="switchTab('settings')" aria-label="Settings" data-i18n-aria="nav.settings">
+        <button class="tab-btn" data-tab="settings" id="tab-settings" role="tab" aria-controls="settings" aria-selected="false" tabindex="-1" onclick="switchTab('settings')" aria-label="Settings" data-i18n-aria="nav.settings">
             <span class="tab-icon">⚙️</span>
             <span class="tab-label" data-i18n="nav.settings">Settings</span>
         </button>
         </nav>
         <!-- Hidden dropdown for grouped resources -->
-        <div id="resource-menu" class="dropdown-menu hidden">
-            <button onclick="switchTab('wttin')">
+        <div id="resource-menu" class="dropdown-menu hidden" role="menu">
+            <button onclick="switchTab('wttin')" role="menuitem" tabindex="-1">
                 <span>🏠</span>
                 <span>Where To Turn in Nashville</span>
             </button>
-            <button onclick="switchTab('hotlines')">
+            <button onclick="switchTab('hotlines')" role="menuitem" tabindex="-1">
                 <span>☎️</span>
                 <span data-i18n="nav.hotlines">Hotlines</span>
             </button>
-            <button onclick="switchTab('meals')">
+            <button onclick="switchTab('meals')" role="menuitem" tabindex="-1">
                 <span>🍽️</span>
                 <span data-i18n="nav.meals">Meals</span>
             </button>
-            <button onclick="switchTab('apps')">
+            <button onclick="switchTab('apps')" role="menuitem" tabindex="-1">
                 <span>🚀</span>
                 <span>Proton</span>
             </button>
@@ -1997,7 +2000,7 @@
     </div>
 
     <!-- Home Tab -->
-    <div id="home" class="tab-content">
+    <div id="home" class="tab-content" role="tabpanel" aria-labelledby="tab-home" tabindex="0" aria-hidden="true">
         <div class="container">
             <!-- Favorites Grid -->
             <div id="favorites-section"></div>
@@ -2015,7 +2018,7 @@
     </div>
 
     <!-- iKey Tab -->
-    <div id="ikey" class="tab-content active">
+    <div id="ikey" class="tab-content active" role="tabpanel" aria-labelledby="tab-ikey" tabindex="0" aria-hidden="false">
         <div class="container">
             <div class="card">
                 <!-- Wizard View -->
@@ -2444,7 +2447,7 @@
 </div>
 
 <!-- Emergency Services Tab -->
-<div id="emergency" class="tab-content">
+<div id="emergency" class="tab-content" role="tabpanel" aria-labelledby="tab-emergency" tabindex="0" aria-hidden="true">
         <div class="container">
             <div class="location-share-tip" style="margin-bottom: 20px;">
                 <button class="btn btn-secondary" onclick="showLocationModal()">Enable Location Sharing</button>
@@ -2523,7 +2526,7 @@
     </div>
 
     <!-- Share Tab -->
-    <div id="share" class="tab-content">
+<div id="share" class="tab-content" role="tabpanel" aria-labelledby="tab-share" tabindex="0" aria-hidden="true">
         <div class="container">
             <div class="weather-widget">
                 <h2 style="margin-bottom: 25px; display: flex; align-items: center; gap: 10px;">
@@ -2646,7 +2649,7 @@
     </div>
 
     <!-- Weather Tab -->
-    <div id="weather" class="tab-content">
+<div id="weather" class="tab-content" role="tabpanel" aria-labelledby="tab-weather" tabindex="0" aria-hidden="true">
         <div class="container">
             <div class="weather-widget">
                 <div id="weather-loading" class="loading">
@@ -2715,7 +2718,7 @@
     </div>
 
     <!-- Resources Tab -->
-    <div id="wttin" class="tab-content">
+<div id="wttin" class="tab-content" role="tabpanel" aria-labelledby="resources-btn" tabindex="0" aria-hidden="true">
         <div style="height: calc(100vh - 120px); display: flex; flex-direction: column;">
             <div style="flex: 1; position: relative;">
                 <iframe
@@ -2729,7 +2732,7 @@
         </div>
     </div>
 
-    <div id="hotlines" class="tab-content">
+<div id="hotlines" class="tab-content" role="tabpanel" aria-labelledby="resources-btn" tabindex="0" aria-hidden="true">
         <div style="height: calc(100vh - 120px); display: flex; flex-direction: column;">
             <div style="flex: 1; position: relative;">
                 <iframe
@@ -2744,7 +2747,7 @@
     </div>
 
     <!-- Meals Tab -->
-    <div id="meals" class="tab-content">
+<div id="meals" class="tab-content" role="tabpanel" aria-labelledby="resources-btn" tabindex="0" aria-hidden="true">
         <div style="height: calc(100vh - 120px); display: flex; flex-direction: column;">
             <div style="flex: 1; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center;">
                 <div id="meals-loading">Loading…</div>
@@ -2764,7 +2767,7 @@
     </div>
 
     <!-- Dispatch Tab -->
-    <div id="dispatch" class="tab-content">
+<div id="dispatch" class="tab-content" role="tabpanel" aria-labelledby="dispatch-tab-btn" tabindex="0" aria-hidden="true">
         <div style="height: calc(100vh - 120px); display: flex; flex-direction: column;">
             <div style="flex: 1; position: relative;">
                 <iframe
@@ -2778,7 +2781,7 @@
     </div>
 
     <!-- Proton Apps Tab -->
-    <div id="apps" class="tab-content">
+<div id="apps" class="tab-content" role="tabpanel" aria-labelledby="resources-btn" tabindex="0" aria-hidden="true">
         <div class="container">
             <div class="apps-grid">
                 <a class="app-card" href="https://account.proton.me/mail" target="_blank" rel="noopener noreferrer">
@@ -2841,7 +2844,7 @@
     </div>
 
     <!-- Settings Tab -->
-    <div id="settings" class="tab-content">
+<div id="settings" class="tab-content" role="tabpanel" aria-labelledby="tab-settings" tabindex="0" aria-hidden="true">
         <div class="container">
             <div class="card">
         <h2 style="margin-bottom: 25px;" data-i18n="nav.settings">Settings</h2>
@@ -2975,7 +2978,7 @@
         // Toggle resource dropdown
         function toggleResourceMenu() {
             const menu = document.getElementById('resource-menu');
-            const resourceBtn = document.querySelector(".tab-btn[onclick*='toggleResourceMenu']");
+            const resourceBtn = document.getElementById('resources-btn');
 
             if (!menu) return;
 
@@ -2983,22 +2986,20 @@
 
             menu.classList.toggle('hidden');
             resourceBtn?.classList.toggle('menu-open', isOpening);
+            resourceBtn?.setAttribute('aria-expanded', String(isOpening));
 
             if (isOpening) {
-                // Position menu under the Resources button
                 const btnRect = resourceBtn.getBoundingClientRect();
                 menu.style.right = `${window.innerWidth - btnRect.right}px`;
-
-                // Add click-outside listener
                 setTimeout(() => {
                     document.addEventListener('click', handleOutsideMenuClick);
                 }, 10);
-
-                // Add escape key handler
-                document.addEventListener('keydown', handleEscapeKey);
+                document.addEventListener('keydown', handleMenuKey);
+                const firstItem = menu.querySelector('button');
+                firstItem && firstItem.focus();
             } else {
                 document.removeEventListener('click', handleOutsideMenuClick);
-                document.removeEventListener('keydown', handleEscapeKey);
+                document.removeEventListener('keydown', handleMenuKey);
             }
         }
 
@@ -3009,51 +3010,66 @@
             if (menu && !menu.contains(e.target) && resourceBtn && !resourceBtn.contains(e.target)) {
                 menu.classList.add('hidden');
                 resourceBtn?.classList.remove('menu-open');
+                resourceBtn?.setAttribute('aria-expanded', 'false');
                 document.removeEventListener('click', handleOutsideMenuClick);
-                document.removeEventListener('keydown', handleEscapeKey);
+                document.removeEventListener('keydown', handleMenuKey);
             }
         }
 
-        function handleEscapeKey(e) {
-            if (e.key === 'Escape') {
-                const menu = document.getElementById('resource-menu');
-                const resourceBtn = document.querySelector(".tab-btn[onclick*='toggleResourceMenu']");
-                if (menu && !menu.classList.contains('hidden')) {
-                    menu.classList.add('hidden');
-                    resourceBtn?.classList.remove('menu-open');
-                    document.removeEventListener('keydown', handleEscapeKey);
-                    document.removeEventListener('click', handleOutsideMenuClick);
-                }
+        function handleMenuKey(e) {
+            const menu = document.getElementById('resource-menu');
+            const items = Array.from(menu.querySelectorAll('button'));
+            const resourceBtn = document.getElementById('resources-btn');
+            let idx = items.indexOf(document.activeElement);
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                items[(idx + 1) % items.length].focus();
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                items[(idx - 1 + items.length) % items.length].focus();
+            } else if (e.key === 'Escape') {
+                menu.classList.add('hidden');
+                resourceBtn?.classList.remove('menu-open');
+                resourceBtn?.setAttribute('aria-expanded', 'false');
+                resourceBtn?.focus();
+                document.removeEventListener('click', handleOutsideMenuClick);
+                document.removeEventListener('keydown', handleMenuKey);
             }
         }
 
         // Tab switching
         function switchTab(tabName) {
-            // Hide dropdown when switching tabs
             const menu = document.getElementById('resource-menu');
-            const resourceBtn = document.querySelector(".tab-btn[onclick*='toggleResourceMenu']");
+            const resourceBtn = document.getElementById('resources-btn');
             if (menu) {
                 menu.classList.add('hidden');
                 document.removeEventListener('click', handleOutsideMenuClick);
-                document.removeEventListener('keydown', handleEscapeKey);
+                document.removeEventListener('keydown', handleMenuKey);
             }
             resourceBtn?.classList.remove('menu-open');
+            resourceBtn?.setAttribute('aria-expanded', 'false');
 
-            // Update nav buttons
-            document.querySelectorAll('.tab-btn').forEach(btn => {
+            document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
                 btn.classList.remove('active');
-                if (btn.dataset.tab === tabName) {
-                    btn.classList.add('active');
-                }
+                btn.setAttribute('aria-selected', 'false');
+                btn.setAttribute('tabindex', '-1');
             });
-            
-            // Update content
+            const activeBtn = document.querySelector(`.tab-btn[data-tab="${tabName}"]`);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+                activeBtn.setAttribute('aria-selected', 'true');
+                activeBtn.setAttribute('tabindex', '0');
+                activeBtn.focus();
+            }
+
             document.querySelectorAll('.tab-content').forEach(content => {
                 content.classList.remove('active');
+                content.setAttribute('aria-hidden', 'true');
             });
             const targetTab = document.getElementById(tabName);
             if (targetTab) {
                 targetTab.classList.add('active');
+                targetTab.setAttribute('aria-hidden', 'false');
             }
 
             // Remove dispatch tab when not active
@@ -5248,8 +5264,8 @@ Generated: ${new Date().toLocaleString()}`;
 
             content.innerHTML = html;
             modal.classList.remove('hidden');
+            modal.setAttribute('aria-hidden', 'false');
 
-            // Focus on close button for accessibility
             setTimeout(() => {
                 const closeBtn = modal.querySelector('.modal-close');
                 if (closeBtn) closeBtn.focus();
@@ -5260,6 +5276,7 @@ Generated: ${new Date().toLocaleString()}`;
             const modal = document.getElementById('emergency-modal');
             if (modal) {
                 modal.classList.add('hidden');
+                modal.setAttribute('aria-hidden', 'true');
             }
 
             // Initialize the display view for later access
@@ -6088,6 +6105,20 @@ Generated: ${new Date().toLocaleString()}`;
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js').catch(err => console.error('SW registration failed', err));
         }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabs = Array.from(document.querySelectorAll('.tab-nav .tab-btn[data-tab]'));
+            tabs.forEach((tab, index) => {
+                tab.addEventListener('keydown', e => {
+                    if (e.key === 'ArrowRight') {
+                        tabs[(index + 1) % tabs.length].focus();
+                    } else if (e.key === 'ArrowLeft') {
+                        tabs[(index - 1 + tabs.length) % tabs.length].focus();
+                    }
+                });
+            });
+        });
     </script>
     <script src="scripts/version.js"></script>
     <script src="scripts/translate.js"></script>

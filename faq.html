@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="faq.title">iKey Personal Hub - Complete FAQ Guide</title>
+    <title data-i18n="faq.title">iKey Personal Hub - FAQ</title>
     <script src="scripts/translate.js"></script>
     <style>
         * {
@@ -435,7 +435,7 @@
     <div class="container">
         <div class="header">
             <h1 data-i18n="faq.header">🔐 iKey Personal Hub FAQ</h1>
-            <p data-i18n="faq.description">Client-side encrypted personal information hub with emergency QR access. Store any files securely while maintaining quick access to your favorite privacy tools and services.</p>
+            <p data-i18n="faq.description">A safe place for files and quick links. It offers an optional emergency QR.</p>
         </div>
 
         <div class="security-tiers">
@@ -484,280 +484,17 @@
     <script>
         // Complete FAQ Database for iKey Personal Hub
         const faqData = [
-            // Getting Started
-            {
-                category: 'Getting Started',
-                question: 'What is iKey and what can I use it for?',
-                answer: 'iKey is your personal encrypted hub that combines secure file storage with a customizable app launcher. Store any personal information, documents, or files you want protected, while keeping your favorite apps and services at your fingertips. It\'s entirely up to you - use it for medical records, financial documents, passwords, personal notes, or any sensitive information you need encrypted and accessible.',
-                keywords: ['what is', 'ikey', 'purpose', 'use for', 'overview']
-            },
-            {
-                category: 'Getting Started',
-                question: 'How do I start using iKey?',
-                answer: 'Just visit the web app - no account needed! The setup wizard walks you through: entering basic info for your emergency QR code (optional), setting a strong password for encrypted storage, and customizing your home screen with favorite apps. The app generates a unique GUID stored locally. To start completely fresh, add ?setup=new to the URL.',
-                keywords: ['start', 'setup', 'begin', 'first time', 'new user']
-            },
-            {
-                category: 'Getting Started',
-                question: 'What are the two security tiers?',
-                answer: 'Public Tier (Gray 🔓): Basic info accessible via QR code without a password - perfect for emergency contacts or information you want easily shareable. Password-Protected Tier (Blue 🔐): Everything else - your personal files, documents, notes, or any sensitive information. You decide what goes where based on your needs.',
-                keywords: ['tiers', 'security levels', 'public', 'protected', 'two tier']
-            },
-            {
-                category: 'Getting Started',
-                question: 'Do I need accounts for iKey or Proton services?',
-                answer: 'No account needed for iKey itself - it runs entirely in your browser. For Proton services, you\'ll want to create a free Proton account to access their encrypted email, drive, VPN, and other privacy tools. iKey makes it easy to access all Proton services from one place, but using them is entirely optional.',
-                keywords: ['account', 'registration', 'proton account', 'sign up']
-            },
-
-            // Home Screen & Bookmarks
-            {
-                category: 'Bookmarks',
-                question: 'How does the home screen bookmark system work?',
-                answer: 'The home screen is your personal launcher with a customizable grid of bookmarks. Tap any bookmark once to launch it. To edit: long-press any bookmark until icons start shaking (edit mode), tap the X to remove bookmarks, tap the + tile to add new ones, drag bookmarks to reorder them, tap Done when finished. The grid automatically adjusts to fit your screen.',
-                keywords: ['bookmarks', 'home screen', 'launcher', 'grid', 'favorites']
-            },
-            {
-                category: 'Bookmarks',
-                question: 'What types of bookmarks can I add?',
-                answer: 'Four types available: Website bookmarks (any URL), Built-in tools (Weather, Police Dispatch, etc.), Direct contact shortcuts (call/text/email specific people), and Proton service shortcuts (Mail, Drive, VPN, Pass, etc.). Mix and match based on what you need quick access to.',
-                keywords: ['bookmark types', 'add bookmark', 'website', 'contact', 'shortcuts']
-            },
-            {
-                category: 'Bookmarks',
-                question: 'How do I add all Proton apps at once?',
-                answer: 'When adding a bookmark, select "Add All Proton Apps" to instantly add shortcuts for Proton Mail, Drive, VPN, Pass, Calendar, and SimpleLogin. They\'ll appear with official icons and launch directly to each service. You can remove individual ones you don\'t use or reorder them as needed.',
-                keywords: ['proton apps', 'add all', 'proton services', 'bulk add']
-            },
-            {
-                category: 'Bookmarks',
-                question: 'Can I create contact shortcuts for quick calling/texting?',
-                answer: 'Yes! Add a bookmark and choose "Contact Shortcut". Enter the person\'s name, phone/email, optional description, and photo. When tapped, it launches your device\'s default app - phone for calls, messages for texts, email client for emails. Perfect for emergency contacts, doctors, or frequently contacted people.',
-                keywords: ['contact shortcut', 'call', 'text', 'email', 'direct dial', 'quick contact']
-            },
-            {
-                category: 'Bookmarks',
-                question: 'How do I customize bookmark appearance?',
-                answer: 'For websites, iKey automatically fetches the site\'s favicon. For contacts, you can add a photo that displays as the icon. Built-in tools and Proton services use their official icons. In edit mode, drag bookmarks to any position. The grid auto-adjusts between 3-5 columns based on screen size.',
-                keywords: ['customize', 'icons', 'appearance', 'favicon', 'photos', 'layout']
-            },
-            {
-                category: 'Bookmarks',
-                question: 'Are my bookmarks backed up or synced?',
-                answer: 'Important: Bookmarks are stored ONLY in your browser\'s local storage - they\'re not encrypted or backed up. If you clear browser data or lose your device, bookmarks are gone. For important shortcuts, manually note the details elsewhere (like in an encrypted note in Proton Drive). Bookmarks are for convenience, not critical data storage.',
-                keywords: ['bookmark backup', 'sync bookmarks', 'save bookmarks', 'restore']
-            },
-            {
-                category: 'Bookmarks',
-                question: 'Can I have different bookmark sets for different uses?',
-                answer: 'Yes! Use URL hashes to create separate profiles. Example: site.com/ikey#work for work bookmarks, site.com/ikey#personal for personal bookmarks, site.com/ikey#family for family-related shortcuts. Each hash maintains completely separate bookmark sets and encrypted data.',
-                keywords: ['multiple profiles', 'bookmark sets', 'separate', 'work personal']
-            },
-
-            // Proton Integration
-            {
-                category: 'Proton Suite',
-                question: 'How does iKey work with Proton services?',
-                answer: 'iKey serves as a convenient launcher for the entire Proton privacy suite. Add shortcuts to quickly access Proton Mail (encrypted email), Drive (encrypted cloud storage), VPN (secure browsing), Pass (password manager), Calendar (encrypted scheduling), and SimpleLogin (email aliases). Each service maintains its own encryption - iKey just makes accessing them easier.',
-                keywords: ['proton integration', 'proton services', 'how proton works', 'suite']
-            },
-            {
-                category: 'Proton Suite',
-                question: 'How do Proton services work together?',
-                answer: 'Proton services share single sign-on - one account accesses all services. They share encrypted storage quota (Mail, Drive, Calendar combined). Pass integrates with SimpleLogin for email aliases. Calendar integrates with Mail for invites. VPN protects all services when active. It\'s a complete privacy ecosystem you can use however fits your needs.',
-                keywords: ['proton together', 'ecosystem', 'integration', 'how services work']
-            },
-            {
-                category: 'Proton Suite',
-                question: 'What can I store in Proton Drive from iKey?',
-                answer: 'Anything you want encrypted in the cloud! Export your iKey data as JSON and save to Proton Drive. Store documents, photos, backups, notes - all encrypted. Create folders for organization. Share files securely with expiring links. Think of it as your encrypted Dropbox that integrates with your iKey hub.',
-                keywords: ['proton drive', 'store files', 'cloud storage', 'encrypted files']
-            },
-            {
-                category: 'Proton Suite',
-                question: 'Do I need paid Proton plans?',
-                answer: 'Free tier is generous: 1GB email storage, 5GB Drive storage, VPN in 5 countries, basic Pass features. Paid plans add: 500GB+ storage, all VPN locations, unlimited email aliases, custom domains, priority support. Start free and upgrade if you need more. iKey works with both free and paid accounts.',
-                keywords: ['proton pricing', 'free vs paid', 'proton plans', 'costs']
-            },
-            {
-                category: 'Proton Suite',
-                question: 'Why use Proton instead of Google/Microsoft?',
-                answer: 'Proton offers true privacy: end-to-end encryption (they can\'t read your data), zero-access encryption (even under legal pressure), Swiss privacy laws (strict data protection), no ads or tracking, open-source code (auditable). You own your data, not the company. Perfect complement to iKey\'s local encryption.',
-                keywords: ['why proton', 'vs google', 'vs microsoft', 'privacy comparison']
-            },
-
-            // Security & Encryption
-            {
-                category: 'Security',
-                question: 'How does iKey encrypt my files and data?',
-                answer: 'Everything uses AES-256-GCM encryption (military-grade) via your browser\'s Web Crypto API. Your password goes through PBKDF2 key derivation (100,000 iterations) making it virtually uncrackable. All encryption happens locally in your browser - files never leave your device unencrypted. Even if someone gets your encrypted data, they can\'t read it without your exact password.',
-                keywords: ['encryption', 'aes-256', 'security', 'files encrypted', 'how secure']
-            },
-            {
-                category: 'Security',
-                question: 'What is zero-knowledge architecture?',
-                answer: 'Zero-knowledge means no server, developer, or third party can see your unencrypted files or data. Everything encrypts in your browser before any transmission. Even with cloud backup enabled, servers only receive encrypted blobs they cannot decrypt. Your password never leaves your device. Only you can access your information.',
-                keywords: ['zero knowledge', 'privacy', 'architecture', 'servers cant see']
-            },
-            {
-                category: 'Security',
-                question: 'Can I store sensitive documents safely?',
-                answer: 'Absolutely! The password-protected tier is designed for any sensitive information - financial documents, legal papers, medical records, passwords, personal notes, private photos. With AES-256 encryption, your files are safer than in most physical safes. Just remember: no password = no access, so keep it secure but memorable.',
-                keywords: ['sensitive documents', 'safe storage', 'financial', 'legal', 'private']
-            },
-            {
-                category: 'Security',
-                question: 'What if someone steals my device?',
-                answer: 'Your encrypted data remains protected even on a stolen device. Without your password, thieves cannot access any password-protected files or information. Only the basic QR code data (if you set it up) would be visible. Always use device-level security (PIN/biometrics) as an extra layer.',
-                keywords: ['stolen device', 'theft', 'lost phone', 'device security']
-            },
-
-            // QR Code System
-            {
-                category: 'QR Code',
-                question: 'What is the QR code for and do I need it?',
-                answer: 'The QR code is optional - it\'s for sharing basic information without a password. Use it for: emergency contacts (medical scenarios), business card info (networking), public contact details (easy sharing), or any info you want quickly accessible. You decide what goes in it, or skip it entirely if you just want encrypted storage.',
-                keywords: ['qr code', 'what is qr', 'need qr', 'qr purpose', 'optional']
-            },
-            {
-                category: 'QR Code',
-                question: 'What information can I put in the QR code?',
-                answer: 'Whatever you want publicly accessible: name and contact info, emergency contacts, medical allergies (if relevant), business details, social media handles, or a simple message. Keep it minimal - QR codes have size limits. Remember: anyone who scans sees this info, so don\'t include sensitive data.',
-                keywords: ['qr contents', 'qr information', 'what in qr', 'qr data']
-            },
-            {
-                category: 'QR Code',
-                question: 'How do I use the QR code for different purposes?',
-                answer: 'Emergency use: Include medical info and emergency contacts. Business use: Add professional contact details and LinkedIn. Personal use: Basic contact info for easy sharing. The QR is just a tool - adapt it to your needs or don\'t use it at all. You can update it anytime through the app.',
-                keywords: ['qr uses', 'qr purposes', 'emergency', 'business card', 'sharing']
-            },
-
-            // Password & Recovery
-            {
-                category: 'Password',
-                question: 'What happens if I forget my password?',
-                answer: 'Your password IS the encryption key - without it, your encrypted files are permanently inaccessible. This isn\'t a bug, it\'s maximum security. Always save the recovery key file (auto-downloaded during setup) in a secure place. No one, including iKey developers, can recover your data without your password.',
-                keywords: ['forgot password', 'lost password', 'recovery', 'cant access']
-            },
-            {
-                category: 'Password',
-                question: 'What is the recovery key file?',
-                answer: 'An encrypted backup key automatically downloaded when you set/change your password. Store it somewhere secure but accessible: USB drive in a safe, encrypted cloud storage, password manager attachment, or trusted person. It provides emergency access but only works from the original website URL.',
-                keywords: ['recovery key', 'key file', 'backup key', 'emergency access']
-            },
-            {
-                category: 'Password',
-                question: 'How do I create a strong but memorable password?',
-                answer: 'Use a passphrase combining random words: "correct-horse-battery-staple" is stronger than "P@ssw0rd123!" Or use a sentence: "My2Dogs&LoveChasing7Squirrels!" Consider a password manager for generation and storage. The app strengthens any password with 100,000 iterations of key derivation, but start strong.',
-                keywords: ['strong password', 'password tips', 'memorable', 'passphrase']
-            },
-
-            // Storage & Backup
-            {
-                category: 'Storage',
-                question: 'Where are my files and data stored?',
-                answer: 'Primary storage is in your browser\'s localStorage (encrypted on your device). Optional cloud backup sends encrypted copies to configured webhooks. Think of it as: localStorage = your vault, cloud backup = offsite safety deposit box. Both are encrypted, neither can be read without your password.',
-                keywords: ['storage', 'where stored', 'files location', 'localStorage']
-            },
-            {
-                category: 'Storage',
-                question: 'Should I enable cloud backup?',
-                answer: 'Yes, if you want protection against: device loss/theft, browser data clearing, hardware failure, or accidental deletion. Your data remains encrypted even in the cloud. Without backup, clearing browser data means losing everything. The choice is yours based on your security vs. convenience needs.',
-                keywords: ['cloud backup', 'should backup', 'enable sync', 'backup recommended']
-            },
-            {
-                category: 'Storage',
-                question: 'Can I use iKey on multiple devices?',
-                answer: 'Yes! With cloud sync: access from any device with your password. Without cloud sync: manually transfer via QR code or JSON export. Each device maintains its own copy. Use the same password across devices to decrypt your data. Perfect for phone + computer access.',
-                keywords: ['multiple devices', 'phone computer', 'sync devices', 'cross device']
-            },
-            {
-                category: 'Storage',
-                question: 'How do I backup everything?',
-                answer: 'Multiple backup strategies: Enable cloud sync (automatic), Export JSON file (manual backup), Save QR code URL (basic info), Screenshot important data, Store in Proton Drive (encrypted cloud), Keep recovery key file (password recovery). Use multiple methods for critical information.',
-                keywords: ['backup', 'how to backup', 'save everything', 'export data']
-            },
-
-            // Privacy
-            {
-                category: 'Privacy',
-                question: 'Does iKey track or collect my data?',
-                answer: 'Absolutely not. Zero tracking, no analytics, no cookies, no telemetry, no user accounts, no data collection. We literally don\'t know you exist. Your data stays on your device (or encrypted in your chosen cloud). This is true privacy - not even usage statistics.',
-                keywords: ['privacy', 'tracking', 'data collection', 'analytics', 'cookies']
-            },
-            {
-                category: 'Privacy',
-                question: 'Who can see my stored files and information?',
-                answer: 'Only you (with your password), anyone you explicitly share your password with, or anyone with your recovery file + correct URL. Not readable by: iKey developers, cloud storage providers, hackers who steal encrypted data, or government/legal requests. True zero-knowledge privacy.',
-                keywords: ['who can see', 'file access', 'privacy', 'visibility']
-            },
-            {
-                category: 'Privacy',
-                question: 'How private is this compared to cloud services?',
-                answer: 'More private than standard cloud storage: Google/Dropbox/OneDrive can technically access your files (and must comply with legal requests). iKey + Proton means end-to-end encryption - no one but you can decrypt. It\'s like having a personal safe vs. a bank safety deposit box.',
-                keywords: ['privacy comparison', 'vs google', 'vs dropbox', 'cloud privacy']
-            },
-
-            // Technical
-            {
-                category: 'Technical',
-                question: 'Can I self-host iKey?',
-                answer: 'Yes! It\'s a single HTML file - host anywhere: your own server, local computer (file://), GitHub Pages (free), Netlify/Vercel (free), or even IPFS (decentralized). Modify webhook URLs for your own backup infrastructure. No database or server-side code needed.',
-                keywords: ['self host', 'own server', 'hosting', 'deploy', 'installation']
-            },
-            {
-                category: 'Technical',
-                question: 'What browsers work with iKey?',
-                answer: 'Any modern browser: Chrome 60+, Firefox 57+, Safari 11+, Edge 79+. Mobile browsers fully supported. Requires Web Crypto API for encryption and localStorage for data. Older browsers may not support required encryption features. Works offline once loaded.',
-                keywords: ['browsers', 'compatibility', 'requirements', 'mobile', 'supported']
-            },
-            {
-                category: 'Technical',
-                question: 'Can I modify or customize iKey?',
-                answer: 'Absolutely! It\'s open source - modify anything: change the interface, add features, customize encryption, modify storage locations, integrate your services. It\'s a single HTML file with inline JavaScript and CSS. Fork it, modify it, make it yours.',
-                keywords: ['customize', 'modify', 'open source', 'fork', 'change code']
-            },
-
-            // Troubleshooting
-            {
-                category: 'Troubleshooting',
-                question: 'Bookmarks disappeared - what happened?',
-                answer: 'Bookmarks are stored only in browser localStorage (not encrypted/backed up). They disappear if you: cleared browser data, used a different browser, accessed from different device, or used a different URL hash (#work vs #personal). Unfortunately, they cannot be recovered. Document important shortcuts separately.',
-                keywords: ['bookmarks gone', 'lost bookmarks', 'disappeared', 'missing shortcuts']
-            },
-            {
-                category: 'Troubleshooting',
-                question: 'How do I start completely fresh?',
-                answer: 'Two ways: Add ?setup=new to the URL to force setup wizard (keeps existing data), or clear all browser data for the site (permanent deletion). For separate instances, use URL hashes: site.com#personal, site.com#work. Each hash is completely independent.',
-                keywords: ['start fresh', 'reset', 'new setup', 'clean slate', 'start over']
-            },
-            {
-                category: 'Troubleshooting',
-                question: 'Auto-save isn\'t working - what should I check?',
-                answer: 'Auto-save triggers 2 seconds after changes. Check: JavaScript enabled in browser? localStorage not full? Browser supports required features? Look for sync status in header. Try manual sync button in Security settings. Check browser console (F12) for error messages.',
-                keywords: ['auto save not working', 'sync issues', 'not saving', 'save problem']
-            },
-
-            // Best Practices
-            {
-                category: 'Best Practices',
-                question: 'What\'s the best way to organize my information?',
-                answer: 'Public tier: Only info you\'d put on a business card or medical bracelet. Password tier: Everything else - documents, passwords, notes, files. Use Proton Drive for large files or additional backups. Keep bookmarks for frequently accessed services. It\'s your system - organize however works for you.',
-                keywords: ['organize', 'best practices', 'information management', 'tips']
-            },
-            {
-                category: 'Best Practices',
-                question: 'How do I maximize both security and convenience?',
-                answer: 'Use a strong but memorable passphrase. Enable cloud backup for redundancy. Keep recovery key in secure location. Set up Proton services for additional encryption. Use bookmarks for quick access. Regular JSON exports for offline backup. Different URL hashes for different use cases.',
-                keywords: ['security convenience', 'best setup', 'optimal use', 'recommendations']
-            },
-            {
-                category: 'Best Practices',
-                question: 'What should I definitely NOT store in iKey?',
-                answer: 'Never store: cryptocurrency private keys (use hardware wallet), passwords in plain text in public tier, illegal content, massive files (use Proton Drive instead), critical data without backup. Remember: public tier = anyone can see, password tier = only you can see.',
-                keywords: ['dont store', 'not recommended', 'avoid storing', 'warnings']
-            }
-        ];
+    { category: 'Getting Started', question: 'What is iKey?', answer: 'iKey is a safe place for your files and quick links. It runs in your browser and keeps your info private.', keywords: ['what', 'ikey'] },
+    { category: 'Getting Started', question: 'How do I start?', answer: 'Open the app. Add your info if you want, set a strong password, and pick your shortcuts.', keywords: ['start', 'setup'] },
+    { category: 'Security', question: 'What are the two security levels?', answer: 'Public lets you share basic info without a password. Private locks the rest with your password.', keywords: ['security', 'tier'] },
+    { category: 'Security', question: 'Do I need an account?', answer: 'No. You can use iKey without any account. You may make a free Proton account for extra tools.', keywords: ['account'] },
+    { category: 'Bookmarks', question: 'How do bookmarks work?', answer: 'The home screen shows a grid of links. Tap to open or hold to edit.', keywords: ['bookmark'] },
+    { category: 'Privacy', question: 'Does iKey track me?', answer: 'No. iKey keeps all data on your device and sends nothing to us.', keywords: ['privacy', 'tracking'] },
+    { category: 'Password', question: 'What if I forget my password?', answer: 'We cannot recover it. Write it down or keep the recovery file safe.', keywords: ['password'] },
+    { category: 'Storage', question: 'Where is my data stored?', answer: 'Your data lives in your browser. You can also save an encrypted copy in the cloud.', keywords: ['storage'] },
+    { category: 'QR Code', question: 'Do I need the QR code?', answer: 'No. It is optional. Use it if you want to share basic info fast.', keywords: ['qr'] },
+    { category: 'Help', question: 'Who can see my info?', answer: 'Only you or people you share your password with.', keywords: ['access'] }
+];
 
         // Rest of the JavaScript code remains the same...
         // Fuzzy string matching function
