@@ -403,19 +403,19 @@
     (function() {
         const params = new URLSearchParams(window.location.search);
         const storageKey = params.get('key') || 'default';
-        const saved = localStorage.getItem(`${storageKey}_textSize`) || "2020";
+        const saved = localStorage.getItem(`${storageKey}_textSize`) || "aaA";
         let fontSize = "16px";
         let zoom = "1";
         switch (saved) {
-            case "reading":
+            case "aaA":
                 fontSize = "18px";
                 zoom = "1.2";
                 break;
-            case "whats":
+            case "aAA":
                 fontSize = "20px";
                 zoom = "1.35";
                 break;
-            case "grandma":
+            case "AAAA":
                 fontSize = "24px";
                 zoom = "1.5";
                 break;
