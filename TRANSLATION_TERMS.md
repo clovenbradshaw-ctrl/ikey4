@@ -4,6 +4,9 @@
         "appLogo": "🔐 iKey",
         "appTagline": "Secure Location & Personal Safety Hub",
         "homeTitle": "iKey Home",
+        "common": {
+            "skip": "Skip to main content"
+        },
         "nav": {
             "home": "Home",
             "iKey": "iKey",
@@ -198,6 +201,8 @@
             "uvIndex": "UV INDEX",
             "next24Hours": "Next 24 Hours",
             "sevenDayForecast": "7-Day Forecast",
+            "errorLoading": "Error loading weather data",
+            "tryAnother": "Please try another city",
             "conditions": {
                 "0": "Clear sky",
                 "1": "Mainly clear",
@@ -255,6 +260,14 @@
             "policeDispatchDesc": "View active police dispatches in Nashville",
             "wttin": "Where To Turn in Nashville",
             "wttinDesc": "Community resources and support services"
+        },
+        "about": {
+            "title": "About & Privacy",
+            "heading": "About & Privacy",
+            "storage": "iKey runs entirely in your browser. Favorites and recent locations are saved in localStorage on your device.",
+            "offline": "Once loaded, the app works offline and no data leaves your device unless you choose to share it.",
+            "clear": "To clear your data, open your browser settings and remove site data for this page or use the \"Clear browsing data\" option.",
+            "backHome": "Back to Home"
         },
         "settings": {
             "accessibility": "Accessibility",
@@ -572,6 +585,9 @@
         "appLogo": "🔐 iKey",
         "appTagline": "Centro de Ubicación Segura y Seguridad Personal",
         "homeTitle": "iKey Inicio",
+        "common": {
+            "skip": "Saltar al contenido principal"
+        },
         "nav": {
             "home": "Inicio",
             "iKey": "iKey",
@@ -766,6 +782,8 @@
             "uvIndex": "ÍNDICE UV",
             "next24Hours": "Próximas 24 Horas",
             "sevenDayForecast": "Pronóstico de 7 Días",
+            "errorLoading": "Error al cargar los datos del clima",
+            "tryAnother": "Intenta con otra ciudad",
             "conditions": {
                 "0": "Cielo despejado",
                 "1": "Mayormente despejado",
@@ -823,6 +841,14 @@
             "policeDispatchDesc": "Ver despachos policiales activos en Nashville",
             "wttin": "Where To Turn in Nashville",
             "wttinDesc": "Recursos comunitarios y servicios de apoyo"
+        },
+        "about": {
+            "title": "Acerca de y Privacidad",
+            "heading": "Acerca de y Privacidad",
+            "storage": "iKey se ejecuta completamente en tu navegador. Los favoritos y las ubicaciones recientes se guardan en el almacenamiento local de tu dispositivo.",
+            "offline": "Una vez cargada, la aplicación funciona sin conexión y ningún dato sale de tu dispositivo a menos que decidas compartirlo.",
+            "clear": "Para borrar tus datos, abre la configuración del navegador y elimina los datos del sitio para esta página o utiliza la opción \"Borrar datos de navegación\".",
+            "backHome": "Volver al Inicio"
         },
         "settings": {
             "accessibility": "Accesibilidad",
@@ -1031,6 +1057,9 @@
         "appLogo": "🔐 iKey",
         "appTagline": "مركز الموقع الآمن والسلامة الشخصية",
         "homeTitle": "iKey الرئيسية",
+        "common": {
+            "skip": "تخطي إلى المحتوى الرئيسي"
+        },
         "nav": {
             "home": "الرئيسية",
             "iKey": "iKey",
@@ -1225,6 +1254,8 @@
             "uvIndex": "مؤشر الأشعة فوق البنفسجية",
             "next24Hours": "الـ 24 ساعة القادمة",
             "sevenDayForecast": "توقعات 7 أيام",
+            "errorLoading": "حدث خطأ أثناء تحميل بيانات الطقس",
+            "tryAnother": "يرجى تجربة مدينة أخرى",
             "conditions": {
                 "0": "سماء صافية",
                 "1": "صحو غالباً",
@@ -1282,6 +1313,14 @@
             "policeDispatchDesc": "عرض إرساليات الشرطة النشطة في ناشفيل",
             "wttin": "Where To Turn in Nashville",
             "wttinDesc": "موارد المجتمع وخدمات الدعم"
+        },
+        "about": {
+            "title": "حول والخصوصية",
+            "heading": "حول والخصوصية",
+            "storage": "يعمل iKey بالكامل في متصفحك. يتم حفظ المفضلات والمواقع الحديثة في التخزين المحلي على جهازك.",
+            "offline": "بعد التحميل، يعمل التطبيق دون اتصال ولا تغادر أي بيانات جهازك ما لم تختر مشاركتها.",
+            "clear": "لحذف بياناتك، افتح إعدادات المتصفح واحذف بيانات الموقع لهذه الصفحة أو استخدم خيار \"مسح بيانات التصفح\".",
+            "backHome": "العودة إلى الصفحة الرئيسية"
         },
         "settings": {
             "accessibility": "إمكانية الوصول",
@@ -1490,6 +1529,9 @@
         "appLogo": "🔐 iKey",
         "appTagline": "Navenda Cihê Ewledar û Ewlehiya Kesane",
         "homeTitle": "iKey Mal",
+        "common": {
+            "skip": "Derbas bibe bo naveroka sereke"
+        },
         "nav": {
             "home": "Mal",
             "iKey": "iKey",
@@ -1684,6 +1726,8 @@
             "uvIndex": "PÊŞEKA UV",
             "next24Hours": "24 Saetên Pêş",
             "sevenDayForecast": "Pêşbîniya 7 Rojan",
+            "errorLoading": "Çewtiya barkirina daneên hewayê",
+            "tryAnother": "Ji kerema xwe bajarê din biceribîne",
             "conditions": {
                 "0": "Ezman vekirî",
                 "1": "Bi gelemekî vekirî",
@@ -1741,6 +1785,14 @@
             "policeDispatchDesc": "Şandinên polîsê yên çalak li Nashville bibînin",
             "wttin": "Where To Turn in Nashville",
             "wttinDesc": "Çavkaniyên civakê û karûbarên piştgiriyê"
+        },
+        "about": {
+            "title": "Derbarê û Nepenî",
+            "heading": "Derbarê û Nepenî",
+            "storage": "iKey temamî di geroka we de dixebite. Bijartî û cîhên dawî di hûrdemê cîhaza we de têne tomarkirin.",
+            "offline": "Dema barkirinê, sepan bê tor dixebite û tu daneyek ji cîhaza te derneçe heya ku tu bixwazî parve bikî.",
+            "clear": "Ji bo paqijkirina daneyên xwe, mîhengên gerokê veke û daneyên malperê ji vî rûpelê jê bibe an jî vebijêrka \"Daneyên gerokê paqij bike\" bi kar bîne.",
+            "backHome": "Vegere Mal"
         },
         "settings": {
             "accessibility": "Gihîştin",
@@ -1842,6 +1894,9 @@
         "appLogo": "🔐 iKey",
         "appTagline": "Xarunta Goobta Ammaan iyo Badbaadada Shakhsi",
         "homeTitle": "iKey Guri",
+        "common": {
+            "skip": "Ka bood nuxurka ugu weyn"
+        },
         "nav": {
             "home": "Guri",
             "iKey": "iKey",
@@ -2037,6 +2092,8 @@
             "uvIndex": "TILMAAMAHA UV",
             "next24Hours": "24-ka Saacadood ee Soo Socda",
             "sevenDayForecast": "Saadaasha 7 Maalmood",
+            "errorLoading": "Khalad ayaa dhacay marka la soo rarayo xogta cimilada",
+            "tryAnother": "Fadlan isku day magaalo kale",
             "conditions": {
                 "0": "Cir cad",
                 "1": "Inta badan cad",
@@ -2094,6 +2151,14 @@
             "policeDispatchDesc": "Arag dirisyada booliska firfircoon ee Nashville",
             "wttin": "Where To Turn in Nashville",
             "wttinDesc": "Ilaha bulshada iyo adeegyada taageerada"
+        },
+        "about": {
+            "title": "Ku saabsan & Qarsoodi",
+            "heading": "Ku saabsan & Qarsoodi",
+            "storage": "iKey waxa uu si buuxda uga shaqeeyaa biraawsarkaaga. Kuwa aad jeceshahay iyo meelihii u dambeeyay waxa lagu kaydiyaa kaydka deegaanka ee aaladdaada.",
+            "offline": "Marka la raro, appku wuxuu ka shaqeeyaa offline oo xogna kama tagto aaladdaada ilaa aad doorato inaad wadaagto.",
+            "clear": "Si aad u nadiifiso xogtaada, fur dejimaha biraawsarka oo ka saar xogta goobtan ama isticmaal ikhtiyaarka \"Tirtir xogta booqashada\".",
+            "backHome": "Ku noqo Bogga Hore"
         },
         "settings": {
             "accessibility": "Helitaanka",
@@ -2194,6 +2259,9 @@
         "appLogo": "🔐 iKey",
         "appTagline": "安全位置与个人安全中心",
         "homeTitle": "iKey 主页",
+        "common": {
+            "skip": "跳到主要内容"
+        },
         "nav": {
             "home": "主页",
             "iKey": "iKey",
@@ -2389,6 +2457,8 @@
             "uvIndex": "紫外线指数",
             "next24Hours": "未来24小时",
             "sevenDayForecast": "7天预报",
+            "errorLoading": "加载天气数据时出错",
+            "tryAnother": "请尝试其他城市",
             "conditions": {
                 "0": "晴朗",
                 "1": "大部晴朗",
@@ -2446,6 +2516,14 @@
             "policeDispatchDesc": "查看纳什维尔的活跃警察调度",
             "wttin": "Where To Turn in Nashville",
             "wttinDesc": "社区资源和支持服务"
+        },
+        "about": {
+            "title": "关于与隐私",
+            "heading": "关于与隐私",
+            "storage": "iKey 完全在您的浏览器中运行。收藏和最近的位置保存在您设备的本地存储中。",
+            "offline": "加载后，应用可离线运行，除非您选择分享，否则数据不会离开您的设备。",
+            "clear": "要清除您的数据，请打开浏览器设置并删除此页面的站点数据或使用“清除浏览数据”选项。",
+            "backHome": "返回首页"
         },
         "settings": {
             "accessibility": "辅助功能",
