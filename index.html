@@ -1769,23 +1769,23 @@
     <!-- Tab Navigation -->
     <div class="nav-wrapper">
         <nav class="tab-nav">
-        <button class="tab-btn" onclick="switchTab('home')" aria-label="Home" data-i18n-aria="nav.home">
+        <button class="tab-btn" data-tab="home" onclick="switchTab('home')" aria-label="Home" data-i18n-aria="nav.home">
             <span class="tab-icon">🏠</span>
             <span class="tab-label" data-i18n="nav.home">Home</span>
         </button>
-        <button class="tab-btn active" onclick="switchTab('ikey')" aria-label="iKey" data-i18n-aria="nav.iKey">
+        <button class="tab-btn active" data-tab="ikey" onclick="switchTab('ikey')" aria-label="iKey" data-i18n-aria="nav.iKey">
             <span class="tab-icon">🏥</span>
             <span class="tab-label" data-i18n="nav.iKey">iKey</span>
         </button>
-        <button class="tab-btn" onclick="switchTab('emergency')" aria-label="Emergency" data-i18n-aria="nav.emergency">
+        <button class="tab-btn" data-tab="emergency" onclick="switchTab('emergency')" aria-label="Emergency" data-i18n-aria="nav.emergency">
             <span class="tab-icon">🚨</span>
             <span class="tab-label" data-i18n="nav.emergency">Emergency</span>
         </button>
-        <button class="tab-btn" onclick="switchTab('share')" aria-label="Share Location" data-i18n-aria="nav.share">
+        <button class="tab-btn" data-tab="share" onclick="switchTab('share')" aria-label="Share Location" data-i18n-aria="nav.share">
             <span class="tab-icon">📍</span>
             <span class="tab-label" data-i18n="nav.share">Share</span>
         </button>
-        <button class="tab-btn" onclick="switchTab('weather')" aria-label="Weather" data-i18n-aria="nav.weather">
+        <button class="tab-btn" data-tab="weather" onclick="switchTab('weather')" aria-label="Weather" data-i18n-aria="nav.weather">
             <span class="tab-icon">⛈️</span>
             <span class="tab-label" data-i18n="nav.weather">Weather</span>
         </button>
@@ -1793,11 +1793,11 @@
             <span class="tab-icon">📚</span>
             <span class="tab-label">More</span>
         </button>
-        <button id="dispatch-tab-btn" class="tab-btn" style="display: none;" onclick="switchTab('dispatch')" aria-label="Dispatch" data-i18n-aria="nav.dispatch">
+        <button id="dispatch-tab-btn" class="tab-btn" data-tab="dispatch" style="display: none;" onclick="switchTab('dispatch')" aria-label="Dispatch" data-i18n-aria="nav.dispatch">
             <span class="tab-icon">📡</span>
             <span class="tab-label" data-i18n="nav.dispatch">Dispatch</span>
         </button>
-        <button class="tab-btn" onclick="switchTab('settings')" aria-label="Settings" data-i18n-aria="nav.settings">
+        <button class="tab-btn" data-tab="settings" onclick="switchTab('settings')" aria-label="Settings" data-i18n-aria="nav.settings">
             <span class="tab-icon">⚙️</span>
             <span class="tab-label" data-i18n="nav.settings">Settings</span>
         </button>
@@ -2821,8 +2821,7 @@
             // Update nav buttons
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('active');
-                // Find the button that matches this tab and make it active
-                if (btn.onclick && btn.onclick.toString().includes(tabName)) {
+                if (btn.dataset.tab === tabName) {
                     btn.classList.add('active');
                 }
             });
@@ -2884,7 +2883,7 @@
 
         function getTabButton(tabName) {
             return Array.from(document.querySelectorAll('.tab-btn')).find(btn =>
-                btn.onclick && btn.onclick.toString().includes(tabName)
+                btn.dataset.tab === tabName
             );
         }
 
