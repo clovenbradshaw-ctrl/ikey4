@@ -2748,7 +2748,7 @@
                     <h3 style="margin-bottom: 15px; color: var(--primary);" data-i18n="settings.about">About iKey</h3>
                     <div style="background: var(--light); padding: 20px; border-radius: 12px;">
                         <p style="color: var(--secondary); line-height: 1.8;" data-i18n="settings.aboutText">
-                            <strong data-i18n="settings.version">Version 1.0</strong><br>
+                            <strong id="app-version" data-i18n="settings.version">Version</strong><br>
                             iKey helps you keep your location secure while providing quick access to emergency services.
                             Your privacy and safety are our top priorities.
                         </p>
@@ -5707,6 +5707,7 @@ Generated: ${new Date().toLocaleString()}`;
             navigator.serviceWorker.register('sw.js').catch(err => console.error('SW registration failed', err));
         }
     </script>
+    <script src="scripts/version.js"></script>
     <script src="scripts/translate.js"></script>
 </body>
 </html>
