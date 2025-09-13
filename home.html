@@ -172,7 +172,7 @@
     <a href="about.html" data-i18n="home.aboutLink">About &amp; Privacy</a>
   </div>
 
-  <div id="toast" class="toast" style="display: none"></div>
+  <div id="toast" class="toast" style="display: none" role="status" aria-live="polite"></div>
 
   <script>
     const CARD_PRIORITY = {
@@ -254,8 +254,11 @@
     function showToast(msg) {
       const t = document.getElementById('toast');
       t.textContent = msg;
-      t.style.display = 'block';
-      setTimeout(() => t.style.display = 'none', 3000);
+      // Show toast after text updates so screen readers announce it
+      requestAnimationFrame(() => {
+        t.style.display = 'block';
+        setTimeout(() => t.style.display = 'none', 3000);
+      });
     }
 
     function renderContent(data, type) {
