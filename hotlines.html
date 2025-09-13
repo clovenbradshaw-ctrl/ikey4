@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="hotlines.title">Emergency Support Hotlines</title>
+    <title data-i18n="hotlines.title">Emergency Support Hotlines - Verified 2025</title>
     <script src="scripts/translate.js"></script>
     <style>
         * {
@@ -16,6 +16,7 @@
             --primary-dark: #1e40af;
             --danger: #dc2626;
             --success: #16a34a;
+            --warning: #f59e0b;
             --bg-dark: #0f172a;
             --bg-card: #1e293b;
             --text-primary: #f1f5f9;
@@ -80,6 +81,12 @@
             color: var(--text-secondary);
             font-size: 1.2rem;
         }
+        .last-verified {
+            color: var(--success);
+            font-size: 0.9rem;
+            margin-top: 10px;
+            font-weight: bold;
+        }
         .info-box {
             background: rgba(59, 130, 246, 0.1);
             border: 1px solid rgba(59, 130, 246, 0.3);
@@ -90,6 +97,17 @@
         }
         .info-box h2 {
             color: var(--accent);
+            margin-bottom: 10px;
+        }
+        .update-notice {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 30px;
+        }
+        .update-notice h3 {
+            color: var(--warning);
             margin-bottom: 10px;
         }
         .hotlines-grid {
@@ -106,6 +124,9 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+        }
+        .hotline-card.recently-changed {
+            border-color: rgba(245, 158, 11, 0.5);
         }
         .hotline-card::before {
             content: '';
@@ -189,6 +210,55 @@
             font-size: 0.95rem;
             margin-top: 8px;
         }
+        .special-note {
+            background: rgba(220, 38, 38, 0.1);
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+        .warning-note {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: var(--warning);
+        }
+        .available-247 {
+            color: #22c55e;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+        .citations {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 40px;
+        }
+        .citations h3 {
+            color: var(--accent);
+            margin-bottom: 15px;
+        }
+        .citations ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .citations li {
+            margin: 8px 0;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        .citations a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        .citations a:hover {
+            text-decoration: underline;
+        }
         footer {
             text-align: center;
             padding: 40px 20px;
@@ -201,19 +271,6 @@
             .hotlines-grid { grid-template-columns: 1fr; }
             .phone-number { width: 100%; justify-content: center; }
         }
-        .special-note {
-            background: rgba(220, 38, 38, 0.1);
-            border: 1px solid rgba(220, 38, 38, 0.3);
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 15px;
-            font-size: 0.9rem;
-        }
-        .available-247 {
-            color: #22c55e;
-            font-weight: bold;
-            margin-top: 8px;
-        }
     </style>
 </head>
 <body>
@@ -224,7 +281,9 @@
         <header>
             <h1 data-i18n="hotlines.title">Emergency Support Hotlines</h1>
             <p class="subtitle" data-i18n="hotlines.subtitle">Free, Confidential Help Available 24/7</p>
+            <p class="last-verified">✓ Last Verified: September 2025</p>
         </header>
+        
         <div class="info-box">
             <h2 data-i18n="hotlines.servicesTitle">📞 All Services Listed Here Are:</h2>
             <ul style="list-style: none; padding-left: 0;">
@@ -235,6 +294,16 @@
                 <li data-i18n="hotlines.services.languages">✅ Available in multiple languages</li>
             </ul>
         </div>
+
+        <div class="update-notice">
+            <h3>⚠️ Recent Service Changes (2025)</h3>
+            <ul style="list-style: none; padding-left: 0;">
+                <li>• <strong>988 LGBTQI+ Youth Option:</strong> Press 3 option discontinued July 17, 2025 due to federal funding expiration</li>
+                <li>• <strong>Trans Lifeline:</strong> Reduced from 24/7 to weekday hours due to funding cuts (Jan 2024)</li>
+                <li>• <strong>Poison Control:</strong> DC metro transitioned to digital operations March 31, 2025</li>
+            </ul>
+        </div>
+
         <div class="hotlines-grid">
             <div class="hotline-card">
                 <div class="hotline-name" data-i18n="hotlines.cards.lifeline.name">988 Suicide & Crisis Lifeline</div>
@@ -244,7 +313,7 @@
                 <div class="detail-section">
                     <div class="detail-item">
                         <span class="detail-label" data-i18n="hotlines.labels.languages">Languages:</span>
-                        <span class="languages">English, Spanish, 240+ languages</span>
+                        <span class="languages">English, Spanish, 240+ languages via Language Line</span>
                     </div>
                     <div class="detail-item">
                         <span class="detail-label" data-i18n="hotlines.labels.fundedBy">Funded by:</span> SAMHSA
@@ -252,6 +321,7 @@
                     <div class="confidential-badge" data-i18n="hotlines.badges.confidential">100% Confidential</div>
                 </div>
             </div>
+
             <div class="hotline-card">
                 <div class="hotline-name" data-i18n="hotlines.cards.veterans.name">Veterans Crisis Line</div>
                 <a href="tel:988" class="phone-number" data-i18n="hotlines.cards.veterans.call"><span class="phone-icon">📞</span> 988, Press 1</a>
@@ -267,6 +337,7 @@
                     <div class="confidential-badge" data-i18n="hotlines.badges.confidential">100% Confidential</div>
                 </div>
             </div>
+
             <div class="hotline-card">
                 <div class="hotline-name" data-i18n="hotlines.cards.domestic.name">National Domestic Violence Hotline</div>
                 <a href="tel:18007997233" class="phone-number" data-i18n="hotlines.cards.domestic.call"><span class="phone-icon">📞</span> 1-800-799-7233</a>
@@ -278,11 +349,12 @@
                         <span class="languages">200+ languages</span>
                     </div>
                     <div class="detail-item">
-                        <span class="detail-label" data-i18n="hotlines.labels.fundedBy">Funded by:</span> HHS & Private Donors
+                        <span class="detail-label" data-i18n="hotlines.labels.fundedBy">Funded by:</span> HHS (FVPSA)
                     </div>
                     <div class="confidential-badge" data-i18n="hotlines.badges.confidential">100% Confidential</div>
                 </div>
             </div>
+
             <div class="hotline-card">
                 <div class="hotline-name" data-i18n="hotlines.cards.rainn.name">RAINN Sexual Assault Hotline</div>
                 <a href="tel:18006564673" class="phone-number" data-i18n="hotlines.cards.rainn.call"><span class="phone-icon">📞</span> 1-800-656-4673</a>
@@ -291,7 +363,7 @@
                 <div class="detail-section">
                     <div class="detail-item">
                         <span class="detail-label" data-i18n="hotlines.labels.languages">Languages:</span>
-                        <span class="languages">English, Spanish</span>
+                        <span class="languages">English, Spanish (primary)</span>
                     </div>
                     <div class="detail-item">
                         <span class="detail-label" data-i18n="hotlines.labels.fundedBy">Funded by:</span> Government Grants & Donations
@@ -299,13 +371,14 @@
                     <div class="confidential-badge" data-i18n="hotlines.badges.anonymousConfidential">Anonymous & Confidential</div>
                 </div>
             </div>
+
             <div class="hotline-card">
                 <div class="hotline-name" data-i18n="hotlines.cards.samhsa.name">SAMHSA Substance Abuse Helpline</div>
                 <a href="tel:18006624357" class="phone-number" data-i18n="hotlines.cards.samhsa.call"><span class="phone-icon">📞</span> 1-800-662-4357</a>
                 <div class="available-247" data-i18n="hotlines.labels.available247">Available 24/7</div>
                 <div class="detail-section">
                     <div class="detail-item">
-                        <span class="detail-label" data-i18n="hotlines.labels.for">For:</span> <span data-i18n="hotlines.cards.samhsa.for">Mental Health & Substance Use</span>
+                        <span class="detail-label" data-i18n="hotlines.labels.for">For:</span> <span data-i18n="hotlines.cards.samhsa.for">Treatment Referral & Information</span>
                     </div>
                     <div class="detail-item">
                         <span class="detail-label" data-i18n="hotlines.labels.languages">Languages:</span>
@@ -314,6 +387,7 @@
                     <div class="confidential-badge" data-i18n="hotlines.badges.confidential">100% Confidential</div>
                 </div>
             </div>
+
             <div class="hotline-card">
                 <div class="hotline-name" data-i18n="hotlines.cards.poison.name">Poison Control</div>
                 <a href="tel:18002221222" class="phone-number" data-i18n="hotlines.cards.poison.call"><span class="phone-icon">📞</span> 1-800-222-1222</a>
@@ -329,6 +403,7 @@
                     <div class="confidential-badge" data-i18n="hotlines.badges.freeConfidential">Free & Confidential</div>
                 </div>
             </div>
+
             <div class="hotline-card">
                 <div class="hotline-name" data-i18n="hotlines.cards.childhelp.name">Childhelp Child Abuse Hotline</div>
                 <a href="tel:18004224453" class="phone-number" data-i18n="hotlines.cards.childhelp.call"><span class="phone-icon">📞</span> 1-800-422-4453</a>
@@ -344,25 +419,27 @@
                     <div class="confidential-badge" data-i18n="hotlines.badges.confidentialSupport">Confidential Support</div>
                 </div>
             </div>
+
             <div class="hotline-card">
                 <div class="hotline-name" data-i18n="hotlines.cards.crisisText.name">Crisis Text Line</div>
-                <a href="sms:741741?body=HELLO" class="phone-number" data-i18n="hotlines.cards.crisisText.call"><span class="phone-icon">💬</span> Text HOME to 741741</a>
+                <a href="sms:741741?body=HOME" class="phone-number" data-i18n="hotlines.cards.crisisText.call"><span class="phone-icon">💬</span> Text HOME to 741741</a>
                 <div class="available-247" data-i18n="hotlines.labels.available247">Available 24/7</div>
                 <div class="detail-section">
                     <div class="detail-item">
                         <span class="detail-label" data-i18n="hotlines.labels.languages">Languages:</span>
-                        <span class="languages">English, Spanish</span>
+                        <span class="languages">English, Spanish (text HOLA)</span>
                     </div>
                     <div class="detail-item">
-                        <span class="detail-label" data-i18n="hotlines.labels.fundedBy">Funded by:</span> Nonprofit/Donations
+                        <span class="detail-label" data-i18n="hotlines.labels.fundedBy">Funded by:</span> 501(c)(3) Nonprofit
                     </div>
                     <div class="confidential-badge" data-i18n="hotlines.badges.freeConfidential">Free & Confidential</div>
                 </div>
             </div>
-            <div class="hotline-card">
+
+            <div class="hotline-card recently-changed">
                 <div class="hotline-name" data-i18n="hotlines.cards.trans.name">Trans Lifeline</div>
                 <a href="tel:18775658860" class="phone-number" data-i18n="hotlines.cards.trans.call"><span class="phone-icon">📞</span> 1-877-565-8860</a>
-                <div class="special-note" data-i18n="hotlines.cards.trans.hours">⚠️ Hours: Mon-Fri, 10am-6pm PT (1pm-9pm ET)</div>
+                <div class="warning-note" data-i18n="hotlines.cards.trans.hours">⚠️ Reduced Hours (was 24/7): Mon-Fri, 10am-6pm PT (1pm-9pm ET)</div>
                 <div class="detail-section">
                     <div class="detail-item">
                         <span class="detail-label" data-i18n="hotlines.labels.languages">Languages:</span>
@@ -371,9 +448,13 @@
                     <div class="detail-item">
                         <span class="detail-label" data-i18n="hotlines.labels.fundedBy">Funded by:</span> 501(c)(3) Nonprofit
                     </div>
+                    <div class="detail-item" style="color: var(--warning);">
+                        Note: Service reduced from 24/7 in Jan 2024 due to funding cuts
+                    </div>
                     <div class="confidential-badge" data-i18n="hotlines.badges.noEmergencyWithoutConsent">No Emergency Services Without Consent</div>
                 </div>
             </div>
+
             <div class="hotline-card">
                 <div class="hotline-name" data-i18n="hotlines.cards.trafficking.name">Human Trafficking Hotline</div>
                 <a href="tel:18883737888" class="phone-number" data-i18n="hotlines.cards.trafficking.call"><span class="phone-icon">📞</span> 1-888-373-7888</a>
@@ -385,28 +466,63 @@
                         <span class="languages">200+ languages</span>
                     </div>
                     <div class="detail-item">
-                        <span class="detail-label" data-i18n="hotlines.labels.operatedBy">Operated by:</span> Polaris (NGO)
+                        <span class="detail-label" data-i18n="hotlines.labels.operatedBy">Operated by:</span> Polaris Project
                     </div>
                     <div class="confidential-badge" data-i18n="hotlines.badges.anonymousReporting">Anonymous Reporting Available</div>
                 </div>
             </div>
-            <div class="hotline-card">
+
+            <div class="hotline-card recently-changed">
                 <div class="hotline-name" data-i18n="hotlines.cards.lgbtq.name">LGBTQ National Hotline</div>
-                <a href="tel:18882345327" class="phone-number" data-i18n="hotlines.cards.lgbtq.call"><span class="phone-icon">📞</span> 1-888-234-5327</a>
-                <div class="available-247" data-i18n="hotlines.cards.lgbtq.hours">Hours: 1pm-9pm PT</div>
-                <div class="confidential-badge" data-i18n="hotlines.badges.confidentialPeerSupport">Confidential Peer Support</div>
+                <a href="tel:18888434564" class="phone-number" data-i18n="hotlines.cards.lgbtq.call"><span class="phone-icon">📞</span> 1-888-843-4564</a>
+                <div class="detail-section">
+                    <div class="detail-item">
+                        <span class="detail-label">Hours:</span> Mon-Fri: 11am-8pm PT, Sat: 9am-2pm PT
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Other Lines:</span>
+                        <br>• Youth (≤25): 1-800-246-7743
+                        <br>• Senior (50+): 1-888-234-7243
+                    </div>
+                    <div class="confidential-badge" data-i18n="hotlines.badges.confidentialPeerSupport">Confidential Peer Support</div>
+                </div>
             </div>
+
             <div class="hotline-card">
                 <div class="hotline-name" data-i18n="hotlines.cards.runaway.name">National Runaway Safeline</div>
                 <a href="tel:18007862929" class="phone-number" data-i18n="hotlines.cards.runaway.call"><span class="phone-icon">📞</span> 1-800-786-2929</a>
                 <div class="available-247" data-i18n="hotlines.labels.available247">Available 24/7</div>
-                <div class="confidential-badge" data-i18n="hotlines.badges.confidentialNonJudgmental">Confidential & Non-judgmental</div>
+                <div class="detail-section">
+                    <div class="detail-item">
+                        Also accessible as: 1-800-RUNAWAY
+                    </div>
+                    <div class="confidential-badge" data-i18n="hotlines.badges.confidentialNonJudgmental">Confidential & Non-judgmental</div>
+                </div>
             </div>
         </div>
+
+        <div class="citations">
+            <h3>Sources & Verification</h3>
+            <ul>
+                <li>• <strong>988 Suicide & Crisis Lifeline:</strong> <a href="https://www.samhsa.gov/mental-health/988/faqs" target="_blank">SAMHSA Official FAQ</a>, <a href="https://www.fcc.gov/988-suicide-and-crisis-lifeline" target="_blank">FCC 988 Information</a></li>
+                <li>• <strong>Veterans Crisis Line:</strong> <a href="https://news.va.gov/press-room/" target="_blank">VA News - Official Statistics</a></li>
+                <li>• <strong>National Domestic Violence Hotline:</strong> <a href="https://www.thehotline.org/" target="_blank">TheHotline.org</a>, <a href="https://www.thehotline.org/about/" target="_blank">Official About Page</a></li>
+                <li>• <strong>RAINN:</strong> <a href="https://rainn.org/learn-about-rainn/" target="_blank">RAINN Official Information</a></li>
+                <li>• <strong>SAMHSA Treatment Referral:</strong> <a href="https://www.samhsa.gov" target="_blank">SAMHSA.gov</a></li>
+                <li>• <strong>Poison Control:</strong> <a href="https://poisonhelp.hrsa.gov/about-us" target="_blank">HRSA Poison Help</a>, <a href="https://www.poison.org/" target="_blank">Poison.org</a></li>
+                <li>• <strong>Childhelp:</strong> <a href="https://www.childhelp.org/hotline/" target="_blank">Childhelp National Hotline</a>, <a href="https://acf.gov/acf-hotlines" target="_blank">ACF Hotlines</a></li>
+                <li>• <strong>Crisis Text Line:</strong> <a href="https://en.wikipedia.org/wiki/Crisis_Text_Line" target="_blank">Wikipedia - Crisis Text Line</a></li>
+                <li>• <strong>Trans Lifeline:</strong> <a href="https://translifeline.org/hotline/" target="_blank">Trans Lifeline Official</a>, <a href="https://en.wikipedia.org/wiki/Trans_Lifeline" target="_blank">Wikipedia - Trans Lifeline</a></li>
+                <li>• <strong>Human Trafficking Hotline:</strong> <a href="https://humantraffickinghotline.org/en/report-trafficking" target="_blank">Official Hotline Site</a>, <a href="https://polarisproject.org/national-human-trafficking-hotline/" target="_blank">Polaris Project</a></li>
+                <li>• <strong>LGBTQ National Hotline:</strong> <a href="https://lgbthotline.org/about/" target="_blank">LGBT National Help Center</a>, <a href="https://www.hrc.org/resources/direct-online-and-phone-support-services-for-lgbtq-youth" target="_blank">HRC LGBTQ+ Resources</a></li>
+                <li>• <strong>National Runaway Safeline:</strong> <a href="https://www.1800runaway.org/" target="_blank">1800RUNAWAY.org</a>, <a href="https://acf.gov/fysb/programs/runaway-homeless-youth/programs/nrs" target="_blank">ACF National Runaway Safeline</a></li>
+            </ul>
+        </div>
+
         <footer>
             <p><strong data-i18n="hotlines.footer.remember">Remember: You are not alone. Help is available.</strong></p>
             <p style="margin-top: 20px; font-size: 0.9rem;" data-i18n="hotlines.footer.disclaimer">All hotlines listed provide free, confidential support. Most are available 24/7/365. If you are in immediate danger, please call 911.</p>
-            <p style="margin-top: 20px; font-size: 0.85rem; color: #64748b;" data-i18n="hotlines.footer.updated">Last updated: September 2025 | Information verified from official sources</p>
+            <p style="margin-top: 20px; font-size: 0.85rem; color: #64748b;">Last verified: September 2025 | All information fact-checked against official sources</p>
         </footer>
     </div>
     <script>
@@ -419,6 +535,7 @@
             });
         });
         cards.forEach(card => { observer.observe(card); });
+        
         document.querySelectorAll('.phone-number').forEach(link => {
             link.addEventListener('click', function() {
                 const hotlineName = this.closest('.hotline-card').querySelector('.hotline-name').textContent;
