@@ -2087,7 +2087,7 @@
                     <!-- Step 6: If Found Instructions -->
                     <div class="wizard-step" data-step="6">
                         <h2>If Found Instructions</h2>
-                        <p>What should someone do if they find your medical ID?</p>
+                        <p>What should someone do if they find your iKey Emergency ID?</p>
                         <p style="margin:10px 0; color: var(--secondary);">⚠️ This information will be visible to anyone who finds your card</p>
                         <div class="form-group">
                             <label>
@@ -2184,7 +2184,7 @@
 
                     <div class="qr-display-card">
   <div class="qr-header">
-    <h3>Medical ID - <span id="qr-name"></span></h3>
+    <h3>iKey Emergency ID - <span id="qr-name"></span></h3>
     <p class="instruction">Scan in emergency</p>
   </div>
   <div class="qr-code-wrapper">
@@ -4186,7 +4186,7 @@ END:VCALENDAR`;
 
             addInternalPage(pageId) {
                 const pages = {
-                    ikey: { name: 'Medical ID', icon: '🏥' },
+                    ikey: { name: 'iKey Emergency ID', icon: '🏥' },
                     'emergency': { name: 'Emergency', icon: '🚨' },
                     weather: { name: 'Weather', icon: '⛈️' },
                     wttin: { name: 'Resources', icon: '🏠' },
@@ -4843,6 +4843,10 @@ Generated: ${new Date().toLocaleString()}`;
         }
 
         function initializeDisplayView(data) {
+            // Make emergency ID info available globally and update home status card
+            displayData = data;
+            renderHomeStatus();
+
             // This sets up the regular display view that users can access via tabs
             document.getElementById('wizard-view').classList.add('hidden');
             document.getElementById('display-view').classList.remove('hidden');
@@ -4875,8 +4879,8 @@ Generated: ${new Date().toLocaleString()}`;
 
             // Email card (only if email exists)
             if (data.pe) {
-                const emailSubject = encodeURIComponent("Regarding your iKey Medical ID");
-                const emailBody = encodeURIComponent("Hi,\n\nI obtained your contact information through your iKey Medical ID.\n\n");
+                const emailSubject = encodeURIComponent("Regarding your iKey Emergency ID");
+                const emailBody = encodeURIComponent("Hi,\n\nI obtained your contact information through your iKey Emergency ID.\n\n");
                 commCards += `
         <div class="emergency-card" style="margin-bottom: 15px; cursor: pointer;">
             <a href="mailto:${data.pe}?subject=${emailSubject}&body=${emailBody}" style="text-decoration: none; color: inherit; display: block;">
@@ -5057,7 +5061,7 @@ Generated: ${new Date().toLocaleString()}`;
 
                 container.innerHTML += `
             <div class="status-card">
-                <div class="card-badge status-badge">🔒 MEDICAL ID ACTIVE</div>
+                <div class="card-badge status-badge">🔒 iKey Emergency ID ACTIVE</div>
                 <div class="card-content">
                     <div class="main-text">${displayData.n}</div>
                     <div class="sub-text">${alerts.length ? alerts.join(' • ') : 'No alerts'}</div>
@@ -5068,13 +5072,13 @@ Generated: ${new Date().toLocaleString()}`;
             } else {
                 container.innerHTML += `
             <div class="status-card warning">
-                <div class="card-badge status-badge">⚠️ NO MEDICAL ID</div>
+                <div class="card-badge status-badge">⚠️ NO iKey Emergency ID</div>
                 <div class="card-content">
-                    <div class="main-text">Create Your Medical ID</div>
+                    <div class="main-text">Create Your iKey Emergency ID</div>
                     <div class="sub-text">Tap to add emergency information</div>
                 </div>
                 <button class="btn btn-primary" style="margin-top: 12px; width: 100%;" onclick="switchTab('ikey')">
-                    Create Medical ID
+                    Create iKey Emergency ID
                 </button>
             </div>
         `;
