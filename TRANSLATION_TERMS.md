@@ -9,6 +9,7 @@
             "iKey": "iKey",
             "weather": "Weather",
             "wttin": "Resources",
+            "hotlines": "Hotlines",
             "meals": "Meals",
             "dispatch": "Dispatch",
             "emergency": "Emergency",
@@ -153,6 +154,7 @@
                 "emergency": "Emergency",
                 "weather": "Weather",
                 "wttin": "Resources",
+                "hotlines": "Hotlines",
                 "dispatch": "Dispatch",
                 "meals": "Meals",
                 "apps": "Proton Apps",
@@ -315,6 +317,101 @@
             "createInviteEmail": "📅 Create Invite & Email",
             "clearForm": "Clear Form"
         },
+        "hotlines": {
+            "banner": "⚠️ If you're in immediate danger, call 911 ⚠️",
+            "title": "Emergency Support Hotlines",
+            "subtitle": "Free, Confidential Help Available 24/7",
+            "servicesTitle": "📞 All Services Listed Here Are:",
+            "services": {
+                "free": "✅ Free of charge",
+                "confidential": "✅ Confidential and anonymous",
+                "available": "✅ Available 24/7/365 (unless noted)",
+                "staffed": "✅ Staffed by trained professionals",
+                "languages": "✅ Available in multiple languages"
+            },
+            "labels": {
+                "languages": "Languages:",
+                "fundedBy": "Funded by:",
+                "operatedBy": "Operated by:",
+                "for": "For:",
+                "text": "Text:",
+                "available247": "Available 24/7",
+                "hours": "Hours:"
+            },
+            "badges": {
+                "confidential": "100% Confidential",
+                "anonymousConfidential": "Anonymous & Confidential",
+                "freeConfidential": "Free & Confidential",
+                "confidentialSupport": "Confidential Support",
+                "confidentialNonJudgmental": "Confidential & Non-judgmental",
+                "noEmergencyWithoutConsent": "No Emergency Services Without Consent",
+                "anonymousReporting": "Anonymous Reporting Available",
+                "confidentialPeerSupport": "Confidential Peer Support"
+            },
+            "cards": {
+                "lifeline": {
+                    "name": "988 Suicide & Crisis Lifeline",
+                    "call": "Call or Text 988"
+                },
+                "veterans": {
+                    "name": "Veterans Crisis Line",
+                    "call": "988, Press 1",
+                    "text": "Text: 838255",
+                    "for": "Veterans, Service Members & Families"
+                },
+                "domestic": {
+                    "name": "National Domestic Violence Hotline",
+                    "call": "1-800-799-7233",
+                    "text": "Text START to 88788"
+                },
+                "rainn": {
+                    "name": "RAINN Sexual Assault Hotline",
+                    "call": "1-800-656-4673",
+                    "text": "Online chat: rainn.org"
+                },
+                "samhsa": {
+                    "name": "SAMHSA Substance Abuse Helpline",
+                    "call": "1-800-662-4357",
+                    "for": "Mental Health & Substance Use"
+                },
+                "poison": {
+                    "name": "Poison Control",
+                    "call": "1-800-222-1222"
+                },
+                "childhelp": {
+                    "name": "Childhelp Child Abuse Hotline",
+                    "call": "1-800-422-4453"
+                },
+                "crisisText": {
+                    "name": "Crisis Text Line",
+                    "call": "Text HOME to 741741"
+                },
+                "trans": {
+                    "name": "Trans Lifeline",
+                    "call": "1-877-565-8860",
+                    "hours": "⚠️ Hours: Mon-Fri, 10am-6pm PT (1pm-9pm ET)"
+                },
+                "trafficking": {
+                    "name": "Human Trafficking Hotline",
+                    "call": "1-888-373-7888",
+                    "text": "Text: 233733"
+                },
+                "lgbtq": {
+                    "name": "LGBTQ National Hotline",
+                    "call": "1-888-234-5327",
+                    "hours": "Hours: 1pm-9pm PT"
+                },
+                "runaway": {
+                    "name": "National Runaway Safeline",
+                    "call": "1-800-786-2929"
+                }
+            },
+            "footer": {
+                "remember": "Remember: You are not alone. Help is available.",
+                "disclaimer": "All hotlines listed provide free, confidential support. Most are available 24/7/365. If you are in immediate danger, please call 911.",
+                "updated": "Last updated: September 2025 | Information verified from official sources"
+            }
+        },
         "placeholders": {
             "email": "you@proton.me",
             "name": "John Smith",
@@ -471,6 +568,7 @@
             "iKey": "iKey",
             "weather": "Clima",
             "wttin": "Recursos",
+            "hotlines": "Hotlines",
             "meals": "Comidas",
             "dispatch": "Despacho",
             "emergency": "Emergencia",
@@ -615,6 +713,7 @@
                 "emergency": "Emergencia",
                 "weather": "Clima",
                 "wttin": "Recursos",
+                "hotlines": "Hotlines",
                 "dispatch": "Despacho",
                 "meals": "Comidas",
                 "apps": "Aplicaciones Proton",
@@ -933,6 +1032,7 @@
             "iKey": "iKey",
             "weather": "الطقس",
             "wttin": "الموارد",
+            "hotlines": "Hotlines",
             "meals": "الوجبات",
             "dispatch": "الإرسال",
             "emergency": "الطوارئ",
@@ -1077,6 +1177,7 @@
                 "emergency": "طوارئ",
                 "weather": "طقس",
                 "wttin": "موارد",
+                "hotlines": "Hotlines",
                 "dispatch": "إرسال",
                 "meals": "وجبات",
                 "apps": "تطبيقات بروتون",
@@ -1395,6 +1496,7 @@
             "iKey": "iKey",
             "weather": "Hewa",
             "wttin": "Çavkaniyên",
+            "hotlines": "Hotlines",
             "meals": "Xwarin",
             "dispatch": "Şandin",
             "emergency": "Emergency",
@@ -1539,6 +1641,7 @@
                 "emergency": "Emergency",
                 "weather": "Weather",
                 "wttin": "Resources",
+                "hotlines": "Hotlines",
                 "dispatch": "Dispatch",
                 "meals": "Meals",
                 "apps": "Proton Apps",
@@ -1750,6 +1853,7 @@
             "iKey": "iKey",
             "weather": "Cimilada",
             "wttin": "Ilaha",
+            "hotlines": "Hotlines",
             "meals": "Cunto",
             "dispatch": "Dirista",
             "emergency": "Emergency",
@@ -1894,6 +1998,7 @@
                 "emergency": "Degdeg",
                 "weather": "Cimilada",
                 "wttin": "Khayraad",
+                "hotlines": "Hotlines",
                 "dispatch": "Dirid",
                 "meals": "Cunto",
                 "apps": "Barnaamijyada Proton",
@@ -2105,6 +2210,7 @@
             "iKey": "iKey",
             "weather": "天气",
             "wttin": "资源",
+            "hotlines": "Hotlines",
             "meals": "餐食",
             "dispatch": "调度",
             "emergency": "紧急",
@@ -2249,6 +2355,7 @@
                 "emergency": "紧急",
                 "weather": "天气",
                 "wttin": "资源",
+                "hotlines": "Hotlines",
                 "dispatch": "调度",
                 "meals": "餐食",
                 "apps": "Proton 应用",
