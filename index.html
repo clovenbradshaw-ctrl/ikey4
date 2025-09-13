@@ -2759,28 +2759,41 @@
 
         function smsInfo() {
             const url = window.location.href;
-            window.location.href = `sms:?body=${encodeURIComponent(url)}`;
+            const message = `Access my emergency info: ${url}`;
+            const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+            const link = isIOS
+                ? `sms:&body=${encodeURIComponent(message)}`
+                : `sms:?body=${encodeURIComponent(message)}`;
+            window.location.href = link;
             logShare('qr_code', null, 'sms');
         }
 
         function shareQR(target = 'qrcode') {
             const canvas = getQRCodeCanvas(target);
             if (!canvas) return;
-            canvas.toBlob(function(blob) {
+            canvas.toBlob(async function(blob) {
                 const file = new File([blob], 'ikey-qr.png', { type: 'image/png' });
-                const shareData = { files: [file], title: 'iKey QR Code', text: 'Scan to view my emergency info' };
-                if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-                    navigator.share(shareData)
-                        .then(() => logShare('qr_code', null, 'share'))
-                        .catch(err => console.error('Share failed:', err));
-                } else {
-                    const link = document.createElement('a');
-                    link.download = 'ikey-qr.png';
-                    link.href = URL.createObjectURL(blob);
-                    link.click();
-                    URL.revokeObjectURL(link.href);
-                    logShare('qr_code', null, 'download');
+                const shareData = {
+                    files: [file],
+                    title: 'iKey QR Code',
+                    text: 'Scan to view my emergency info',
+                    url: window.location.href
+                };
+                try {
+                    if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
+                        await navigator.share(shareData);
+                        logShare('qr_code', null, 'share');
+                        return;
+                    }
+                } catch (err) {
+                    console.error('Share failed:', err);
                 }
+                const link = document.createElement('a');
+                link.download = 'ikey-qr.png';
+                link.href = URL.createObjectURL(blob);
+                link.click();
+                URL.revokeObjectURL(link.href);
+                logShare('qr_code', null, 'download');
             });
         }
 
