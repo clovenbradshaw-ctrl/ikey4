@@ -24,13 +24,6 @@
             "contacts": "Contacts",
             "review": "Review"
         },
-        "onboarding": {
-            "title": "Choose Setup",
-            "basic": "Basic",
-            "basicDesc": "Quick form with essential fields",
-            "advanced": "Advanced",
-            "advancedDesc": "Step-by-step wizard"
-        },
         "welcome": {
             "title": "Create Your iKey",
             "description": "Generate a secure QR code with your essential information for emergency responders:",
