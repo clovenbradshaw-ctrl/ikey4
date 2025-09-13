@@ -3025,7 +3025,7 @@
         function validateStep(step) {
             if (step === 2) {
                 const email = document.getElementById('secure-email').value.trim();
-                const regex = /^[^\s@]+@(proton\.me|protonmail\.com)$/i;
+                const regex = /^[^\s@]+@(proton\.me|protonmail\.com|protonmail\.ch|pm\.me)$/i;
                 if (!regex.test(email)) {
                     alert('Please enter a valid Proton email address');
                     return false;
