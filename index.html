@@ -2777,6 +2777,17 @@
                   </div>
 
                 <div class="settings-section">
+                    <h3 style="margin-bottom: 15px; color: var(--primary);">Feedback</h3>
+                    <div class="settings-item" style="cursor: default;">
+                        <div>
+                            <div style="font-weight: 600;">📳 Haptic Feedback</div>
+                            <div style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;">Vibration feedback for actions</div>
+                        </div>
+                        <input type="checkbox" id="haptics-toggle" checked>
+                    </div>
+                </div>
+
+                <div class="settings-section">
                     <h3 style="margin-bottom: 15px; color: var(--primary);" data-i18n="settings.tabVisibility">Tab Visibility</h3>
                     <div class="settings-item" style="cursor: default;">
                         <div>
@@ -2866,6 +2877,39 @@
     </div>
 
     <script>
+        // Haptic Feedback Manager
+        const HapticFeedback = {
+            isSupported: () => {
+                return 'vibrate' in navigator;
+            },
+            patterns: {
+                light: 10,
+                medium: 20,
+                heavy: 30,
+                success: [20, 100, 20],
+                warning: [30, 50, 30, 50, 30],
+                error: [50, 100, 50],
+                selection: 5,
+                longPress: [10, 10, 10, 10, 20],
+            },
+            trigger: function(pattern = 'light') {
+                if (!this.isSupported()) return;
+                const hapticsEnabled = localStorage.getItem('hapticsEnabled') !== 'false';
+                if (!hapticsEnabled) return;
+                const vibrationPattern = this.patterns[pattern] || pattern;
+                try {
+                    navigator.vibrate(vibrationPattern);
+                } catch (e) {
+                    console.error('Haptic feedback error:', e);
+                }
+            },
+            stop: function() {
+                if (this.isSupported()) {
+                    navigator.vibrate(0);
+                }
+            }
+        };
+
         // Toggle resource dropdown
         function toggleResourceMenu() {
             const menu = document.getElementById('resource-menu');
@@ -2876,6 +2920,7 @@
 
         // Tab switching
         function switchTab(tabName) {
+            HapticFeedback.trigger('light');
             // Hide dropdown when switching tabs
             const menu = document.getElementById('resource-menu');
             if (menu) {
@@ -3076,13 +3121,15 @@
         }
 
         function nextStep() {
+            HapticFeedback.trigger('selection');
             if (validateStep(currentStep)) {
                 if (currentStep === 6) {
                     showReview();
                 }
-
                 currentStep++;
                 updateWizardDisplay();
+            } else {
+                HapticFeedback.trigger('error');
             }
         }
 
@@ -3123,6 +3170,7 @@
                 const email = document.getElementById('secure-email').value.trim();
                 const regex = /^[^\s@]+@(proton\.me|protonmail\.com)$/i;
                 if (!regex.test(email)) {
+                    HapticFeedback.trigger('error');
                     alert('Please enter a valid Proton email address');
                     return false;
                 }
@@ -3131,6 +3179,7 @@
             if (step === 3) {
                 const name = document.getElementById('name').value.trim();
                 if (!name) {
+                    HapticFeedback.trigger('error');
                     alert('Please enter your name');
                     return false;
                 }
@@ -3140,6 +3189,7 @@
                 const ecName = document.getElementById('ec-name').value.trim();
                 const ecPhone = document.getElementById('ec-phone').value.trim();
                 if (!ecName || !ecPhone) {
+                    HapticFeedback.trigger('error');
                     alert('Please enter emergency contact name and phone');
                     return false;
                 }
@@ -3150,6 +3200,7 @@
                 if (action === 'mail') {
                     const addr = document.getElementById('mail-address').value.trim();
                     if (!addr) {
+                        HapticFeedback.trigger('error');
                         alert('Please enter a mailing address');
                         return false;
                     }
@@ -3159,6 +3210,7 @@
                     if (who === 'other') {
                         const info = document.getElementById('contact-other').value.trim();
                         if (!info) {
+                            HapticFeedback.trigger('error');
                             alert('Please enter contact information');
                             return false;
                         }
@@ -3167,12 +3219,14 @@
                 if (action === 'other') {
                     const inst = document.getElementById('other-instructions').value.trim();
                     if (!inst) {
+                        HapticFeedback.trigger('error');
                         alert('Please enter instructions');
                         return false;
                     }
                 }
             }
 
+            HapticFeedback.trigger('light');
             return true;
         }
 
@@ -3335,6 +3389,7 @@
             translateFragment(document.getElementById('review-content'));
         }
         function generateQR() {
+            HapticFeedback.trigger('success');
             const cleanData = {};
             Object.keys(formData).forEach(key => {
                 if (formData[key]) {
@@ -3730,6 +3785,7 @@
         }
 
         function openQRModal() {
+            HapticFeedback.trigger('light');
             const modal = document.getElementById('qr-modal');
             const container = document.getElementById('qr-modal-code');
             if (!modal || !container) return;
@@ -3746,6 +3802,7 @@
         }
 
         function closeQRModal() {
+            HapticFeedback.trigger('selection');
             const modal = document.getElementById('qr-modal');
             if (modal) modal.classList.add('hidden');
         }
@@ -3986,7 +4043,9 @@ END:VCALENDAR`;
             }
 
             startLongPress() {
+                HapticFeedback.trigger('light');
                 this.longPressTimer = setTimeout(() => {
+                    HapticFeedback.trigger('longPress');
                     this.enterEditMode();
                 }, 1500);
             }
@@ -4000,11 +4059,12 @@ END:VCALENDAR`;
 
             handleClick(e) {
                 if (this.editMode) {
+                    HapticFeedback.trigger('light');
                     e.preventDefault();
                     e.stopPropagation();
                     return;
                 }
-
+                HapticFeedback.trigger('selection');
                 const fav = e.currentTarget;
                 const url = fav.dataset.url;
 
@@ -4366,8 +4426,12 @@ END:VCALENDAR`;
             }
 
             removeBookmark(index) {
-                this.bookmarks.splice(index, 1);
-                this.save();
+                HapticFeedback.trigger('warning');
+                if (confirm('Remove this bookmark?')) {
+                    HapticFeedback.trigger('medium');
+                    this.bookmarks.splice(index, 1);
+                    this.save();
+                }
             }
 
             moveBookmark(fromIndex, toIndex) {
@@ -4434,6 +4498,7 @@ END:VCALENDAR`;
         }
 
         function copyCoordinates() {
+            HapticFeedback.trigger('medium');
             if (currentLocation) {
                 navigator.clipboard.writeText(
                     `${currentLocation.latitude}, ${currentLocation.longitude}`
@@ -4449,6 +4514,7 @@ END:VCALENDAR`;
         }
 
         function copyAll() {
+            HapticFeedback.trigger('success');
             if (currentLocation) {
                 const allInfo = `📍 LOCATION INFO
 
@@ -4490,6 +4556,7 @@ Generated: ${new Date().toLocaleString()}`;
         }
 
         function text911() {
+            HapticFeedback.trigger('warning');
             if (!currentLocation) {
                 alert('Location not available');
                 return;
@@ -4806,21 +4873,24 @@ Generated: ${new Date().toLocaleString()}`;
         }
 
         async function loadWeatherForCity(cityName) {
+            HapticFeedback.trigger('light');
             const loadingEl = document.getElementById('weather-loading');
             const contentEl = document.getElementById('weather-content');
-            
+
             loadingEl.style.display = 'block';
             contentEl.style.display = 'none';
-            
+
             try {
                 const locationInfo = await getCityCoordinates(cityName);
                 const weatherData = await fetchWeatherData(locationInfo.latitude, locationInfo.longitude);
-                
+
                 updateWeatherUI(weatherData, locationInfo);
-                
+
                 loadingEl.style.display = 'none';
                 contentEl.style.display = 'block';
+                HapticFeedback.trigger('success');
             } catch (error) {
+                HapticFeedback.trigger('error');
                 loadingEl.innerHTML = `
                     <p style="color: var(--danger);">Error loading weather data</p>
                     <p style="font-size: 0.85rem;">Please try another city</p>
@@ -5347,7 +5417,9 @@ Generated: ${new Date().toLocaleString()}`;
         }
 
         function shareLocationWithNote(method) {
+            HapticFeedback.trigger('medium');
             if (!shareLocationData) {
+                HapticFeedback.trigger('error');
                 showShareToast('⚠️ Location not ready. Please wait...', 'warning');
                 return;
             }
@@ -5404,6 +5476,7 @@ Generated: ${new Date().toLocaleString()}`;
                     }
                     break;
             }
+            HapticFeedback.trigger('success');
         }
 
         function openShareMap() {
@@ -5492,6 +5565,13 @@ Generated: ${new Date().toLocaleString()}`;
         }
 
         function showShareToast(message, type = 'success') {
+            if (type === 'success') {
+                HapticFeedback.trigger('success');
+            } else if (type === 'warning') {
+                HapticFeedback.trigger('warning');
+            } else if (type === 'error') {
+                HapticFeedback.trigger('error');
+            }
             const existingToast = document.querySelector('.location-toast');
             if (existingToast) {
                 existingToast.remove();
@@ -5521,6 +5601,26 @@ Generated: ${new Date().toLocaleString()}`;
         document.addEventListener('DOMContentLoaded', function() {
             setupCharacterCounters();
             setupDocumentDropdowns();
+
+            // Haptics toggle
+            const hapticsToggle = document.getElementById('haptics-toggle');
+            if (hapticsToggle) {
+                const hapticsEnabled = localStorage.getItem('hapticsEnabled') !== 'false';
+                hapticsToggle.checked = hapticsEnabled;
+                hapticsToggle.addEventListener('change', (e) => {
+                    localStorage.setItem('hapticsEnabled', e.target.checked);
+                    if (e.target.checked) {
+                        HapticFeedback.trigger('success');
+                    }
+                });
+            }
+
+            // Emergency buttons
+            document.querySelectorAll('.emergency-button').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    HapticFeedback.trigger('heavy');
+                });
+            });
 
             ['phone','ec-phone','cm-phone','custom-phone'].forEach(setupPhoneInput);
 
