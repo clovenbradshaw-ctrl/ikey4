@@ -2034,7 +2034,7 @@
             </div>
 
             <div style="text-align: center; margin-top: 20px;">
-                <a href="about.html" data-i18n="home.aboutLink">About &amp; Privacy</a>
+                <a href="#" onclick="showAboutModal(); return false;" data-i18n="home.aboutLink">About &amp; Privacy</a>
             </div>
 
         </div>
@@ -2468,6 +2468,23 @@
                 <button class="btn btn-secondary" onclick="closeLocationModal()" data-i18n="location.cancel">Close</button>
                 <button class="btn btn-primary" onclick="confirmLocationRequest()" data-i18n="location.share">Share Location</button>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- About Modal -->
+<div id="about-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="about-modal-title" tabindex="-1" aria-hidden="true">
+    <div class="modal-content" style="max-width: 600px; text-align: left;">
+        <div class="modal-header" style="padding: 20px; border-bottom: 1px solid var(--border);">
+            <h3 id="about-modal-title" data-i18n="about.heading" style="margin: 0;">About &amp; Privacy</h3>
+            <button class="modal-close" onclick="closeAboutModal()">×</button>
+        </div>
+        <div style="padding: 20px;">
+            <p data-i18n="about.storage">iKey runs entirely in your browser. Favorites and recent locations are saved in localStorage on your device.</p>
+            <p data-i18n="about.offline">Once loaded, the app works offline and no data leaves your device unless you choose to share it.</p>
+            <p data-i18n="about.security">You can set a password to encrypt your saved data so only you can read it.</p>
+            <p data-i18n="about.clear">To clear your data, open your browser settings and remove site data for this page or use the "Clear browsing data" option.</p>
+            <p data-i18n="about.trainingLink"><a href="resources/training/index.html">Training Materials</a></p>
         </div>
     </div>
 </div>
@@ -5091,6 +5108,25 @@ Generated: ${new Date().toLocaleString()}`;
 
         function cancelLocationRequest() {
             closeLocationModal();
+        }
+
+        function showAboutModal() {
+            lastFocusedElement = document.activeElement;
+            const modal = document.getElementById('about-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.setAttribute('aria-hidden', 'false');
+                trapFocus(modal, closeAboutModal);
+            }
+        }
+
+        function closeAboutModal() {
+            const modal = document.getElementById('about-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.setAttribute('aria-hidden', 'true');
+                releaseFocus(modal);
+            }
         }
 
         function getLocation() {
