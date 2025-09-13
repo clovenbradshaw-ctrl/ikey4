@@ -42,6 +42,20 @@
             color: var(--text-dark);
         }
 
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #fff;
+            color: #000;
+            padding: 8px 16px;
+            z-index: 1000;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+
         *:focus-visible {
             outline: 3px solid #4f46e5;
             outline-offset: 2px;
@@ -205,12 +219,13 @@
     </style>
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <div class="widget-container">
-        <div class="widget-header">
+        <header class="widget-header">
             <h1 data-i18n="invite.header">📅 ICS Event Generator</h1>
             <p data-i18n="invite.subtitle">Create and email calendar invites</p>
-        </div>
-        <div class="widget-body">
+        </header>
+        <main id="main-content" class="widget-body">
             <div id="instructionMessage" class="instruction-message">
                 <h4 data-i18n="invite.instructions">📧 Please complete these steps:</h4>
                 <ol>
@@ -264,7 +279,7 @@
                 <button type="button" class="btn btn-primary" onclick="generateAndEmail()" data-i18n="invite.createInviteEmail">📅 Create Invite & Email</button>
                 <button type="button" class="btn btn-secondary" onclick="resetForm()" data-i18n="invite.clearForm">Clear Form</button>
             </form>
-        </div>
+        </main>
     </div>
 
 <script>
