@@ -1783,10 +1783,79 @@
                 --success: #059669;
             }
 
-            .card {
-                border: 2px solid #000;
-            }
+        .card {
+            border: 2px solid #000;
         }
+    }
+
+    /* Card preview styles */
+    .card-preview {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .card-preview .card-wrapper {
+        text-align: center;
+    }
+    .card-preview .card-label {
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: var(--secondary);
+    }
+    .card-preview .card {
+        width: 300px;
+        height: 190px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: white;
+        box-shadow: var(--shadow-sm);
+        padding: 10px;
+    }
+    .card.front {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .card.front img {
+        width: 80px;
+        height: 96px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 8px;
+        border: 2px solid #ddd;
+    }
+    .front-name {
+        font-weight: 700;
+        text-align: center;
+    }
+    .card.back {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    .card-warning {
+        color: var(--danger);
+        font-size: 0.8rem;
+        text-align: center;
+    }
+    @media print {
+        body.printing * { visibility: hidden; }
+        body.printing #card-preview, body.printing #card-preview * {
+            visibility: visible;
+        }
+        body.wallet-print #card-preview .card {
+            width: 3.5in;
+            height: 2in;
+        }
+        body.full-print #card-preview .card {
+            width: 6in;
+            height: 3.5in;
+        }
+    }
 
         /* Emergency Modal Styles */
         #emergency-modal {
@@ -2036,6 +2105,12 @@
                         <div class="form-group">
                             <label for="phone">Your Phone Number (optional)</label>
                             <input type="tel" id="phone" placeholder="e.g., 555-555-5555" pattern="\d{3}-?\d{3}-?\d{4}" inputmode="tel" title="Enter a 10-digit phone number">
+                        </div>
+                        <div class="form-group">
+                            <label for="photo-upload" class="label-gray">Photo (optional)</label>
+                            <input type="file" id="photo-upload" accept="image/*">
+                            <div id="photo-preview" style="margin-top:10px;"></div>
+                            <button type="button" id="photo-remove" class="btn btn-secondary" style="margin-top:10px; display:none;">Remove Photo</button>
                         </div>
                     </div>
 
@@ -2301,10 +2376,13 @@
   </div>
   <div id="qr-if-found" class="info-card" style="background: #fef3c7; border: 2px dashed #f59e0b; margin-top: 10px; display:none;"></div>
 </div>
+                    <div id="card-preview" class="card-preview" style="margin-top:20px;"></div>
+                    <div id="reprint-warning" style="display:none; margin-top:15px; text-align:center; color: var(--danger); font-weight:600;">Information changed — reprint required</div>
+                    <p style="text-align:center; margin-top:15px; color: var(--secondary); font-size:0.9rem;">⚠️ QR code contains all data entered above. Share carefully.</p>
 
                     <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 20px;">
-                        <button class="btn btn-success" onclick="downloadQR('wallet')">📱 Wallet Size</button>
-                        <button class="btn btn-success" onclick="downloadQR('full')">📄 Full Page</button>
+                        <button class="btn btn-success" onclick="printCard('wallet')">🖨️ Wallet Print</button>
+                        <button class="btn btn-success" onclick="printCard('full')">🖨️ Full Page Print</button>
                         <button class="btn btn-primary" onclick="generatePhysicalCard()">💳 Physical Card</button>
                         <button class="btn btn-primary" onclick="copyURL()">📋 Copy Link</button>
                         <button class="btn btn-primary" onclick="smartCopy()">📋 Copy</button>
@@ -3034,10 +3112,15 @@
 
         applyHiddenTabs();
 
-        // iKey QR Code Functions
-        let currentStep = 1;
-        let formData = {};
-        const baseURL = window.location.origin + window.location.pathname;
+// iKey QR Code Functions
+let currentStep = 1;
+let formData = {};
+const baseURL = window.location.origin + window.location.pathname;
+const photoKey = 'ikey_photo';
+let currentQRCodeURL = '';
+let lastGeneratedDataString = null;
+let lastGeneratedPhoto = '';
+let dataListenersSet = false;
 
         function compressData(data) {
             return LZString.compressToEncodedURIComponent(data);
@@ -3226,8 +3309,7 @@
 
             return true;
         }
-
-        function showReview() {
+        function collectFormData() {
             const docs = [];
             for (let i = 1; i <= 3; i++) {
                 const typeSelect = document.getElementById(`doc${i}-type`);
@@ -3259,8 +3341,8 @@
                     break;
             }
 
-            formData = {
-                v: 3, // Schema version
+            return {
+                v: 3,
                 pe: document.getElementById('secure-email').value.trim(),
                 n: document.getElementById('name').value.trim(),
                 pr: (function(){
@@ -3293,7 +3375,10 @@
                 docs,
                 ifFound
             };
+        }
 
+        function showReview() {
+            formData = collectFormData();
             let docsHTML = '';
             if (formData.docs.length) {
                 docsHTML = '<div class="info-card"><div class="subtitle-text">Documents</div><ul style="margin-left: 20px;">';
@@ -3415,6 +3500,7 @@
             }
             const url = `${baseURL}#${compressed}`;
             const encodedUrl = encodeURI(url);
+            currentQRCodeURL = encodedUrl;
 
             window.history.replaceState(null, '', url);
 
@@ -3430,6 +3516,11 @@
                 colorLight: '#ffffff',
                 correctLevel: QRCode.CorrectLevel.M
             });
+            generateCardPreview(formData);
+            lastGeneratedDataString = JSON.stringify(formData);
+            lastGeneratedPhoto = localStorage.getItem(photoKey) || '';
+            document.getElementById('reprint-warning').style.display = 'none';
+            setDataChangeListeners();
             document.getElementById('qr-name').textContent = formData.n || '';
             document.getElementById('qr-blood').textContent = formData.b || '';
             document.getElementById('qr-allergies').textContent = formData.a || '';
@@ -3461,6 +3552,104 @@
             } else {
                 ifFoundEl.style.display = 'none';
             }
+        }
+
+        function generateCardPreview(data = formData) {
+            const container = document.getElementById('card-preview');
+            if (!container) return;
+            const photo = localStorage.getItem(photoKey);
+            container.innerHTML = `
+                <div class="card-wrapper">
+                    <div class="card-label">Public Front</div>
+                    <div class="card front" id="card-front">
+                        ${photo ? `<img src="${photo}" alt="Photo">` : ''}
+                        <div class="front-name">${data.n || ''}</div>
+                    </div>
+                </div>
+                <div class="card-wrapper">
+                    <div class="card-label">Private Back</div>
+                    <div class="card back" id="card-back">
+                        <div id="card-qrcode"></div>
+                        <div class="card-warning">⚠️ Contains sensitive info</div>
+                    </div>
+                </div>`;
+            const qrContainer = document.getElementById('card-qrcode');
+            if (qrContainer && currentQRCodeURL) {
+                qrContainer.innerHTML = '';
+                new QRCode(qrContainer, {
+                    text: currentQRCodeURL,
+                    width: 100,
+                    height: 100,
+                    colorDark: '#000000',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.M
+                });
+            }
+        }
+
+        function printCard(size) {
+            document.body.classList.add('printing');
+            document.body.classList.remove('wallet-print', 'full-print');
+            if (size === 'wallet') {
+                document.body.classList.add('wallet-print');
+            } else {
+                document.body.classList.add('full-print');
+            }
+            window.print();
+            setTimeout(() => {
+                document.body.classList.remove('printing', 'wallet-print', 'full-print');
+            }, 100);
+        }
+
+        function setDataChangeListeners() {
+            if (dataListenersSet) return;
+            dataListenersSet = true;
+            document.querySelectorAll('#wizard-view input, #wizard-view textarea, #wizard-view select').forEach(el => {
+                el.addEventListener('input', checkForReprint);
+                el.addEventListener('change', checkForReprint);
+            });
+        }
+
+        function checkForReprint() {
+            if (!lastGeneratedDataString) return;
+            const currentData = collectFormData();
+            const currentPhoto = localStorage.getItem(photoKey) || '';
+            if (JSON.stringify(currentData) !== lastGeneratedDataString || currentPhoto !== lastGeneratedPhoto) {
+                document.getElementById('reprint-warning').style.display = 'block';
+                generateCardPreview(currentData);
+            }
+        }
+
+        function loadPhoto() {
+            const data = localStorage.getItem(photoKey);
+            const preview = document.getElementById('photo-preview');
+            const removeBtn = document.getElementById('photo-remove');
+            if (!preview) return;
+            if (data) {
+                preview.innerHTML = `<img src="${data}" alt="Photo" style="width:100px;border-radius:8px;">`;
+                if (removeBtn) removeBtn.style.display = 'block';
+            } else {
+                preview.innerHTML = '';
+                if (removeBtn) removeBtn.style.display = 'none';
+            }
+        }
+
+        function handlePhotoUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                localStorage.setItem(photoKey, ev.target.result);
+                loadPhoto();
+                checkForReprint();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removePhoto() {
+            localStorage.removeItem(photoKey);
+            loadPhoto();
+            checkForReprint();
         }
 
         function getQRCodeCanvas(target = 'qrcode') {
@@ -5734,6 +5923,12 @@ Generated: ${new Date().toLocaleString()}`;
                     changeWeatherLocation();
                 }
             });
+
+            const photoInput = document.getElementById('photo-upload');
+            const removeBtn = document.getElementById('photo-remove');
+            if (photoInput) photoInput.addEventListener('change', handlePhotoUpload);
+            if (removeBtn) removeBtn.addEventListener('click', removePhoto);
+            loadPhoto();
 
         });
 
