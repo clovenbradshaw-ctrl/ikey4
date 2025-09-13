@@ -1960,7 +1960,7 @@
 
     <div id="key-banner" class="key-banner hidden">
         <span id="key-banner-text"></span>
-        <button id="back-to-my-key" class="btn btn-secondary hidden" onclick="returnToMyKey()">Back to my key</button>
+        <button id="back-to-my-key" class="btn btn-secondary hidden" onclick="returnToMyKey()" data-mode="scanned">Back to my key</button>
     </div>
 
     <!-- Tab Navigation -->
@@ -2397,8 +2397,8 @@
                                     <button onclick="emailInfo()">✉️ Email</button>
                                     <button onclick="copyLinkForEmail()">📋 Copy</button>
                                     <button onclick="saveQRImage()">💾 Save</button>
-                                    <button onclick="exportBackup()">📦 Backup</button>
-                                    <button onclick="createNewKey()">🔑 New Key</button>
+                                    <button onclick="exportBackup()" data-mode="mine">📦 Backup</button>
+                                    <button onclick="createNewKey()" data-mode="mine">🔑 New Key</button>
                                 </div>
                             </div>
                             <div id="share-history" style="margin-top:10px; font-size:0.9rem; color: var(--secondary);"></div>
@@ -3207,6 +3207,11 @@ let currentQRCodeURL = '';
 let lastGeneratedDataString = null;
 let lastGeneratedPhoto = '';
 let dataListenersSet = false;
+let myKeyData = null;
+let scannedKeyData = null;
+let displayData = null;
+let isOwnKey = false;
+let currentMode = 'mine';
 
         function compressData(data) {
             return LZString.compressToEncodedURIComponent(data);
@@ -3593,10 +3598,8 @@ let dataListenersSet = false;
             localStorage.setItem('myKeyData', compressed);
             if (cleanData.pe) localStorage.setItem('myKeyEmail', cleanData.pe);
             if (cleanData.n) localStorage.setItem('myKeyName', cleanData.n);
-            displayData = cleanData;
-            isOwnKey = true;
-            renderHomeStatus();
-            updateKeyBanner();
+            myKeyData = cleanData;
+            switchMode('mine');
 
             document.getElementById('wizard-view').classList.add('hidden');
             document.getElementById('qr-view').classList.remove('hidden');
@@ -5338,10 +5341,6 @@ Generated: ${new Date().toLocaleString()}`;
                 loadWeatherForCity(cityName);
             }
         }
-
-        let displayData = null;
-        let isOwnKey = false;
-
         function showEmergencyModal(data) {
             const modal = document.getElementById('emergency-modal');
             const content = document.getElementById('emergency-modal-content');
@@ -5441,10 +5440,8 @@ Generated: ${new Date().toLocaleString()}`;
         }
 
         function initializeDisplayView(data) {
-            // Make emergency ID info available globally and update home status card
+            // Make emergency ID info available globally
             displayData = data;
-            renderHomeStatus();
-            updateKeyBanner();
 
             // This sets up the regular display view that users can access via tabs
             document.getElementById('wizard-view').classList.add('hidden');
@@ -5696,6 +5693,20 @@ Generated: ${new Date().toLocaleString()}`;
             }
         } // This closing brace was missing!
 
+        function switchMode(mode) {
+            currentMode = mode;
+            isOwnKey = mode === 'mine';
+            displayData = isOwnKey ? myKeyData : scannedKeyData;
+            document.body.classList.toggle('mine-mode', mode === 'mine');
+            document.body.classList.toggle('scanned-mode', mode === 'scanned');
+            updateKeyBanner();
+            renderHomeStatus();
+            document.querySelectorAll('[data-mode]').forEach(el => {
+                const modes = el.getAttribute('data-mode').split(/\s+/);
+                el.disabled = !modes.includes(mode);
+            });
+        }
+
         function updateKeyBanner() {
             const banner = document.getElementById('key-banner');
             const textEl = document.getElementById('key-banner-text');
@@ -5705,9 +5716,7 @@ Generated: ${new Date().toLocaleString()}`;
                 banner.classList.add('hidden');
                 return;
             }
-            const myEmail = localStorage.getItem('myKeyEmail');
             const myHash = localStorage.getItem('myKeyData');
-            isOwnKey = myEmail && displayData.pe && displayData.pe === myEmail;
             textEl.textContent = isOwnKey ? 'Viewing your own key' : "Viewing someone else's key - read only";
             if (isOwnKey) {
                 backBtn.classList.add('hidden');
@@ -6177,15 +6186,21 @@ Generated: ${new Date().toLocaleString()}`;
                         data.ph = data.p;
                     }
 
-                    displayData = data;
-                    updateKeyBanner();
+                    scannedKeyData = data;
+                    const myEmail = localStorage.getItem('myKeyEmail');
+                    if (myEmail && data.pe && data.pe === myEmail) {
+                        myKeyData = data;
+                        switchMode('mine');
+                    } else {
+                        switchMode('scanned');
+                    }
 
                     const scanKey = `scanned_${hash}`;
                     if (!localStorage.getItem(scanKey)) {
                         localStorage.setItem(scanKey, '1');
-                        showEmergencyModal(data);
+                        showEmergencyModal(displayData);
                     } else {
-                        initializeDisplayView(data);
+                        initializeDisplayView(displayData);
                     }
 
                     // Switch to home tab (modal will be on top)
@@ -6193,9 +6208,9 @@ Generated: ${new Date().toLocaleString()}`;
                 } catch (e) {
                     console.error('Failed to parse URL data:', e);
                 }
+            } else {
+                switchMode('mine');
             }
-
-            updateKeyBanner();
             
             // Handle enter key in weather search
             document.getElementById('city-input').addEventListener('keypress', function(e) {
