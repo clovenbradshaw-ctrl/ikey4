@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iKey Personal Hub - Complete FAQ Guide</title>
+    <title data-i18n="faq.title">iKey Personal Hub - Complete FAQ Guide</title>
+    <script src="scripts/translate.js"></script>
     <style>
         * {
             margin: 0;
@@ -433,35 +434,35 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🔐 iKey Personal Hub FAQ</h1>
-            <p>Client-side encrypted personal information hub with emergency QR access. Store any files securely while maintaining quick access to your favorite privacy tools and services.</p>
+            <h1 data-i18n="faq.header">🔐 iKey Personal Hub FAQ</h1>
+            <p data-i18n="faq.description">Client-side encrypted personal information hub with emergency QR access. Store any files securely while maintaining quick access to your favorite privacy tools and services.</p>
         </div>
 
         <div class="security-tiers">
             <div class="tier-card">
                 <div class="tier-icon">🔓</div>
-                <div class="tier-name">Public Tier</div>
-                <div class="tier-desc">Emergency info accessible via QR code - contact details and critical information without password</div>
+                <div class="tier-name" data-i18n="faq.publicTier">Public Tier</div>
+                <div class="tier-desc" data-i18n="faq.publicDesc">Emergency info accessible via QR code - contact details and critical information without password</div>
             </div>
             <div class="tier-card">
                 <div class="tier-icon">🔐</div>
-                <div class="tier-name">Password-Protected Tier</div>
-                <div class="tier-desc">Your personal files, documents, and sensitive information - secured with encryption</div>
+                <div class="tier-name" data-i18n="faq.protectedTier">Password-Protected Tier</div>
+                <div class="tier-desc" data-i18n="faq.protectedDesc">Your personal files, documents, and sensitive information - secured with encryption</div>
             </div>
         </div>
 
         <div class="stats">
             <div class="stat-item">
                 <div class="stat-value" id="totalQuestions">0</div>
-                <div class="stat-label">Total Questions</div>
+                <div class="stat-label" data-i18n="faq.totalQuestions">Total Questions</div>
             </div>
             <div class="stat-item">
                 <div class="stat-value" id="matchedResults">0</div>
-                <div class="stat-label">Matched Results</div>
+                <div class="stat-label" data-i18n="faq.matchedResults">Matched Results</div>
             </div>
             <div class="stat-item">
-                <div class="stat-value" id="selectedCategory">All Topics</div>
-                <div class="stat-label">Selected</div>
+                <div class="stat-value" id="selectedCategory" data-i18n="faq.allTopics">All Topics</div>
+                <div class="stat-label" data-i18n="faq.selected">Selected</div>
             </div>
         </div>
 
@@ -469,14 +470,14 @@
             <input type="text" 
                    class="search-input" 
                    id="searchInput" 
-                   placeholder="Type your question (e.g., 'bookmarks', 'proton apps', 'QR code', 'encryption')">
+                   placeholder="Type your question (e.g., 'bookmarks', 'proton apps', 'QR code', 'encryption')" data-i18n-placeholder="faq.searchPlaceholder">
             <div class="suggestions" id="suggestions"></div>
         </div>
 
         <div class="categories-grid" id="categoriesGrid"></div>
 
-        <div class="faq-container" id="faqContainer">
-            <div class="no-results">Start typing to search or select a category above</div>
+            <div class="faq-container" id="faqContainer">
+            <div class="no-results" data-i18n="faq.startTyping">Start typing to search or select a category above</div>
         </div>
     </div>
 
@@ -826,17 +827,17 @@
 
         // Initialize categories
         const categories = [
-            { name: 'Getting Started', icon: '🚀' },
-            { name: 'Bookmarks', icon: '🔖' },
-            { name: 'Proton Suite', icon: '🔐' },
-            { name: 'Security', icon: '🔒' },
-            { name: 'QR Code', icon: '📱' },
-            { name: 'Password', icon: '🔑' },
-            { name: 'Storage', icon: '💾' },
-            { name: 'Privacy', icon: '🛡️' },
-            { name: 'Technical', icon: '⚙️' },
-            { name: 'Troubleshooting', icon: '🔧' },
-            { name: 'Best Practices', icon: '✅' }
+            { key: 'gettingStarted', name: 'Getting Started', icon: '🚀' },
+            { key: 'bookmarks', name: 'Bookmarks', icon: '🔖' },
+            { key: 'protonSuite', name: 'Proton Suite', icon: '🔐' },
+            { key: 'security', name: 'Security', icon: '🔒' },
+            { key: 'qrCode', name: 'QR Code', icon: '📱' },
+            { key: 'password', name: 'Password', icon: '🔑' },
+            { key: 'storage', name: 'Storage', icon: '💾' },
+            { key: 'privacy', name: 'Privacy', icon: '🛡️' },
+            { key: 'technical', name: 'Technical', icon: '⚙️' },
+            { key: 'troubleshooting', name: 'Troubleshooting', icon: '🔧' },
+            { key: 'bestPractices', name: 'Best Practices', icon: '✅' }
         ];
 
         let selectedCategory = null;
@@ -844,47 +845,47 @@
 
         // Common search suggestions
         const suggestions = [
-            'bookmark system',
-            'proton apps',
-            'contact shortcuts',
-            'encryption',
-            'cloud backup',
-            'QR code',
-            'password tips',
-            'self-host'
+            { key: 'bookmarkSystem', text: 'bookmark system' },
+            { key: 'protonApps', text: 'proton apps' },
+            { key: 'contactShortcuts', text: 'contact shortcuts' },
+            { key: 'encryption', text: 'encryption' },
+            { key: 'cloudBackup', text: 'cloud backup' },
+            { key: 'qrCode', text: 'QR code' },
+            { key: 'passwordTips', text: 'password tips' },
+            { key: 'selfHost', text: 'self-host' }
         ];
 
         // Render categories grid
         function renderCategories() {
             const grid = document.getElementById('categoriesGrid');
             grid.innerHTML = categories.map(cat => `
-                <div class="category-card" data-category="${cat.name}">
+                <div class="category-card" data-category="${cat.name}" data-key="${cat.key}">
                     <div class="category-icon">${cat.icon}</div>
-                    <div class="category-name">${cat.name}</div>
+                    <div class="category-name" data-i18n="faq.categories.${cat.key}">${cat.name}</div>
                 </div>
             `).join('');
             
             // Add click handlers
             grid.querySelectorAll('.category-card').forEach(card => {
                 card.addEventListener('click', () => {
-                    // Toggle selection
                     if (card.classList.contains('active')) {
                         card.classList.remove('active');
                         selectedCategory = null;
-                        document.getElementById('selectedCategory').textContent = 'All Topics';
+                        document.getElementById('selectedCategory').textContent = t('faq.allTopics', 'All Topics');
+                        document.getElementById('selectedCategory').setAttribute('data-i18n', 'faq.allTopics');
                     } else {
                         grid.querySelectorAll('.category-card').forEach(c => c.classList.remove('active'));
                         card.classList.add('active');
                         selectedCategory = card.dataset.category;
-                        document.getElementById('selectedCategory').textContent = selectedCategory;
+                        document.getElementById('selectedCategory').textContent = t(`faq.categories.${card.dataset.key}`, selectedCategory);
+                        document.getElementById('selectedCategory').setAttribute('data-i18n', `faq.categories.${card.dataset.key}`);
                     }
-                    
+
                     // Re-run search if there's a query
                     const query = document.getElementById('searchInput').value;
                     if (query) {
                         performSearch(query);
                     } else {
-                        // Show all questions from selected category
                         showCategoryQuestions(selectedCategory);
                     }
                 });
@@ -894,7 +895,7 @@
         // Show all questions from a category
         function showCategoryQuestions(category) {
             if (!category) {
-                document.getElementById('faqContainer').innerHTML = '<div class="no-results">Select a category to view questions</div>';
+                document.getElementById('faqContainer').innerHTML = `<div class="no-results" data-i18n="faq.selectCategory">${t('faq.selectCategory')}</div>`;
                 return;
             }
             
@@ -905,8 +906,8 @@
         // Render suggestions
         function renderSuggestions() {
             const container = document.getElementById('suggestions');
-            container.innerHTML = suggestions.map(s => 
-                `<button class="suggestion-chip" onclick="searchFromSuggestion('${s}')">${s}</button>`
+            container.innerHTML = suggestions.map(s =>
+                `<button class="suggestion-chip" onclick="searchFromSuggestion('${s.text}')" data-i18n="faq.suggestions.${s.key}">${s.text}</button>`
             ).join('');
         }
 
@@ -927,7 +928,7 @@
             const container = document.getElementById('faqContainer');
             
             if (results.length === 0) {
-                container.innerHTML = '<div class="no-results">No matching questions found. Try different keywords.</div>';
+                container.innerHTML = `<div class="no-results" data-i18n="faq.noMatches">${t('faq.noMatches')}</div>`;
                 document.getElementById('matchedResults').textContent = '0';
                 return;
             }
@@ -943,15 +944,19 @@
                         <div class="faq-meta">
                             <div class="category-badge">
                                 <span class="category-badge-icon">${getCategoryIcon(item.category)}</span>
-                                <span>${item.category}</span>
+                                ${(() => {
+                                    const cat = categories.find(c => c.name === item.category);
+                                    const key = cat ? `faq.categories.${cat.key}` : '';
+                                    return `<span ${key ? `data-i18n="${key}"` : ''}>${t(key, item.category)}</span>`;
+                                })()}
                             </div>
-                            ${item.score < 1 ? `<span class="match-score">⭐ ${Math.round(item.score * 100)}% match</span>` : ''}
+                            ${item.score < 1 ? `<span class="match-score">⭐ ${Math.round(item.score * 100)}% ${t('faq.match','match')}</span>` : ''}
                         </div>
                         <span class="expand-icon">▼</span>
                     </div>
                     <div class="faq-answer">
                         <div class="faq-answer-content">
-                            <div class="answer-highlight">Answer</div>
+                            <div class="answer-highlight" data-i18n="faq.answer">Answer</div>
                             ${item.answer}
                         </div>
                     </div>
