@@ -1,280 +1,456 @@
-// URL Generator for GitHub Pages Calendar System
-// This can be used on any website to create calendar invite links
-
-class CalendarURLGenerator {
-    constructor(baseURL = 'https://yourusername.github.io/calendar-generator/') {
-        this.baseURL = baseURL;
-    }
-
-    /**
-     * Generate a calendar URL with event data
-     * @param {Object} eventData - Event information
-     * @param {string} eventData.title - Event title
-     * @param {string} eventData.location - Event location
-     * @param {Date} eventData.startDate - Start date/time
-     * @param {number} eventData.duration - Duration in minutes (default: 60)
-     * @param {string} eventData.description - Event description
-     * @param {string} eventData.organizer - Organizer email
-     * @param {boolean} autoDownload - Auto-download ICS on page load
-     * @returns {string} Full URL to calendar event page
-     */
-    generateEventURL(eventData, autoDownload = false) {
-        const params = new URLSearchParams();
-        
-        // Required: Title
-        params.append('t', eventData.title);
-        
-        // Optional: Location
-        if (eventData.location) {
-            params.append('l', eventData.location);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar Event Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         
-        // Date/Time formatting: YYYYMMDDTHHmm
-        if (eventData.startDate) {
-            const date = new Date(eventData.startDate);
-            const dateStr = this.formatDateTime(date);
-            params.append('d', dateStr);
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
         }
         
-        // Duration (default 60 minutes)
-        params.append('dur', eventData.duration || 60);
-        
-        // Description
-        if (eventData.description) {
-            params.append('desc', eventData.description);
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
         }
         
-        // Organizer email
-        if (eventData.organizer) {
-            params.append('org', eventData.organizer);
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2em;
         }
         
-        // Auto-download flag
-        if (autoDownload) {
-            params.append('auto', '1');
+        .event-details {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
         }
         
-        return `${this.baseURL}#${params.toString()}`;
-    }
-
-    /**
-     * Format date to YYYYMMDDTHHmm format
-     */
-    formatDateTime(date) {
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
+        .event-details h2 {
+            color: #4285f4;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
         
-        return `${year}${month}${day}T${hours}${minutes}`;
-    }
-
-    /**
-     * Generate a mailto link with calendar URL in body
-     */
-    generateMailtoLink(eventData, recipients = []) {
-        const calendarURL = this.generateEventURL(eventData);
+        .detail-row {
+            display: flex;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
         
-        const subject = encodeURIComponent(
-            `Calendar Invite: ${eventData.title}`
-        );
+        .detail-row:last-child {
+            border-bottom: none;
+        }
         
-        const body = encodeURIComponent(
-            `You're invited to: ${eventData.title}\n\n` +
-            `📍 Location: ${eventData.location || 'TBD'}\n` +
-            `📅 Date: ${new Date(eventData.startDate).toLocaleDateString()}\n` +
-            `🕐 Time: ${new Date(eventData.startDate).toLocaleTimeString()}\n` +
-            `⏱️ Duration: ${eventData.duration || 60} minutes\n\n` +
-            `📝 Details: ${eventData.description || 'No additional details'}\n\n` +
-            `Add to your calendar:\n${calendarURL}\n\n` +
-            `Or copy this link to your browser to download the .ics file.`
-        );
+        .detail-label {
+            font-weight: bold;
+            color: #666;
+            width: 100px;
+            display: flex;
+            align-items: center;
+        }
         
-        const to = recipients.join(',');
+        .detail-value {
+            flex: 1;
+            color: #333;
+        }
         
-        return `mailto:${to}?subject=${subject}&body=${body}`;
-    }
-
-    /**
-     * Generate direct calendar service links
-     */
-    generateDirectLinks(eventData) {
-        const start = new Date(eventData.startDate);
-        const duration = eventData.duration || 60;
-        const end = new Date(start.getTime() + duration * 60000);
+        .icon {
+            margin-right: 8px;
+            font-size: 1.2em;
+        }
         
-        return {
-            google: this.generateGoogleCalendarLink(eventData, start, end),
-            outlook: this.generateOutlookLink(eventData, start, end),
-            yahoo: this.generateYahooLink(eventData, start, end),
-            ics: this.generateEventURL(eventData, true) // Auto-download version
-        };
-    }
-
-    generateGoogleCalendarLink(eventData, start, end) {
-        const startStr = this.formatGoogleDate(start);
-        const endStr = this.formatGoogleDate(end);
+        .download-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            margin: 20px 0;
+        }
         
-        const params = new URLSearchParams({
-            action: 'TEMPLATE',
-            text: eventData.title,
-            dates: `${startStr}/${endStr}`,
-            details: eventData.description || '',
-            location: eventData.location || ''
-        });
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
         
-        return `https://calendar.google.com/calendar/render?${params.toString()}`;
-    }
-
-    generateOutlookLink(eventData, start, end) {
-        const params = new URLSearchParams({
-            subject: eventData.title,
-            startdt: start.toISOString(),
-            enddt: end.toISOString(),
-            body: eventData.description || '',
-            location: eventData.location || ''
-        });
+        .download-btn:active {
+            transform: translateY(0);
+        }
         
-        return `https://outlook.live.com/calendar/0/deeplink/compose?${params.toString()}`;
-    }
-
-    generateYahooLink(eventData, start, end) {
-        const startStr = this.formatGoogleDate(start);
-        const endStr = this.formatGoogleDate(end);
+        .calendar-options {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
         
-        const params = new URLSearchParams({
-            v: '60',
-            title: eventData.title,
-            st: startStr,
-            et: endStr,
-            desc: eventData.description || '',
-            in_loc: eventData.location || ''
-        });
+        .cal-option {
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
         
-        return `https://calendar.yahoo.com/?${params.toString()}`;
-    }
-
-    formatGoogleDate(date) {
-        return date.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
-    }
-}
-
-// Example Usage:
-const generator = new CalendarURLGenerator('https://yourusername.github.io/calendar-generator/');
-
-// Create an event
-const myEvent = {
-    title: 'Team Strategy Meeting',
-    location: 'Conference Room A / Zoom',
-    startDate: new Date('2024-01-25T14:00:00'),
-    duration: 90, // minutes
-    description: 'Quarterly planning and review session. Bring your reports.',
-    organizer: 'manager@company.com'
-};
-
-// Generate different types of links
-console.log('Calendar Page URL:', generator.generateEventURL(myEvent));
-console.log('Auto-download URL:', generator.generateEventURL(myEvent, true));
-console.log('Mailto Link:', generator.generateMailtoLink(myEvent, ['team@company.com']));
-
-// Get all calendar service links
-const allLinks = generator.generateDirectLinks(myEvent);
-console.log('All Calendar Links:', allLinks);
-
-// HTML Implementation Example
-function createCalendarButton(eventData) {
-    const generator = new CalendarURLGenerator();
-    const url = generator.generateEventURL(eventData);
-    const mailtoLink = generator.generateMailtoLink(eventData);
-    
-    return `
-        <div class="calendar-invite">
-            <!-- Direct link to calendar page -->
-            <a href="${url}" target="_blank" class="btn">
-                View Calendar Event
-            </a>
-            
-            <!-- Email with calendar link -->
-            <a href="${mailtoLink}" class="btn">
-                Email Calendar Invite
-            </a>
-            
-            <!-- Direct service links -->
-            <div class="service-links">
-                <a href="${generator.generateGoogleCalendarLink(eventData, 
-                    new Date(eventData.startDate), 
-                    new Date(new Date(eventData.startDate).getTime() + eventData.duration * 60000))}" 
-                   target="_blank">Add to Google</a>
-            </div>
+        .cal-option:hover {
+            border-color: #4285f4;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .loading {
+            display: none;
+            margin: 20px 0;
+        }
+        
+        .loading.active {
+            display: block;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #4285f4;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+        
+        .share-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #e0e0e0;
+        }
+        
+        .share-url {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 0.9em;
+            margin: 10px 0;
+            color: #666;
+        }
+        
+        .copy-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .copy-btn:hover {
+            background: #5a6268;
+        }
+        
+        .no-event {
+            color: #666;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+        
+        .create-link {
+            color: #4285f4;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .create-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📅 Calendar Event</h1>
+        
+        <div id="content">
+            <!-- Content will be dynamically inserted here -->
         </div>
-    `;
-}
+    </div>
 
-// Batch Event Generator
-class BatchCalendarGenerator {
-    constructor(baseURL) {
-        this.generator = new CalendarURLGenerator(baseURL);
-    }
-
-    /**
-     * Generate calendar links for multiple events
-     */
-    generateBatchLinks(events) {
-        return events.map(event => ({
-            ...event,
-            calendarURL: this.generator.generateEventURL(event),
-            mailtoLink: this.generator.generateMailtoLink(event),
-            directLinks: this.generator.generateDirectLinks(event)
-        }));
-    }
-
-    /**
-     * Create a shareable page with multiple events
-     */
-    createEventListHTML(events) {
-        const eventLinks = this.generateBatchLinks(events);
+    <script>
+        // Parse event data from URL hash
+        function parseEventFromHash() {
+            const hash = window.location.hash.substring(1);
+            if (!hash) return null;
+            
+            const params = new URLSearchParams(hash);
+            
+            // Check if we have the minimum required data
+            if (!params.get('t')) return null;
+            
+            // Parse the datetime
+            const dateStr = params.get('d') || '';
+            const year = dateStr.substring(0, 4) || '2024';
+            const month = dateStr.substring(4, 6) || '01';
+            const day = dateStr.substring(6, 8) || '15';
+            const hour = dateStr.substring(9, 11) || '14';
+            const minute = dateStr.substring(11, 13) || '00';
+            
+            // Calculate end time (default 1 hour duration)
+            const duration = parseInt(params.get('dur') || '60');
+            const startDate = new Date(`${year}-${month}-${day}T${hour}:${minute}:00`);
+            const endDate = new Date(startDate.getTime() + duration * 60000);
+            
+            return {
+                title: decodeURIComponent(params.get('t')),
+                location: decodeURIComponent(params.get('l') || 'TBD'),
+                description: decodeURIComponent(params.get('desc') || 'Event created via calendar generator'),
+                startDate: `${year}${month}${day}`,
+                startTime: `${hour}${minute}00`,
+                endDate: formatDate(endDate),
+                endTime: formatTime(endDate),
+                duration: duration,
+                organizer: decodeURIComponent(params.get('org') || 'organizer@example.com'),
+                // For display
+                displayDate: `${month}/${day}/${year}`,
+                displayTime: `${hour}:${minute}`
+            };
+        }
         
-        let html = '<div class="event-list">';
-        eventLinks.forEach(event => {
-            html += `
-                <div class="event-card">
-                    <h3>${event.title}</h3>
-                    <p>📅 ${new Date(event.startDate).toLocaleString()}</p>
-                    <p>📍 ${event.location}</p>
-                    <div class="actions">
-                        <a href="${event.calendarURL}" target="_blank">Add to Calendar</a>
-                        <a href="${event.mailtoLink}">Email Invite</a>
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}${month}${day}`;
+        }
+        
+        function formatTime(date) {
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            return `${hours}${minutes}00`;
+        }
+        
+        function generateICS(event) {
+            const uid = Date.now() + '@calendar-generator.github.io';
+            const now = new Date();
+            const dtstamp = formatDate(now) + 'T' + formatTime(now) + 'Z';
+            
+            return `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//GitHub Calendar Generator//EN
+METHOD:REQUEST
+BEGIN:VEVENT
+UID:${uid}
+DTSTAMP:${dtstamp}
+ORGANIZER;CN=Event Organizer:mailto:${event.organizer}
+DTSTART:${event.startDate}T${event.startTime}Z
+DTEND:${event.endDate}T${event.endTime}Z
+SUMMARY:${event.title}
+DESCRIPTION:${event.description}
+LOCATION:${event.location}
+SEQUENCE:0
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR`;
+        }
+        
+        function downloadICS(event) {
+            const icsContent = generateICS(event);
+            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${event.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.ics`;
+            
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            // Show success message
+            const status = document.getElementById('status');
+            if (status) {
+                status.className = 'status success';
+                status.textContent = '✅ Calendar file downloaded! Open it to add to your calendar.';
+            }
+        }
+        
+        function copyShareURL() {
+            const url = window.location.href;
+            navigator.clipboard.writeText(url).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                const originalText = btn.textContent;
+                btn.textContent = '✅ Copied!';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            });
+        }
+        
+        function createGoogleCalendarURL(event) {
+            const start = `${event.startDate}T${event.startTime}Z`;
+            const end = `${event.endDate}T${event.endTime}Z`;
+            const details = encodeURIComponent(event.description);
+            const location = encodeURIComponent(event.location);
+            const text = encodeURIComponent(event.title);
+            
+            return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${text}&dates=${start}/${end}&details=${details}&location=${location}`;
+        }
+        
+        function createOutlookURL(event) {
+            const start = `${event.startDate.substring(0,4)}-${event.startDate.substring(4,6)}-${event.startDate.substring(6,8)}T${event.startTime.substring(0,2)}:${event.startTime.substring(2,4)}:00Z`;
+            const end = `${event.endDate.substring(0,4)}-${event.endDate.substring(4,6)}-${event.endDate.substring(6,8)}T${event.endTime.substring(0,2)}:${event.endTime.substring(2,4)}:00Z`;
+            const body = encodeURIComponent(event.description);
+            const location = encodeURIComponent(event.location);
+            const subject = encodeURIComponent(event.title);
+            
+            return `https://outlook.live.com/calendar/0/deeplink/compose?subject=${subject}&startdt=${start}&enddt=${end}&body=${body}&location=${location}`;
+        }
+        
+        function renderEventPage(event) {
+            const content = document.getElementById('content');
+            
+            if (!event) {
+                content.innerHTML = `
+                    <div class="no-event">
+                        <p>No event data found in the URL.</p>
+                        <p>To create a calendar event link, use this format:</p>
+                        <div class="share-url">
+                            ${window.location.origin}${window.location.pathname}#t=Event%20Title&l=Location&d=20240115T1400&desc=Description
+                        </div>
+                        <p>Or <a href="#t=Sample%20Event&l=Conference%20Room&d=20240115T1400&desc=This%20is%20a%20sample%20event" class="create-link">try this sample event</a></p>
+                    </div>
+                `;
+                return;
+            }
+            
+            content.innerHTML = `
+                <div class="event-details">
+                    <h2>${event.title}</h2>
+                    <div class="detail-row">
+                        <div class="detail-label"><span class="icon">📍</span> Location:</div>
+                        <div class="detail-value">${event.location}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label"><span class="icon">📅</span> Date:</div>
+                        <div class="detail-value">${event.displayDate}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label"><span class="icon">🕐</span> Time:</div>
+                        <div class="detail-value">${event.displayTime} (${event.duration} minutes)</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label"><span class="icon">📝</span> Details:</div>
+                        <div class="detail-value">${event.description}</div>
                     </div>
                 </div>
+                
+                <button class="download-btn" onclick="downloadICS(currentEvent)">
+                    📥 Download Calendar File (.ics)
+                </button>
+                
+                <div id="status" class="status"></div>
+                
+                <div class="calendar-options">
+                    <a href="${createGoogleCalendarURL(event)}" target="_blank" class="cal-option">
+                        <span>📅</span> Add to Google
+                    </a>
+                    <a href="${createOutlookURL(event)}" target="_blank" class="cal-option">
+                        <span>📅</span> Add to Outlook
+                    </a>
+                    <a href="mailto:?subject=${encodeURIComponent(event.title)}&body=${encodeURIComponent(`Event: ${event.title}\nLocation: ${event.location}\nDate: ${event.displayDate}\nTime: ${event.displayTime}\n\nAdd to calendar: ${window.location.href}`)}" class="cal-option">
+                        <span>✉️</span> Email Invite
+                    </a>
+                </div>
+                
+                <div class="share-section">
+                    <h3>Share this event:</h3>
+                    <div class="share-url">${window.location.href}</div>
+                    <button class="copy-btn" onclick="copyShareURL()">📋 Copy Link</button>
+                </div>
             `;
-        });
-        html += '</div>';
+        }
         
-        return html;
-    }
-}
-
-// WordPress/CMS Integration Example
-function createWordPressShortcode(atts) {
-    // Parse shortcode attributes
-    // [calendar_event title="Meeting" date="2024-01-25T14:00" location="Zoom" duration="60"]
-    
-    const generator = new CalendarURLGenerator();
-    const eventData = {
-        title: atts.title || 'Event',
-        location: atts.location || '',
-        startDate: new Date(atts.date),
-        duration: parseInt(atts.duration) || 60,
-        description: atts.description || ''
-    };
-    
-    const url = generator.generateEventURL(eventData);
-    
-    return `<a href="${url}" target="_blank" class="calendar-button">Add to Calendar</a>`;
-}
-
-// Export for use in other scripts
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { CalendarURLGenerator, BatchCalendarGenerator };
-}
+        // Global variable to store current event
+        let currentEvent = null;
+        
+        // Initialize on page load
+        function init() {
+            currentEvent = parseEventFromHash();
+            renderEventPage(currentEvent);
+            
+            // Auto-download if specified in URL
+            const params = new URLSearchParams(window.location.hash.substring(1));
+            if (params.get('auto') === '1' && currentEvent) {
+                setTimeout(() => {
+                    downloadICS(currentEvent);
+                }, 1000);
+            }
+        }
+        
+        // Handle hash changes
+        window.addEventListener('hashchange', init);
+        window.addEventListener('load', init);
+        
+        // If coming from a mailto link, show loading first
+        if (window.location.hash) {
+            document.getElementById('content').innerHTML = '<div class="loading active"><div class="spinner"></div><p>Loading event...</p></div>';
+        }
+    </script>
+</body>
+</html>
