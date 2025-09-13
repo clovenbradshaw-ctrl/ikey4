@@ -3525,57 +3525,52 @@
         }
 
         function shareQR(target = 'qrcode') {
-            console.log('shareQR called');
-            console.log('navigator.share available:', !!navigator.share);
-            console.log('displayData:', displayData);
-
             const canvas = getQRCodeCanvas(target);
             if (!canvas) {
-                showToast('❌ Please generate QR code first');
-                console.warn('shareQR: no canvas found for', target);
-                return;
-            }
-
-            if (!navigator.share) {
-                showToast('⚠️ Share not supported on this device. Downloading QR instead.');
-                saveQRImage(target);
+                alert('Please generate QR code first');
                 return;
             }
 
             const shareUrl = window.location.href;
+            const shareText = `My iKey Emergency Info: ${shareUrl}`;
 
-            canvas.toBlob(async function(blob) {
-                const file = new File([blob], 'ikey-qr.png', { type: 'image/png' });
-                let shareData = {
-                    files: [file],
-                    title: 'iKey QR Code',
-                    text: 'Scan to view my emergency info',
-                    url: shareUrl
-                };
-
-                try {
-                    if (navigator.canShare && !navigator.canShare({ files: [file] })) {
-                        // Some browsers support sharing but not with files
-                        shareData = {
-                            title: 'iKey QR Code',
-                            text: 'Scan to view my emergency info',
-                            url: shareUrl
-                        };
-                    }
-                    await navigator.share(shareData);
+            // Try to use the native share API when available
+            if (navigator.share) {
+                navigator.share({
+                    title: 'iKey Emergency Information',
+                    text: shareText
+                }).then(() => {
                     logShare('qr_code', null, 'share');
-                    return;
-                } catch (err) {
-                    console.error('Share failed:', err);
-                    showToast('⚠️ Share failed. Downloading QR instead.');
+                }).catch(err => {
+                    if (err.name === 'AbortError') {
+                        return; // user cancelled
+                    }
+                    copyURLWithFeedback();
+                });
+            } else {
+                const choice = confirm('Share not available. Copy link to clipboard instead?');
+                if (choice) {
+                    copyURLWithFeedback();
                 }
+            }
+        }
 
-                const link = document.createElement('a');
-                link.download = 'ikey-qr.png';
-                link.href = URL.createObjectURL(blob);
-                link.click();
-                URL.revokeObjectURL(link.href);
-                logShare('qr_code', null, 'download');
+        function copyURLWithFeedback() {
+            const url = window.location.href;
+            navigator.clipboard.writeText(url).then(() => {
+                const toast = document.createElement('div');
+                toast.className = 'location-toast';
+                toast.textContent = '✅ Link copied! You can paste it anywhere.';
+                document.body.appendChild(toast);
+
+                setTimeout(() => {
+                    toast.style.animation = 'toastSlideOut 0.3s ease';
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+
+                logShare('qr_code', null, 'copy');
+            }).catch(() => {
+                alert('Link copied: ' + url);
             });
         }
 
