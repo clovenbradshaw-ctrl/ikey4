@@ -1960,6 +1960,7 @@
 
     <div id="key-banner" class="key-banner hidden">
         <span id="key-banner-text"></span>
+        <button id="set-as-my-key" class="btn btn-primary hidden" onclick="setAsMyKey()">Set as my iKey</button>
         <button id="back-to-my-key" class="btn btn-secondary hidden" onclick="returnToMyKey()">Back to my key</button>
     </div>
 
@@ -5700,6 +5701,7 @@ Generated: ${new Date().toLocaleString()}`;
             const banner = document.getElementById('key-banner');
             const textEl = document.getElementById('key-banner-text');
             const backBtn = document.getElementById('back-to-my-key');
+            const setBtn = document.getElementById('set-as-my-key');
             if (!banner || !textEl) return;
             if (!displayData) {
                 banner.classList.add('hidden');
@@ -5711,9 +5713,11 @@ Generated: ${new Date().toLocaleString()}`;
             textEl.textContent = isOwnKey ? 'Viewing your own key' : "Viewing someone else's key - read only";
             if (isOwnKey) {
                 backBtn.classList.add('hidden');
+                if (setBtn) setBtn.classList.add('hidden');
             } else {
                 if (myHash) backBtn.classList.remove('hidden');
                 else backBtn.classList.add('hidden');
+                if (setBtn) setBtn.classList.remove('hidden');
             }
             banner.classList.remove('hidden');
             if (bookmarkManager) bookmarkManager.render();
@@ -5725,6 +5729,17 @@ Generated: ${new Date().toLocaleString()}`;
                 window.location.hash = myHash;
                 location.reload();
             }
+        }
+
+        function setAsMyKey() {
+            if (!displayData) return;
+            const hash = decodeURIComponent(window.location.hash.slice(1));
+            if (hash) localStorage.setItem('myKeyData', hash);
+            if (displayData.pe) localStorage.setItem('myKeyEmail', displayData.pe);
+            if (displayData.n) localStorage.setItem('myKeyName', displayData.n);
+            isOwnKey = true;
+            updateKeyBanner();
+            renderHomeStatus();
         }
 
         // Share Location Tab Functions
