@@ -1595,7 +1595,7 @@
         /* Display container with grid layout */
         .display-container {
             display: grid;
-            grid-template-columns: 1fr auto;
+            grid-template-columns: 1fr;
             gap: 20px;
             max-width: 1200px;
             margin: 0 auto;
@@ -1607,178 +1607,63 @@
             min-width: 0;
         }
 
-        /* Floating Share Panel */
-        .floating-share-panel {
-            position: sticky;
-            top: 80px;
-            height: fit-content;
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-            padding: 12px;
-            min-width: 140px;
-            border: 1px solid rgba(0, 0, 0, 0.06);
-            transition: all 0.3s ease;
+        /* Share Bar */
+        .share-bar {
+            margin: 20px 0;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+            transition: all 0.3s;
         }
 
-        .floating-share-panel:hover {
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-        }
-
-        /* Panel Header */
-        .share-panel-header {
-            padding: 8px 12px;
-            margin-bottom: 8px;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #6b7280;
-            font-weight: 600;
-            text-align: center;
-        }
-
-        /* Share Buttons */
-        .floating-share-btn {
+        .share-toggle {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
             width: 100%;
             padding: 12px 16px;
-            margin-bottom: 4px;
-            background: #f8fafc;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 14px;
-            font-weight: 500;
-            color: #1e293b;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .floating-share-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 0;
-            height: 100%;
-            background: linear-gradient(90deg, #4f46e5, #7c3aed);
-            transition: width 0.3s ease;
-            opacity: 0.1;
-        }
-
-        .floating-share-btn:hover::before {
-            width: 100%;
-        }
-
-        .floating-share-btn:hover {
-            background: white;
-            transform: translateX(4px);
-            box-shadow: 0 2px 12px rgba(79, 70, 229, 0.15);
-        }
-
-        .floating-share-btn:active {
-            transform: translateX(2px) scale(0.98);
-        }
-
-        .share-icon {
-            font-size: 20px;
-            width: 24px;
-            text-align: center;
-        }
-
-        .share-label {
-            flex: 1;
-            text-align: left;
-        }
-
-        /* Emergency button styling */
-        .floating-share-btn.emergency {
-            background: #fee2e2;
-            margin-top: 8px;
-        }
-
-        .floating-share-btn.emergency:hover {
-            background: #fecaca;
-            box-shadow: 0 2px 12px rgba(239, 68, 68, 0.2);
-        }
-
-        .floating-share-btn.emergency::before {
-            background: linear-gradient(90deg, #ef4444, #dc2626);
-        }
-
-        /* Divider */
-        .share-panel-divider {
-            height: 1px;
-            background: #e2e8f0;
-            margin: 12px 0;
-        }
-
-        /* Mobile responsiveness */
-        @media (max-width: 768px) {
-            .display-container {
-                grid-template-columns: 1fr;
-            }
-
-            .floating-share-panel {
-                position: fixed;
-                bottom: 20px;
-                right: 20px;
-                top: auto;
-                width: 60px;
-                padding: 8px;
-                z-index: 100;
-            }
-
-            .share-panel-header {
-                display: none;
-            }
-
-            .floating-share-btn {
-                padding: 12px;
-                justify-content: center;
-            }
-
-            .share-label {
-                display: none;
-            }
-
-            .floating-share-btn:hover {
-                transform: scale(1.1);
-            }
-        }
-
-        /* Collapsed state for desktop */
-        @media (min-width: 769px) {
-            .floating-share-panel.collapsed {
-                min-width: auto;
-            }
-
-            .floating-share-panel.collapsed .share-label,
-            .floating-share-panel.collapsed .share-panel-header {
-                display: none;
-            }
-
-            .floating-share-panel.collapsed .floating-share-btn {
-                padding: 12px;
-                justify-content: center;
-            }
-        }
-
-        /* Add collapse toggle button */
-        .panel-toggle {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            width: 20px;
-            height: 20px;
-            border: none;
             background: none;
+            border: none;
             cursor: pointer;
-            color: #6b7280;
-            font-size: 12px;
+            font-weight: 600;
+            color: #4f46e5;
+        }
+
+        .toggle-icon {
+            transition: transform 0.3s;
+            display: inline-block;
+        }
+
+        .share-bar:not(.collapsed) .toggle-icon {
+            transform: rotate(90deg);
+        }
+
+        .share-options {
+            display: flex;
+            gap: 8px;
+            padding: 0 16px 12px;
+            flex-wrap: wrap;
+        }
+
+        .share-bar.collapsed .share-options {
+            display: none;
+        }
+
+        .share-options button {
+            padding: 8px 16px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .share-options button:hover {
+            background: #4f46e5;
+            color: white;
+            border-color: #4f46e5;
         }
 
         @media (prefers-contrast: high) {
@@ -2242,47 +2127,22 @@
                         <div class="display-main">
                             <h2>Emergency Essential Info</h2>
                             <div id="display-content"></div>
+                            <div class="share-bar collapsed">
+                                <button class="share-toggle" onclick="toggleShareBar()">
+                                    <span class="toggle-icon">▶</span>
+                                    <span class="toggle-text">Share Options</span>
+                                </button>
+
+                                <div class="share-options">
+                                    <button onclick="shareQR()">📤 Share</button>
+                                    <button onclick="smsInfo()">💬 Text</button>
+                                    <button onclick="emailInfo()">✉️ Email</button>
+                                    <button onclick="copyLinkForEmail()">📋 Copy</button>
+                                    <button onclick="saveQRImage()">💾 Save</button>
+                                </div>
+                            </div>
                             <div id="communication-actions" style="margin-top: 20px;"></div>
                             <div id="share-history" style="margin-top:10px; font-size:0.9rem; color: var(--secondary);"></div>
-                        </div>
-
-                        <!-- Floating Share Panel -->
-                        <div class="floating-share-panel">
-                            <div class="share-panel-header">
-                                <span>Quick Actions</span>
-                            </div>
-
-                            <button class="floating-share-btn" onclick="shareQR()" aria-label="Share">
-                                <span class="share-icon">📤</span>
-                                <span class="share-label">Share</span>
-                            </button>
-
-                            <button class="floating-share-btn" onclick="smsInfo()" aria-label="Text">
-                                <span class="share-icon">💬</span>
-                                <span class="share-label">Text</span>
-                            </button>
-
-                            <button class="floating-share-btn" onclick="emailInfo()" aria-label="Email">
-                                <span class="share-icon">✉️</span>
-                                <span class="share-label">Email</span>
-                            </button>
-
-                            <button class="floating-share-btn" onclick="copyLinkForEmail()" aria-label="Copy">
-                                <span class="share-icon">📋</span>
-                                <span class="share-label">Copy</span>
-                            </button>
-
-                            <button class="floating-share-btn" onclick="saveQRImage()" aria-label="Save QR">
-                                <span class="share-icon">💾</span>
-                                <span class="share-label">Save QR</span>
-                            </button>
-
-                            <div class="share-panel-divider"></div>
-
-                            <button class="floating-share-btn emergency" onclick="window.location.href='tel:911'" aria-label="Call 911">
-                                <span class="share-icon">🚨</span>
-                                <span class="share-label">Call 911</span>
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -3705,23 +3565,18 @@
             }
         }
 
-        function initFloatingPanel() {
-            const panel = document.querySelector('.floating-share-panel');
-            if (!panel) return;
-            let lastScroll = 0;
-            window.addEventListener('scroll', () => {
-                const currentScroll = window.pageYOffset;
-                if (currentScroll > lastScroll && currentScroll > 100) {
-                    panel.style.opacity = '0.7';
-                } else {
-                    panel.style.opacity = '1';
-                }
-                lastScroll = currentScroll;
-            });
-            panel.addEventListener('mouseenter', () => {
-                panel.style.opacity = '1';
-            });
+        function toggleShareBar() {
+            const bar = document.querySelector('.share-bar');
+            bar.classList.toggle('collapsed');
+            localStorage.setItem('shareBarCollapsed', bar.classList.contains('collapsed'));
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const collapsed = localStorage.getItem('shareBarCollapsed');
+            if (collapsed === 'false') {
+                document.querySelector('.share-bar')?.classList.remove('collapsed');
+            }
+        });
 
         function createNew() {
             if (confirm('Create a new iKey? This will take you to the base URL.')) {
@@ -5595,7 +5450,6 @@ Generated: ${new Date().toLocaleString()}`;
                 inviteAppLink.href = `invite.html?key=${encodeURIComponent(storagePrefix)}`;
             }
             showLastShare();
-            initFloatingPanel();
 
             // Check for existing QR data in URL
             const hash = decodeURIComponent(window.location.hash.slice(1));
