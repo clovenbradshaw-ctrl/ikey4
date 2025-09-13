@@ -2613,6 +2613,22 @@
         <h2 style="margin-bottom: 25px;" data-i18n="nav.settings">Settings</h2>
 
                 <div class="settings-section">
+                    <h3 style="margin-bottom: 15px; color: var(--primary);" data-i18n="settings.accessibility">Accessibility</h3>
+                    <div class="settings-item">
+                        <div>
+                            <div style="font-weight: 600;" data-i18n="settings.textSize">📝 Text Size</div>
+                            <div style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;" data-i18n="settings.textSizeDesc">Adjust interface text</div>
+                        </div>
+                        <select id="text-size-select" onchange="setTextSize(this.value)" style="padding: 6px; border-radius: 8px; border: 1px solid var(--border);">
+                            <option value="2020">20/20</option>
+                            <option value="reading" data-i18n="settings.readingGlasses">Reading Glasses</option>
+                            <option value="whats" data-i18n="settings.whatsThis">What's this say?</option>
+                            <option value="grandma" data-i18n="settings.grandma">Grandma</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="settings-section">
                     <h3 style="margin-bottom: 15px; color: var(--primary);" data-i18n="settings.qrCode">QR Code</h3>
                     <div class="settings-item" onclick="createNew()">
                         <div>
@@ -2651,23 +2667,6 @@
                     </a>
                 </div>
                 
-                  <div class="settings-section">
-                    <h3 style="margin-bottom: 15px; color: var(--primary);" data-i18n="settings.accessibility">Accessibility</h3>
-                    <div class="settings-item">
-                        <div>
-                            <div style="font-weight: 600;" data-i18n="settings.textSize">📝 Text Size</div>
-                            <div style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;" data-i18n="settings.textSizeDesc">Adjust interface text</div>
-                        </div>
-                        <select id="text-size-select" onchange="setTextSize(this.value)" style="padding: 6px; border-radius: 8px; border: 1px solid var(--border);">
-                            <option value="2020">20/20</option>
-                            <option value="reading" data-i18n="settings.readingGlasses">Reading Glasses</option>
-                            <option value="whats" data-i18n="settings.whatsThis">What's this say?</option>
-                            <option value="grandma" data-i18n="settings.grandma">Grandma</option>
-                        </select>
-                    </div>
-                  </div>
-
-
                 <div class="settings-section">
                     <h3 style="margin-bottom: 15px; color: var(--primary);" data-i18n="settings.tabVisibility">Tab Visibility</h3>
                     <div class="settings-item" style="cursor: default;">
