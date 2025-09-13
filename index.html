@@ -2032,6 +2032,12 @@
                 <!-- Populated by JavaScript -->
             </div>
 
+            <!-- Scanned Cards Section -->
+            <div id="scanned-cards-section" style="display: none; margin-top: 20px;">
+                <h2>Scanned Cards</h2>
+                <ul id="scanned-cards-list"></ul>
+            </div>
+
             <div style="text-align: center; margin-top: 20px;">
                 <a href="about.html" data-i18n="home.aboutLink">About &amp; Privacy</a>
             </div>
@@ -5342,6 +5348,29 @@ Generated: ${new Date().toLocaleString()}`;
         let displayData = null;
         let isOwnKey = false;
 
+        // In-memory list of recently scanned cards (cleared on reload)
+        const scannedCards = [];
+
+        function renderScannedCards() {
+            const section = document.getElementById('scanned-cards-section');
+            const list = document.getElementById('scanned-cards-list');
+            if (!section || !list) return;
+
+            list.innerHTML = '';
+            scannedCards.forEach(card => {
+                const li = document.createElement('li');
+                const time = new Date(card.timestamp).toLocaleString();
+                li.textContent = `${card.name} - ${time}`;
+                list.appendChild(li);
+            });
+            section.style.display = scannedCards.length ? 'block' : 'none';
+        }
+
+        function addScannedCard(name) {
+            scannedCards.push({ name, timestamp: Date.now() });
+            renderScannedCards();
+        }
+
         function showEmergencyModal(data) {
             const modal = document.getElementById('emergency-modal');
             const content = document.getElementById('emergency-modal-content');
@@ -6062,6 +6091,7 @@ Generated: ${new Date().toLocaleString()}`;
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
+            renderScannedCards();
             setupCharacterCounters();
             setupDocumentDropdowns();
 
@@ -6179,6 +6209,7 @@ Generated: ${new Date().toLocaleString()}`;
 
                     displayData = data;
                     updateKeyBanner();
+                    addScannedCard(data.n || 'Unknown');
 
                     const scanKey = `scanned_${hash}`;
                     if (!localStorage.getItem(scanKey)) {
