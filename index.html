@@ -3437,11 +3437,10 @@ END:VCALENDAR`;
 
             handleTouchEnd(e) {
                 const touchDuration = Date.now() - this.touchStartTime;
+                this.cancelLongPress();
                 if (touchDuration < 200 && !this.editMode) {
-                    this.cancelLongPress();
-                    this.handleClick(e);
-                } else {
-                    this.cancelLongPress();
+                    // Let the natural click event handle navigation
+                    return;
                 }
             }
 
