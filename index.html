@@ -1960,8 +1960,8 @@
     </header>
 
     <div id="key-banner" class="key-banner hidden">
-        <span id="key-banner-text"></span>
-        <button id="back-to-my-key" class="btn btn-secondary hidden" onclick="returnToMyKey()">Back to my key</button>
+        <span id="key-banner-text" data-i18n="keyBanner.viewingScanned"></span>
+        <button id="back-to-my-key" class="btn btn-secondary hidden" onclick="returnToMyKey()" data-i18n="keyBanner.return">Return to My Key</button>
     </div>
 
     <!-- Tab Navigation -->
@@ -4223,6 +4223,13 @@ END:VCALENDAR`;
                 this.longPressTimer = null;
                 this.draggedElement = null;
                 this.touchStartTime = null;
+                this.quickActions = {
+                    'call-911': { optionName: '911', name: 'Emergency', url: 'tel:911', icon: '🚨', key: 'wizard.quick.call911', activeKey: 'wizard.quick.call911Active' },
+                    'text-911': { optionName: 'Text 911', name: 'Text 911', url: 'sms:', icon: '✉️', key: 'wizard.quick.text911', activeKey: 'wizard.quick.text911Active' },
+                    'call-988': { optionName: 'Crisis', name: 'Crisis Line', url: 'tel:988', icon: '💬', key: 'wizard.quick.call988', activeKey: 'wizard.quick.call988Active' },
+                    'call-poison': { optionName: 'Poison', name: 'Poison Control', url: 'tel:+18002221222', icon: '☠️', key: 'wizard.quick.callPoison', activeKey: 'wizard.quick.callPoisonActive' },
+                    'text-quick': { optionName: 'Text', name: 'Quick Text', url: 'sms:', icon: '💬', key: 'wizard.quick.textQuick', activeKey: 'wizard.quick.textQuickActive' }
+                };
 
                 this.protonApps = {
                     mail: { 
@@ -4626,22 +4633,20 @@ END:VCALENDAR`;
             }
 
             getQuickActionsHTML() {
-                const actions = [
-                    { type: 'call-911', key: 'wizard.quick.call911', name: '911', icon: '🚨' },
-                    { type: 'text-911', key: 'wizard.quick.text911', name: 'Text 911', icon: '✉️' },
-                    { type: 'call-988', key: 'wizard.quick.call988', name: 'Crisis', icon: '💬' },
-                    { type: 'call-poison', key: 'wizard.quick.callPoison', name: 'Poison', icon: '☠️' },
-                    { type: 'text-quick', key: 'wizard.quick.textQuick', name: 'Text', icon: '💬' }
-                ];
-
-                return actions.map(action => `
-            <div class="bookmark-option" onclick="bookmarkManager.addQuickAction('${action.type}')">
+                return Object.entries(this.quickActions).map(([type, action]) => {
+                    const isActive = this.bookmarks.some(b => b.type === 'action' && b.url === action.url);
+                    const labelKey = isActive ? action.activeKey : action.key;
+                    const label = t(labelKey, isActive ? `${action.optionName} (Added)` : action.optionName);
+                    const handler = isActive ? `bookmarkManager.removeQuickAction('${type}')` : `bookmarkManager.addQuickAction('${type}')`;
+                    return `
+            <div class="bookmark-option${isActive ? ' active' : ''}" onclick="${handler}">
                 <div class="option-icon">
                     <span class="option-emoji">${action.icon}</span>
                 </div>
-                <div class="option-label" data-i18n="${action.key}">${action.name}</div>
+                <div class="option-label" data-i18n="${labelKey}">${label}</div>
             </div>
-        `).join('');
+        `;
+                }).join('');
             }
 
             getInternalPagesHTML() {
@@ -4735,23 +4740,25 @@ END:VCALENDAR`;
             }
 
             addQuickAction(actionType) {
-                const actions = {
-                    'call-911': { name: 'Emergency', url: 'tel:911', icon: '🚨' },
-                    'text-911': { name: 'Text 911', url: 'sms:', icon: '💬' },
-                    'call-988': { name: 'Crisis Line', url: 'tel:988', icon: '💬' },
-                    'call-poison': { name: 'Poison Control', url: 'tel:+18002221222', icon: '☠️' },
-                    'text-quick': { name: 'Quick Text', url: 'sms:', icon: '💬' }
-                };
-
-                const action = actions[actionType];
-                if (action) {
+                const action = this.quickActions[actionType];
+                if (action && !this.bookmarks.some(b => b.type === 'action' && b.url === action.url)) {
                     this.bookmarks.push({
                         type: 'action',
-                        ...action
+                        name: action.name,
+                        url: action.url,
+                        icon: action.icon
                     });
                     this.save();
                     this.closeModal();
                 }
+            }
+
+            removeQuickAction(actionType) {
+                const action = this.quickActions[actionType];
+                if (!action) return;
+                this.bookmarks = this.bookmarks.filter(b => !(b.type === 'action' && b.url === action.url));
+                this.save();
+                this.closeModal();
             }
 
             addInternalPage(pageId) {
@@ -5343,6 +5350,7 @@ Generated: ${new Date().toLocaleString()}`;
 
         let displayData = null;
         let isOwnKey = false;
+        let viewingScannedKey = false;
 
         function showEmergencyModal(data) {
             const modal = document.getElementById('emergency-modal');
@@ -5703,20 +5711,14 @@ Generated: ${new Date().toLocaleString()}`;
             const textEl = document.getElementById('key-banner-text');
             const backBtn = document.getElementById('back-to-my-key');
             if (!banner || !textEl) return;
-            if (!displayData) {
+            if (!viewingScannedKey) {
                 banner.classList.add('hidden');
                 return;
             }
-            const myEmail = localStorage.getItem('myKeyEmail');
+            textEl.textContent = t('keyBanner.viewingScanned', 'Viewing Scanned Key');
             const myHash = localStorage.getItem('myKeyData');
-            isOwnKey = myEmail && displayData.pe && displayData.pe === myEmail;
-            textEl.textContent = isOwnKey ? 'Viewing your own key' : "Viewing someone else's key - read only";
-            if (isOwnKey) {
-                backBtn.classList.add('hidden');
-            } else {
-                if (myHash) backBtn.classList.remove('hidden');
-                else backBtn.classList.add('hidden');
-            }
+            if (myHash) backBtn.classList.remove('hidden');
+            else backBtn.classList.add('hidden');
             banner.classList.remove('hidden');
             if (bookmarkManager) bookmarkManager.render();
         }
@@ -6170,24 +6172,27 @@ Generated: ${new Date().toLocaleString()}`;
 
             // Check for existing QR data in URL
             const hash = decodeURIComponent(window.location.hash.slice(1));
+            const myHash = localStorage.getItem('myKeyData');
+            viewingScannedKey = !!hash && hash !== myHash;
             if (hash) {
                 try {
                     const decompressed = decompressData(hash);
-                    const data = JSON.parse(decompressed);
+                    const tempData = JSON.parse(decompressed);
                     // `pe` was introduced in schema v2; older QR codes may omit it
-                    if (data.p && !data.ph) {
-                        data.ph = data.p;
+                    if (tempData.p && !tempData.ph) {
+                        tempData.ph = tempData.p;
                     }
 
-                    displayData = data;
-                    updateKeyBanner();
+                    displayData = tempData;
+                    const myEmail = localStorage.getItem('myKeyEmail');
+                    isOwnKey = myEmail && tempData.pe && tempData.pe === myEmail;
 
                     const scanKey = `scanned_${hash}`;
                     if (!localStorage.getItem(scanKey)) {
                         localStorage.setItem(scanKey, '1');
-                        showEmergencyModal(data);
+                        showEmergencyModal(tempData);
                     } else {
-                        initializeDisplayView(data);
+                        initializeDisplayView(tempData);
                     }
 
                     // Switch to home tab (modal will be on top)

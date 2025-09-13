@@ -4,6 +4,10 @@
         "appLogo": "🔐 iKey",
         "appTagline": "Secure Location & Personal Safety Hub",
         "homeTitle": "iKey Home",
+        "keyBanner": {
+            "viewingScanned": "Viewing Scanned Key",
+            "return": "Return to My Key"
+        },
         "nav": {
             "home": "Home",
             "iKey": "iKey",
@@ -150,10 +154,15 @@
             "emailAddress": "Email Address",
             "quick": {
                 "call911": "911",
+                "call911Active": "911 (Added)",
                 "text911": "Text 911",
+                "text911Active": "Text 911 (Added)",
                 "call988": "Crisis",
+                "call988Active": "Crisis (Added)",
                 "callPoison": "Poison",
-                "textQuick": "Text"
+                "callPoisonActive": "Poison (Added)",
+                "textQuick": "Text",
+                "textQuickActive": "Text (Added)"
             },
             "pages": {
                 "ikey": "Medical",
@@ -578,6 +587,10 @@
         "appLogo": "🔐 iKey",
         "appTagline": "Centro de Ubicación Segura y Seguridad Personal",
         "homeTitle": "iKey Inicio",
+        "keyBanner": {
+            "viewingScanned": "Viendo llave escaneada",
+            "return": "Volver a mi llave"
+        },
         "nav": {
             "home": "Inicio",
             "iKey": "iKey",
@@ -724,10 +737,15 @@
             "emailAddress": "Dirección de correo",
             "quick": {
                 "call911": "911",
+                "call911Active": "911 (Activo)",
                 "text911": "Texto 911",
+                "text911Active": "Texto 911 (Activo)",
                 "call988": "Crisis",
+                "call988Active": "Crisis (Activo)",
                 "callPoison": "Veneno",
-                "textQuick": "Texto"
+                "callPoisonActive": "Veneno (Activo)",
+                "textQuick": "Texto",
+                "textQuickActive": "Texto (Activo)"
             },
             "pages": {
                 "ikey": "Médico",
@@ -1043,6 +1061,10 @@
         "appLogo": "🔐 iKey",
         "appTagline": "مركز الموقع الآمن والسلامة الشخصية",
         "homeTitle": "iKey الرئيسية",
+        "keyBanner": {
+            "viewingScanned": "عرض المفتاح الممسوح",
+            "return": "العودة إلى مفتاحي"
+        },
         "nav": {
             "home": "الرئيسية",
             "iKey": "iKey",
@@ -1189,10 +1211,15 @@
             "emailAddress": "عنوان البريد",
             "quick": {
                 "call911": "911",
+                "call911Active": "911 (مفعل)",
                 "text911": "نص 911",
+                "text911Active": "نص 911 (مفعل)",
                 "call988": "أزمة",
+                "call988Active": "أزمة (مفعل)",
                 "callPoison": "سموم",
-                "textQuick": "نص"
+                "callPoisonActive": "سموم (مفعل)",
+                "textQuick": "نص",
+                "textQuickActive": "نص (مفعل)"
             },
             "pages": {
                 "ikey": "طبي",
@@ -1508,6 +1535,10 @@
         "appLogo": "🔐 iKey",
         "appTagline": "Navenda Cihê Ewledar û Ewlehiya Kesane",
         "homeTitle": "iKey Mal",
+        "keyBanner": {
+            "viewingScanned": "Mifteya scanî tê dîtin",
+            "return": "Vegere Mifteya min"
+        },
         "nav": {
             "home": "Mal",
             "iKey": "iKey",
@@ -1654,10 +1685,15 @@
             "emailAddress": "Email Address",
             "quick": {
                 "call911": "911",
+                "call911Active": "911 (Çalak)",
                 "text911": "Text 911",
+                "text911Active": "Text 911 (Çalak)",
                 "call988": "Crisis",
+                "call988Active": "Crisis (Çalak)",
                 "callPoison": "Poison",
-                "textQuick": "Text"
+                "callPoisonActive": "Poison (Çalak)",
+                "textQuick": "Text",
+                "textQuickActive": "Text (Çalak)"
             },
             "pages": {
                 "ikey": "Medical",
@@ -1866,6 +1902,10 @@
         "appLogo": "🔐 iKey",
         "appTagline": "Xarunta Goobta Ammaan iyo Badbaadada Shakhsi",
         "homeTitle": "iKey Guri",
+        "keyBanner": {
+            "viewingScanned": "Daawashada Furaha la Sawiray",
+            "return": "Ku noqo Furahayga"
+        },
         "nav": {
             "home": "Guri",
             "iKey": "iKey",
@@ -2012,10 +2052,15 @@
             "emailAddress": "Cinwaanka iimaylka",
             "quick": {
                 "call911": "911",
+                "call911Active": "911 (Firfircoon)",
                 "text911": "Qoraal 911",
+                "text911Active": "Qoraal 911 (Firfircoon)",
                 "call988": "Krisis",
+                "call988Active": "Krisis (Firfircoon)",
                 "callPoison": "Sun",
-                "textQuick": "Qoraal"
+                "callPoisonActive": "Sun (Firfircoon)",
+                "textQuick": "Qoraal",
+                "textQuickActive": "Qoraal (Firfircoon)"
             },
             "pages": {
                 "ikey": "Caafimaad",
@@ -2224,6 +2269,10 @@
         "appLogo": "🔐 iKey",
         "appTagline": "安全位置与个人安全中心",
         "homeTitle": "iKey 主页",
+        "keyBanner": {
+            "viewingScanned": "查看扫描的密钥",
+            "return": "返回到我的密钥"
+        },
         "nav": {
             "home": "主页",
             "iKey": "iKey",
@@ -2370,10 +2419,15 @@
             "emailAddress": "邮箱地址",
             "quick": {
                 "call911": "911",
+                "call911Active": "911（已添加）",
                 "text911": "短信 911",
+                "text911Active": "短信 911（已添加）",
                 "call988": "危机",
+                "call988Active": "危机（已添加）",
                 "callPoison": "中毒",
-                "textQuick": "短信"
+                "callPoisonActive": "中毒（已添加）",
+                "textQuick": "短信",
+                "textQuickActive": "短信（已添加）"
             },
             "pages": {
                 "ikey": "医疗",
