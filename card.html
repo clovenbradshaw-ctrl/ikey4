@@ -614,6 +614,15 @@
 
                     <div class="field-item required">
                         <div class="field-header">
+                            <label class="field-label required" style="margin-left: 30px;" data-i18n="card.phoneNumber">Your Phone Number</label>
+                            <span class="char-counter" id="count_phone">0/20</span>
+                        </div>
+                        <input type="tel" class="field-input" id="field_phone" maxlength="20"
+                               placeholder="+1-555-0123" data-i18n-placeholder="placeholders.phone" oninput="updateCharCount('phone', 20)" required>
+                    </div>
+
+                    <div class="field-item required">
+                        <div class="field-header">
                             <label class="field-label required" style="margin-left: 30px;" data-i18n="card.emergencyContact">Emergency Contact</label>
                             <span class="char-counter" id="count_emergency">0/20</span>
                         </div>
@@ -768,6 +777,11 @@
                                     <span class="back-value" id="display_name"></span>
                                 </div>
 
+                                <div class="back-item">
+                                    <span class="back-label" data-i18n="card.phoneLabel">Phone:</span>
+                                    <span class="back-value" id="display_phone"></span>
+                                </div>
+
                                 <div class="back-item" id="back_dob">
                                     <span class="back-label" data-i18n="card.dobLabel">DOB:</span>
                                     <span class="back-value" id="display_dob"></span>
@@ -832,6 +846,7 @@
                     const data = JSON.parse(decompressed);
                     document.getElementById('field_email').value = data.pe || '';
                     document.getElementById('field_name').value = data.n || '';
+                    document.getElementById('field_phone').value = data.ph || '';
                     document.getElementById('field_emergency').value = data.ep || '';
 
                     if (data.d) {
@@ -1090,6 +1105,7 @@
             const requiredFields = {
                 email: document.getElementById('field_email').value,
                 name: document.getElementById('field_name').value,
+                phone: document.getElementById('field_phone').value,
                 emergency: document.getElementById('field_emergency').value
             };
 
@@ -1107,6 +1123,7 @@
 
             document.getElementById('display_email').textContent = activeFields.email;
             document.getElementById('display_name').textContent = activeFields.name;
+            document.getElementById('display_phone').textContent = activeFields.phone;
             document.getElementById('display_emergency').textContent = activeFields.emergency;
 
             optionalFields.forEach(field => {
@@ -1137,6 +1154,7 @@
                 v: 3,
                 pe: data.email,
                 n: data.name,
+                ph: data.phone,
                 ep: data.emergency,
                 d: data.dob,
                 b: data.blood,
