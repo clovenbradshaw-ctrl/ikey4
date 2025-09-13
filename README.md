@@ -35,6 +35,12 @@ The repository has no build step. Edits can be made directly to the HTML or tran
 
 When adding DOM elements at runtime (wizards, modals, etc.), call the global `translateFragment(rootElement)` helper from `scripts/translate.js`. It applies `data-i18n*` translations to the supplied subtree so new UI fragments are translated immediately.
 
+### Style guidelines
+
+- Shared styles live in `styles/base.css`. Link this stylesheet from every HTML page.
+- Avoid inline `style` attributes where possible; prefer CSS classes or page-specific style blocks.
+- Use the CSS variables in `base.css` for colors and spacing to keep a consistent look.
+
 ## Contributing
 
 ### Accessibility
