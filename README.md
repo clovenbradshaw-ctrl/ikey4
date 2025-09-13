@@ -23,6 +23,10 @@ iKey is a lightweight, client‑side web app that keeps your location and key pe
 
 The project is a collection of static HTML files. Open `index.html` directly in a browser or serve the folder from any static web host.
 
+## Deployment
+
+For production use, host the files on a neutral domain that doesn't identify individuals, such as `ikey.yourorg.org`.
+
 ## Development
 
 The repository has no build step. Edits can be made directly to the HTML or translation files. A helper script in `scripts/generate_translation_doc.py` regenerates the translation document when new terms are added.

@@ -2007,6 +2007,10 @@
                 <!-- Populated by JavaScript -->
             </div>
 
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="about.html" data-i18n="home.aboutLink">About &amp; Privacy</a>
+            </div>
+
         </div>
     </div>
 
@@ -2411,7 +2415,7 @@
                 </div>
             </div>
         </div>
-    </div>
+</div>
 
 <!-- QR Code Modal -->
 <div id="qr-modal" class="modal hidden">
@@ -2423,11 +2427,27 @@
     </div>
 </div>
 
+<!-- Location Permission Modal -->
+<div id="location-modal" class="modal hidden">
+    <div class="modal-content" style="max-width: 500px;">
+        <div class="modal-header" style="padding: 20px; border-bottom: 1px solid var(--border);">
+            <h3 data-i18n="location.shareTitle" style="margin: 0;">Share location?</h3>
+        </div>
+        <div style="padding: 20px;">
+            <p data-i18n="location.shareDesc">Your GPS coordinates stay on this device unless you choose to send them. Allow access?</p>
+            <div class="modal-actions" style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
+                <button class="btn btn-secondary" onclick="cancelLocationRequest()" data-i18n="location.cancel">Don't Share</button>
+                <button class="btn btn-primary" onclick="confirmLocationRequest()" data-i18n="location.share">Share Location</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Emergency Services Tab -->
 <div id="emergency" class="tab-content">
         <div class="container">
             <div class="location-share-tip" style="margin-bottom: 20px;">
-                <button class="btn btn-secondary" onclick="getLocation()">Enable Location Sharing</button>
+                <button class="btn btn-secondary" onclick="showLocationModal()">Enable Location Sharing</button>
                 <p style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;">Helps get your precise location to give operators.</p>
             </div>
 
@@ -3059,7 +3079,7 @@
                 }
             } else if (tabName === 'emergency') {
                 if (!window.emergencyLoaded) {
-                    getLocation();
+                    showLocationModal();
                     window.emergencyLoaded = true;
                 }
             } else if (tabName === 'share') {
@@ -4858,6 +4878,28 @@ Generated: ${new Date().toLocaleString()}`;
             
             document.getElementById('emergency-loading').style.display = 'none';
             document.getElementById('emergency-content').style.display = 'block';
+        }
+
+        function showLocationModal() {
+            const modal = document.getElementById('location-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+            }
+        }
+
+        function confirmLocationRequest() {
+            const modal = document.getElementById('location-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+            }
+            getLocation();
+        }
+
+        function cancelLocationRequest() {
+            const modal = document.getElementById('location-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+            }
         }
 
         function getLocation() {
