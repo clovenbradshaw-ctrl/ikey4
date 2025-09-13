@@ -663,6 +663,140 @@
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
         }
 
+        /* Share Tab Styles */
+        .template-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 12px 8px;
+            background: var(--light);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .template-btn:hover {
+            background: white;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .template-btn:active {
+            transform: scale(0.95);
+        }
+        .template-icon {
+            font-size: 1.5rem;
+        }
+        .template-text {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        .share-method-btn {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .share-method-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .share-method-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+            border-color: var(--primary);
+        }
+        .share-method-btn:hover::before {
+            opacity: 0.05;
+        }
+        .share-method-btn:active {
+            transform: scale(0.95);
+        }
+        .share-method-icon {
+            font-size: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        .share-method-label {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--dark);
+            position: relative;
+            z-index: 1;
+        }
+        .share-method-subtitle {
+            font-size: 0.75rem;
+            color: var(--secondary);
+            position: relative;
+            z-index: 1;
+        }
+        .history-item {
+            background: white;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+        .history-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .location-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--success);
+            color: white;
+            padding: 14px 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            font-weight: 600;
+            z-index: 2000;
+            animation: toastSlideIn 0.3s ease;
+        }
+        @keyframes toastSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+        @keyframes toastSlideOut {
+            from {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+        }
+
         /* Weather Tab Styles */
         .weather-widget {
             background: rgba(255, 255, 255, 0.98);
@@ -1478,6 +1612,10 @@
             <span class="tab-icon">📍</span>
             <span class="tab-label" data-i18n="nav.emergency">Emergency</span>
         </button>
+        <button class="tab-btn" onclick="switchTab('share')" aria-label="Share Location" data-i18n-aria="nav.share">
+            <span class="tab-icon">📤</span>
+            <span class="tab-label" data-i18n="nav.share">Share</span>
+        </button>
         <button class="tab-btn" onclick="switchTab('weather')" aria-label="Weather" data-i18n-aria="nav.weather">
             <span class="tab-icon">⛈️</span>
             <span class="tab-label" data-i18n="nav.weather">Weather</span>
@@ -1941,6 +2079,130 @@
         </div>
     </div>
 
+    <!-- Share Tab -->
+    <div id="share" class="tab-content">
+        <div class="container">
+            <div class="weather-widget">
+                <h2 style="margin-bottom: 25px; display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 2rem;">📤</span>
+                    <span>Share My Location</span>
+                </h2>
+
+                <div id="share-loading" class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>Acquiring your location...</p>
+                    <p style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;">Please allow location access</p>
+                </div>
+
+                <div id="share-content" style="display: none;">
+                    <!-- Location Display Card -->
+                    <div class="weather-main" style="margin-bottom: 25px;">
+                        <div style="text-align: center; width: 100%;">
+                            <div style="font-size: 0.75rem; text-transform: uppercase; color: rgba(255,255,255,0.8); margin-bottom: 10px; letter-spacing: 1px;">
+                                CURRENT LOCATION
+                            </div>
+                            <div id="share-address" style="font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; text-shadow: 0 1px 2px rgba(0,0,0,0.2);">
+                                Loading address...
+                            </div>
+                            <div id="share-coords" style="font-family: 'SF Mono', monospace; font-size: 0.95rem; opacity: 0.9;">
+                                Coordinates loading...
+                            </div>
+                            <div id="share-accuracy" style="font-size: 0.75rem; margin-top: 8px; opacity: 0.8;">
+                                Accuracy: calculating...
+                            </div>
+                            <button onclick="refreshShareLocation()" style="margin-top: 15px; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 6px 16px; color: white; cursor: pointer; font-size: 0.85rem; transition: all 0.3s;">
+                                🔄 Refresh Location
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Note Input Section -->
+                    <div class="card" style="margin-bottom: 20px;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 15px;">
+                            <span style="font-size: 1.5rem;">💭</span>
+                            <label for="location-note" style="font-weight: 600; color: var(--dark); margin: 0;">
+                                Add a Message
+                            </label>
+                        </div>
+                        <textarea id="location-note" placeholder="Let them know why you're sharing your location..." style="width: 100%; min-height: 100px; padding: 12px 14px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; font-family: inherit; transition: border-color 0.3s; resize: vertical;" maxlength="500"></textarea>
+                        <div class="char-counter good" id="note-counter" style="text-align: right; margin-top: 5px;">0 / 500</div>
+
+                        <!-- Quick Templates -->
+                        <div style="margin-top: 15px;">
+                            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--secondary); font-weight: 600; margin-bottom: 10px; letter-spacing: 0.5px;">
+                                QUICK TEMPLATES
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px;">
+                                <button class="template-btn" onclick="useTemplate('meeting')">
+                                    <span class="template-icon">📍</span>
+                                    <span class="template-text">Meeting here</span>
+                                </button>
+                                <button class="template-btn" onclick="useTemplate('pickup')">
+                                    <span class="template-icon">🚗</span>
+                                    <span class="template-text">Pick me up</span>
+                                </button>
+                                <button class="template-btn" onclick="useTemplate('safe')">
+                                    <span class="template-icon">✅</span>
+                                    <span class="template-text">I'm safe</span>
+                                </button>
+                                <button class="template-btn" onclick="useTemplate('help')">
+                                    <span class="template-icon">🆘</span>
+                                    <span class="template-text">Need help</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Share Methods Grid -->
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px;">
+                        <button class="share-method-btn" onclick="shareLocationWithNote('text')">
+                            <div class="share-method-icon">💬</div>
+                            <div class="share-method-label">Text Message</div>
+                            <div class="share-method-subtitle">SMS with location</div>
+                        </button>
+
+                        <button class="share-method-btn" onclick="shareLocationWithNote('copy')">
+                            <div class="share-method-icon">📋</div>
+                            <div class="share-method-label">Copy</div>
+                            <div class="share-method-subtitle">To clipboard</div>
+                        </button>
+
+                        <button class="share-method-btn" onclick="shareLocationWithNote('email')">
+                            <div class="share-method-icon">✉️</div>
+                            <div class="share-method-label">Email</div>
+                            <div class="share-method-subtitle">Send via email</div>
+                        </button>
+
+                        <button class="share-method-btn" onclick="shareLocationWithNote('share')">
+                            <div class="share-method-icon">📱</div>
+                            <div class="share-method-label">Apps</div>
+                            <div class="share-method-subtitle">WhatsApp, etc.</div>
+                        </button>
+                    </div>
+
+                    <!-- Map Button -->
+                    <button class="btn btn-primary" onclick="openShareMap()" style="width: 100%; justify-content: center; background: linear-gradient(135deg, #4f46e5 0%, #6b21a8 100%); box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);">
+                        <span style="font-size: 1.2rem;">🗺️</span>
+                        View on Google Maps
+                    </button>
+
+                    <!-- Share History -->
+                    <div id="location-share-history" class="card" style="margin-top: 25px; background: var(--light); display: none;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
+                            <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--secondary); font-weight: 600; letter-spacing: 0.5px;">
+                                RECENT SHARES
+                            </div>
+                            <button onclick="clearShareHistory()" style="background: none; border: none; color: var(--danger); cursor: pointer; font-size: 0.85rem;">
+                                Clear
+                            </button>
+                        </div>
+                        <div id="share-history-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Weather Tab -->
     <div id="weather" class="tab-content">
         <div class="container">
@@ -2312,6 +2574,11 @@
                 if (!window.emergencyLoaded) {
                     getLocation();
                     window.emergencyLoaded = true;
+                }
+            } else if (tabName === 'share') {
+                if (!window.shareTabLoaded) {
+                    initShareTab();
+                    window.shareTabLoaded = true;
                 }
             }
         }
@@ -2985,6 +3252,8 @@ END:VCALENDAR`;
         // Emergency Functions
         let currentLocation = null;
         let watchId = null;
+        let shareLocationData = null;
+        let shareWatchId = null;
 
         class BookmarkManager {
             constructor() {
@@ -4069,6 +4338,324 @@ Generated: ${new Date().toLocaleString()}`;
         } // This closing brace was missing!
 
 
+        // Share Location Tab Functions
+        function initShareTab() {
+            const noteTextarea = document.getElementById('location-note');
+            const counter = document.getElementById('note-counter');
+
+            if (noteTextarea && counter) {
+                noteTextarea.addEventListener('input', () => {
+                    const length = noteTextarea.value.length;
+                    counter.textContent = `${length} / 500`;
+
+                    if (length <= 300) {
+                        counter.className = 'char-counter good';
+                    } else if (length <= 450) {
+                        counter.className = 'char-counter warning';
+                    } else {
+                        counter.className = 'char-counter danger';
+                    }
+                });
+            }
+
+            getShareLocation();
+            loadShareHistory();
+        }
+
+        function getShareLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        updateShareLocationDisplay(position);
+                    },
+                    error => {
+                        console.error('Location error:', error);
+                        document.getElementById('share-loading').innerHTML = `
+                            <p style="color: var(--danger); font-size: 1.1rem;">📍 Unable to get location</p>
+                            <p style="font-size: 0.9rem; color: var(--secondary);">Please enable location services and refresh</p>
+                            <button class="btn btn-primary" onclick="refreshShareLocation()" style="margin-top: 15px;">Try Again</button>
+                        `;
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 30000,
+                        maximumAge: 0
+                    }
+                );
+
+                shareWatchId = navigator.geolocation.watchPosition(
+                    position => {
+                        updateShareLocationDisplay(position);
+                    },
+                    error => console.error('Watch error:', error),
+                    {
+                        enableHighAccuracy: true,
+                        maximumAge: 10000
+                    }
+                );
+            }
+        }
+
+        async function updateShareLocationDisplay(position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            const accuracy = Math.round(position.coords.accuracy);
+
+            const coordsText = `${lat.toFixed(6)}, ${lon.toFixed(6)}`;
+            document.getElementById('share-coords').textContent = coordsText;
+
+            const accuracyEl = document.getElementById('share-accuracy');
+            if (accuracyEl) {
+                let accuracyText = `Accuracy: ±${accuracy}m`;
+                if (accuracy < 10) {
+                    accuracyText += ' (Excellent)';
+                } else if (accuracy < 30) {
+                    accuracyText += ' (Good)';
+                } else if (accuracy < 100) {
+                    accuracyText += ' (Fair)';
+                } else {
+                    accuracyText += ' (Poor)';
+                }
+                accuracyEl.textContent = accuracyText;
+            }
+
+            try {
+                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`);
+                if (response.ok) {
+                    const data = await response.json();
+                    const address = formatShareAddress(data);
+                    document.getElementById('share-address').textContent = address;
+                }
+            } catch (error) {
+                console.error('Geocoding error:', error);
+                document.getElementById('share-address').textContent = 'Address unavailable';
+            }
+
+            shareLocationData = {
+                latitude: lat.toFixed(6),
+                longitude: lon.toFixed(6),
+                accuracy: accuracy,
+                timestamp: new Date().toISOString()
+            };
+
+            document.getElementById('share-loading').style.display = 'none';
+            document.getElementById('share-content').style.display = 'block';
+        }
+
+        function formatShareAddress(data) {
+            if (!data || !data.address) return 'Unable to determine address';
+
+            const addr = data.address;
+            const parts = [];
+
+            if (addr.house_number) parts.push(addr.house_number);
+            if (addr.road || addr.street) parts.push(addr.road || addr.street);
+
+            const city = addr.city || addr.town || addr.village || addr.suburb;
+            if (city) parts.push(city);
+            if (addr.state) parts.push(addr.state);
+            if (addr.postcode) parts.push(addr.postcode);
+
+            return parts.join(', ') || data.display_name || 'Unable to determine address';
+        }
+
+        function refreshShareLocation() {
+            document.getElementById('share-loading').style.display = 'block';
+            document.getElementById('share-content').style.display = 'none';
+            getShareLocation();
+        }
+
+        function useTemplate(type) {
+            const noteField = document.getElementById('location-note');
+            const templates = {
+                meeting: "I'm here for our meeting. Look for me near the entrance.",
+                pickup: "I'm ready to be picked up from this location.",
+                safe: "Just letting you know I arrived safely at this location.",
+                help: "I need assistance at this location. Please come as soon as possible."
+            };
+
+            if (noteField && templates[type]) {
+                noteField.value = templates[type];
+                noteField.dispatchEvent(new Event('input'));
+
+                noteField.style.borderColor = 'var(--success)';
+                setTimeout(() => {
+                    noteField.style.borderColor = '';
+                }, 500);
+            }
+        }
+
+        function shareLocationWithNote(method) {
+            if (!shareLocationData) {
+                showShareToast('⚠️ Location not ready. Please wait...', 'warning');
+                return;
+            }
+
+            const note = document.getElementById('location-note').value.trim();
+            const timestamp = new Date().toLocaleString();
+            const mapUrl = `https://maps.google.com/?q=${shareLocationData.latitude},${shareLocationData.longitude}`;
+            const address = document.getElementById('share-address').textContent;
+
+            let message = `📍 My Location\n`;
+            if (note) {
+                message += `\n💬 ${note}\n`;
+            }
+            message += `\n📮 ${address}\n`;
+            message += `🗺️ ${mapUrl}\n`;
+            message += `⏰ ${timestamp}`;
+
+            switch(method) {
+                case 'text':
+                    const smsLink = `sms:?body=${encodeURIComponent(message)}`;
+                    window.location.href = smsLink;
+                    saveShareToHistory(method, note);
+                    break;
+                case 'copy':
+                    navigator.clipboard.writeText(message).then(() => {
+                        showShareToast('✅ Location copied to clipboard!', 'success');
+                        saveShareToHistory(method, note);
+                    }).catch(err => {
+                        console.error('Copy failed:', err);
+                        showShareToast('❌ Failed to copy', 'error');
+                    });
+                    break;
+                case 'email':
+                    const subject = note ? `Location: ${note.substring(0, 50)}` : 'My Current Location';
+                    const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
+                    window.location.href = mailtoLink;
+                    saveShareToHistory(method, note);
+                    break;
+                case 'share':
+                    if (navigator.share) {
+                        navigator.share({
+                            title: 'My Location',
+                            text: message,
+                            url: mapUrl
+                        }).then(() => {
+                            saveShareToHistory(method, note);
+                        }).catch(err => {
+                            if (err.name !== 'AbortError') {
+                                console.error('Share failed:', err);
+                            }
+                        });
+                    } else {
+                        shareLocationWithNote('copy');
+                    }
+                    break;
+            }
+        }
+
+        function openShareMap() {
+            if (shareLocationData) {
+                window.open(`https://maps.google.com/?q=${shareLocationData.latitude},${shareLocationData.longitude}`, '_blank');
+            }
+        }
+
+        function saveShareToHistory(method, note) {
+            const history = JSON.parse(localStorage.getItem('locationShareHistory') || '[]');
+            const entry = {
+                timestamp: new Date().toISOString(),
+                method: method,
+                note: note || '',
+                location: shareLocationData,
+                address: document.getElementById('share-address').textContent
+            };
+
+            history.unshift(entry);
+            if (history.length > 5) {
+                history.pop();
+            }
+
+            localStorage.setItem('locationShareHistory', JSON.stringify(history));
+            loadShareHistory();
+        }
+
+        function loadShareHistory() {
+            const history = JSON.parse(localStorage.getItem('locationShareHistory') || '[]');
+            const container = document.getElementById('location-share-history');
+            const list = document.getElementById('share-history-list');
+
+            if (history.length > 0 && container && list) {
+                container.style.display = 'block';
+
+                const html = history.map(entry => {
+                    const date = new Date(entry.timestamp);
+                    const timeAgo = getTimeAgo(date);
+                    const methodIcon = {
+                        text: '💬',
+                        copy: '📋',
+                        email: '✉️',
+                        share: '📱'
+                    }[entry.method] || '📤';
+
+                    return `
+                        <div class="history-item">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <span style="font-size: 1.5rem;">${methodIcon}</span>
+                                <div>
+                                    <div style="font-weight: 600; color: var(--dark); font-size: 0.9rem;">
+                                        ${entry.note || 'Location shared'}
+                                    </div>
+                                    <div style="font-size: 0.75rem; color: var(--secondary);">
+                                        ${timeAgo} • ${entry.address || 'Unknown location'}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                list.innerHTML = html;
+            } else if (container) {
+                container.style.display = 'none';
+            }
+        }
+
+        function clearShareHistory() {
+            if (confirm('Clear all share history?')) {
+                localStorage.removeItem('locationShareHistory');
+                const container = document.getElementById('location-share-history');
+                if (container) container.style.display = 'none';
+            }
+        }
+
+        function getTimeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+
+            if (seconds < 60) return 'Just now';
+            if (seconds < 3600) return `${Math.floor(seconds / 60)} min ago`;
+            if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`;
+            if (seconds < 604800) return `${Math.floor(seconds / 86400)} days ago`;
+
+            return date.toLocaleDateString();
+        }
+
+        function showShareToast(message, type = 'success') {
+            const existingToast = document.querySelector('.location-toast');
+            if (existingToast) {
+                existingToast.remove();
+            }
+
+            const toast = document.createElement('div');
+            toast.className = 'location-toast';
+            toast.textContent = message;
+
+            if (type === 'warning') {
+                toast.style.background = 'var(--warning)';
+            } else if (type === 'error') {
+                toast.style.background = 'var(--danger)';
+            }
+
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'toastSlideOut 0.3s ease';
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 3000);
+        }
+
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             setupCharacterCounters();
@@ -4283,6 +4870,9 @@ Generated: ${new Date().toLocaleString()}`;
         window.addEventListener('unload', () => {
             if (watchId) {
                 navigator.geolocation.clearWatch(watchId);
+            }
+            if (shareWatchId) {
+                navigator.geolocation.clearWatch(shareWatchId);
             }
         });
     </script>
