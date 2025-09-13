@@ -1888,19 +1888,19 @@
         </nav>
         <!-- Hidden dropdown for grouped resources -->
         <div id="resource-menu" class="dropdown-menu hidden">
-            <button onclick="switchTab('wttin'); toggleResourceMenu();">
+            <button onclick="switchTab('wttin')">
                 <span>🏠</span>
                 <span>Where To Turn in Nashville</span>
             </button>
-            <button onclick="switchTab('hotlines'); toggleResourceMenu();">
+            <button onclick="switchTab('hotlines')">
                 <span>☎️</span>
                 <span data-i18n="nav.hotlines">Hotlines</span>
             </button>
-            <button onclick="switchTab('meals'); toggleResourceMenu();">
+            <button onclick="switchTab('meals')">
                 <span>🍽️</span>
                 <span data-i18n="nav.meals">Meals</span>
             </button>
-            <button onclick="switchTab('apps'); toggleResourceMenu();">
+            <button onclick="switchTab('apps')">
                 <span>🚀</span>
                 <span>Proton</span>
             </button>
@@ -2942,6 +2942,8 @@
             const resourceBtn = document.querySelector(".tab-btn[onclick*='toggleResourceMenu']");
             if (menu) {
                 menu.classList.add('hidden');
+                document.removeEventListener('click', handleOutsideMenuClick);
+                document.removeEventListener('keydown', handleEscapeKey);
             }
             resourceBtn?.classList.remove('menu-open');
 
