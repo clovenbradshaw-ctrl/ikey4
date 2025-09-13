@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="meals.title">Free Meal Resources</title>
+    <script src="scripts/translate.js"></script>
+    <script src="scripts/resources.js"></script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; margin: 0; padding: 20px; }
+        .meal-list { list-style: none; padding: 0; }
+        .meal-list li { background: #f1f5f9; margin-bottom: 12px; padding: 12px; border-radius: 8px; }
+    </style>
+</head>
+<body>
+    <div id="meals-content"></div>
+    <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const container = document.getElementById('meals-content');
+        try {
+            const html = await resourceLoader.loadResource('meals');
+            container.innerHTML = html;
+            translateFragment(container);
+        } catch (e) {
+            container.textContent = t('meals.error', 'Failed to load meal sites');
+        }
+    });
+    </script>
+</body>
+</html>
