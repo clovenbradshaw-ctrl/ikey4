@@ -47,15 +47,15 @@
     }
 
     .button-group > * + * {
-      margin-left: 12px;
+      margin-inline-start: 12px;
     }
 
-    .qr-data { border-left: 4px solid var(--permanent-color); }
-    .device-data { border-left: 4px solid var(--temporary-color); }
-    .live-data { border-left: 4px solid var(--live-color); }
+    .qr-data { border-inline-start: 4px solid var(--permanent-color); }
+    .device-data { border-inline-start: 4px solid var(--temporary-color); }
+    .live-data { border-inline-start: 4px solid var(--live-color); }
 
     .data-badge { display: flex; align-items: center; margin-bottom: 8px; }
-    .badge-icon { margin-right: 4px; }
+    .badge-icon { margin-inline-end: 4px; }
     .badge.green { color: var(--permanent-color); }
     .badge.gray { color: var(--temporary-color); }
     .badge.blue { color: var(--live-color); }
@@ -92,7 +92,7 @@
       display: none;
       position: absolute;
       top: -8px;
-      right: -8px;
+      inset-inline-end: -8px;
       width: 24px;
       height: 24px;
       border: none;
@@ -129,7 +129,7 @@
     .toast {
       position: fixed;
       bottom: 20px;
-      left: 50%;
+      inset-inline-start: 50%;
       transform: translateX(-50%);
       background: #333;
       color: white;

@@ -40,6 +40,7 @@ function translateFragment(root = document) {
 
 function setLanguage(lang) {
   document.documentElement.lang = lang;
+  document.documentElement.dir = ['ar', 'he', 'fa', 'ur'].includes(lang) ? 'rtl' : 'ltr';
   localStorage.setItem('language', lang);
   document.querySelectorAll('.lang-option').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.lang === lang);

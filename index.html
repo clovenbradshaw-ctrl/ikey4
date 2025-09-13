@@ -102,13 +102,13 @@
         }
 
         .key-banner .btn {
-            margin-left: 10px;
+            margin-inline-start: 10px;
         }
 
         #language-toggle {
             position: absolute;
             top: 10px;
-            right: 10px;
+            inset-inline-end: 10px;
             z-index: 1101;
         }
 
@@ -123,7 +123,7 @@
             display: none;
             position: absolute;
             top: 35px;
-            right: 0;
+            inset-inline-end: 0;
             background: white;
             border: 1px solid var(--border);
             border-radius: var(--radius);
@@ -235,7 +235,7 @@
             border-radius: 12px;
             padding: 8px;
             top: calc(100% + 8px);
-            right: 10px;
+            inset-inline-end: 10px;
             min-width: 200px;
             box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12),
                         0 2px 8px rgba(0, 0, 0, 0.08);
@@ -257,11 +257,11 @@
             content: '';
             position: absolute;
             top: -6px;
-            right: 20px;
+            inset-inline-end: 20px;
             width: 12px;
             height: 12px;
             background: white;
-            border-left: 1px solid rgba(0, 0, 0, 0.08);
+            border-inline-start: 1px solid rgba(0, 0, 0, 0.08);
             border-top: 1px solid rgba(0, 0, 0, 0.08);
             transform: rotate(45deg);
             z-index: -1;
@@ -272,7 +272,7 @@
             border: none;
             padding: var(--touch-padding);
             min-height: 44px;
-            text-align: left;
+            text-align: start;
             font-size: 15px;
             font-weight: 500;
             cursor: pointer;
@@ -312,7 +312,7 @@
         /* Add a chevron to the Resources button */
         .tab-btn[onclick*='toggleResourceMenu'] .tab-label::after {
             content: '▾';
-            margin-left: 4px;
+            margin-inline-start: 4px;
             font-size: 10px;
             transition: transform 0.2s;
             display: inline-block;
@@ -337,7 +337,7 @@
             }
 
             .dropdown-menu {
-                right: 5px;
+                inset-inline-end: 5px;
                 min-width: 160px;
             }
 
@@ -397,7 +397,7 @@
         /* Semantic card colors */
         .card-critical {
             background: #fef2f2;
-            border-left: 4px solid #ef4444;
+            border-inline-start: 4px solid #ef4444;
         }
         .card-critical .accent { color: #991b1b; }
         .card-critical::before {
@@ -407,7 +407,7 @@
 
         .card-emergency {
             background: #f0fdf4;
-            border-left: 4px solid #22c55e;
+            border-inline-start: 4px solid #22c55e;
         }
         .card-emergency .accent { color: #166534; }
         .card-emergency::before {
@@ -417,19 +417,19 @@
 
         .card-communication {
             background: #eff6ff;
-            border-left: 4px solid #3b82f6;
+            border-inline-start: 4px solid #3b82f6;
         }
         .card-communication .accent { color: #1e40af; }
 
         .card-secure {
             background: #faf5ff;
-            border-left: 4px solid #a855f7;
+            border-inline-start: 4px solid #a855f7;
         }
         .card-secure .accent { color: #6b21a8; }
 
         .card-neutral {
             background: #f9fafb;
-            border-left: 2px solid #d1d5db;
+            border-inline-start: 2px solid #d1d5db;
         }
         .card-neutral .accent { color: #374151; }
 
@@ -527,8 +527,8 @@
         }
 
         .review-card {
-            border-left: 4px solid var(--proton);
-            padding-left: 15px;
+            border-inline-start: 4px solid var(--proton);
+            padding-inline-start: 15px;
         }
 
         .apps-grid {
@@ -575,8 +575,7 @@
             content: '';
             position: absolute;
             top: 30px;
-            left: 10%;
-            right: 10%;
+            inset-inline: 10%;
             height: 2px;
             background: var(--border);
             z-index: 0;
@@ -848,10 +847,7 @@
         .share-method-btn::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            inset: 0;
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
             opacity: 0;
             transition: opacity 0.3s;
@@ -902,7 +898,7 @@
         .location-toast {
             position: fixed;
             bottom: 30px;
-            left: 50%;
+            inset-inline-start: 50%;
             transform: translateX(-50%);
             background: var(--success);
             color: white;
@@ -1333,7 +1329,7 @@
         .favorite .delete-btn {
             position: absolute;
             top: -8px;
-            left: -8px;
+            inset-inline-start: -8px;
             width: 24px;
             height: 24px;
             border-radius: 50%;
@@ -1496,7 +1492,7 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 12px;
-            padding-left: 5px;
+            padding-inline-start: 5px;
         }
 
         .category-grid {
@@ -1622,14 +1618,14 @@
 
         .status-card.success {
             background: #f0fdf4;
-            border-left: 4px solid #10b981;
+            border-inline-start: 4px solid #10b981;
             position: relative;
         }
 
         .status-card.success::after {
             content: "\2713";
             position: absolute;
-            right: 10px;
+            inset-inline-end: 10px;
             top: 10px;
             color: #10b981;
             font-size: 1.5em;
@@ -1908,7 +1904,7 @@
         <div class="modal-content" style="max-width: 500px; max-height: 90vh; overflow-y: auto;">
             <div class="modal-header" style="position: sticky; top: 0; background: white; z-index: 100; padding: 20px; border-bottom: 2px solid var(--border);">
                 <h2 id="emergency-modal-title" style="color: var(--danger); margin: 0;">🚨 iKey Emergency Information</h2>
-                <button class="modal-close" onclick="closeEmergencyModal()" style="position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; border-radius: 50%; border: none; background: var(--light); cursor: pointer; font-size: 24px;">×</button>
+                <button class="modal-close" onclick="closeEmergencyModal()" style="position: absolute; top: 20px; inset-inline-end: 20px; width: 40px; height: 40px; border-radius: 50%; border: none; background: var(--light); cursor: pointer; font-size: 24px;">×</button>
             </div>
             <div id="emergency-modal-content" style="padding: 20px;">
                 <!-- Content will be populated by JavaScript -->
@@ -2061,7 +2057,7 @@
                     <div class="wizard-step active" data-step="1">
                         <h2>Create Your iKey</h2>
                         <p style="margin: 20px 0;">Generate a secure QR code with your essential information for emergency responders:</p>
-                        <ul style="margin-left: 20px; color: var(--secondary); line-height: 2;">
+                        <ul style="margin-inline-start: 20px; color: var(--secondary); line-height: 2;">
                             <li>Name, pronouns and blood type</li>
                             <li>Critical allergies and medications</li>
                             <li>Health conditions</li>
@@ -3439,7 +3435,7 @@ let dataListenersSet = false;
             formData = collectFormData();
             let docsHTML = '';
             if (formData.docs.length) {
-                docsHTML = '<div class="info-card"><div class="subtitle-text">Documents</div><ul style="margin-left: 20px;">';
+                docsHTML = '<div class="info-card"><div class="subtitle-text">Documents</div><ul style="margin-inline-start: 20px;">';
                 formData.docs.forEach(d => {
                     docsHTML += `<li><a href="${d.l}" target="_blank">${d.t}</a></li>`;
                 });
@@ -3479,7 +3475,7 @@ let dataListenersSet = false;
                     <div style="font-weight: 600;">${formData.n || 'Not provided'}</div>
                 </div>
                 ${formData.pe ? `
-                <div class="info-card" style="border-left: 4px solid #6d4aff;">
+                <div class="info-card" style="border-inline-start: 4px solid #6d4aff;">
                     <div class="subtitle-text">Secure Email</div>
                     <div style="font-weight: 600;">${formData.pe}</div>
                 </div>` : ''}
@@ -5124,12 +5120,12 @@ Generated: ${new Date().toLocaleString()}`;
             // Check for weather alerts
             const alerts = [];
             if (currentTemp > 95) {
-                alerts.push(`<div style="background: #fef3c7; border-left: 4px solid var(--warning); padding: 12px; border-radius: 10px; margin-bottom: 10px;">
+                alerts.push(`<div style="background: #fef3c7; border-inline-start: 4px solid var(--warning); padding: 12px; border-radius: 10px; margin-bottom: 10px;">
                     <strong>⚠️ Heat Advisory:</strong> Temperature of ${currentTemp}°F - Stay hydrated
                 </div>`);
             }
             if (currentTemp < 32) {
-                alerts.push(`<div style="background: #dbeafe; border-left: 4px solid #3b82f6; padding: 12px; border-radius: 10px; margin-bottom: 10px;">
+                alerts.push(`<div style="background: #dbeafe; border-inline-start: 4px solid #3b82f6; padding: 12px; border-radius: 10px; margin-bottom: 10px;">
                     <strong>❄️ Freeze Warning:</strong> Temperature below freezing
                 </div>`);
             }
@@ -5431,14 +5427,14 @@ Generated: ${new Date().toLocaleString()}`;
             }
 
             if (data.b) {
-                html += `<div class="info-card" style="border-left: 4px solid var(--danger);">
+                html += `<div class="info-card" style="border-inline-start: 4px solid var(--danger);">
                             <div class="subtitle-text">Blood Type</div>
                             <div style="font-weight: 600; color: var(--danger);">${data.b}</div>
                         </div>`;
             }
 
             if (data.a) {
-                html += `<div class="info-card" style="border-left: 4px solid var(--danger);">
+                html += `<div class="info-card" style="border-inline-start: 4px solid var(--danger);">
                             <div class="subtitle-text">⚠️ Allergies</div>
                             <div style="font-weight: 600; color: var(--danger);">${data.a}</div>
                         </div>`;
@@ -5468,7 +5464,7 @@ Generated: ${new Date().toLocaleString()}`;
             }
 
             if (data.pe) {
-                html += `<div class="info-card" style="border-left: 4px solid #6d4aff;">
+                html += `<div class="info-card" style="border-inline-start: 4px solid #6d4aff;">
                             <div class="subtitle-text">Secure Email</div>
                             <div style="font-weight: 600;">${data.pe}</div>
                         </div>`;
@@ -5477,7 +5473,7 @@ Generated: ${new Date().toLocaleString()}`;
             if (data.docs && data.docs.length) {
                 html += `<div class="info-card">
                             <div class="subtitle-text">Documents</div>
-                            <ul style="margin-left: 20px;">${data.docs.map(d => `<li><a href="${d.l}" target="_blank" style="color: var(--primary); text-decoration: none;">📄 ${d.t}</a></li>`).join('')}</ul>
+                            <ul style="margin-inline-start: 20px;">${data.docs.map(d => `<li><a href="${d.l}" target="_blank" style="color: var(--primary); text-decoration: none;">📄 ${d.t}</a></li>`).join('')}</ul>
                         </div>`;
             }
 
