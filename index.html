@@ -4848,7 +4848,8 @@ Generated: ${new Date().toLocaleString()}`;
             // This sets up the regular display view that users can access via tabs
             document.getElementById('wizard-view').classList.add('hidden');
             document.getElementById('display-view').classList.remove('hidden');
-            document.querySelector('.share-bar')?.style.display = 'block';
+            const bar = document.querySelector('.share-bar');
+            if (bar) bar.style.display = 'block';
 
             // Generate communication cards
             let commCards = '';
