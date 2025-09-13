@@ -87,6 +87,8 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      border: none;
+      padding: 0;
     }
     .favorite .delete {
       display: none;
@@ -95,12 +97,14 @@
       right: -8px;
       width: 24px;
       height: 24px;
-      border: none;
       border-radius: 50%;
       background: var(--emergency-color);
       color: white;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
     }
-    .favorites.editing .delete { display: block; }
+    .favorites.editing .delete { display: flex; }
     .favorite.add-favorite { font-size: 32px; }
 
     .loading {
@@ -313,18 +317,18 @@
         return `<div class="text-body">${t('home.noFavorites', 'No favorites yet')}</div>`;
       }
       const listHtml = details.map(d => `
-            <div class="favorite" draggable="${editMode}" data-index="${d.index}" data-url="${d.info.url}">
+            <button class="favorite" type="button" draggable="${editMode}" data-index="${d.index}" data-url="${d.info.url}" aria-label="${d.info.name}">
               <span class="icon"><img src="${d.info.icon}" alt="${d.info.name}" width="32" height="32"></span>
               <span class="label">${d.info.name}</span>
-              <button class="delete" onclick="event.stopPropagation(); deleteFavorite(${d.index})">✕</button>
-            </div>
+              <span class="delete" role="button" aria-label="${t('common.delete', 'Delete')}" tabindex="0">✕</span>
+            </button>
           `).join('');
-      const addTile = editMode ? '<div class="favorite add-favorite" onclick="addFavorite()">+</div>' : '';
+      const addTile = editMode ? `<button type="button" class="favorite add-favorite" aria-label="${t('home.addFavorite', 'Add Favorite')}"><span aria-hidden="true">+</span></button>` : '';
       return `
         <div class="favorites ${editMode ? 'editing' : ''}" id="favorites">
           ${listHtml}${addTile}
         </div>
-        ${editMode ? `<div class="button-group"><button onclick="exitEdit()">${t('common.done', 'Done')}</button></div>` : ''}
+        ${editMode ? `<div class="button-group"><button type="button" class="done-btn">${t('common.done', 'Done')}</button></div>` : ''}
       `;
     }
 
@@ -372,6 +376,21 @@
         item.addEventListener('mouseleave', cancelPress);
         item.addEventListener('touchend', cancelPress);
 
+        const del = item.querySelector('.delete');
+        if (del) {
+          del.addEventListener('click', e => {
+            e.stopPropagation();
+            deleteFavorite(index);
+          });
+          del.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              e.stopPropagation();
+              deleteFavorite(index);
+            }
+          });
+        }
+
         item.addEventListener('click', () => {
           if (editMode) return;
           const url = item.dataset.url;
@@ -400,6 +419,16 @@
           moveFavorite(from, to);
         });
       });
+
+      const addBtn = container.querySelector('.add-favorite');
+      if (addBtn) {
+        addBtn.addEventListener('click', addFavorite);
+      }
+
+      const doneBtn = document.querySelector('.done-btn');
+      if (doneBtn) {
+        doneBtn.addEventListener('click', exitEdit);
+      }
     }
 
     function addFavorite() {

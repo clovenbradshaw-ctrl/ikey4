@@ -1290,6 +1290,9 @@
             cursor: pointer;
             -webkit-tap-highlight-color: transparent;
             user-select: none;
+            border: none;
+            background: none;
+            padding: 0;
         }
 
         .favorite .icon-wrapper {
@@ -1371,6 +1374,9 @@
         .add-bookmark-btn {
             width: 75px;
             cursor: pointer;
+            border: none;
+            background: none;
+            padding: 0;
         }
 
         .add-bookmark-btn .icon-wrapper {
@@ -4231,12 +4237,12 @@ END:VCALENDAR`;
 
                 const qrLabel = (displayData && !isOwnKey) ? (displayData.n || 'QR') : 'My QR';
                 html += `
-                    <div class="favorite qr-widget" data-action="qr" draggable="false">
+                    <button class="favorite qr-widget" type="button" data-action="qr" draggable="false" aria-label="${qrLabel}">
                         <div class="icon-wrapper">
                             <img src="https://cdn.iconscout.com/icon/free/png-256/free-qr-code-icon-svg-png-download-1569017.png" alt="QR Code Icon" class="icon-img" onerror="this.style.display='none'; this.parentElement.innerHTML='🔳';">
                         </div>
                         <div class="label icon-label">${qrLabel}</div>
-                    </div>
+                    </button>
                 `;
 
                 this.bookmarks.forEach((bookmark, index) => {
@@ -4244,11 +4250,13 @@ END:VCALENDAR`;
                     if (info) {
                         const isEmoji = this.isEmoji(info.icon);
                         html += `
-                    <div class="favorite"
-                         data-index="${index}" 
+                    <button class="favorite"
+                         type="button"
+                         data-index="${index}"
                          draggable="${this.editMode}"
-                         data-url="${info.url || ''}">
-                        <div class="delete-btn" onclick="event.stopPropagation(); bookmarkManager.removeBookmark(${index})">×</div>
+                         data-url="${info.url || ''}"
+                         aria-label="${info.name}">
+                        <div class="delete-btn" role="button" aria-label="Remove bookmark" tabindex="0">×</div>
                         <div class="icon-wrapper">
                             ${isEmoji ?
                                 `<span class="icon-emoji">${info.icon}</span>` :
@@ -4256,22 +4264,22 @@ END:VCALENDAR`;
                             }
                         </div>
                         <div class="label icon-label">${info.name}</div>
-                    </div>
+                    </button>
                 `;
                     }
                 });
 
                 html += `
-                    <div class="add-bookmark-btn" onclick="bookmarkManager.openAddModal()">
+                    <button class="add-bookmark-btn" type="button">
                         <div class="icon-wrapper">+</div>
                         <div class="label">Add</div>
-                    </div>
+                    </button>
                 `;
 
                 html += '</div>';
 
                 if (this.editMode) {
-                    html += '<button class="done-editing-btn" onclick="bookmarkManager.exitEditMode()">Done</button>';
+                    html += '<button class="done-editing-btn" type="button">Done</button>';
                 }
 
                 html += '</div>';
@@ -4305,6 +4313,21 @@ END:VCALENDAR`;
                     fav.addEventListener('mousemove', () => this.cancelLongPress());
                     fav.addEventListener('mouseleave', () => this.cancelLongPress());
 
+                    const del = fav.querySelector('.delete-btn');
+                    if (del) {
+                        del.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            this.removeBookmark(parseInt(fav.dataset.index));
+                        });
+                        del.addEventListener('keydown', (e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                this.removeBookmark(parseInt(fav.dataset.index));
+                            }
+                        });
+                    }
+
                     fav.addEventListener('click', (e) => this.handleClick(e));
 
                     if (this.editMode) {
@@ -4314,6 +4337,16 @@ END:VCALENDAR`;
                         fav.addEventListener('dragend', (e) => this.handleDragEnd(e));
                     }
                 });
+
+                const addBtn = document.querySelector('.add-bookmark-btn');
+                if (addBtn) {
+                    addBtn.addEventListener('click', () => this.openAddModal());
+                }
+
+                const doneBtn = document.querySelector('.done-editing-btn');
+                if (doneBtn) {
+                    doneBtn.addEventListener('click', () => this.exitEditMode());
+                }
             }
 
             handleTouchStart(e) {
