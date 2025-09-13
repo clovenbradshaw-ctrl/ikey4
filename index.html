@@ -89,6 +89,21 @@
             color: var(--secondary);
         }
 
+        .key-banner {
+            background: #e0e7ff;
+            text-align: center;
+            padding: 8px 10px;
+            font-weight: 600;
+        }
+
+        .key-banner.hidden {
+            display: none;
+        }
+
+        .key-banner .btn {
+            margin-left: 10px;
+        }
+
         #language-toggle {
             position: absolute;
             top: 10px;
@@ -1919,6 +1934,11 @@
         <p data-i18n="appTagline">Secure Location & Personal Safety Hub</p>
     </div>
 
+    <div id="key-banner" class="key-banner hidden">
+        <span id="key-banner-text"></span>
+        <button id="back-to-my-key" class="btn btn-secondary hidden" onclick="returnToMyKey()">Back to my key</button>
+    </div>
+
     <!-- Tab Navigation -->
     <div class="nav-wrapper">
         <nav class="tab-nav">
@@ -2862,7 +2882,7 @@
                 </div>
                 
                 <div class="settings-section">
-                    <h3 style="margin-bottom: 15px; color: var(--primary);" data-i18n="settings.tabVisibility">Tab Visibility</h3>
+                    <h3 style="margin-bottom: 15px; color: var(--primary);" data-i18n="settings.tabVisibility">Customize Home Tabs</h3>
                     <div class="settings-item" style="cursor: default;">
                         <div>
                             <div style="font-weight: 600;" data-i18n="nav.emergency">🚨 Emergency</div>
@@ -3504,6 +3524,14 @@ let dataListenersSet = false;
 
             window.history.replaceState(null, '', url);
 
+            localStorage.setItem('myKeyData', compressed);
+            if (cleanData.pe) localStorage.setItem('myKeyEmail', cleanData.pe);
+            if (cleanData.n) localStorage.setItem('myKeyName', cleanData.n);
+            displayData = cleanData;
+            isOwnKey = true;
+            renderHomeStatus();
+            updateKeyBanner();
+
             document.getElementById('wizard-view').classList.add('hidden');
             document.getElementById('qr-view').classList.remove('hidden');
 
@@ -4126,12 +4154,13 @@ END:VCALENDAR`;
                 let html = '<div class="favorites-container">';
                 html += '<div class="favorites' + (this.editMode ? ' editing' : '') + '" id="favorites">';
 
+                const qrLabel = (displayData && !isOwnKey) ? (displayData.n || 'QR') : 'My QR';
                 html += `
                     <div class="favorite qr-widget" data-action="qr" draggable="false">
                         <div class="icon-wrapper">
                             <img src="https://cdn.iconscout.com/icon/free/png-256/free-qr-code-icon-svg-png-download-1569017.png" alt="QR Code Icon" class="icon-img" onerror="this.style.display='none'; this.parentElement.innerHTML='🔳';">
                         </div>
-                        <div class="label icon-label">My QR</div>
+                        <div class="label icon-label">${qrLabel}</div>
                     </div>
                 `;
 
@@ -5094,6 +5123,7 @@ Generated: ${new Date().toLocaleString()}`;
         }
 
         let displayData = null;
+        let isOwnKey = false;
 
         function showEmergencyModal(data) {
             const modal = document.getElementById('emergency-modal');
@@ -5198,6 +5228,7 @@ Generated: ${new Date().toLocaleString()}`;
             // Make emergency ID info available globally and update home status card
             displayData = data;
             renderHomeStatus();
+            updateKeyBanner();
 
             // This sets up the regular display view that users can access via tabs
             document.getElementById('wizard-view').classList.add('hidden');
@@ -5449,6 +5480,36 @@ Generated: ${new Date().toLocaleString()}`;
             }
         } // This closing brace was missing!
 
+        function updateKeyBanner() {
+            const banner = document.getElementById('key-banner');
+            const textEl = document.getElementById('key-banner-text');
+            const backBtn = document.getElementById('back-to-my-key');
+            if (!banner || !textEl) return;
+            if (!displayData) {
+                banner.classList.add('hidden');
+                return;
+            }
+            const myEmail = localStorage.getItem('myKeyEmail');
+            const myHash = localStorage.getItem('myKeyData');
+            isOwnKey = myEmail && displayData.pe && displayData.pe === myEmail;
+            textEl.textContent = isOwnKey ? 'Viewing your own key' : "Viewing someone else's key - read only";
+            if (isOwnKey) {
+                backBtn.classList.add('hidden');
+            } else {
+                if (myHash) backBtn.classList.remove('hidden');
+                else backBtn.classList.add('hidden');
+            }
+            banner.classList.remove('hidden');
+            if (bookmarkManager) bookmarkManager.render();
+        }
+
+        function returnToMyKey() {
+            const myHash = localStorage.getItem('myKeyData');
+            if (myHash) {
+                window.location.hash = myHash;
+                location.reload();
+            }
+        }
 
         // Share Location Tab Functions
         function initShareTab() {
@@ -5901,6 +5962,7 @@ Generated: ${new Date().toLocaleString()}`;
                     }
 
                     displayData = data;
+                    updateKeyBanner();
 
                     const scanKey = `scanned_${hash}`;
                     if (!localStorage.getItem(scanKey)) {
@@ -5916,6 +5978,8 @@ Generated: ${new Date().toLocaleString()}`;
                     console.error('Failed to parse URL data:', e);
                 }
             }
+
+            updateKeyBanner();
             
             // Handle enter key in weather search
             document.getElementById('city-input').addEventListener('keypress', function(e) {

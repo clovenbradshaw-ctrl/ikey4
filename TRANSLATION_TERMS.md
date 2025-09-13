@@ -263,7 +263,7 @@
             "readingGlasses": "Reading Glasses",
             "whatsThis": "What's this say?",
             "grandma": "Grandma",
-            "tabVisibility": "Tab Visibility",
+            "tabVisibility": "Customize Home Tabs",
             "tabHome": "🏠 Home",
             "tabiKey": "🏥 iKey",
             "tabWeather": "⛈️ Weather",
