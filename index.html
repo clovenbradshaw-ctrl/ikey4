@@ -2089,9 +2089,8 @@
                 </h2>
 
                 <div id="share-loading" class="loading">
-                    <div class="loading-spinner"></div>
-                    <p>Acquiring your location...</p>
-                    <p style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;">Please allow location access</p>
+                    <p style="margin-bottom: 15px;">Location sharing is disabled.</p>
+                    <button class="btn btn-primary" onclick="enableLocationSharing()">Enable Location Sharing</button>
                 </div>
 
                 <div id="share-content" style="display: none;">
@@ -4358,8 +4357,19 @@ Generated: ${new Date().toLocaleString()}`;
                 });
             }
 
-            getShareLocation();
             loadShareHistory();
+        }
+
+        function enableLocationSharing() {
+            const container = document.getElementById('share-loading');
+            if (container) {
+                container.innerHTML = `
+                    <div class="loading-spinner"></div>
+                    <p>Acquiring your location...</p>
+                    <p style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;">Please allow location access</p>
+                `;
+            }
+            getShareLocation();
         }
 
         function getShareLocation() {
