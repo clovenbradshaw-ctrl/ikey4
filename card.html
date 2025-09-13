@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iKey ID Card Generator</title>
+    <title data-i18n="card.title">iKey ID Card Generator</title>
     <link rel="icon" href="https://storage.googleapis.com/art_homelessness/favicon-32x32.png" type="image/png">
     <link rel="apple-touch-icon" href="https://storage.googleapis.com/art_homelessness/favicon-32x32.png">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="scripts/translate.js"></script>
     <style>
         * {
             margin: 0;
@@ -565,69 +566,69 @@
         <div class="header">
             <h1>
                 <div class="main-logo">iK</div>
-                iKey ID Card Generator
+                <span data-i18n="card.header">iKey ID Card Generator</span>
             </h1>
-            <p>Minimalist secure medical ID with unique identifier</p>
+            <p data-i18n="card.tagline">Minimalist secure medical ID with unique identifier</p>
         </div>
 
         <div class="controls">
-            <div class="section-title">Photo Upload (Optional)</div>
+            <div class="section-title" data-i18n="card.photoUpload">Photo Upload (Optional)</div>
             <div class="photo-section">
                 <div class="photo-preview" id="photoPreview">
                     <div class="photo-placeholder">
                         <div>📷</div>
-                        <div>No Photo</div>
+                        <div data-i18n="card.noPhoto">No Photo</div>
                     </div>
                 </div>
                 <div class="photo-controls">
-                    <button class="photo-btn" onclick="capturePhoto()">📸 Take Photo</button>
-                    <button class="photo-btn" onclick="document.getElementById('fileInput').click()">📁 Upload Photo</button>
-                    <button class="photo-btn remove-photo" onclick="removePhoto()" style="display:none;" id="removeBtn">❌ Remove</button>
+                    <button class="photo-btn" onclick="capturePhoto()" data-i18n="card.takePhoto">📸 Take Photo</button>
+                    <button class="photo-btn" onclick="document.getElementById('fileInput').click()" data-i18n="card.uploadPhoto">📁 Upload Photo</button>
+                    <button class="photo-btn remove-photo" onclick="removePhoto()" style="display:none;" id="removeBtn" data-i18n="card.removePhoto">❌ Remove</button>
                     <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">
                 </div>
             </div>
 
-            <div class="section-title">Required Information</div>
+            <div class="section-title" data-i18n="card.requiredInfo">Required Information</div>
             <div class="required-section">
-                <div class="required-label">
+                <div class="required-label" data-i18n="card.requiredNote">
                     ⚡ These fields are always included on your card
                 </div>
                 <div class="field-grid">
                     <div class="field-item required">
                         <div class="field-header">
-                            <label class="field-label required" style="margin-left: 30px;">Secure Email (UID)</label>
+                            <label class="field-label required" style="margin-left: 30px;" data-i18n="card.secureEmail">Secure Email (UID)</label>
                             <span class="char-counter" id="count_email">0/40</span>
                         </div>
-                        <input type="email" class="field-input" id="field_email" maxlength="40" 
-                               placeholder="user@example.com" oninput="updateCharCount('email', 40)" required>
+                        <input type="email" class="field-input" id="field_email" maxlength="40"
+                               placeholder="user@example.com" data-i18n-placeholder="placeholders.email" oninput="updateCharCount('email', 40)" required>
                     </div>
 
                     <div class="field-item required">
                         <div class="field-header">
-                            <label class="field-label required" style="margin-left: 30px;">Full Name</label>
+                            <label class="field-label required" style="margin-left: 30px;" data-i18n="card.fullName">Full Name</label>
                             <span class="char-counter" id="count_name">0/30</span>
                         </div>
-                        <input type="text" class="field-input" id="field_name" maxlength="30" 
-                               placeholder="John Doe" oninput="updateCharCount('name', 30)" required>
+                        <input type="text" class="field-input" id="field_name" maxlength="30"
+                               placeholder="John Doe" data-i18n-placeholder="placeholders.name" oninput="updateCharCount('name', 30)" required>
                     </div>
 
                     <div class="field-item required">
                         <div class="field-header">
-                            <label class="field-label required" style="margin-left: 30px;">Emergency Contact</label>
+                            <label class="field-label required" style="margin-left: 30px;" data-i18n="card.emergencyContact">Emergency Contact</label>
                             <span class="char-counter" id="count_emergency">0/20</span>
                         </div>
-                        <input type="tel" class="field-input" id="field_emergency" maxlength="20" 
-                               placeholder="+1-555-0123" oninput="updateCharCount('emergency', 20)" required>
+                        <input type="tel" class="field-input" id="field_emergency" maxlength="20"
+                               placeholder="+1-555-0123" data-i18n-placeholder="placeholders.emergencyPhone" oninput="updateCharCount('emergency', 20)" required>
                     </div>
                 </div>
             </div>
 
-            <div class="section-title">Optional Medical Information (Back of Card)</div>
+            <div class="section-title" data-i18n="card.optionalInfo">Optional Medical Information (Back of Card)</div>
             <div class="field-grid">
                 <div class="field-item active">
                     <div class="field-header">
                         <input type="checkbox" class="field-checkbox" id="check_dob" checked onchange="toggleField('dob')">
-                        <label class="field-label" for="check_dob">Date of Birth</label>
+                        <label class="field-label" for="check_dob" data-i18n="card.dob">Date of Birth</label>
                     </div>
                     <input type="date" class="field-input" id="field_dob">
                 </div>
@@ -635,107 +636,107 @@
                 <div class="field-item active">
                     <div class="field-header">
                         <input type="checkbox" class="field-checkbox" id="check_blood" checked onchange="toggleField('blood')">
-                        <label class="field-label" for="check_blood">Blood Type</label>
+                        <label class="field-label" for="check_blood" data-i18n="card.bloodType">Blood Type</label>
                     </div>
                     <select class="field-input" id="field_blood">
-                        <option value="O+">O+</option>
-                        <option value="O-">O-</option>
-                        <option value="A+">A+</option>
-                        <option value="A-">A-</option>
-                        <option value="B+">B+</option>
-                        <option value="B-">B-</option>
-                        <option value="AB+">AB+</option>
-                        <option value="AB-">AB-</option>
-                        <option value="Unknown">Unknown</option>
+                        <option value="O+" data-i18n="card.blood.oPos">O+</option>
+                        <option value="O-" data-i18n="card.blood.oNeg">O-</option>
+                        <option value="A+" data-i18n="card.blood.aPos">A+</option>
+                        <option value="A-" data-i18n="card.blood.aNeg">A-</option>
+                        <option value="B+" data-i18n="card.blood.bPos">B+</option>
+                        <option value="B-" data-i18n="card.blood.bNeg">B-</option>
+                        <option value="AB+" data-i18n="card.blood.abPos">AB+</option>
+                        <option value="AB-" data-i18n="card.blood.abNeg">AB-</option>
+                        <option value="Unknown" data-i18n="card.blood.unknown">Unknown</option>
                     </select>
                 </div>
 
                 <div class="field-item active">
                     <div class="field-header">
                         <input type="checkbox" class="field-checkbox" id="check_allergies" checked onchange="toggleField('allergies')">
-                        <label class="field-label" for="check_allergies">Allergies</label>
+                        <label class="field-label" for="check_allergies" data-i18n="card.allergies">Allergies</label>
                         <span class="char-counter" id="count_allergies">0/40</span>
                     </div>
-                    <input type="text" class="field-input" id="field_allergies" maxlength="40" 
-                           placeholder="Penicillin, Peanuts" oninput="updateCharCount('allergies', 40)">
+                    <input type="text" class="field-input" id="field_allergies" maxlength="40"
+                           placeholder="Penicillin, Peanuts" data-i18n-placeholder="placeholders.allergies" oninput="updateCharCount('allergies', 40)">
                 </div>
 
                 <div class="field-item">
                     <div class="field-header">
                         <input type="checkbox" class="field-checkbox" id="check_conditions" onchange="toggleField('conditions')">
-                        <label class="field-label" for="check_conditions">Medical Conditions</label>
+                        <label class="field-label" for="check_conditions" data-i18n="card.medicalConditions">Medical Conditions</label>
                         <span class="char-counter" id="count_conditions">0/50</span>
                     </div>
-                    <input type="text" class="field-input" id="field_conditions" maxlength="50" 
-                           placeholder="Diabetes Type 2, Hypertension" disabled
+                    <input type="text" class="field-input" id="field_conditions" maxlength="50"
+                           placeholder="Diabetes Type 2, Hypertension" data-i18n-placeholder="placeholders.conditions" disabled
                            oninput="updateCharCount('conditions', 50)">
                 </div>
 
                 <div class="field-item">
                     <div class="field-header">
                         <input type="checkbox" class="field-checkbox" id="check_medications" onchange="toggleField('medications')">
-                        <label class="field-label" for="check_medications">Current Medications</label>
+                        <label class="field-label" for="check_medications" data-i18n="card.currentMedications">Current Medications</label>
                         <span class="char-counter" id="count_medications">0/50</span>
                     </div>
-                    <input type="text" class="field-input" id="field_medications" maxlength="50" 
-                           placeholder="Metformin 500mg daily" disabled
+                    <input type="text" class="field-input" id="field_medications" maxlength="50"
+                           placeholder="Metformin 500mg daily" data-i18n-placeholder="placeholders.medications" disabled
                            oninput="updateCharCount('medications', 50)">
                 </div>
 
                 <div class="field-item">
                     <div class="field-header">
                         <input type="checkbox" class="field-checkbox" id="check_insurance" onchange="toggleField('insurance')">
-                        <label class="field-label" for="check_insurance">Insurance</label>
+                        <label class="field-label" for="check_insurance" data-i18n="card.insurance">Insurance</label>
                         <span class="char-counter" id="count_insurance">0/35</span>
                     </div>
-                    <input type="text" class="field-input" id="field_insurance" maxlength="35" 
-                           placeholder="Blue Cross Blue Shield" disabled
+                    <input type="text" class="field-input" id="field_insurance" maxlength="35"
+                           placeholder="Blue Cross Blue Shield" data-i18n-placeholder="placeholders.insurance" disabled
                            oninput="updateCharCount('insurance', 35)">
                 </div>
 
                 <div class="field-item">
                     <div class="field-header">
                         <input type="checkbox" class="field-checkbox" id="check_physician" onchange="toggleField('physician')">
-                        <label class="field-label" for="check_physician">Primary Physician</label>
+                        <label class="field-label" for="check_physician" data-i18n="card.primaryPhysician">Primary Physician</label>
                         <span class="char-counter" id="count_physician">0/25</span>
                     </div>
-                    <input type="text" class="field-input" id="field_physician" maxlength="25" 
-                           placeholder="Dr. Sarah Smith" disabled
+                    <input type="text" class="field-input" id="field_physician" maxlength="25"
+                           placeholder="Dr. Sarah Smith" data-i18n-placeholder="placeholders.physician" disabled
                            oninput="updateCharCount('physician', 25)">
                 </div>
 
                 <div class="field-item">
                     <div class="field-header">
                         <input type="checkbox" class="field-checkbox" id="check_donor" onchange="toggleField('donor')">
-                        <label class="field-label" for="check_donor">Organ Donor</label>
+                        <label class="field-label" for="check_donor" data-i18n="card.organDonor">Organ Donor</label>
                     </div>
                     <select class="field-input" id="field_donor" disabled>
-                        <option value="">Not Specified</option>
-                        <option value="Yes">Yes</option>
-                        <option value="No">No</option>
+                        <option value="" data-i18n="card.notSpecified">Not Specified</option>
+                        <option value="Yes" data-i18n="card.yes">Yes</option>
+                        <option value="No" data-i18n="card.no">No</option>
                     </select>
                 </div>
             </div>
 
             <div class="action-buttons">
-                <button class="btn btn-primary" onclick="generateCard()">🎨 Generate Card</button>
-                <button class="btn btn-success" onclick="window.print()">🖨️ Print Card</button>
-                <button class="btn btn-info" onclick="downloadCardImages()">📥 Download Cards</button>
-                <button class="btn btn-info" onclick="downloadInfo()">💾 Download Info</button>
+                <button class="btn btn-primary" onclick="generateCard()" data-i18n="card.generateCard">🎨 Generate Card</button>
+                <button class="btn btn-success" onclick="window.print()" data-i18n="card.printCard">🖨️ Print Card</button>
+                <button class="btn btn-info" onclick="downloadCardImages()" data-i18n="card.downloadCards">📥 Download Cards</button>
+                <button class="btn btn-info" onclick="downloadInfo()" data-i18n="card.downloadInfo">💾 Download Info</button>
             </div>
         </div>
 
         <div class="preview-container">
-            <div class="preview-title">Card Preview</div>
+            <div class="preview-title" data-i18n="card.cardPreview">Card Preview</div>
             <div class="cards-display">
                 <div>
-                    <div style="text-align: center; margin-bottom: 10px; color: #666; font-weight: 600;">FRONT</div>
+                    <div style="text-align: center; margin-bottom: 10px; color: #666; font-weight: 600;" data-i18n="card.front">FRONT</div>
                     <div class="card">
                         <div class="card-front">
                             <div class="card-header">
                                 <div class="logo-area">
                                     <div class="card-logo">iK</div>
-                                    <div class="card-title">iKey</div>
+                                    <div class="card-title" data-i18n="card.cardName">iKey</div>
                                 </div>
                                 <div class="card-id" id="display_cardId">00000000-0000-0000-0000-000000000000</div>
                             </div>
@@ -744,7 +745,7 @@
                                 <div id="cardPhotoContainer">
                                     <div class="photo-placeholder-card">
                                         <div>📷</div>
-                                        <div>No Photo</div>
+                                        <div data-i18n="card.noPhoto">No Photo</div>
                                     </div>
                                 </div>
                                 <div id="qrcode"></div>
@@ -756,60 +757,60 @@
                 </div>
 
                 <div>
-                    <div style="text-align: center; margin-bottom: 10px; color: #666; font-weight: 600;">BACK</div>
+                    <div style="text-align: center; margin-bottom: 10px; color: #666; font-weight: 600;" data-i18n="card.back">BACK</div>
                     <div class="card">
                         <div class="card-back">
-                            <div class="back-header">Medical Information</div>
+                            <div class="back-header" data-i18n="card.medicalInfo">Medical Information</div>
 
                             <div class="back-content">
                                 <div class="back-item">
-                                    <span class="back-label">Name:</span>
+                                    <span class="back-label" data-i18n="card.nameLabel">Name:</span>
                                     <span class="back-value" id="display_name"></span>
                                 </div>
 
                                 <div class="back-item" id="back_dob">
-                                    <span class="back-label">DOB:</span>
+                                    <span class="back-label" data-i18n="card.dobLabel">DOB:</span>
                                     <span class="back-value" id="display_dob"></span>
                                 </div>
 
                                 <div class="back-item" id="back_blood">
-                                    <span class="back-label">Blood:</span>
+                                    <span class="back-label" data-i18n="card.bloodLabel">Blood:</span>
                                     <span class="back-value critical" id="display_blood"></span>
                                 </div>
 
                                 <div class="back-item" id="back_allergies">
-                                    <span class="back-label">Allergies:</span>
+                                    <span class="back-label" data-i18n="card.allergiesLabel">Allergies:</span>
                                     <span class="back-value critical" id="display_allergies"></span>
                                 </div>
 
                                 <div class="back-item" id="back_conditions" style="display:none;">
-                                    <span class="back-label">Conditions:</span>
+                                    <span class="back-label" data-i18n="card.conditionsLabel">Conditions:</span>
                                     <span class="back-value" id="display_conditions"></span>
                                 </div>
 
                                 <div class="back-item" id="back_medications" style="display:none;">
-                                    <span class="back-label">Medications:</span>
+                                    <span class="back-label" data-i18n="card.medicationsLabel">Medications:</span>
                                     <span class="back-value" id="display_medications"></span>
                                 </div>
 
                                 <div class="back-item" id="back_physician" style="display:none;">
-                                    <span class="back-label">Physician:</span>
+                                    <span class="back-label" data-i18n="card.physicianLabel">Physician:</span>
                                     <span class="back-value" id="display_physician"></span>
                                 </div>
 
                                 <div class="back-item" id="back_insurance" style="display:none;">
-                                    <span class="back-label">Insurance:</span>
+                                    <span class="back-label" data-i18n="card.insuranceLabel">Insurance:</span>
                                     <span class="back-value" id="display_insurance"></span>
                                 </div>
 
                                 <div class="back-item" id="back_donor" style="display:none;">
-                                    <span class="back-label">Donor:</span>
+                                    <span class="back-label" data-i18n="card.donorLabel">Donor:</span>
                                     <span class="back-value" id="display_donor"></span>
                                 </div>
                             </div>
 
                             <div class="emergency-box">
-                                <div class="emergency-label">EMERGENCY CONTACT</div>
+                                <div class="emergency-label" data-i18n="card.emergencyContactLabel">EMERGENCY CONTACT</div>
                                 <div class="emergency-value" id="display_emergency"></div>
                             </div>
                         </div>
