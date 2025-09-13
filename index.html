@@ -2882,10 +2882,10 @@
                             <div style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;" data-i18n="settings.textSizeDesc">Adjust interface text</div>
                         </div>
                         <select id="text-size-select" onchange="setTextSize(this.value)" style="padding: 6px; border-radius: 8px; border: 1px solid var(--border);">
-                            <option value="2020">20/20</option>
-                            <option value="reading" data-i18n="settings.readingGlasses">Reading Glasses</option>
-                            <option value="whats" data-i18n="settings.whatsThis">What's this say?</option>
-                            <option value="grandma" data-i18n="settings.grandma">Grandma</option>
+                            <option value="aaa">aaa</option>
+                            <option value="aaA">aaA</option>
+                            <option value="aAA">aAA</option>
+                            <option value="AAAA">AAAA</option>
                         </select>
                     </div>
                 </div>
@@ -6224,15 +6224,15 @@ Generated: ${new Date().toLocaleString()}`;
             let fontSize = "16px";
             let zoom = "1";
             switch (size) {
-                case "reading":
+                case "aaA":
                     fontSize = "18px";
                     zoom = "1.2";
                     break;
-                case "whats":
+                case "aAA":
                     fontSize = "20px";
                     zoom = "1.35";
                     break;
-                case "grandma":
+                case "AAAA":
                     fontSize = "24px";
                     zoom = "1.5";
                     break;
@@ -6245,7 +6245,7 @@ Generated: ${new Date().toLocaleString()}`;
             storage.set('textSize', size);
         }
         document.addEventListener("DOMContentLoaded", () => {
-            const saved = storage.get('textSize') || "2020";
+            const saved = storage.get('textSize') || "aaA";
             applyTextSize(saved);
             const select = document.getElementById("text-size-select");
             if (select) {
