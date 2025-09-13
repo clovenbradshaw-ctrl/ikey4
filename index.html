@@ -3936,9 +3936,17 @@ END:VCALENDAR`;
 
                     fav.addEventListener('touchstart', (e) => this.handleTouchStart(e), { passive: true });
                     fav.addEventListener('touchend', (e) => this.handleTouchEnd(e));
+                    fav.addEventListener('touchmove', (e) => {
+                        if (this.editMode) {
+                            this.handleTouchMove(e);
+                        } else {
+                            this.cancelLongPress();
+                        }
+                    }, { passive: false });
 
                     fav.addEventListener('mousedown', (e) => this.handleMouseDown(e));
                     fav.addEventListener('mouseup', (e) => this.handleMouseUp(e));
+                    fav.addEventListener('mousemove', () => this.cancelLongPress());
                     fav.addEventListener('mouseleave', () => this.cancelLongPress());
 
                     fav.addEventListener('click', (e) => this.handleClick(e));
@@ -3948,7 +3956,6 @@ END:VCALENDAR`;
                         fav.addEventListener('dragover', (e) => this.handleDragOver(e));
                         fav.addEventListener('drop', (e) => this.handleDrop(e));
                         fav.addEventListener('dragend', (e) => this.handleDragEnd(e));
-                        fav.addEventListener('touchmove', (e) => this.handleTouchMove(e), { passive: false });
                     }
                 });
             }
@@ -3982,7 +3989,7 @@ END:VCALENDAR`;
             startLongPress() {
                 this.longPressTimer = setTimeout(() => {
                     this.enterEditMode();
-                }, 500);
+                }, 1500);
             }
 
             cancelLongPress() {
