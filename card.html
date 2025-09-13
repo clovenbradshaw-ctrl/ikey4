@@ -943,6 +943,12 @@
                 updateCharCount(field, limits[i]);
             });
 
+            // Automatically regenerate QR code whenever form data changes
+            document.querySelectorAll('.field-input').forEach(input => {
+                input.addEventListener('input', generateCard);
+                input.addEventListener('change', generateCard);
+            });
+
             generateCardId();
             generateCard();
         };
