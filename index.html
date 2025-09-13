@@ -1788,6 +1788,27 @@
             }
         }
 
+        /* Customize Tabs Modal */
+        #tab-settings-modal .tab-modal-content {
+            background: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            padding: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        #tab-preview {
+            margin-top: 20px;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        #tab-preview span {
+            font-size: 24px;
+        }
+
         /* Emergency Modal Styles */
         #emergency-modal {
             position: fixed;
@@ -2325,6 +2346,40 @@
     </div>
 </div>
 
+<!-- Customize Tabs Modal -->
+<div id="tab-settings-modal" class="modal hidden">
+    <div class="tab-modal-content">
+        <div class="modal-header">
+            <h3 data-i18n="settings.customizeTabs">Customize Home Tabs</h3>
+            <button class="modal-close" onclick="closeTabSettings()">×</button>
+        </div>
+        <div class="modal-body">
+            <p style="color: var(--secondary); margin-bottom: 15px;" data-i18n="settings.customizeTabsDesc">Show or hide tabs to personalize your home screen.</p>
+            <div class="settings-item" style="cursor: default;">
+                <div style="font-weight: 600;" data-i18n="nav.emergency">🚨 Emergency</div>
+                <input type="checkbox" class="tab-visibility-toggle" data-tab="emergency" checked>
+            </div>
+            <div class="settings-item" style="cursor: default;">
+                <div style="font-weight: 600;" data-i18n="nav.weather">⛈️ Weather</div>
+                <input type="checkbox" class="tab-visibility-toggle" data-tab="weather" checked>
+            </div>
+            <div class="settings-item" style="cursor: default;">
+                <div style="font-weight: 600;" data-i18n="nav.wttin">Where To Turn in Nashville</div>
+                <input type="checkbox" class="tab-visibility-toggle" data-tab="wttin" checked>
+            </div>
+            <div class="settings-item" style="cursor: default;">
+                <div style="font-weight: 600;" data-i18n="nav.hotlines">Hotlines</div>
+                <input type="checkbox" class="tab-visibility-toggle" data-tab="hotlines" checked>
+            </div>
+            <div class="settings-item" style="cursor: default;">
+                <div style="font-weight: 600;" data-i18n="misc.apps">📱 Proton Apps</div>
+                <input type="checkbox" class="tab-visibility-toggle" data-tab="apps" checked>
+            </div>
+            <div id="tab-preview"></div>
+        </div>
+    </div>
+</div>
+
 <!-- Emergency Services Tab -->
 <div id="emergency" class="tab-content">
         <div class="container">
@@ -2784,36 +2839,12 @@
                 </div>
                 
                 <div class="settings-section">
-                    <h3 style="margin-bottom: 15px; color: var(--primary);" data-i18n="settings.tabVisibility">Tab Visibility</h3>
-                    <div class="settings-item" style="cursor: default;">
+                    <div class="settings-item" onclick="openTabSettings()">
                         <div>
-                            <div style="font-weight: 600;" data-i18n="nav.emergency">🚨 Emergency</div>
+                            <div style="font-weight: 600;" data-i18n="settings.customizeTabs">Customize Home Tabs</div>
+                            <div style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;" data-i18n="settings.customizeTabsDesc">Show or hide tabs to personalize your home screen</div>
                         </div>
-                        <input type="checkbox" class="tab-visibility-toggle" data-tab="emergency" checked>
-                    </div>
-                    <div class="settings-item" style="cursor: default;">
-                        <div>
-                            <div style="font-weight: 600;" data-i18n="nav.weather">⛈️ Weather</div>
-                        </div>
-                        <input type="checkbox" class="tab-visibility-toggle" data-tab="weather" checked>
-                    </div>
-                    <div class="settings-item" style="cursor: default;">
-                        <div>
-                            <div style="font-weight: 600;" data-i18n="nav.wttin">Where To Turn in Nashville</div>
-                        </div>
-                        <input type="checkbox" class="tab-visibility-toggle" data-tab="wttin" checked>
-                    </div>
-                    <div class="settings-item" style="cursor: default;">
-                        <div>
-                            <div style="font-weight: 600;" data-i18n="nav.hotlines">Hotlines</div>
-                        </div>
-                        <input type="checkbox" class="tab-visibility-toggle" data-tab="hotlines" checked>
-                    </div>
-                    <div class="settings-item" style="cursor: default;">
-                        <div>
-                            <div style="font-weight: 600;" data-i18n="misc.apps">📱 Proton Apps</div>
-                        </div>
-                        <input type="checkbox" class="tab-visibility-toggle" data-tab="apps" checked>
+                        <span style="color: var(--secondary);">→</span>
                     </div>
                 </div>
 
@@ -2990,6 +3021,20 @@
             );
         }
 
+        function updateTabPreview() {
+            const preview = document.getElementById('tab-preview');
+            if (!preview) return;
+            preview.innerHTML = '';
+            const hidden = JSON.parse(localStorage.getItem('hiddenTabs') || '[]');
+            const icons = { emergency: '🚨', weather: '⛈️', wttin: '🏠', hotlines: '☎️', apps: '📱' };
+            allTabs.forEach(tab => {
+                const span = document.createElement('span');
+                span.textContent = icons[tab] || tab;
+                span.style.opacity = hidden.includes(tab) ? '0.3' : '1';
+                preview.appendChild(span);
+            });
+        }
+
         function applyHiddenTabs() {
             let hidden = JSON.parse(localStorage.getItem('hiddenTabs') || '[]');
             hidden = hidden.filter(tab => !nonHideableTabs.includes(tab));
@@ -3008,6 +3053,7 @@
             if (active && hidden.includes(active.id)) {
                 switchTab('home');
             }
+            updateTabPreview();
         }
 
         function toggleTabVisibility(tab, isVisible) {
@@ -3024,6 +3070,18 @@
             }
             localStorage.setItem('hiddenTabs', JSON.stringify(hidden));
             applyHiddenTabs();
+        }
+
+        function openTabSettings() {
+            const modal = document.getElementById('tab-settings-modal');
+            if (!modal) return;
+            applyHiddenTabs();
+            modal.classList.remove('hidden');
+        }
+
+        function closeTabSettings() {
+            const modal = document.getElementById('tab-settings-modal');
+            if (modal) modal.classList.add('hidden');
         }
 
         document.querySelectorAll('.tab-visibility-toggle').forEach(cb => {
