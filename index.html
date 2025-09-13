@@ -1130,26 +1130,26 @@
             height: 60px;
             margin: 0 auto 6px;
             border-radius: 14px;
-            border: 2px dashed rgba(255,255,255,0.5);
-            background: rgba(255,255,255,0.2);
+            border: 2px dashed var(--border);
+            background: var(--light);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 28px;
-            color: white;
+            color: var(--secondary);
             transition: all 0.3s;
         }
 
         .add-bookmark-btn:hover .icon-wrapper {
-            background: rgba(255,255,255,0.3);
-            border-color: white;
+            background: var(--border);
+            border-color: var(--secondary);
         }
 
         .add-bookmark-btn .label {
             font-size: 11px;
             text-align: center;
-            color: white;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            color: var(--secondary);
+            text-shadow: none;
         }
 
         .done-editing-btn {
