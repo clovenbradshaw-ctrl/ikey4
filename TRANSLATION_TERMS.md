@@ -461,7 +461,21 @@
             "meals": "Meals Resources",
             "policeDispatch": "Nashville Police Dispatch",
             "crisisLine": "Suicide & Crisis Lifeline: 988",
-            "poisonControlNumber": "Poison Control: 1-800-222-1222"
+            "poisonControlNumber": "Poison Control: 1-800-222-1222",
+            "training": "Training Materials"
+        },
+        "training": {
+            "title": "Training Guide",
+            "intro": "Follow these steps to get started.",
+            "steps": {
+                "step1": "Open the iKey app.",
+                "step2": "Tap Save to record your location.",
+                "step3": "Share with trusted contacts."
+            },
+            "back": "Back to Home"
+        },
+        "about": {
+            "trainingLink": "View training materials"
         },
         "card": {
             "title": "iKey ID Card Generator",
@@ -938,7 +952,21 @@
             "meals": "Recursos de Comidas",
             "policeDispatch": "Despacho Policial de Nashville",
             "crisisLine": "Línea de Suicidio y Crisis: 988",
-            "poisonControlNumber": "Control de Venenos: 1-800-222-1222"
+            "poisonControlNumber": "Control de Venenos: 1-800-222-1222",
+            "training": "Materiales de capacitación"
+        },
+        "training": {
+            "title": "Guía de capacitación",
+            "intro": "Sigue estos pasos para comenzar.",
+            "steps": {
+                "step1": "Abre la aplicación iKey.",
+                "step2": "Pulsa Guardar para registrar tu ubicación.",
+                "step3": "Compártelo con contactos de confianza."
+            },
+            "back": "Volver al inicio"
+        },
+        "about": {
+            "trainingLink": "Ver materiales de capacitación"
         },
         "card": {
             "title": "Generador de Tarjeta de ID de iKey",
@@ -1405,7 +1433,21 @@
             "meals": "موارد الوجبات",
             "policeDispatch": "إرسال شرطة ناشفيل",
             "crisisLine": "خط الأزمات والانتحار: 988",
-            "poisonControlNumber": "مراقبة السموم: 1-800-222-1222"
+            "poisonControlNumber": "مراقبة السموم: 1-800-222-1222",
+            "training": "مواد التدريب"
+        },
+        "training": {
+            "title": "دليل التدريب",
+            "intro": "اتبع هذه الخطوات للبدء.",
+            "steps": {
+                "step1": "افتح تطبيق iKey.",
+                "step2": "اضغط حفظ لتسجيل موقعك.",
+                "step3": "شارك مع جهات الاتصال الموثوقة."
+            },
+            "back": "العودة إلى الصفحة الرئيسية"
+        },
+        "about": {
+            "trainingLink": "عرض مواد التدريب"
         },
         "card": {
             "title": "مولد بطاقة هوية iKey",
@@ -1866,7 +1908,21 @@
             "meals": "Çavkaniyên Xwarinan",
             "policeDispatch": "Şandina Polîsê Nashville",
             "crisisLine": "Xeta Xwekujtin û Krîzê: 988",
-            "poisonControlNumber": "Kontrola Jehrê: 1-800-222-1222"
+            "poisonControlNumber": "Kontrola Jehrê: 1-800-222-1222",
+            "training": "Materyalên Fêrbûnê"
+        },
+        "training": {
+            "title": "Rêbernameya Fêrbûnê",
+            "intro": "Ji bo destpêkê van gavên bişopînin.",
+            "steps": {
+                "step1": "Sepana iKey veke.",
+                "step2": "Li ser Save bitikîne da ku cîhê xwe tomar bike.",
+                "step3": "Bi têkilîyên ewle parve bike."
+            },
+            "back": "Vegere Serûpelê"
+        },
+        "about": {
+            "trainingLink": "Materyalên fêrbûnê bibîne"
         },
         "about": {
             "security": "Dikarî şîfreyek saz bikî da ku daneyên te yên tomarkirî bêne şifrkirin û tenê tu wan bixwînî."
@@ -2226,7 +2282,21 @@
             "meals": "Ilaha Cuntada",
             "policeDispatch": "Dirista Booliska Nashville",
             "crisisLine": "Khadka Ismiidaaminta & Dhibaatada: 988",
-            "poisonControlNumber": "Xakamaynta Sunta: 1-800-222-1222"
+            "poisonControlNumber": "Xakamaynta Sunta: 1-800-222-1222",
+            "training": "Qalabka tababarka"
+        },
+        "training": {
+            "title": "Hagaha tababarka",
+            "intro": "Raac tillaabooyinkan si aad u bilowdo.",
+            "steps": {
+                "step1": "Fur app-ka iKey.",
+                "step2": "Taabo Kaydi si aad u qorto goobtaada.",
+                "step3": "La wadaag dadka aad ku kalsoon tahay."
+            },
+            "back": "Ku noqo bogga hore"
+        },
+        "about": {
+            "trainingLink": "Eeg qalabka tababarka"
         },
         "about": {
             "security": "Waxaad dejin kartaa eray sir ah si aad u qariso xogtaada kaydsan oo adiga kaliya akhriyi karto."
@@ -2586,7 +2656,21 @@
             "meals": "餐食资源",
             "policeDispatch": "纳什维尔警察调度",
             "crisisLine": "自杀与危机生命线：988",
-            "poisonControlNumber": "中毒控制：1-800-222-1222"
+            "poisonControlNumber": "中毒控制：1-800-222-1222",
+            "training": "培训资料"
+        },
+        "training": {
+            "title": "培训指南",
+            "intro": "按照以下步骤开始使用。",
+            "steps": {
+                "step1": "打开 iKey 应用。",
+                "step2": "点击“保存”记录你的位置。",
+                "step3": "与可信联系人分享。"
+            },
+            "back": "返回主页"
+        },
+        "about": {
+            "trainingLink": "查看培训资料"
         },
         "about": {
             "security": "你可以设置密码来加密已保存的数据，只有你能查看。"
