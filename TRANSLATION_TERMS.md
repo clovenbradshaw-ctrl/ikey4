@@ -132,6 +132,14 @@
             "warning": "⚠️ Bookmarks are saved only in this browser and will be lost if the device is lost or data is cleared. For secure backup, add a note in Proton Drive or save in an email.",
             "extendedWarning": "These bookmarks are only saved in this browser and will be lost if the device or browser data is lost. For secure backup, add a note in Proton Drive or save in an email."
         },
+        "home": {
+            "exportBookmarks": "Export Bookmarks",
+            "importBookmarks": "Import Bookmarks",
+            "emailExport": "Email Export",
+            "importSuccess": "Import successful",
+            "importInvalid": "Invalid file",
+            "exportEmailSubject": "Bookmarks Export"
+        },
         "wizard": {
             "addBookmark": "Add Bookmark",
             "protonApps": "Proton Apps",

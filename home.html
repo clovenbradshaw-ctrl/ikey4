@@ -344,12 +344,63 @@
         <div class="favorites ${editMode ? 'editing' : ''}" id="favorites">
           ${listHtml}${addTile}
         </div>
+        <div class="button-group">
+          <button type="button" class="export-btn">${t('home.exportBookmarks', 'Export Bookmarks')}</button>
+          <button type="button" class="import-btn">${t('home.importBookmarks', 'Import Bookmarks')}</button>
+          <button type="button" class="email-btn">${t('home.emailExport', 'Email Export')}</button>
+        </div>
         ${editMode ? `<div class="button-group"><button type="button" class="done-btn">${t('common.done', 'Done')}</button></div>` : ''}
       `;
     }
 
     function saveFavorites() {
       localStorage.setItem('protonBookmarks', JSON.stringify(favoriteApps));
+    }
+
+    function exportFavorites() {
+      const data = JSON.stringify(favoriteApps, null, 2);
+      const blob = new Blob([data], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'bookmarks.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function emailFavorites() {
+      const data = JSON.stringify(favoriteApps, null, 2);
+      const subject = encodeURIComponent(t('home.exportEmailSubject', 'Bookmarks Export'));
+      const body = encodeURIComponent(data);
+      window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    }
+
+    function importFavorites() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'application/json';
+      input.addEventListener('change', () => {
+        const file = input.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+          try {
+            const data = JSON.parse(e.target.result);
+            if (Array.isArray(data)) {
+              favoriteApps = data;
+              saveFavorites();
+              renderHome();
+              showToast(t('home.importSuccess', 'Import successful'));
+            } else {
+              showToast(t('home.importInvalid', 'Invalid file'));
+            }
+          } catch {
+            showToast(t('home.importInvalid', 'Invalid file'));
+          }
+        };
+        reader.readAsText(file);
+      });
+      input.click();
     }
 
     function deleteFavorite(index) {
@@ -444,6 +495,21 @@
       const doneBtn = document.querySelector('.done-btn');
       if (doneBtn) {
         doneBtn.addEventListener('click', exitEdit);
+      }
+
+      const exportBtn = document.querySelector('.export-btn');
+      if (exportBtn) {
+        exportBtn.addEventListener('click', exportFavorites);
+      }
+
+      const importBtn = document.querySelector('.import-btn');
+      if (importBtn) {
+        importBtn.addEventListener('click', importFavorites);
+      }
+
+      const emailBtn = document.querySelector('.email-btn');
+      if (emailBtn) {
+        emailBtn.addEventListener('click', emailFavorites);
       }
     }
 
