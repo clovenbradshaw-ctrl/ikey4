@@ -27,6 +27,10 @@ The project is a collection of static HTML files. Open `index.html` directly in 
 
 The repository has no build step. Edits can be made directly to the HTML or translation files. A helper script in `scripts/generate_translation_doc.py` regenerates the translation document when new terms are added.
 
+### Dynamic translations
+
+When adding DOM elements at runtime (wizards, modals, etc.), call the global `translateFragment(rootElement)` helper from `scripts/translate.js`. It applies `data-i18n*` translations to the supplied subtree so new UI fragments are translated immediately.
+
 ## License
 
 This project is provided as a public good. Use at your own discretion and always verify critical information before sharing it in emergencies.
