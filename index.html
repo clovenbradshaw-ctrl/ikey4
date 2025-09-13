@@ -2273,6 +2273,8 @@
                                     <button onclick="emailInfo()">✉️ Email</button>
                                     <button onclick="copyLinkForEmail()">📋 Copy</button>
                                     <button onclick="saveQRImage()">💾 Save</button>
+                                    <button onclick="exportBackup()">📦 Backup</button>
+                                    <button onclick="createNewKey()">🔑 New Key</button>
                                 </div>
                             </div>
                             <div id="share-history" style="margin-top:10px; font-size:0.9rem; color: var(--secondary);"></div>
@@ -3593,6 +3595,43 @@
             logShare('qr_code', null, 'sms');
         }
 
+        function exportBackup() {
+            const keyData = {};
+            for (let i = 0; i < localStorage.length; i++) {
+                const k = localStorage.key(i);
+                if (k.startsWith(storagePrefix + '_')) {
+                    keyData[k.slice(storagePrefix.length + 1)] = localStorage.getItem(k);
+                }
+            }
+            const bookmarks = JSON.parse(localStorage.getItem('homeBookmarks') || '[]');
+            const backup = { key: storagePrefix, data: keyData, bookmarks };
+            const text = JSON.stringify(backup, null, 2);
+            const sendEmail = confirm('Send backup via email? Cancel for text.');
+            const method = sendEmail ? 'email' : 'sms';
+            const uri = sendEmail
+                ? `mailto:?subject=${encodeURIComponent('iKey Backup')}&body=${encodeURIComponent(text)}`
+                : (/iPhone|iPad|iPod/.test(navigator.userAgent)
+                    ? `sms:&body=${encodeURIComponent(text)}`
+                    : `sms:?body=${encodeURIComponent(text)}`);
+            window.location.href = uri;
+            logShare('backup', null, method);
+        }
+
+        function createNewKey() {
+            const newKey = prompt('Enter new key name');
+            if (!newKey) return;
+            for (let i = 0; i < localStorage.length; i++) {
+                const k = localStorage.key(i);
+                if (k.startsWith(storagePrefix + '_')) {
+                    const suffix = k.substring(storagePrefix.length + 1);
+                    localStorage.setItem(`${newKey}_${suffix}`, localStorage.getItem(k));
+                }
+            }
+            alert('New key created. Reprint and redistribute your card.');
+            window.location.href = `${window.location.pathname}#${encodeURIComponent(newKey)}`;
+            window.location.reload();
+        }
+
         function shareQR(target = 'qrcode') {
             // Allow sharing even if a QR code hasn't been generated yet.
             // The previous implementation required an existing QR canvas and
@@ -3746,7 +3785,7 @@
             const qrImage = getQRCodeDataURL();
             const { text: textSummary, pdf } = generateMedicalSummary();
             const vCard = generateVCard();
-            const html = `<html><body><img src='${qrImage}'/><pre>${textSummary}</pre></body></html>`;
+            const html = `<html><body><img src='${qrImage}' alt='QR code'><pre>${textSummary}</pre></body></html>`;
             return { qrImage, textSummary, vCard, html, pdf };
         }
 

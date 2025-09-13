@@ -31,6 +31,26 @@ The repository has no build step. Edits can be made directly to the HTML or tran
 
 When adding DOM elements at runtime (wizards, modals, etc.), call the global `translateFragment(rootElement)` helper from `scripts/translate.js`. It applies `data-i18n*` translations to the supplied subtree so new UI fragments are translated immediately.
 
+## Contributing
+
+### Accessibility
+
+- Use semantic HTML and meaningful ARIA roles.
+- Provide descriptive `alt` text for all images and icons.
+- Ensure keyboard navigation and sufficient color contrast when introducing new UI.
+
+### Privacy
+
+- Keep all data client-side; avoid adding analytics or external trackers.
+- Clearly communicate that information is stored in `localStorage` without encryption.
+- Only collect data that is essential for emergency use and allow users to remove it.
+
+### Translations
+
+- Add new strings to `TRANSLATION_TERMS.md`.
+- Run `python scripts/generate_translation_doc.py` to update the compiled document.
+- Provide translations for supported languages when possible.
+
 ## License
 
 This project is provided as a public good. Use at your own discretion and always verify critical information before sharing it in emergencies.

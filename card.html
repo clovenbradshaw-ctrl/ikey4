@@ -1107,7 +1107,7 @@
 
         function displayPhoto(data) {
             const preview = document.getElementById('photoPreview');
-            preview.innerHTML = `<img src="${data}" alt="Photo">`;
+            preview.innerHTML = `<img src="${data}" alt="Photo preview">`;
             document.getElementById('removeBtn').style.display = 'block';
 
             updateCardDisplay();
@@ -1135,7 +1135,7 @@
             if (photoData) {
                 idSection.classList.remove('single');
                 cardPhotoContainer.style.display = 'block';
-                cardPhotoContainer.innerHTML = `<img class="card-photo" src="${photoData}">`;
+                cardPhotoContainer.innerHTML = `<img class="card-photo" src="${photoData}" alt="Card photo">`;
             } else {
                 idSection.classList.add('single');
                 cardPhotoContainer.style.display = 'none';
