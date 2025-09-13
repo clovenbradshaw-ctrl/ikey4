@@ -1576,11 +1576,51 @@
             }
         }
 
+        /* Emergency Modal Styles */
+        #emergency-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        #emergency-modal .modal-content {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        #emergency-modal.hidden {
+            display: none;
+        }
+
         /* Dark mode styles removed to maintain accessible contrast */
 
         </style>
 </head>
 <body>
+    <!-- Emergency Info Modal -->
+    <div id="emergency-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 500px; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header" style="position: sticky; top: 0; background: white; z-index: 100; padding: 20px; border-bottom: 2px solid var(--border);">
+                <h2 style="color: var(--danger); margin: 0;">🚨 Medical Information</h2>
+                <button class="modal-close" onclick="closeEmergencyModal()" style="position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; border-radius: 50%; border: none; background: var(--light); cursor: pointer; font-size: 24px;">×</button>
+            </div>
+            <div id="emergency-modal-content" style="padding: 20px;">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+            <div class="modal-footer" style="position: sticky; bottom: 0; background: white; padding: 20px; border-top: 1px solid var(--border);">
+                <button class="btn btn-primary" onclick="closeEmergencyModal()" style="width: 100%;">
+                    Continue to App
+                </button>
+            </div>
+        </div>
+    </div>
     <!-- Header -->
     <div class="app-header">
         <div id="language-toggle">
@@ -4507,6 +4547,302 @@ Generated: ${new Date().toLocaleString()}`;
 
         let displayData = null;
 
+        function showEmergencyModal(data) {
+            const modal = document.getElementById('emergency-modal');
+            const content = document.getElementById('emergency-modal-content');
+            if (!modal || !content) return;
+
+            // Build the emergency info HTML
+            let html = '';
+
+            // Priority 1: Name and critical info
+            html += `<div class="emergency-card" style="background: #fee2e2; border: 2px solid var(--danger); margin-bottom: 20px;">`;
+            html += `<h3 style="margin: 0 0 15px 0; color: var(--danger);">⚠️ Patient Information</h3>`;
+            html += `<div style="font-size: 1.5rem; font-weight: bold; margin-bottom: 10px;">${data.n || 'Unknown'}</div>`;
+
+            if (data.pr) {
+                html += `<div style="margin-bottom: 5px;"><strong>Pronouns:</strong> ${data.pr}</div>`;
+            }
+
+            if (data.b) {
+                html += `<div style="color: var(--danger); font-size: 1.2rem; margin-top: 10px;"><strong>Blood Type:</strong> ${data.b}</div>`;
+            }
+
+            if (data.a) {
+                html += `<div style="color: var(--danger); margin-top: 10px;"><strong>⚠️ ALLERGIES:</strong><br>${data.a}</div>`;
+            }
+
+            html += `</div>`;
+
+            // Priority 2: Emergency Contact
+            if (data.ec) {
+                html += `<div class="emergency-card" style="background: #dcfce7; border: 2px solid var(--success); margin-bottom: 20px;">`;
+                html += `<h4 style="margin: 0 0 10px 0; color: var(--success);">📞 Emergency Contact</h4>`;
+                html += `<div style="font-size: 1.1rem; font-weight: 600;">${data.ec}</div>`;
+                html += `<a href="tel:${data.ep}" class="btn btn-success" style="margin-top: 10px; width: 100%; justify-content: center;">`;
+                html += `📱 Call ${data.ep}</a>`;
+                if (data.er) {
+                    html += `<div style="margin-top: 5px; color: var(--secondary);">Relationship: ${data.er}</div>`;
+                }
+                html += `</div>`;
+            }
+
+            // Priority 3: Medical Details
+            if (data.m || data.c) {
+                html += `<div class="emergency-card" style="margin-bottom: 20px;">`;
+                html += `<h4 style="margin: 0 0 10px 0;">📋 Medical Information</h4>`;
+
+                if (data.m) {
+                    html += `<div style="margin-bottom: 10px;"><strong>Current Medications:</strong><br>${data.m}</div>`;
+                }
+
+                if (data.c) {
+                    html += `<div><strong>Health Conditions:</strong><br>${data.c}</div>`;
+                }
+
+                html += `</div>`;
+            }
+
+            // Priority 4: Additional Info
+            if (data.cm || data.ph || data.d) {
+                html += `<div class="emergency-card">`;
+                html += `<h4 style="margin: 0 0 10px 0;">📌 Additional Information</h4>`;
+
+                if (data.ph) {
+                    html += `<div style="margin-bottom: 5px;"><strong>Patient Phone:</strong> <a href="tel:${data.ph}">${data.ph}</a></div>`;
+                }
+
+                if (data.d) {
+                    html += `<div style="margin-bottom: 5px;"><strong>Date of Birth:</strong> ${new Date(data.d).toLocaleDateString()}</div>`;
+                }
+
+                if (data.cm) {
+                    html += `<div style="margin-top: 10px;"><strong>Case Manager:</strong> ${data.cm}`;
+                    if (data.co) html += ` (${data.co})`;
+                    if (data.cp) html += `<br>📞 <a href="tel:${data.cp}">${data.cp}</a>`;
+                    html += `</div>`;
+                }
+
+                html += `</div>`;
+            }
+
+            content.innerHTML = html;
+            modal.classList.remove('hidden');
+
+            // Focus on close button for accessibility
+            setTimeout(() => {
+                const closeBtn = modal.querySelector('.modal-close');
+                if (closeBtn) closeBtn.focus();
+            }, 100);
+        }
+
+        function closeEmergencyModal() {
+            const modal = document.getElementById('emergency-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+            }
+
+            // Initialize the display view for later access
+            initializeDisplayView(displayData);
+        }
+
+        function initializeDisplayView(data) {
+            // This sets up the regular display view that users can access via tabs
+            document.getElementById('wizard-view').classList.add('hidden');
+            document.getElementById('display-view').classList.remove('hidden');
+
+            // Generate communication cards
+            let commCards = '';
+
+            // Text message card (only if phone number exists)
+            if (data.ph) {
+                const smsBody = encodeURIComponent("Hi, I obtained your number through your iKey.");
+                commCards += `
+        <div class="emergency-card" style="margin-bottom: 15px; cursor: pointer;">
+            <a href="sms:${data.ph}?body=${smsBody}" style="text-decoration: none; color: inherit; display: block;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--success); font-weight: 700;">
+                            💬 Send Text Message
+                        </div>
+                        <div style="font-weight: 600; margin-top: 8px;">
+                            Text ${data.n || 'this person'} at ${data.ph}
+                        </div>
+                    </div>
+                    <span style="color: var(--success); font-size: 1.5rem;">→</span>
+                </div>
+            </a>
+        </div>`;
+            }
+
+            // Email card (only if email exists)
+            if (data.pe) {
+                const emailSubject = encodeURIComponent("Regarding your iKey Medical ID");
+                const emailBody = encodeURIComponent("Hi,\n\nI obtained your contact information through your iKey Medical ID.\n\n");
+                commCards += `
+        <div class="emergency-card" style="margin-bottom: 15px; cursor: pointer;">
+            <a href="mailto:${data.pe}?subject=${emailSubject}&body=${emailBody}" style="text-decoration: none; color: inherit; display: block;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--proton); font-weight: 700;">
+                            📧 Send Email
+                        </div>
+                        <div style="font-weight: 600; margin-top: 8px;">
+                            Email ${data.n || 'this person'} at ${data.pe}
+                        </div>
+                    </div>
+                    <span style="color: var(--proton); font-size: 1.5rem;">→</span>
+                </div>
+            </a>
+        </div>`;
+            }
+
+            // Calendar event card
+            if (data.n && data.pe) {
+                const inviteUrl = `invite.html?pe=${encodeURIComponent(data.pe)}&n=${encodeURIComponent(data.n)}&key=${encodeURIComponent(storagePrefix)}`;
+                commCards += `
+        <a href="${inviteUrl}" style="text-decoration: none; color: inherit; display: block;">
+            <div class="emergency-card" style="margin-bottom: 15px; cursor: pointer;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--primary); font-weight: 700;">
+                            📅 Send Event Info
+                        </div>
+                        <div style="font-weight: 600; margin-top: 8px;">
+                            Create calendar event with ${data.n}
+                        </div>
+                    </div>
+                    <span style="color: var(--primary); font-size: 1.5rem;">→</span>
+                </div>
+            </div>
+        </a>`;
+            }
+
+            // Add the communication cards to the page
+            if (commCards) {
+                // Wait for display content to be set, then add communication actions
+                setTimeout(() => {
+                    const commActionsEl = document.getElementById('communication-actions');
+                    if (commActionsEl) {
+                        commActionsEl.innerHTML = commCards;
+                    }
+                }, 100);
+            }
+
+            const infoDetailsPref = localStorage.getItem('infoDetailsOpen');
+            const detailsOpenAttr = infoDetailsPref === null || infoDetailsPref === 'true' ? ' open' : '';
+            let html = `<details class="info-details"${detailsOpenAttr}><summary style="font-size: 1.2rem; font-weight:600;">${data.n || 'Details'}</summary><div class="details-body">`;
+
+            if (data.ph) {
+                html += `<div class="info-card">
+                            <div class="subtitle-text">Phone Number</div>
+                            <div style="font-weight: 600;"><a href="tel:${data.ph}" style="color: var(--primary); text-decoration: none;">${data.ph}</a></div>
+                        </div>`;
+            }
+
+            if (data.pr) {
+                html += `<div class="info-card">
+                            <div class="subtitle-text">Pronouns</div>
+                            <div style="font-weight: 600;">${data.pr}</div>
+                        </div>`;
+            }
+
+            if (data.b) {
+                html += `<div class="info-card" style="border-left: 4px solid var(--danger);">
+                            <div class="subtitle-text">Blood Type</div>
+                            <div style="font-weight: 600; color: var(--danger);">${data.b}</div>
+                        </div>`;
+            }
+
+            if (data.a) {
+                html += `<div class="info-card" style="border-left: 4px solid var(--danger);">
+                            <div class="subtitle-text">⚠️ Allergies</div>
+                            <div style="font-weight: 600; color: var(--danger);">${data.a}</div>
+                        </div>`;
+            }
+
+            if (data.ec) {
+                html += `<div class="info-card" style="background: #dcfce7; border: 2px solid var(--success);">
+                            <div class="subtitle-text">📞 Emergency Contact</div>
+                            <div style="font-weight: 600; font-size: 1.2rem;">
+                                ${data.ec}<br>
+                                <a href="tel:${data.ep}" style="color: var(--primary); text-decoration: none;">
+                                    📱 ${data.ep}
+                                </a>
+                            </div>
+                        </div>`;
+            }
+
+            if (data.cm) {
+                html += `<div class="info-card" style="background: #eff6ff; border: 2px solid var(--primary);">
+                            <div class="subtitle-text">👤 Case Manager</div>
+                            <div style="font-weight: 600;">
+                                ${data.cm}<br>
+                                ${data.co ? `<small>${data.co}</small><br>` : ''}
+                                ${data.cp ? `<a href="tel:${data.cp}" style="color: var(--primary); text-decoration: none;">📱 ${data.cp}</a>` : ''}
+                            </div>
+                        </div>`;
+            }
+
+            if (data.pe) {
+                html += `<div class="info-card" style="border-left: 4px solid #6d4aff;">
+                            <div class="subtitle-text">Secure Email</div>
+                            <div style="font-weight: 600;">${data.pe}</div>
+                        </div>`;
+            }
+
+            if (data.docs && data.docs.length) {
+                html += `<div class="info-card">
+                            <div class="subtitle-text">Documents</div>
+                            <ul style="margin-left: 20px;">${data.docs.map(d => `<li><a href="${d.l}" target="_blank" style="color: var(--primary); text-decoration: none;">📄 ${d.t}</a></li>`).join('')}</ul>
+                        </div>`;
+            }
+
+            if (data.ifFound && data.ifFound.action !== 'none') {
+                html += '<div class="info-card" style="background: #fef3c7; border: 2px dashed #f59e0b;">';
+                html += '<div class="subtitle-text">📍 IF FOUND</div>';
+                switch(data.ifFound.action) {
+                    case 'destroy':
+                        html += '<div style="font-weight: 600;">Please destroy this card for privacy</div>';
+                        break;
+                    case 'mail':
+                        html += `<div style="font-weight: 600;">Please mail to:<br>${data.ifFound.mailAddress}</div>`;
+                        break;
+                    case 'contact':
+                        if (data.ifFound.contactType === 'emergency') {
+                            html += `<div style="font-weight: 600;">Please contact emergency contact:<br>${data.ec} - ${data.ep}</div>`;
+                        } else if (data.ifFound.contactType === 'case-manager') {
+                            html += `<div style="font-weight: 600;">Please contact case manager:<br>${data.cm} - ${data.cp}</div>`;
+                        } else {
+                            html += `<div style="font-weight: 600;">Please contact:<br>${data.ifFound.contactInfo}</div>`;
+                        }
+                        break;
+                    case 'other':
+                        html += `<div style="font-weight: 600;">${data.ifFound.instructions}</div>`;
+                        break;
+                }
+                html += '</div>';
+            }
+
+            html += '</div></details>';
+
+            document.getElementById('display-content').innerHTML = html;
+            const infoDetailsEl = document.querySelector('#display-content .info-details');
+            if (infoDetailsEl) {
+                infoDetailsEl.addEventListener('toggle', () => {
+                    localStorage.setItem('infoDetailsOpen', infoDetailsEl.open);
+                });
+            }
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('emergency-modal');
+                if (modal && !modal.classList.contains('hidden')) {
+                    closeEmergencyModal();
+                }
+            }
+        });
 
         function renderHomeStatus() {
             const container = document.getElementById('status-cards');
@@ -4981,192 +5317,11 @@ Generated: ${new Date().toLocaleString()}`;
 
                     displayData = data;
 
-                    // Generate communication cards
-                    let commCards = '';
+                    // Show emergency modal instead of switching to display view
+                    showEmergencyModal(data);
 
-                    // Text message card (only if phone number exists)
-                    if (data.ph) {
-                        const smsBody = encodeURIComponent("Hi, I obtained your number through your iKey.");
-                        commCards += `
-        <div class="emergency-card" style="margin-bottom: 15px; cursor: pointer;">
-            <a href="sms:${data.ph}?body=${smsBody}" style="text-decoration: none; color: inherit; display: block;">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--success); font-weight: 700;">
-                            💬 Send Text Message
-                        </div>
-                        <div style="font-weight: 600; margin-top: 8px;">
-                            Text ${data.n || 'this person'} at ${data.ph}
-                        </div>
-                    </div>
-                    <span style="color: var(--success); font-size: 1.5rem;">→</span>
-                </div>
-            </a>
-        </div>`;
-                    }
-
-                    // Email card (only if email exists)
-                    if (data.pe) {
-                        const emailSubject = encodeURIComponent("Regarding your iKey Medical ID");
-                        const emailBody = encodeURIComponent("Hi,\n\nI obtained your contact information through your iKey Medical ID.\n\n");
-                        commCards += `
-        <div class="emergency-card" style="margin-bottom: 15px; cursor: pointer;">
-            <a href="mailto:${data.pe}?subject=${emailSubject}&body=${emailBody}" style="text-decoration: none; color: inherit; display: block;">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--proton); font-weight: 700;">
-                            📧 Send Email
-                        </div>
-                        <div style="font-weight: 600; margin-top: 8px;">
-                            Email ${data.n || 'this person'} at ${data.pe}
-                        </div>
-                    </div>
-                    <span style="color: var(--proton); font-size: 1.5rem;">→</span>
-                </div>
-            </a>
-        </div>`;
-                    }
-
-                    // Calendar event card
-                    if (data.n && data.pe) {
-                        const inviteUrl = `invite.html?pe=${encodeURIComponent(data.pe)}&n=${encodeURIComponent(data.n)}&key=${encodeURIComponent(storagePrefix)}`;
-                        commCards += `
-        <a href="${inviteUrl}" style="text-decoration: none; color: inherit; display: block;">
-            <div class="emergency-card" style="margin-bottom: 15px; cursor: pointer;">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <div style="font-size: 0.75rem; text-transform: uppercase; color: var(--primary); font-weight: 700;">
-                            📅 Send Event Info
-                        </div>
-                        <div style="font-weight: 600; margin-top: 8px;">
-                            Create calendar event with ${data.n}
-                        </div>
-                    </div>
-                    <span style="color: var(--primary); font-size: 1.5rem;">→</span>
-                </div>
-            </div>
-        </a>`;
-                    }
-
-                    // Add the communication cards to the page
-                    if (commCards) {
-                        // Wait for display content to be set, then add communication actions
-                        setTimeout(() => {
-                            const commActionsEl = document.getElementById('communication-actions');
-                            if (commActionsEl) {
-                                commActionsEl.innerHTML = commCards;
-                            }
-                        }, 100);
-                    }
-
-                    // Display existing data
-                    document.getElementById('wizard-view').classList.add('hidden');
-                    document.getElementById('display-view').classList.remove('hidden');
-                    
-                    const infoDetailsPref = localStorage.getItem('infoDetailsOpen');
-                    const detailsOpenAttr = infoDetailsPref === null || infoDetailsPref === 'true' ? ' open' : '';
-                    let html = `<details class="info-details"${detailsOpenAttr}><summary style="font-size: 1.2rem; font-weight: 600;">${data.n || 'Details'}</summary><div class="details-body">`;
-
-                    if (data.ph) {
-                        html += `<div class="info-card">
-                            <div class="subtitle-text">Phone Number</div>
-                            <div style="font-weight: 600;"><a href="tel:${data.ph}" style="color: var(--primary); text-decoration: none;">${data.ph}</a></div>
-                        </div>`;
-                    }
-
-                    if (data.pr) {
-                        html += `<div class="info-card">
-                            <div class="subtitle-text">Pronouns</div>
-                            <div style="font-weight: 600;">${data.pr}</div>
-                        </div>`;
-                    }
-
-                    if (data.b) {
-                        html += `<div class="info-card" style="border-left: 4px solid var(--danger);">
-                            <div class="subtitle-text">Blood Type</div>
-                            <div style="font-weight: 600; color: var(--danger);">${data.b}</div>
-                        </div>`;
-                    }
-                    
-                    if (data.a) {
-                        html += `<div class="info-card" style="border-left: 4px solid var(--danger);">
-                            <div class="subtitle-text">⚠️ Allergies</div>
-                            <div style="font-weight: 600; color: var(--danger);">${data.a}</div>
-                        </div>`;
-                    }
-                    
-                    if (data.ec) {
-                        html += `<div class="info-card" style="background: #dcfce7; border: 2px solid var(--success);">
-                            <div class="subtitle-text">📞 Emergency Contact</div>
-                            <div style="font-weight: 600; font-size: 1.2rem;">
-                                ${data.ec}<br>
-                                <a href="tel:${data.ep}" style="color: var(--primary); text-decoration: none;">
-                                    📱 ${data.ep}
-                                </a>
-                            </div>
-                        </div>`;
-                    }
-                    
-                    if (data.cm) {
-                        html += `<div class="info-card" style="background: #eff6ff; border: 2px solid var(--primary);">
-                            <div class="subtitle-text">👤 Case Manager</div>
-                            <div style="font-weight: 600;">
-                                ${data.cm}<br>
-                                ${data.co ? `<small>${data.co}</small><br>` : ''}
-                                ${data.cp ? `<a href="tel:${data.cp}" style="color: var(--primary); text-decoration: none;">📱 ${data.cp}</a>` : ''}
-                            </div>
-                        </div>`;
-                    }
-
-                    if (data.pe) {
-                        html += `<div class="info-card" style="border-left: 4px solid #6d4aff;">
-                            <div class="subtitle-text">Secure Email</div>
-                            <div style="font-weight: 600;">${data.pe}</div>
-                        </div>`;
-                    }
-
-                    if (data.docs && data.docs.length) {
-                        html += `<div class="info-card">
-                            <div class="subtitle-text">Documents</div>
-                            <ul style="margin-left: 20px;">${data.docs.map(d => `<li><a href="${d.l}" target="_blank" style="color: var(--primary); text-decoration: none;">📄 ${d.t}</a></li>`).join('')}</ul>
-                        </div>`;
-                    }
-
-                    if (data.ifFound && data.ifFound.action !== 'none') {
-                        html += '<div class="info-card" style="background: #fef3c7; border: 2px dashed #f59e0b;">';
-                        html += '<div class="subtitle-text">📍 IF FOUND</div>';
-                        switch(data.ifFound.action) {
-                            case 'destroy':
-                                html += '<div style="font-weight: 600;">Please destroy this card for privacy</div>';
-                                break;
-                            case 'mail':
-                                html += `<div style="font-weight: 600;">Please mail to:<br>${data.ifFound.mailAddress}</div>`;
-                                break;
-                            case 'contact':
-                                if (data.ifFound.contactType === 'emergency') {
-                                    html += `<div style="font-weight: 600;">Please contact emergency contact:<br>${data.ec} - ${data.ep}</div>`;
-                                } else if (data.ifFound.contactType === 'case-manager') {
-                                    html += `<div style="font-weight: 600;">Please contact case manager:<br>${data.cm} - ${data.cp}</div>`;
-                                } else {
-                                    html += `<div style="font-weight: 600;">Please contact:<br>${data.ifFound.contactInfo}</div>`;
-                                }
-                                break;
-                            case 'other':
-                                html += `<div style="font-weight: 600;">${data.ifFound.instructions}</div>`;
-                                break;
-                        }
-                        html += '</div>';
-                    }
-
-                    html += '</div></details>';
-
-                    document.getElementById('display-content').innerHTML = html;
-                    const infoDetailsEl = document.querySelector('#display-content .info-details');
-                    if (infoDetailsEl) {
-                        infoDetailsEl.addEventListener('toggle', () => {
-                            localStorage.setItem('infoDetailsOpen', infoDetailsEl.open);
-                        });
-                    }
+                    // Switch to home tab (modal will be on top)
+                    switchTab('home');
                 } catch (e) {
                     console.error('Failed to parse URL data:', e);
                 }
