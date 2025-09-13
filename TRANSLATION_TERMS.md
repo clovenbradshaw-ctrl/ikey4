@@ -24,13 +24,6 @@
             "contacts": "Contacts",
             "review": "Review"
         },
-        "onboarding": {
-            "title": "Choose Setup",
-            "basic": "Basic",
-            "basicDesc": "Quick form with essential fields",
-            "advanced": "Advanced",
-            "advancedDesc": "Step-by-step wizard"
-        },
         "welcome": {
             "title": "Create Your iKey",
             "description": "Generate a secure QR code with your essential information for emergency responders:",
@@ -131,14 +124,6 @@
             "selectFavorite": "Select Favorite",
             "warning": "⚠️ Bookmarks are saved only in this browser and will be lost if the device is lost or data is cleared. For secure backup, add a note in Proton Drive or save in an email.",
             "extendedWarning": "These bookmarks are only saved in this browser and will be lost if the device or browser data is lost. For secure backup, add a note in Proton Drive or save in an email."
-        },
-        "home": {
-            "exportBookmarks": "Export Bookmarks",
-            "importBookmarks": "Import Bookmarks",
-            "emailExport": "Email Export",
-            "importSuccess": "Import successful",
-            "importInvalid": "Invalid file",
-            "exportEmailSubject": "Bookmarks Export"
         },
         "wizard": {
             "addBookmark": "Add Bookmark",
@@ -461,21 +446,7 @@
             "meals": "Meals Resources",
             "policeDispatch": "Nashville Police Dispatch",
             "crisisLine": "Suicide & Crisis Lifeline: 988",
-            "poisonControlNumber": "Poison Control: 1-800-222-1222",
-            "training": "Training Materials"
-        },
-        "training": {
-            "title": "Training Guide",
-            "intro": "Follow these steps to get started.",
-            "steps": {
-                "step1": "Open the iKey app.",
-                "step2": "Tap Save to record your location.",
-                "step3": "Share with trusted contacts."
-            },
-            "back": "Back to Home"
-        },
-        "about": {
-            "trainingLink": "View training materials"
+            "poisonControlNumber": "Poison Control: 1-800-222-1222"
         },
         "card": {
             "title": "iKey ID Card Generator",
@@ -577,14 +548,6 @@
                 "passwordTips": "password tips",
                 "selfHost": "self-host"
             }
-        },
-        "about": {
-            "security": "You can set a password to encrypt your saved data so only you can read it."
-        },
-        "security": {
-            "prompt": "Enter your password to unlock your data",
-            "set": "Set a password to encrypt your data",
-            "invalid": "Incorrect password"
         },
         "misc": {
             "apps": "Proton Apps",
@@ -952,21 +915,7 @@
             "meals": "Recursos de Comidas",
             "policeDispatch": "Despacho Policial de Nashville",
             "crisisLine": "Línea de Suicidio y Crisis: 988",
-            "poisonControlNumber": "Control de Venenos: 1-800-222-1222",
-            "training": "Materiales de capacitación"
-        },
-        "training": {
-            "title": "Guía de capacitación",
-            "intro": "Sigue estos pasos para comenzar.",
-            "steps": {
-                "step1": "Abre la aplicación iKey.",
-                "step2": "Pulsa Guardar para registrar tu ubicación.",
-                "step3": "Compártelo con contactos de confianza."
-            },
-            "back": "Volver al inicio"
-        },
-        "about": {
-            "trainingLink": "Ver materiales de capacitación"
+            "poisonControlNumber": "Control de Venenos: 1-800-222-1222"
         },
         "card": {
             "title": "Generador de Tarjeta de ID de iKey",
@@ -1068,14 +1017,6 @@
                 "passwordTips": "consejos de contraseña",
                 "selfHost": "autoalojado"
             }
-        },
-        "about": {
-            "security": "Puedes establecer una contraseña para cifrar tus datos guardados y que solo tú puedas leerlos."
-        },
-        "security": {
-            "prompt": "Introduce tu contraseña para desbloquear tus datos",
-            "set": "Establece una contraseña para cifrar tus datos",
-            "invalid": "Contraseña incorrecta"
         },
         "misc": {
             "apps": "Proton Apps",
@@ -1433,21 +1374,7 @@
             "meals": "موارد الوجبات",
             "policeDispatch": "إرسال شرطة ناشفيل",
             "crisisLine": "خط الأزمات والانتحار: 988",
-            "poisonControlNumber": "مراقبة السموم: 1-800-222-1222",
-            "training": "مواد التدريب"
-        },
-        "training": {
-            "title": "دليل التدريب",
-            "intro": "اتبع هذه الخطوات للبدء.",
-            "steps": {
-                "step1": "افتح تطبيق iKey.",
-                "step2": "اضغط حفظ لتسجيل موقعك.",
-                "step3": "شارك مع جهات الاتصال الموثوقة."
-            },
-            "back": "العودة إلى الصفحة الرئيسية"
-        },
-        "about": {
-            "trainingLink": "عرض مواد التدريب"
+            "poisonControlNumber": "مراقبة السموم: 1-800-222-1222"
         },
         "card": {
             "title": "مولد بطاقة هوية iKey",
@@ -1549,14 +1476,6 @@
                 "passwordTips": "نصائح كلمة المرور",
                 "selfHost": "استضافة ذاتية"
             }
-        },
-        "about": {
-            "security": "يمكنك تعيين كلمة مرور لتشفير بياناتك المحفوظة بحيث لا يستطيع قراءتها إلا أنت."
-        },
-        "security": {
-            "prompt": "أدخل كلمة المرور لفتح بياناتك",
-            "set": "عيّن كلمة مرور لتشفير بياناتك",
-            "invalid": "كلمة المرور غير صحيحة"
         },
         "misc": {
             "apps": "Proton Apps",
@@ -1908,29 +1827,7 @@
             "meals": "Çavkaniyên Xwarinan",
             "policeDispatch": "Şandina Polîsê Nashville",
             "crisisLine": "Xeta Xwekujtin û Krîzê: 988",
-            "poisonControlNumber": "Kontrola Jehrê: 1-800-222-1222",
-            "training": "Materyalên Fêrbûnê"
-        },
-        "training": {
-            "title": "Rêbernameya Fêrbûnê",
-            "intro": "Ji bo destpêkê van gavên bişopînin.",
-            "steps": {
-                "step1": "Sepana iKey veke.",
-                "step2": "Li ser Save bitikîne da ku cîhê xwe tomar bike.",
-                "step3": "Bi têkilîyên ewle parve bike."
-            },
-            "back": "Vegere Serûpelê"
-        },
-        "about": {
-            "trainingLink": "Materyalên fêrbûnê bibîne"
-        },
-        "about": {
-            "security": "Dikarî şîfreyek saz bikî da ku daneyên te yên tomarkirî bêne şifrkirin û tenê tu wan bixwînî."
-        },
-        "security": {
-            "prompt": "Şîfreya xwe binivîse da ku daneyên xwe veke",
-            "set": "Ji bo şifrkirina daneyên xwe şîfreyek saz bike",
-            "invalid": "Şîfre çewt e"
+            "poisonControlNumber": "Kontrola Jehrê: 1-800-222-1222"
         },
         "misc": {
             "apps": "Proton Apps",
@@ -2282,29 +2179,7 @@
             "meals": "Ilaha Cuntada",
             "policeDispatch": "Dirista Booliska Nashville",
             "crisisLine": "Khadka Ismiidaaminta & Dhibaatada: 988",
-            "poisonControlNumber": "Xakamaynta Sunta: 1-800-222-1222",
-            "training": "Qalabka tababarka"
-        },
-        "training": {
-            "title": "Hagaha tababarka",
-            "intro": "Raac tillaabooyinkan si aad u bilowdo.",
-            "steps": {
-                "step1": "Fur app-ka iKey.",
-                "step2": "Taabo Kaydi si aad u qorto goobtaada.",
-                "step3": "La wadaag dadka aad ku kalsoon tahay."
-            },
-            "back": "Ku noqo bogga hore"
-        },
-        "about": {
-            "trainingLink": "Eeg qalabka tababarka"
-        },
-        "about": {
-            "security": "Waxaad dejin kartaa eray sir ah si aad u qariso xogtaada kaydsan oo adiga kaliya akhriyi karto."
-        },
-        "security": {
-            "prompt": "Geli eray sirtaada si aad u furto xogtaada",
-            "set": "Deji eray sir ah si aad u qariso xogtaada",
-            "invalid": "Erey sir khaldan"
+            "poisonControlNumber": "Xakamaynta Sunta: 1-800-222-1222"
         },
         "misc": {
             "apps": "Proton Apps",
@@ -2656,29 +2531,7 @@
             "meals": "餐食资源",
             "policeDispatch": "纳什维尔警察调度",
             "crisisLine": "自杀与危机生命线：988",
-            "poisonControlNumber": "中毒控制：1-800-222-1222",
-            "training": "培训资料"
-        },
-        "training": {
-            "title": "培训指南",
-            "intro": "按照以下步骤开始使用。",
-            "steps": {
-                "step1": "打开 iKey 应用。",
-                "step2": "点击“保存”记录你的位置。",
-                "step3": "与可信联系人分享。"
-            },
-            "back": "返回主页"
-        },
-        "about": {
-            "trainingLink": "查看培训资料"
-        },
-        "about": {
-            "security": "你可以设置密码来加密已保存的数据，只有你能查看。"
-        },
-        "security": {
-            "prompt": "请输入密码以解锁你的数据",
-            "set": "设置密码以加密你的数据",
-            "invalid": "密码不正确"
+            "poisonControlNumber": "中毒控制：1-800-222-1222"
         },
         "misc": {
             "apps": "Proton Apps",
