@@ -2804,8 +2804,21 @@
         // Toggle resource dropdown
         function toggleResourceMenu() {
             const menu = document.getElementById('resource-menu');
-            if (menu) {
-                menu.classList.toggle('hidden');
+            if (!menu) return;
+            menu.classList.toggle('hidden');
+            if (!menu.classList.contains('hidden')) {
+                setTimeout(() => document.addEventListener('click', handleOutsideMenuClick));
+            } else {
+                document.removeEventListener('click', handleOutsideMenuClick);
+            }
+        }
+
+        function handleOutsideMenuClick(e) {
+            const menu = document.getElementById('resource-menu');
+            const moreBtn = document.querySelector(".tab-btn[onclick*='toggleResourceMenu']");
+            if (menu && !menu.contains(e.target) && moreBtn && !moreBtn.contains(e.target)) {
+                menu.classList.add('hidden');
+                document.removeEventListener('click', handleOutsideMenuClick);
             }
         }
 
