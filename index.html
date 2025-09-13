@@ -1866,11 +1866,11 @@
             <span class="tab-label" data-i18n="nav.iKey">iKey</span>
         </button>
         <button class="tab-btn" onclick="switchTab('emergency')" aria-label="Emergency" data-i18n-aria="nav.emergency">
-            <span class="tab-icon">📍</span>
+            <span class="tab-icon">🚨</span>
             <span class="tab-label" data-i18n="nav.emergency">Emergency</span>
         </button>
         <button class="tab-btn" onclick="switchTab('share')" aria-label="Share Location" data-i18n-aria="nav.share">
-            <span class="tab-icon">📤</span>
+            <span class="tab-icon">📍</span>
             <span class="tab-label" data-i18n="nav.share">Share</span>
         </button>
         <button class="tab-btn" onclick="switchTab('weather')" aria-label="Weather" data-i18n-aria="nav.weather">
@@ -2776,7 +2776,7 @@
                     <h3 style="margin-bottom: 15px; color: var(--primary);" data-i18n="settings.tabVisibility">Tab Visibility</h3>
                     <div class="settings-item" style="cursor: default;">
                         <div>
-                            <div style="font-weight: 600;" data-i18n="nav.emergency">📍 Emergency</div>
+                            <div style="font-weight: 600;" data-i18n="nav.emergency">🚨 Emergency</div>
                         </div>
                         <input type="checkbox" class="tab-visibility-toggle" data-tab="emergency" checked>
                     </div>
@@ -4170,7 +4170,7 @@ END:VCALENDAR`;
             getInternalPagesHTML() {
                 const pages = [
                     { id: 'ikey', key: 'wizard.pages.ikey', name: 'Medical', icon: '🏥' },
-                    { id: 'emergency', key: 'wizard.pages.emergency', name: 'Emergency', icon: '📍' },
+                    { id: 'emergency', key: 'wizard.pages.emergency', name: 'Emergency', icon: '🚨' },
                     { id: 'weather', key: 'wizard.pages.weather', name: 'Weather', icon: '⛈️' },
                     { id: 'wttin', key: 'wizard.pages.wttin', name: 'Resources', icon: '🏠' },
                     { id: 'dispatch', key: 'wizard.pages.dispatch', name: 'Dispatch', icon: '📡' },
@@ -4279,7 +4279,7 @@ END:VCALENDAR`;
             addInternalPage(pageId) {
                 const pages = {
                     ikey: { name: 'Medical ID', icon: '🏥' },
-                    'emergency': { name: 'Emergency', icon: '📍' },
+                    'emergency': { name: 'Emergency', icon: '🚨' },
                     weather: { name: 'Weather', icon: '⛈️' },
                     wttin: { name: 'Resources', icon: '🏠' },
                     dispatch: { name: 'Dispatch', icon: '📡' },
