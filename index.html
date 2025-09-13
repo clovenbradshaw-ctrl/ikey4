@@ -2335,6 +2335,11 @@
 <!-- Emergency Services Tab -->
 <div id="emergency" class="tab-content">
         <div class="container">
+            <div class="location-share-tip" style="margin-bottom: 20px;">
+                <button class="btn btn-secondary" onclick="getLocation()">Enable Location Sharing</button>
+                <p style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;">Helps get your precise location to give operators.</p>
+            </div>
+
             <a href="tel:911" class="emergency-button">
                 <span class="icon">📞</span>
                 <span>Call 911</span>
@@ -2353,7 +2358,6 @@
                     <div class="loading-spinner"></div>
                     <p>Acquiring secure location...</p>
                     <p style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;">Please allow location access</p>
-                    <button class="btn btn-secondary" onclick="getLocation()" style="margin-top: 10px;" data-i18n="emergency.enableLocation">Enable Location</button>
                 </div>
                 
                 <div id="emergency-content" style="display: none;">
