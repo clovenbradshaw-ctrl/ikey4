@@ -13,7 +13,12 @@ function loadTranslations() {
       console.error('Failed to load translations:', err);
     })
     .finally(() => {
-      const saved = localStorage.getItem('language') || 'en';
+      let saved = 'en';
+      try {
+        saved = localStorage.getItem('language') || 'en';
+      } catch (e) {
+        console.warn('Storage unavailable, defaulting to English', e);
+      }
       setLanguage(saved);
     });
 }
@@ -40,7 +45,11 @@ function translateFragment(root = document) {
 
 function setLanguage(lang) {
   document.documentElement.lang = lang;
-  localStorage.setItem('language', lang);
+  try {
+    localStorage.setItem('language', lang);
+  } catch (e) {
+    console.warn('Failed to save language preference', e);
+  }
   document.querySelectorAll('.lang-option').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.lang === lang);
   });
