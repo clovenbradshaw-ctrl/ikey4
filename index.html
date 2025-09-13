@@ -3243,20 +3243,29 @@
                 return;
             }
 
+            const shareUrl = window.location.href;
+
             canvas.toBlob(async function(blob) {
                 const file = new File([blob], 'ikey-qr.png', { type: 'image/png' });
-                const shareData = {
+                let shareData = {
                     files: [file],
                     title: 'iKey QR Code',
                     text: 'Scan to view my emergency info',
-                    url: window.location.href
+                    url: shareUrl
                 };
+
                 try {
-                    if (!navigator.canShare || navigator.canShare({ files: [file] })) {
-                        await navigator.share(shareData);
-                        logShare('qr_code', null, 'share');
-                        return;
+                    if (navigator.canShare && !navigator.canShare({ files: [file] })) {
+                        // Some browsers support sharing but not with files
+                        shareData = {
+                            title: 'iKey QR Code',
+                            text: 'Scan to view my emergency info',
+                            url: shareUrl
+                        };
                     }
+                    await navigator.share(shareData);
+                    logShare('qr_code', null, 'share');
+                    return;
                 } catch (err) {
                     console.error('Share failed:', err);
                     showToast('⚠️ Share failed. Downloading QR instead.');
