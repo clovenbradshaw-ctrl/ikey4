@@ -351,7 +351,8 @@
             "cards": {
                 "lifeline": {
                     "name": "988 Suicide & Crisis Lifeline",
-                    "call": "Call or Text 988"
+                    "call": "Call 988",
+                    "text": "Text 988"
                 },
                 "veterans": {
                     "name": "Veterans Crisis Line",
