@@ -1960,7 +1960,7 @@
 
     <div id="key-banner" class="key-banner hidden">
         <span id="key-banner-text"></span>
-        <button id="back-to-my-key" class="btn btn-secondary hidden" onclick="returnToMyKey()">Back to my key</button>
+        <button id="back-to-my-key" class="btn btn-secondary hidden" onclick="returnToMyKey()" data-i18n="home.backToMyKey">Back to My iKey</button>
     </div>
 
     <!-- Tab Navigation -->
@@ -3887,7 +3887,7 @@ let dataListenersSet = false;
             const bookmarks = JSON.parse(localStorage.getItem('homeBookmarks') || '[]');
             const backup = { key: storagePrefix, data: keyData, bookmarks };
             const text = JSON.stringify(backup, null, 2);
-            const sendEmail = confirm('Send backup via email? Cancel for text.');
+            const sendEmail = confirm(t('messages.sendBackupEmail'));
             const method = sendEmail ? 'email' : 'sms';
             const uri = sendEmail
                 ? `mailto:?subject=${encodeURIComponent('iKey Backup')}&body=${encodeURIComponent(text)}`
@@ -3899,7 +3899,7 @@ let dataListenersSet = false;
         }
 
         function createNewKey() {
-            const newKey = prompt('Enter new key name');
+            const newKey = prompt(t('messages.enterNewKeyName'));
             if (!newKey) return;
             for (let i = 0; i < localStorage.length; i++) {
                 const k = localStorage.key(i);
@@ -3908,7 +3908,7 @@ let dataListenersSet = false;
                     localStorage.setItem(`${newKey}_${suffix}`, localStorage.getItem(k));
                 }
             }
-            alert('New key created. Reprint and redistribute your card.');
+            alert(t('messages.newKeyCreated'));
             window.location.href = `${window.location.pathname}#${encodeURIComponent(newKey)}`;
             window.location.reload();
         }
@@ -3936,7 +3936,7 @@ let dataListenersSet = false;
                     copyURLWithFeedback();
                 });
             } else {
-                const choice = confirm('Share not available. Copy link to clipboard instead?');
+                const choice = confirm(t('messages.shareUnavailable'));
                 if (choice) {
                     copyURLWithFeedback();
                 }
@@ -3948,7 +3948,7 @@ let dataListenersSet = false;
             navigator.clipboard.writeText(url).then(() => {
                 const toast = document.createElement('div');
                 toast.className = 'location-toast';
-                toast.textContent = '✅ Link copied! You can paste it anywhere.';
+                toast.textContent = `✅ ${t('messages.linkCopied')}`;
                 document.body.appendChild(toast);
 
                 setTimeout(() => {
@@ -3958,7 +3958,7 @@ let dataListenersSet = false;
 
                 logShare('qr_code', null, 'copy');
             }).catch(() => {
-                alert('Link copied: ' + url);
+                alert(`${t('messages.linkCopied')} ${url}`);
             });
         }
 
@@ -4108,7 +4108,7 @@ let dataListenersSet = false;
         }
 
         function createNew() {
-            if (confirm('Create a new iKey? This will take you to the base URL.')) {
+            if (confirm(t('messages.createNewIKey'))) {
                 window.location.href = baseURL;
             }
         }
@@ -4837,7 +4837,7 @@ END:VCALENDAR`;
             }
 
             removeBookmark(index) {
-                if (confirm('Remove this bookmark?')) {
+                if (confirm(t('messages.removeBookmark'))) {
                     this.bookmarks.splice(index, 1);
                     this.save();
                 }
@@ -5654,30 +5654,30 @@ Generated: ${new Date().toLocaleString()}`;
             // Card 1: Medical Info Status
             if (displayData) {
                 const alerts = [];
-                if (displayData.a) alerts.push('Allergies');
-                if (displayData.m) alerts.push('Medications');
-                if (displayData.c) alerts.push('Conditions');
+                if (displayData.a) alerts.push(t('basic.allergies'));
+                if (displayData.m) alerts.push(t('basic.medications'));
+                if (displayData.c) alerts.push(t('basic.conditions'));
 
                 container.innerHTML += `
             <div class="status-card">
-                <div class="card-badge status-badge">🔒 iKey Emergency ID ACTIVE</div>
+                <div class="card-badge status-badge">🔒 ${t('home.activeBadge')}</div>
                 <div class="card-content">
                     <div class="main-text">${displayData.n}</div>
-                    <div class="sub-text">${alerts.length ? alerts.join(' • ') : 'No alerts'}</div>
-                    ${displayData.b ? `<div class="sub-text">Blood Type: ${displayData.b}</div>` : ''}
+                    <div class="sub-text">${alerts.length ? alerts.join(' • ') : t('home.noAlerts')}</div>
+                    ${displayData.b ? `<div class="sub-text">${t('basic.bloodType')}: ${displayData.b}</div>` : ''}
                 </div>
             </div>
         `;
             } else {
                 container.innerHTML += `
             <div class="status-card warning">
-                <div class="card-badge status-badge">⚠️ NO iKey Emergency ID</div>
+                <div class="card-badge status-badge">⚠️ ${t('home.noKeyBadge')}</div>
                 <div class="card-content">
-                    <div class="main-text">Create Your iKey Emergency ID</div>
-                    <div class="sub-text">Tap to add emergency information</div>
+                    <div class="main-text">${t('home.createMyIKey')}</div>
+                    <div class="sub-text">${t('home.addEmergencyInfo')}</div>
                 </div>
                 <button class="btn btn-primary" style="margin-top: 12px; width: 100%;" onclick="switchTab('ikey')">
-                    Create iKey Emergency ID
+                    ${t('home.createIKeyButton')}
                 </button>
             </div>
         `;
@@ -5687,13 +5687,14 @@ Generated: ${new Date().toLocaleString()}`;
             if (navigator.geolocation) {
                 container.innerHTML += `
             <div class="status-card success">
-                <div class="card-badge status-badge">📍 LOCATION SERVICES</div>
+                <div class="card-badge status-badge">📍 ${t('home.locationServices')}</div>
                 <div class="card-content">
-                    <div class="sub-text">Ready for emergency sharing</div>
+                    <div class="sub-text">${t('home.readyToShare')}</div>
                 </div>
             </div>
         `;
             }
+            translateFragment(container);
         } // This closing brace was missing!
 
         function updateKeyBanner() {
@@ -5708,7 +5709,12 @@ Generated: ${new Date().toLocaleString()}`;
             const myEmail = localStorage.getItem('myKeyEmail');
             const myHash = localStorage.getItem('myKeyData');
             isOwnKey = myEmail && displayData.pe && displayData.pe === myEmail;
-            textEl.textContent = isOwnKey ? 'Viewing your own key' : "Viewing someone else's key - read only";
+            textEl.textContent = isOwnKey ? 'My iKey' : 'Scanned Card';
+            textEl.dataset.i18n = isOwnKey ? 'home.myIKey' : 'home.scannedCard';
+            if (backBtn) {
+                backBtn.dataset.i18n = 'home.backToMyKey';
+            }
+            translateFragment(banner);
             if (isOwnKey) {
                 backBtn.classList.add('hidden');
             } else {
@@ -6012,7 +6018,7 @@ Generated: ${new Date().toLocaleString()}`;
         }
 
         function clearShareHistory() {
-            if (confirm('Clear all share history?')) {
+            if (confirm(t('messages.clearShareHistory'))) {
                 localStorage.removeItem('locationShareHistory');
                 const container = document.getElementById('location-share-history');
                 if (container) container.style.display = 'none';
