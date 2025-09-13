@@ -16,6 +16,12 @@
             "share": "Share",
             "settings": "Settings"
         },
+        "header": {
+            "changeLanguage": "Change language"
+        },
+        "favorites": {
+            "removeBookmark": "Remove bookmark"
+        },
         "steps": {
             "welcome": "Welcome",
             "secureEmail": "Secure Email",
@@ -584,6 +590,12 @@
             "share": "Compartir",
             "settings": "Configuración"
         },
+        "header": {
+            "changeLanguage": "Cambiar idioma"
+        },
+        "favorites": {
+            "removeBookmark": "Eliminar marcador"
+        },
         "steps": {
             "welcome": "Bienvenido",
             "secureEmail": "Correo Seguro",
@@ -1042,6 +1054,12 @@
             "emergency": "الطوارئ",
             "share": "مشاركة",
             "settings": "الإعدادات"
+        },
+        "header": {
+            "changeLanguage": "تغيير اللغة"
+        },
+        "favorites": {
+            "removeBookmark": "إزالة الإشارة المرجعية"
         },
         "steps": {
             "welcome": "مرحباً",
@@ -1502,6 +1520,12 @@
             "share": "Parvekirin",
             "settings": "Mîheng"
         },
+        "header": {
+            "changeLanguage": "Ziman biguherîne"
+        },
+        "favorites": {
+            "removeBookmark": "Nîşanê rakê"
+        },
         "steps": {
             "welcome": "Bi xêr hatî",
             "secureEmail": "E-nameya Ewledar",
@@ -1854,6 +1878,12 @@
             "share": "Wadaag",
             "settings": "Dejinta"
         },
+        "header": {
+            "changeLanguage": "Beddel luqadda"
+        },
+        "favorites": {
+            "removeBookmark": "Ka saar calaamada"
+        },
         "steps": {
             "welcome": "Soo dhawoow",
             "secureEmail": "Iimaylka Ammaan",
@@ -2205,6 +2235,12 @@
             "emergency": "紧急",
             "share": "分享",
             "settings": "设置"
+        },
+        "header": {
+            "changeLanguage": "切换语言"
+        },
+        "favorites": {
+            "removeBookmark": "删除书签"
         },
         "steps": {
             "welcome": "欢迎",
