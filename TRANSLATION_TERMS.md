@@ -287,7 +287,9 @@
             "active": "Active",
             "latest": "Latest",
             "updated": "Updated",
-            "loading": "Loading dispatches..."
+            "loading": "Loading dispatches...",
+            "error": "Failed to load dispatches.",
+            "none": "No active dispatches at this time"
         },
         "invite": {
             "title": "ICS Event Generator - Proton Calendar Compatible",
@@ -406,7 +408,8 @@
                 "remember": "Remember: You are not alone. Help is available.",
                 "disclaimer": "All hotlines listed provide free, confidential support. Most are available 24/7/365. If you are in immediate danger, please call 911.",
                 "updated": "Last updated: September 2025 | Information verified from official sources"
-            }
+            },
+            "error": "Failed to load hotlines."
         },
         "placeholders": {
             "email": "you@proton.me",
@@ -552,6 +555,16 @@
             "reading": "reading",
             "whats": "whats",
             "grandma": "grandma"
+        },
+        "meals": {
+            "title": "Free Meal Resources",
+            "error": "Failed to load meal sites",
+            "sites": {
+                "soupKitchen": {
+                    "name": "Downtown Soup Kitchen",
+                    "hours": "Mon-Fri 12pm"
+                }
+            }
         }
     },
     "es": {

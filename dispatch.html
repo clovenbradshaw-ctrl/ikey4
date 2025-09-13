@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title data-i18n="dispatch.title">Nashville Police Active Dispatches</title>
+    <script src="scripts/resources.js"></script>
     <script src="scripts/translate.js"></script>
     <style>
         * {
@@ -355,214 +356,36 @@
         </div>
     
     <script>
-        const API_URL = 'https://services2.arcgis.com/HdTo6HJqh92wn4D8/arcgis/rest/services/Metro_Nashville_Police_Department_Active_Dispatch_Table_view/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=json';
-        
-        function formatTimeRelative(timestamp) {
-            if (!timestamp) return 'Unknown';
-            const date = new Date(timestamp);
-            const now = new Date();
-            const diffMs = now - date;
-            const diffMins = Math.floor(diffMs / 60000);
-            
-            if (diffMins < 1) return 'Just now';
-            if (diffMins === 1) return '1 min ago';
-            if (diffMins < 60) return `${diffMins} mins ago`;
-            if (diffMins < 120) return '1 hour ago';
-            if (diffMins < 1440) {
-                const hours = Math.floor(diffMins / 60);
-                return `${hours} hours ago`;
-            }
-            const days = Math.floor(diffMins / 1440);
-            return `${days} ${days === 1 ? 'day' : 'days'} ago`;
-        }
-        
-        function formatTime(timestamp) {
-            if (!timestamp) return '--:--';
-            return new Date(timestamp).toLocaleTimeString('en-US', { 
-                hour: 'numeric', 
-                minute: '2-digit',
-                hour12: true
-            });
-        }
-        
-        function formatDate(timestamp) {
-            if (!timestamp) return '';
-            const date = new Date(timestamp);
-            const today = new Date();
-            const isToday = date.toDateString() === today.toDateString();
-            
-            if (isToday) {
-                return `Today ${formatTime(timestamp)}`;
-            }
-            
-            return date.toLocaleDateString('en-US', { 
-                month: 'short',
-                day: 'numeric',
-                hour: 'numeric',
-                minute: '2-digit',
-                hour12: true
-            });
-        }
-        
-        function formatIncidentType(type) {
-            if (!type) return 'Unknown Incident';
-            // Clean up all-caps text and format nicely
-            return type.toLowerCase()
-                .replace(/non-residence/gi, 'Non-Residential')
-                .replace(/residence/gi, 'Residential')
-                .split(/[\s-]+/)
-                .map(word => {
-                    // Keep certain words lowercase
-                    if (['in', 'at', 'of'].includes(word)) return word;
-                    return word.charAt(0).toUpperCase() + word.slice(1);
-                })
-                .join(' ');
-        }
-        
-        function getPriorityClass(incidentType, code) {
-            if (!incidentType && !code) return '';
-            
-            const typeUpper = (incidentType || '').toUpperCase();
-            const codeUpper = (code || '').toUpperCase();
-            
-            // High priority - immediate danger
-            if (typeUpper.includes('SHOOTING') || 
-                typeUpper.includes('STABBING') || 
-                typeUpper.includes('ROBBERY') || 
-                typeUpper.includes('HOLD UP') ||
-                typeUpper.includes('WEAPON') ||
-                codeUpper === '53P') {
-                return 'priority-high';
-            }
-            
-            // Medium priority - active situations
-            if (typeUpper.includes('FIGHT') || 
-                typeUpper.includes('ASSAULT') || 
-                typeUpper.includes('IN PROGRESS') ||
-                typeUpper.includes('DOMESTIC') ||
-                codeUpper === '57P' || 
-                codeUpper === '57PJ') {
-                return 'priority-medium';
-            }
-            
-            // Low priority - property crimes, alarms
-            if (typeUpper.includes('ALARM')) {
-                return 'priority-low';
-            }
-            
-            return '';
-        }
-        
-        async function fetchDispatches() {
+        document.addEventListener('DOMContentLoaded', async () => {
+            const container = document.getElementById('dispatchList');
             try {
-                const response = await fetch(API_URL);
-                if (!response.ok) throw new Error('Failed to fetch data');
-                
-                const data = await response.json();
-                const features = data.features || [];
-                
-                // Update stats
-                document.getElementById('totalCalls').textContent = features.length;
-                document.getElementById('lastUpdate').textContent = formatTime(new Date());
-                
-                // Find most recent call
-                if (features.length > 0) {
-                    const mostRecentTime = Math.max(...features.map(f => f.attributes?.CallReceivedTime || 0));
-                    document.getElementById('mostRecent').textContent = formatTimeRelative(mostRecentTime);
-                } else {
-                    document.getElementById('mostRecent').textContent = '--';
-                }
-                
-                // Sort by most recent first
-                features.sort((a, b) => {
-                    const timeA = a.attributes?.CallReceivedTime || 0;
-                    const timeB = b.attributes?.CallReceivedTime || 0;
-                    return timeB - timeA;
-                });
-                
-                const dispatchList = document.getElementById('dispatchList');
-                
-                if (features.length === 0) {
-                    dispatchList.innerHTML = `
-                        <div class="empty">
-                            <div class="empty-icon">✅</div>
-                            <div class="empty-title">${t('dispatch.allClear', 'All Clear')}</div>
-                            <div class="empty-subtitle">${t('dispatch.none', 'No active dispatches at this time')}</div>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                dispatchList.innerHTML = features.map(feature => {
-                    const attr = feature.attributes || {};
-                    const priorityClass = getPriorityClass(attr.IncidentTypeName, attr.IncidentTypeCode);
-                    
-                    return `
-                        <div class="dispatch-card ${priorityClass}">
-                            <div class="dispatch-header">
-                                <div class="incident-info">
-                                    <div class="incident-type">
-                                        ${formatIncidentType(attr.IncidentTypeName)}
-                                        ${attr.IncidentTypeCode ? `<span class="incident-code">${attr.IncidentTypeCode}</span>` : ''}
-                                    </div>
-                                </div>
-                                <div class="time-info">
-                                    <div class="time-relative">${formatTimeRelative(attr.CallReceivedTime)}</div>
-                                    <div class="time-absolute">${formatDate(attr.CallReceivedTime)}</div>
-                                </div>
-                            </div>
-                            
-                            <div class="dispatch-location">
-                                <div class="location-primary">
-                                    <span class="location-icon">📍</span>
-                                    <span>${attr.Location || t('dispatch.locationNotSpecified', 'Location not specified')}</span>
-                                    ${attr.CityName ? `<span class="city-badge">${attr.CityName}</span>` : ''}
-                                </div>
-                                ${attr.LocationDescription ? `
-                                    <div class="location-detail">${attr.LocationDescription}</div>
-                                ` : ''}
-                            </div>
-                            
-                            <div class="dispatch-meta">
-                                <div class="meta-item">
-                                    <span>📞</span>
-                                    <span>Received: ${formatTime(attr.CallReceivedTime)}</span>
-                                </div>
-                                ${attr.LastUpdated ? `
-                                    <div class="meta-item">
-                                        <span>🔄</span>
-                                        <span>Updated: ${formatTime(attr.LastUpdated)}</span>
-                                    </div>
-                                ` : ''}
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-                
-            } catch (error) {
-                console.error('Error fetching dispatches:', error);
-                document.getElementById('dispatchList').innerHTML = `
-                    <div class="error">
-                        <div style="font-size: 24px; margin-bottom: 10px;">⚠️</div>
-                        <div style="font-weight: 600;">Unable to load dispatch data</div>
-                        <div style="font-size: 13px; margin-top: 8px; color: #7f1d1d;">Will retry in 30 seconds...</div>
-                    </div>
-                `;
-            }
-        }
-        
-        // Initial fetch
-        fetchDispatches();
-        
-        // Refresh every 30 seconds
-        setInterval(fetchDispatches, 30000);
-        
-        // Refresh on visibility change (when user returns to tab)
-        document.addEventListener('visibilitychange', () => {
-            if (!document.hidden) {
-                fetchDispatches();
+                const data = await resourceLoader.loadResource('dispatch');
+                renderDispatches(data, container);
+            } catch (e) {
+                container.innerHTML = `<div class="error">${t('dispatch.error', 'Failed to load dispatches')}</div>`;
             }
         });
+
+        function renderDispatches(list, container) {
+            if (!Array.isArray(list) || list.length === 0) {
+                container.innerHTML = `<div class="empty">${t('dispatch.none', 'No active dispatches at this time')}</div>`;
+                return;
+            }
+            container.innerHTML = list.map(d => `
+                <div class="dispatch-card">
+                    <div class="dispatch-header">
+                        <div class="incident-info">
+                            <div class="incident-type">${d.type} <span class="incident-code">${d.code}</span></div>
+                        </div>
+                        <div class="time-info"><div class="time-relative">${d.time}</div></div>
+                    </div>
+                    <div class="dispatch-location">
+                        <div class="location-primary"><span class="location-icon">📍</span>${d.address}</div>
+                        <div class="location-detail">${d.city}</div>
+                    </div>
+                </div>`).join('');
+            translateFragment(container);
+        }
     </script>
 <script>
     (function() {
