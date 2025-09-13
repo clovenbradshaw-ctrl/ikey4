@@ -1887,6 +1887,7 @@
                     <div class="loading-spinner"></div>
                     <p>Acquiring secure location...</p>
                     <p style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;">Please allow location access</p>
+                    <button class="btn btn-secondary" onclick="getLocation()" style="margin-top: 10px;" data-i18n="emergency.enableLocation">Enable Location</button>
                 </div>
                 
                 <div id="emergency-content" style="display: none;">
@@ -3758,6 +3759,12 @@ Generated: ${new Date().toLocaleString()}`;
         }
 
         function getLocation() {
+            if (watchId) {
+                navigator.geolocation.clearWatch(watchId);
+                watchId = null;
+            }
+            document.getElementById('emergency-loading').style.display = 'block';
+            document.getElementById('emergency-content').style.display = 'none';
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     position => {
@@ -3768,7 +3775,11 @@ Generated: ${new Date().toLocaleString()}`;
                         document.getElementById('emergency-loading').innerHTML = `
                             <p style="color: var(--danger);">Unable to get location</p>
                             <p style="font-size: 0.85rem;">Please enable location services and refresh</p>
+                            <button class="btn btn-secondary" onclick="getLocation()" style="margin-top: 10px;" data-i18n="emergency.enableLocation">Enable Location</button>
                         `;
+                        if (typeof setLanguage === 'function') {
+                            setLanguage(document.documentElement.lang || 'en');
+                        }
                     },
                     {
                         enableHighAccuracy: true,
@@ -3776,7 +3787,7 @@ Generated: ${new Date().toLocaleString()}`;
                         maximumAge: 0
                     }
                 );
-                
+
                 watchId = navigator.geolocation.watchPosition(
                     position => {
                         updateLocationDisplay(position);
