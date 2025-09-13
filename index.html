@@ -5326,8 +5326,13 @@ Generated: ${new Date().toLocaleString()}`;
 
                     displayData = data;
 
-                    // Show emergency modal instead of switching to display view
-                    showEmergencyModal(data);
+                    const scanKey = `scanned_${hash}`;
+                    if (!localStorage.getItem(scanKey)) {
+                        localStorage.setItem(scanKey, '1');
+                        showEmergencyModal(data);
+                    } else {
+                        initializeDisplayView(data);
+                    }
 
                     // Switch to home tab (modal will be on top)
                     switchTab('home');
