@@ -13,6 +13,7 @@
     <!-- External Libraries -->
     <script src="scripts/qrcode.min.js"></script>
     <script src="scripts/lz-string.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
     
     <style>
         * {
@@ -2043,8 +2044,13 @@
     <div id="ikey" class="tab-content active" role="tabpanel" aria-labelledby="tab-ikey" tabindex="0" aria-hidden="false">
         <div class="container">
             <div class="card">
+                <div id="start-view" class="hidden" style="text-align: center;">
+                    <h2>Welcome to iKey</h2>
+                    <button class="btn btn-primary" style="margin:10px 0;" onclick="launchWizard()">Create new iKey</button>
+                    <button class="btn btn-secondary" onclick="importMyKey()">Import my iKey</button>
+                </div>
                 <!-- Wizard View -->
-                <div id="wizard-view">
+                <div id="wizard-view" class="hidden">
                     <!-- Progress Bar -->
                     <div class="wizard-progress">
                         <div class="progress-step active" data-step="1">
@@ -2450,6 +2456,16 @@
         <div id="qr-modal-code"></div>
         <div class="modal-actions">
             <button class="btn btn-secondary" onclick="closeQRModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- Import QR Modal -->
+<div id="import-modal" class="modal hidden" role="dialog" aria-modal="true" aria-hidden="true" tabindex="-1">
+    <div class="modal-content qr-modal-content">
+        <div id="qr-reader"></div>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closeImportModal()">Cancel</button>
         </div>
     </div>
 </div>
@@ -2907,6 +2923,20 @@
                         <div>
                             <div style="font-weight: 600;" data-i18n="settings.generatePhysicalCard">💳 Generate Physical Card</div>
                             <div style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;" data-i18n="settings.openCardGenerator">Open card generator</div>
+                        </div>
+                        <span style="color: var(--secondary);">→</span>
+                    </div>
+                    <div class="settings-item" onclick="resetMyKey()">
+                        <div>
+                            <div style="font-weight: 600;">🗑️ Reset my iKey</div>
+                            <div style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;">Clear saved iKey assignment</div>
+                        </div>
+                        <span style="color: var(--secondary);">→</span>
+                    </div>
+                    <div class="settings-item" onclick="importMyKey()">
+                        <div>
+                            <div style="font-weight: 600;">📥 Import my iKey</div>
+                            <div style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;">Scan a QR code to set your iKey</div>
                         </div>
                         <span style="color: var(--secondary);">→</span>
                     </div>
@@ -3590,12 +3620,9 @@ let dataListenersSet = false;
 
             window.history.replaceState(null, '', url);
 
-            localStorage.setItem('myKeyData', compressed);
-            if (cleanData.pe) localStorage.setItem('myKeyEmail', cleanData.pe);
-            if (cleanData.n) localStorage.setItem('myKeyName', cleanData.n);
             displayData = cleanData;
-            isOwnKey = true;
             renderHomeStatus();
+            promptAssignMyKey(cleanData, compressed);
             updateKeyBanner();
 
             document.getElementById('wizard-view').classList.add('hidden');
@@ -4111,6 +4138,79 @@ let dataListenersSet = false;
             if (confirm('Create a new iKey? This will take you to the base URL.')) {
                 window.location.href = baseURL;
             }
+        }
+
+        function launchWizard() {
+            document.getElementById('start-view').classList.add('hidden');
+            document.getElementById('wizard-view').classList.remove('hidden');
+            currentStep = 1;
+            updateWizardDisplay();
+        }
+
+        let qrScanner = null;
+
+        function importMyKey() {
+            document.getElementById('start-view').classList.add('hidden');
+            const modal = document.getElementById('import-modal');
+            modal.classList.remove('hidden');
+            trapFocus(modal, closeImportModal);
+            try {
+                qrScanner = new Html5Qrcode('qr-reader');
+                qrScanner.start({ facingMode: 'environment' }, { fps: 10, qrbox: 250 }, (decodedText) => {
+                    qrScanner.stop();
+                    qrScanner = null;
+                    closeImportModal();
+                    processImportedData(decodedText);
+                });
+            } catch (err) {
+                console.error(err);
+                alert('Unable to start scanner');
+                closeImportModal();
+            }
+        }
+
+        function closeImportModal() {
+            const modal = document.getElementById('import-modal');
+            if (qrScanner) {
+                qrScanner.stop().catch(() => {});
+                qrScanner = null;
+            }
+            modal.classList.add('hidden');
+            releaseFocus(modal);
+        }
+
+        function processImportedData(text) {
+            try {
+                const hashPart = text.includes('#') ? text.split('#')[1] : text;
+                const decompressed = decompressData(decodeURIComponent(hashPart));
+                const data = JSON.parse(decompressed);
+                initializeDisplayView(data);
+                promptAssignMyKey(data, hashPart);
+                updateKeyBanner();
+            } catch (e) {
+                alert('Invalid QR code');
+            }
+        }
+
+        function promptAssignMyKey(data, hash) {
+            if (!data.pe) return;
+            if (confirm('Use this card as your personal iKey?')) {
+                localStorage.setItem('myKeyData', hash);
+                localStorage.setItem('myKeyEmail', data.pe);
+                if (data.n) localStorage.setItem('myKeyName', data.n);
+                renderHomeStatus();
+            }
+        }
+
+        function resetMyKey() {
+            localStorage.removeItem('myKeyData');
+            localStorage.removeItem('myKeyEmail');
+            localStorage.removeItem('myKeyName');
+            alert('iKey assignment cleared');
+            document.getElementById('display-view').classList.add('hidden');
+            document.getElementById('wizard-view').classList.add('hidden');
+            document.getElementById('start-view').classList.remove('hidden');
+            updateKeyBanner();
         }
 
         let lastFocusedElement = null;
@@ -6062,6 +6162,14 @@ Generated: ${new Date().toLocaleString()}`;
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
+            const myEmail = localStorage.getItem('myKeyEmail');
+            const hash = decodeURIComponent(window.location.hash.slice(1));
+            if (!myEmail && !hash) {
+                document.getElementById('start-view').classList.remove('hidden');
+            } else {
+                document.getElementById('wizard-view').classList.remove('hidden');
+            }
+
             setupCharacterCounters();
             setupDocumentDropdowns();
 
@@ -6167,7 +6275,6 @@ Generated: ${new Date().toLocaleString()}`;
             showLastShare();
 
             // Check for existing QR data in URL
-            const hash = decodeURIComponent(window.location.hash.slice(1));
             if (hash) {
                 try {
                     const decompressed = decompressData(hash);
