@@ -3075,8 +3075,23 @@
         }
 
         function shareQR(target = 'qrcode') {
+            console.log('shareQR called');
+            console.log('navigator.share available:', !!navigator.share);
+            console.log('displayData:', displayData);
+
             const canvas = getQRCodeCanvas(target);
-            if (!canvas) return;
+            if (!canvas) {
+                showToast('❌ Please generate QR code first');
+                console.warn('shareQR: no canvas found for', target);
+                return;
+            }
+
+            if (!navigator.share) {
+                showToast('⚠️ Share not supported on this device. Downloading QR instead.');
+                saveQRImage(target);
+                return;
+            }
+
             canvas.toBlob(async function(blob) {
                 const file = new File([blob], 'ikey-qr.png', { type: 'image/png' });
                 const shareData = {
@@ -3086,14 +3101,16 @@
                     url: window.location.href
                 };
                 try {
-                    if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
+                    if (!navigator.canShare || navigator.canShare({ files: [file] })) {
                         await navigator.share(shareData);
                         logShare('qr_code', null, 'share');
                         return;
                     }
                 } catch (err) {
                     console.error('Share failed:', err);
+                    showToast('⚠️ Share failed. Downloading QR instead.');
                 }
+
                 const link = document.createElement('a');
                 link.download = 'ikey-qr.png';
                 link.href = URL.createObjectURL(blob);
