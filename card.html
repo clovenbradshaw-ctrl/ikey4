@@ -516,6 +516,28 @@
             margin-top: 2px;
         }
 
+        .if-found-box {
+            padding: 8px;
+            background: #fef3c7;
+            border-radius: 6px;
+            text-align: center;
+            border: 2px dashed #f59e0b;
+            margin-top: 6px;
+        }
+
+        .if-found-label {
+            color: #b45309;
+            font-weight: 700;
+            font-size: 0.7rem;
+        }
+
+        .if-found-value {
+            color: #92400e;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
         @media print {
             body {
                 background: white;
@@ -827,6 +849,10 @@
                                 <div class="emergency-label" data-i18n="card.emergencyContactLabel">EMERGENCY CONTACT</div>
                                 <div class="emergency-value" id="display_emergency"></div>
                             </div>
+                            <div class="if-found-box" id="if-found-box" style="display:none;">
+                                <div class="if-found-label">IF FOUND</div>
+                                <div class="if-found-value" id="display_if_found"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -837,6 +863,8 @@
     <script>
         let qrCode = null;
         let photoData = null;
+        let cardData = {};
+        let ifFoundData = null;
 
         window.onload = function() {
             const hash = window.location.hash.slice(1);
@@ -844,6 +872,8 @@
                 try {
                     const decompressed = LZString.decompressFromEncodedURIComponent(hash);
                     const data = JSON.parse(decompressed);
+                    cardData = data;
+                    ifFoundData = data.ifFound || null;
                     document.getElementById('field_email').value = data.pe || '';
                     document.getElementById('field_name').value = data.n || '';
                     document.getElementById('field_phone').value = data.ph || '';
@@ -1143,6 +1173,34 @@
                     if (backItem) backItem.style.display = 'none';
                 }
             });
+            const ifBox = document.getElementById('if-found-box');
+            if (ifFoundData && ifFoundData.action !== 'none') {
+                let msg = '';
+                switch (ifFoundData.action) {
+                    case 'destroy':
+                        msg = 'Please destroy this card for privacy';
+                        break;
+                    case 'mail':
+                        msg = `Please mail to:<br>${ifFoundData.mailAddress}`;
+                        break;
+                    case 'contact':
+                        if (ifFoundData.contactType === 'emergency') {
+                            msg = `Please contact emergency contact:<br>${cardData.ec || ''} - ${activeFields.emergency}`;
+                        } else if (ifFoundData.contactType === 'case-manager') {
+                            msg = `Please contact case manager:<br>${cardData.cm || ''} - ${cardData.cp || ''}`;
+                        } else {
+                            msg = `Please contact:<br>${ifFoundData.contactInfo}`;
+                        }
+                        break;
+                    case 'other':
+                        msg = ifFoundData.instructions || '';
+                        break;
+                }
+                document.getElementById('display_if_found').innerHTML = msg;
+                ifBox.style.display = 'block';
+            } else {
+                ifBox.style.display = 'none';
+            }
 
             updateCardDisplay();
             generateQRCode(activeFields);
@@ -1163,7 +1221,13 @@
                 m: data.medications,
                 i: data.insurance,
                 p: data.physician,
-                o: data.donor
+                o: data.donor,
+                ec: cardData.ec,
+                er: cardData.er,
+                cm: cardData.cm,
+                co: cardData.co,
+                cp: cardData.cp,
+                ifFound: ifFoundData
             };
 
             const cleanData = {};
