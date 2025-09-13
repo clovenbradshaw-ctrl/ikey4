@@ -628,6 +628,41 @@
         }
 
         /* Emergency Tab Styles */
+        .quick-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .quick-action-btn {
+            flex: 1 1 calc(50% - 10px);
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 16px;
+            padding: 20px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            font-weight: 600;
+            position: relative;
+        }
+        .quick-action-btn .icon {
+            font-size: 2rem;
+        }
+        .quick-action-btn .delete {
+            position: absolute;
+            top: 4px;
+            right: 8px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: none;
+        }
+        .quick-action-btn.custom:hover .delete {
+            display: block;
+        }
         .emergency-button {
             padding: 40px 30px;
             border: none;
@@ -2222,16 +2257,7 @@
                 <p style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;">Helps get your precise location to give operators.</p>
             </div>
 
-            <a href="tel:911" class="emergency-button">
-                <span class="icon">📞</span>
-                <span>Call 911</span>
-                <span style="font-size: 1rem; opacity: 0.9;">Tap to Call Emergency Services</span>
-            </a>
-            <a href="#" onclick="text911()" class="emergency-button">
-                <span class="icon">💬</span>
-                <span>Text 911</span>
-                <span style="font-size: 1rem; opacity: 0.9;">Tap to Text Emergency Services</span>
-            </a>
+            <div id="quick-actions" class="quick-actions"></div>
             
             <div class="card">
                 <h2 style="margin-bottom: 20px;">📍 Your Secure Location</h2>
@@ -4342,6 +4368,86 @@ Generated: ${new Date().toLocaleString()}`;
             window.location.href = `sms:?body=${encodeURIComponent(message)}`;
         }
 
+        function text988() {
+            window.location.href = 'sms:988';
+        }
+
+        function callCaseManager() {
+            let number = localStorage.getItem('caseManagerNumber');
+            if (!number) {
+                number = prompt('Enter case manager number:');
+                if (number) {
+                    localStorage.setItem('caseManagerNumber', number);
+                } else {
+                    return;
+                }
+            }
+            window.location.href = `tel:${number}`;
+        }
+
+        function addQuickAction() {
+            const label = prompt('Label for action:');
+            if (!label) return;
+            const type = prompt('Type "call" or "text":', 'call');
+            const number = prompt('Phone number:');
+            if (!number) return;
+            const icon = prompt('Emoji icon:', type === 'text' ? '💬' : '📞');
+            const actions = JSON.parse(localStorage.getItem('customQuickActions') || '[]');
+            actions.push({ label, type, number, icon });
+            localStorage.setItem('customQuickActions', JSON.stringify(actions));
+            renderQuickActions();
+        }
+
+        function removeQuickAction(index) {
+            const actions = JSON.parse(localStorage.getItem('customQuickActions') || '[]');
+            actions.splice(index, 1);
+            localStorage.setItem('customQuickActions', JSON.stringify(actions));
+            renderQuickActions();
+        }
+
+        function renderQuickActions() {
+            const container = document.getElementById('quick-actions');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const defaults = [
+                { label: 'Call 911', href: 'tel:911', icon: '📞' },
+                { label: 'Text 911', onClick: text911, icon: '💬' },
+                { label: 'Call 988', href: 'tel:988', icon: '📞' },
+                { label: 'Text 988', onClick: text988, icon: '💬' },
+                { label: 'Poison', href: 'tel:18002221222', icon: '☠️' },
+                { label: 'Case Mgr', onClick: callCaseManager, icon: '👤' }
+            ];
+
+            defaults.forEach(action => {
+                const el = document.createElement('a');
+                el.className = 'quick-action-btn';
+                el.innerHTML = `<span class="icon">${action.icon}</span><span class="label">${action.label}</span>`;
+                if (action.href) {
+                    el.href = action.href;
+                } else if (action.onClick) {
+                    el.href = '#';
+                    el.addEventListener('click', (e) => { e.preventDefault(); action.onClick(); });
+                }
+                container.appendChild(el);
+            });
+
+            const custom = JSON.parse(localStorage.getItem('customQuickActions') || '[]');
+            custom.forEach((action, index) => {
+                const el = document.createElement('a');
+                el.className = 'quick-action-btn custom';
+                el.innerHTML = `<span class="delete" onclick="removeQuickAction(${index});">×</span><span class="icon">${action.icon}</span><span class="label">${action.label}</span>`;
+                el.href = action.type === 'text' ? `sms:${action.number}` : `tel:${action.number}`;
+                container.appendChild(el);
+            });
+
+            const add = document.createElement('button');
+            add.className = 'quick-action-btn';
+            add.innerHTML = '<span class="icon">＋</span><span class="label">Add</span>';
+            add.addEventListener('click', addQuickAction);
+            container.appendChild(add);
+        }
+
         function openInMaps() {
             if (currentLocation) {
                 window.open(
@@ -5440,6 +5546,9 @@ Generated: ${new Date().toLocaleString()}`;
             }
             if (document.getElementById('favorites-section')) {
                 bookmarkManager = new BookmarkManager();
+            }
+            if (document.getElementById('quick-actions')) {
+                renderQuickActions();
             }
             fetch('dispatch.html', {method: 'HEAD'}).then(r => {
                 if (r.ok) {
