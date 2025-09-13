@@ -1341,10 +1341,9 @@
 
         .favorite .label {
             text-align: center;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
             margin: 0 2px;
+            white-space: normal;
+            word-break: break-word;
         }
 
         .favorite .delete-btn {
@@ -1418,6 +1417,8 @@
             text-align: center;
             color: var(--secondary);
             text-shadow: none;
+            white-space: normal;
+            word-break: break-word;
         }
 
         .done-editing-btn {
@@ -1944,14 +1945,14 @@
     <!-- Header -->
     <header class="app-header">
         <div id="language-toggle">
-            <button id="language-btn" aria-label="Change language">🌐</button>
+            <button id="language-btn" aria-label="Change language" title="Change language" data-i18n-aria="header.changeLanguage" data-i18n-title="header.changeLanguage">🌐</button>
             <div id="language-menu">
-                <button class="lang-option" data-lang="en" aria-label="English">EN</button>
-                <button class="lang-option" data-lang="es" aria-label="Español">ES</button>
-                <button class="lang-option" data-lang="ar" aria-label="العربية">ع</button>
-                <button class="lang-option" data-lang="ku" aria-label="Kurdî">Ku</button>
-                <button class="lang-option" data-lang="so" aria-label="Af-Soomaali">So</button>
-                <button class="lang-option" data-lang="zh" aria-label="中文">文</button>
+                <button class="lang-option" data-lang="en" aria-label="English" title="English">EN</button>
+                <button class="lang-option" data-lang="es" aria-label="Español" title="Español">ES</button>
+                <button class="lang-option" data-lang="ar" aria-label="العربية" title="العربية">ع</button>
+                <button class="lang-option" data-lang="ku" aria-label="Kurdî" title="Kurdî">Ku</button>
+                <button class="lang-option" data-lang="so" aria-label="Af-Soomaali" title="Af-Soomaali">So</button>
+                <button class="lang-option" data-lang="zh" aria-label="中文" title="中文">文</button>
             </div>
         </div>
         <h1><img src="https://storage.googleapis.com/art_homelessness/1.png" alt="iKey logo" class="logo"> iKey</h1>
@@ -4312,7 +4313,7 @@ END:VCALENDAR`;
 
                 const qrLabel = (displayData && !isOwnKey) ? (displayData.n || 'QR') : 'My QR';
                 html += `
-                    <button class="favorite qr-widget" type="button" data-action="qr" draggable="false" aria-label="${qrLabel}">
+                    <button class="favorite qr-widget" type="button" data-action="qr" draggable="false" aria-label="${qrLabel}" title="${qrLabel}">
                         <div class="icon-wrapper">
                             <img src="https://cdn.iconscout.com/icon/free/png-256/free-qr-code-icon-svg-png-download-1569017.png" alt="QR Code Icon" class="icon-img" onerror="this.style.display='none'; this.parentElement.innerHTML='🔳';">
                         </div>
@@ -4330,8 +4331,9 @@ END:VCALENDAR`;
                          data-index="${index}"
                          draggable="${this.editMode}"
                          data-url="${info.url || ''}"
-                         aria-label="${info.name}">
-                        <div class="delete-btn" role="button" aria-label="Remove bookmark" tabindex="0">×</div>
+                         aria-label="${info.name}"
+                         title="${info.name}">
+                        <div class="delete-btn" role="button" aria-label="Remove bookmark" title="Remove bookmark" data-i18n-aria="favorites.removeBookmark" data-i18n-title="favorites.removeBookmark" tabindex="0">×</div>
                         <div class="icon-wrapper">
                             ${isEmoji ?
                                 `<span class="icon-emoji">${info.icon}</span>` :
@@ -4345,16 +4347,16 @@ END:VCALENDAR`;
                 });
 
                 html += `
-                    <button class="add-bookmark-btn" type="button">
-                        <div class="icon-wrapper">+</div>
-                        <div class="label">Add</div>
+                    <button class="add-bookmark-btn" type="button" aria-label="Add Bookmark" title="Add Bookmark" data-i18n-aria="wizard.addBookmark" data-i18n-title="wizard.addBookmark">
+                        <div class="icon-wrapper" aria-hidden="true">+</div>
+                        <div class="label" data-i18n="wizard.addBookmark">Add Bookmark</div>
                     </button>
                 `;
 
                 html += '</div>';
 
                 if (this.editMode) {
-                    html += '<button class="done-editing-btn" type="button">Done</button>';
+                    html += '<button class="done-editing-btn" type="button" aria-label="Done" title="Done" data-i18n="buttons.done" data-i18n-aria="buttons.done" data-i18n-title="buttons.done">Done</button>';
                 }
 
                 html += '</div>';
