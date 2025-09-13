@@ -12,6 +12,7 @@
             "meals": "Meals",
             "dispatch": "Dispatch",
             "emergency": "Emergency",
+            "share": "Share",
             "settings": "Settings"
         },
         "steps": {
@@ -293,6 +294,7 @@
             "meals": "Comidas",
             "dispatch": "Despacho",
             "emergency": "Emergencia",
+            "share": "Compartir",
             "settings": "Configuración"
         },
         "steps": {
@@ -574,6 +576,7 @@
             "meals": "الوجبات",
             "dispatch": "الإرسال",
             "emergency": "الطوارئ",
+            "share": "مشاركة",
             "settings": "الإعدادات"
         },
         "steps": {
@@ -855,6 +858,7 @@
             "meals": "Xwarin",
             "dispatch": "Şandin",
             "emergency": "Emergency",
+            "share": "Parvekirin",
             "settings": "Mîheng"
         },
         "steps": {
@@ -1136,6 +1140,7 @@
             "meals": "Cunto",
             "dispatch": "Dirista",
             "emergency": "Emergency",
+            "share": "Wadaag",
             "settings": "Dejinta"
         },
         "steps": {
@@ -1417,6 +1422,7 @@
             "meals": "餐食",
             "dispatch": "调度",
             "emergency": "紧急",
+            "share": "分享",
             "settings": "设置"
         },
         "steps": {
