@@ -11,8 +11,8 @@
     <link rel="apple-touch-icon" href="https://storage.googleapis.com/art_homelessness/favicon-32x32.png">
 
     <!-- External Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
+    <script src="scripts/qrcode.min.js"></script>
+    <script src="scripts/lz-string.min.js"></script>
     
     <style>
         * {
@@ -2289,13 +2289,19 @@
     <!-- Meals Tab -->
     <div id="meals" class="tab-content">
         <div style="height: calc(100vh - 120px); display: flex; flex-direction: column;">
-            <div style="flex: 1; position: relative; display: flex; justify-content: center; align-items: center;">
+            <div style="flex: 1; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <div id="meals-loading">Loading…</div>
                 <iframe
+                    id="meals-frame"
                     src="https://docs.google.com/document/d/e/2PACX-1vQlUKhgsxno1aW5dQXRhmT0Zfh-kTjoYO4hZHcICi4XI0mNJqjC2aok0OiM3s4e28gn13R4MCo4nsEl/pub?embedded=true"
                     title="Meals Resources"
                     loading="lazy"
                     style="width: 100%; max-width: 800px; height: 100%; border: none;">
                 </iframe>
+                <p id="meals-fallback" style="display:none; margin-top:10px;">
+                    Unable to load meals information.
+                    <a href="https://docs.google.com/document/d/e/2PACX-1vQlUKhgsxno1aW5dQXRhmT0Zfh-kTjoYO4hZHcICi4XI0mNJqjC2aok0OiM3s4e28gn13R4MCo4nsEl/pub" target="_blank" rel="noopener">Open in new tab</a>
+                </p>
             </div>
         </div>
     </div>
@@ -2663,6 +2669,27 @@
             set: (key, value) => localStorage.setItem(`${storagePrefix}_${key}`, value)
         };
 
+        function setupPhoneInput(id) {
+            const input = document.getElementById(id);
+            if (!input) return;
+            input.addEventListener('input', () => {
+                let digits = input.value.replace(/\D/g, '').slice(0, 10);
+                let formatted = digits;
+                if (digits.length > 3 && digits.length <= 6) {
+                    formatted = `${digits.slice(0, 3)}-${digits.slice(3)}`;
+                } else if (digits.length > 6) {
+                    formatted = `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6)}`;
+                }
+                input.value = formatted;
+            });
+            input.addEventListener('blur', () => {
+                if (input.value.replace(/\D/g, '').length !== 10) {
+                    alert('Please enter a valid 10-digit phone number');
+                    input.focus();
+                }
+            });
+        }
+
         function setupCharacterCounters() {
             const fields = ['allergies', 'medications', 'conditions'];
             fields.forEach(field => {
@@ -2748,9 +2775,9 @@
         function validateStep(step) {
             if (step === 2) {
                 const email = document.getElementById('secure-email').value.trim();
-                const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                const regex = /^[^\s@]+@(proton\.me|protonmail\.com)$/i;
                 if (!regex.test(email)) {
-                    alert('Please enter a valid secure email address');
+                    alert('Please enter a valid Proton email address');
                     return false;
                 }
             }
@@ -2898,6 +2925,10 @@
 
             const jsonStr = JSON.stringify(cleanData);
             const compressed = compressData(jsonStr);
+            const dataSize = new Blob([compressed]).size;
+            if (dataSize > 2500) {
+                alert('Warning: QR code data may be too large to scan reliably.');
+            }
             const url = `${baseURL}#${compressed}`;
             const encodedUrl = encodeURI(url);
 
@@ -4035,6 +4066,10 @@ Generated: ${new Date().toLocaleString()}`;
                 address: address,
                 crossStreets: crossStreets
             };
+
+            try {
+                localStorage.setItem('lastLocation', JSON.stringify(currentLocation));
+            } catch (e) {}
             
             document.getElementById('emergency-loading').style.display = 'none';
             document.getElementById('emergency-content').style.display = 'block';
@@ -4054,11 +4089,32 @@ Generated: ${new Date().toLocaleString()}`;
                     },
                     error => {
                         console.error('Location error:', error);
+                        let msg = 'Unable to get location';
+                        if (error.code === 1) {
+                            msg = 'Location permission denied. Please enable it in settings.';
+                        } else if (error.code === 2) {
+                            msg = 'Location information is unavailable.';
+                        } else if (error.code === 3) {
+                            msg = 'Location request timed out.';
+                        }
+                        const saved = localStorage.getItem('lastLocation');
                         document.getElementById('emergency-loading').innerHTML = `
-                            <p style="color: var(--danger);">Unable to get location</p>
-                            <p style="font-size: 0.85rem;">Please enable location services and refresh</p>
-                            <button class="btn btn-secondary" onclick="getLocation()" style="margin-top: 10px;" data-i18n="emergency.enableLocation">Enable Location</button>
+                            <p style="color: var(--danger);">${msg}</p>
+                            <p style="font-size: 0.85rem;">${saved ? 'Showing last known location.' : 'Please enable location services and refresh'}</p>
+                            ${saved ? '' : '<button class="btn btn-secondary" onclick="getLocation()" style="margin-top: 10px;" data-i18n="emergency.enableLocation">Enable Location</button>'}
                         `;
+                        if (saved) {
+                            try {
+                                const loc = JSON.parse(saved);
+                                currentLocation = loc;
+                                document.getElementById('coordinates').textContent = `${loc.latitude}, ${loc.longitude}`;
+                                document.getElementById('plusCode').textContent = loc.plusCode;
+                                document.getElementById('address').textContent = loc.address;
+                                document.getElementById('crossStreets').textContent = loc.crossStreets;
+                                document.getElementById('emergency-loading').style.display = 'none';
+                                document.getElementById('emergency-content').style.display = 'block';
+                            } catch (e) {}
+                        }
                         if (typeof setLanguage === 'function') {
                             setLanguage(document.documentElement.lang || 'en');
                         }
@@ -4670,6 +4726,8 @@ Generated: ${new Date().toLocaleString()}`;
             setupCharacterCounters();
             setupDocumentDropdowns();
 
+            ['phone','ec-phone','cm-phone','custom-phone'].forEach(setupPhoneInput);
+
             // Initialize home page status cards
             if (document.getElementById('status-cards')) {
                 renderHomeStatus();
@@ -4677,10 +4735,32 @@ Generated: ${new Date().toLocaleString()}`;
             if (document.getElementById('favorites-section')) {
                 bookmarkManager = new BookmarkManager();
             }
+            fetch('dispatch.html', {method: 'HEAD'}).then(r => {
+                if (r.ok) {
+                    const dispatchFrame = document.querySelector('#dispatch iframe');
+                    if (dispatchFrame) {
+                        dispatchFrame.src = `dispatch.html?key=${encodeURIComponent(storagePrefix)}`;
+                    }
+                } else {
+                    const btn = getTabButton('dispatch');
+                    if (btn) btn.style.display = 'none';
+                }
+            }).catch(() => {
+                const btn = getTabButton('dispatch');
+                if (btn) btn.style.display = 'none';
+            });
 
-            const dispatchFrame = document.querySelector('#dispatch iframe');
-            if (dispatchFrame) {
-                dispatchFrame.src = `dispatch.html?key=${encodeURIComponent(storagePrefix)}`;
+            const mealsFrame = document.getElementById('meals-frame');
+            const mealsLoading = document.getElementById('meals-loading');
+            const mealsFallback = document.getElementById('meals-fallback');
+            if (mealsFrame && mealsLoading) {
+                mealsFrame.addEventListener('load', () => {
+                    mealsLoading.style.display = 'none';
+                });
+                mealsFrame.addEventListener('error', () => {
+                    mealsLoading.style.display = 'none';
+                    if (mealsFallback) mealsFallback.style.display = 'block';
+                });
             }
             const inviteAppLink = document.querySelector('a.app-card[href="invite.html"]');
             if (inviteAppLink) {
@@ -4921,6 +5001,11 @@ Generated: ${new Date().toLocaleString()}`;
         });
     </script>
 
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(err => console.error('SW registration failed', err));
+        }
+    </script>
     <script src="scripts/translate.js"></script>
 </body>
 </html>

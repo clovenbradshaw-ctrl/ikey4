@@ -6,9 +6,9 @@
     <title data-i18n="card.title">iKey ID Card Generator</title>
     <link rel="icon" href="https://storage.googleapis.com/art_homelessness/favicon-32x32.png" type="image/png">
     <link rel="apple-touch-icon" href="https://storage.googleapis.com/art_homelessness/favicon-32x32.png">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="scripts/qrcode.min.js"></script>
+    <script src="scripts/lz-string.min.js"></script>
+    <script src="scripts/html2canvas.min.js"></script>
     <script src="scripts/translate.js"></script>
     <style>
         * {
@@ -1254,6 +1254,11 @@ ${data.dob ? `Date of Birth: ${formatDate(data.dob)}\n` : ''}${data.blood ? `Blo
             a.download = `iKey_${cardId}.txt`;
             a.click();
             URL.revokeObjectURL(url);
+        }
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(err => console.error('SW registration failed', err));
         }
     </script>
 </body>
