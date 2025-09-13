@@ -1896,6 +1896,42 @@
         }
     }
 
+        /* Tooltip icon */
+        .info-icon {
+            display: inline-block;
+            margin-left: 4px;
+            color: var(--primary);
+            cursor: pointer;
+            position: relative;
+            font-weight: 600;
+        }
+
+        .info-icon::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 125%;
+            background: #1e293b;
+            color: white;
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            white-space: normal;
+            width: 200px;
+            max-width: 250px;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 1000;
+        }
+
+        .info-icon:hover::after,
+        .info-icon:focus::after {
+            visibility: visible;
+            opacity: 1;
+        }
+
         /* Emergency Modal Styles */
         #emergency-modal {
             position: fixed;
@@ -2097,14 +2133,13 @@
 
                     <!-- Step 2: Secure Email -->
                     <div class="wizard-step" data-step="2">
-                        <h2>Secure Email</h2>
-                        <p style="margin-bottom: 20px;"><strong>Why a secure email?</strong> Proton uses zero-knowledge encryption so only you can access your data.</p>
-                        <div class="form-group">
-                            <label for="secure-email" class="label-purple">Secure Email *</label>
+                        <h2>Secure Email <span class="info-icon" tabindex="0" data-tooltip="iKey uses your email as an identifier. Proton offers end-to-end encryption, but any address works.">ℹ️</span></h2>
+                        <div class="form-group" style="margin-top:10px;">
+                            <label for="secure-email" class="label-purple">Secure Email * <span class="info-icon" tabindex="0" data-tooltip="iKey never reads your mail or contacts Proton. Using an encrypted provider keeps your address private.">ℹ️</span></label>
                             <input type="email" id="secure-email" placeholder="you@proton.me" required>
                         </div>
-                        <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
-                            <a href="https://account.proton.me/signup" target="_blank" class="btn btn-primary">Create Account</a>
+                        <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                            <a href="https://account.proton.me/signup" target="_blank" class="btn btn-primary">Create Account</a><span class="info-icon" tabindex="0" data-tooltip="You can use any email provider; Proton is suggested for its encryption.">ℹ️</span>
                             <a href="https://account.proton.me/u/13/safety-review/phrase" target="_blank" class="btn btn-secondary">Download Kit</a>
                         </div>
                         <p style="margin-top: 10px; color: var(--secondary); font-size: 0.9rem;">
@@ -2114,7 +2149,7 @@
 
                     <!-- Step 3: Basic Info -->
                     <div class="wizard-step" data-step="3">
-                        <h2>Basic Information</h2>
+                        <h2>Basic Information <span class="info-icon" tabindex="0" data-tooltip="These details stay on your device and go only into the QR code. Share only what you're comfortable with.">ℹ️</span></h2>
                         <div class="form-group">
                             <label for="name" class="label-gray">Full Name *</label>
                             <input type="text" id="name" placeholder="John Smith" required>
@@ -2166,7 +2201,7 @@
 
                     <!-- Step 4: Health Info -->
                     <div class="wizard-step" data-step="4">
-                        <h2>Health Information</h2>
+                        <h2>Health Information <span class="info-icon" tabindex="0" data-tooltip="Medical notes are stored locally and encoded into the QR. Anyone scanning it can see them.">ℹ️</span></h2>
                         <p style="margin-bottom: 10px; color: var(--secondary);">Keep entries brief - focus on critical information</p>
                         <p style="margin-bottom: 20px; color: var(--secondary); font-size: 0.9rem;">Leave blank if not applicable. Info stored only in your QR code.</p>
                         <div class="form-group">
@@ -2188,7 +2223,7 @@
 
                     <!-- Step 5: Contacts -->
                     <div class="wizard-step" data-step="5">
-                        <h2>Contacts</h2>
+                        <h2>Contacts <span class="info-icon" tabindex="0" data-tooltip="Emergency contacts you enter will appear to anyone who scans your card.">ℹ️</span></h2>
                         <div class="form-group">
                             <label for="ec-name" class="label-green">Emergency Contact Name *</label>
                             <input type="text" id="ec-name" placeholder="Jane Smith" required>
@@ -2361,7 +2396,7 @@
                         <h2>Review Your Information</h2>
                         <div id="review-content"></div>
                         <div style="background: #fef3c7; border: 1px solid #facc15; border-radius: 10px; padding: 15px; margin-top: 20px;">
-                            <strong>⚠️ Heads up:</strong> Anyone who scans this QR code will be able to view the information you provide.
+                            <strong>⚠️ Heads up:</strong><span class="info-icon" tabindex="0" data-tooltip="Anyone with the image can read what you include.">ℹ️</span> Anyone who scans this QR code will be able to view the information you provide.
                         </div>
                         <div style="background: #dcfce7; border: 1px solid #86efac; border-radius: 10px; padding: 15px; margin-top: 20px;">
                             <strong>✅ Ready to Generate:</strong> Your QR code is permanent once created. To make changes, you'll need to create a new one.
@@ -2372,7 +2407,7 @@
                     <div class="wizard-actions">
                         <button class="btn btn-secondary" id="btn-back" onclick="previousStep()">← Back</button>
                         <button class="btn btn-primary start-btn" id="btn-next" onclick="nextStep()">Start →</button>
-                        <button class="btn btn-success hidden" id="btn-generate" onclick="generateQR()">Generate QR Code</button>
+                        <button class="btn btn-success hidden" id="btn-generate" onclick="generateQR()">Generate QR Code</button><span class="info-icon" tabindex="0" data-tooltip="Generating creates an image stored only here. Regenerate to update.">ℹ️</span>
                     </div>
                 </div>
 
@@ -2385,14 +2420,15 @@
                             <div id="communication-actions" style="margin-top: 20px;"></div>
 
                             <!-- Collapsible Share Bar -->
-                            <div class="share-bar collapsed">
-                                <button class="share-toggle" onclick="toggleShareBar()">
-                                    <span class="toggle-icon">▶</span>
-                                    <span class="toggle-text">Share Options</span>
-                                    <span class="toggle-hint">(Click to expand)</span>
-                                </button>
+                                <div class="share-bar collapsed">
+                                    <button class="share-toggle" onclick="toggleShareBar()">
+                                        <span class="toggle-icon">▶</span>
+                                        <span class="toggle-text">Share Options</span>
+                                        <span class="toggle-hint">(Click to expand)</span>
+                                    </button>
 
-                                <div class="share-options">
+                                    <div class="share-options">
+                                    <span class="info-icon" tabindex="0" data-tooltip="iKey never sends data itself; each button uses your device's apps when you tap it.">ℹ️</span>
                                     <button onclick="shareQR()">📤 Share</button>
                                     <button onclick="smsInfo()">💬 Text</button>
                                     <button onclick="emailInfo()">✉️ Email</button>
@@ -2400,8 +2436,8 @@
                                     <button onclick="saveQRImage()">💾 Save</button>
                                     <button onclick="exportBackup()">📦 Backup</button>
                                     <button onclick="createNewKey()">🔑 New Key</button>
+                                    </div>
                                 </div>
-                            </div>
                             <div id="share-history" style="margin-top:10px; font-size:0.9rem; color: var(--secondary);"></div>
                         </div>
                     </div>
@@ -2466,7 +2502,7 @@
             <p data-i18n="location.shareDesc">Your GPS coordinates stay on this device unless you choose to send them. Allow access?</p>
             <div class="modal-actions" style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
                 <button class="btn btn-secondary" onclick="closeLocationModal()" data-i18n="location.cancel">Close</button>
-                <button class="btn btn-primary" onclick="confirmLocationRequest()" data-i18n="location.share">Share Location</button>
+                <button class="btn btn-primary" onclick="confirmLocationRequest()" data-i18n="location.share">Share Location</button><span class="info-icon" tabindex="0" data-tooltip="Gets GPS from your device; nothing is stored or sent automatically.">ℹ️</span>
             </div>
         </div>
     </div>
@@ -2523,7 +2559,9 @@
                             <div style="font-size: 0.75rem; text-transform: uppercase; color: #047857; font-weight: 700;">
                                 GPS Coordinates
                             </div>
-                            <button onclick="copyCoordinates()" style="background: none; border: none; cursor: pointer; color: #047857; font-size: 1.2rem;">📋</button>
+                            <div>
+                                <button onclick="copyCoordinates()" style="background: none; border: none; cursor: pointer; color: #047857; font-size: 1.2rem;">📋</button><span class="info-icon" tabindex="0" data-tooltip="Copies your coordinates to the clipboard only.">ℹ️</span>
+                            </div>
                         </div>
                         <div id="coordinates" style="font-family: monospace; font-size: 1.2rem; background: white; padding: 12px; border-radius: 10px; margin-top: 10px;">Loading...</div>
                     </div>
@@ -2574,7 +2612,7 @@
             <div class="weather-widget">
                 <h2 style="margin-bottom: 25px; display: flex; align-items: center; gap: 10px;">
                     <span style="font-size: 2rem;">📤</span>
-                    <span>Share My Location</span>
+                    <span>Share My Location</span><span class="info-icon" tabindex="0" data-tooltip="Location comes from your device and isn't stored or sent unless you pick a method.">ℹ️</span>
                 </h2>
                 <p style="margin-top: -10px; margin-bottom: 20px; color: var(--secondary);">
                     Quickly create a message with your location to send through your normal messaging apps. Your location
@@ -2651,24 +2689,28 @@
                             <div class="share-method-icon">💬</div>
                             <div class="share-method-label">Text Message</div>
                             <div class="share-method-subtitle">SMS with location</div>
+                            <span class="info-icon" tabindex="0" data-tooltip="Opens your SMS app and fills in your coordinates.">ℹ️</span>
                         </button>
 
                         <button class="share-method-btn" onclick="shareLocationWithNote('copy')">
                             <div class="share-method-icon">📋</div>
                             <div class="share-method-label">Copy</div>
                             <div class="share-method-subtitle">To clipboard</div>
+                            <span class="info-icon" tabindex="0" data-tooltip="Copies only the text you see—nothing is sent anywhere.">ℹ️</span>
                         </button>
 
                         <button class="share-method-btn" onclick="shareLocationWithNote('email')">
                             <div class="share-method-icon">✉️</div>
                             <div class="share-method-label">Email</div>
                             <div class="share-method-subtitle">Send via email</div>
+                            <span class="info-icon" tabindex="0" data-tooltip="Uses your device's email app; iKey cannot read your message.">ℹ️</span>
                         </button>
 
                         <button class="share-method-btn" onclick="shareLocationWithNote('share')">
                             <div class="share-method-icon">📱</div>
                             <div class="share-method-label">Apps</div>
                             <div class="share-method-subtitle">WhatsApp, etc.</div>
+                            <span class="info-icon" tabindex="0" data-tooltip="Invokes your phone's share menu without sending data first.">ℹ️</span>
                         </button>
                     </div>
 
@@ -2830,6 +2872,7 @@
     <!-- Proton Apps Tab -->
 <div id="apps" class="tab-content" role="tabpanel" aria-labelledby="resources-btn" tabindex="0" aria-hidden="true">
         <div class="container">
+            <h2 style="margin-bottom:25px;" data-i18n="misc.apps">Proton Apps <span class="info-icon" tabindex="0" data-tooltip="Links open official Proton services. iKey doesn't send your data to them.">ℹ️</span></h2>
             <div class="apps-grid">
                 <a class="app-card" href="https://account.proton.me/mail" target="_blank" rel="noopener noreferrer">
                     <div class="app-icon"><img src="https://pmecdn.protonweb.com/image-transformation/?s=c&amp;image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fmail_xxy4bg.svg" alt="Proton Mail"></div>
@@ -2900,7 +2943,7 @@
                     <h3 style="margin-bottom: 15px; color: var(--primary);" data-i18n="settings.accessibility">Accessibility</h3>
                     <div class="settings-item">
                         <div>
-                            <div style="font-weight: 600;" data-i18n="settings.textSize">📝 Text Size</div>
+                            <div style="font-weight: 600;" data-i18n="settings.textSize">📝 Text Size <span class="info-icon" tabindex="0" data-tooltip="Changes how big text appears on this device only.">ℹ️</span></div>
                             <div style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;" data-i18n="settings.textSizeDesc">Adjust interface text</div>
                         </div>
                         <select id="text-size-select" onchange="setTextSize(this.value)" style="padding: 6px; border-radius: 8px; border: 1px solid var(--border);">
@@ -2930,7 +2973,7 @@
                     </div>
                     <div class="settings-item" onclick="resetMyKey()">
                         <div>
-                            <div style="font-weight: 600;">♻️ Reset my iKey</div>
+                            <div style="font-weight: 600;">♻️ Reset my iKey <span class="info-icon" tabindex="0" data-tooltip="Clears local data and bookmarks. Printed cards stay the same.">ℹ️</span></div>
                             <div style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;">Remove saved iKey from this device</div>
                         </div>
                         <span style="color: var(--secondary);">→</span>
@@ -2959,7 +3002,7 @@
                 </div>
                 
                 <div class="settings-section">
-                    <h3 style="margin-bottom: 15px; color: var(--primary);" data-i18n="settings.tabVisibility">Customize Home Tabs</h3>
+                    <h3 style="margin-bottom: 15px; color: var(--primary);" data-i18n="settings.tabVisibility">Customize Home Tabs <span class="info-icon" tabindex="0" data-tooltip="Hidden tabs just disappear from view; your data remains on this device.">ℹ️</span></h3>
                     <div class="settings-item" style="cursor: default;">
                         <div>
                             <div style="font-weight: 600;" data-i18n="nav.emergency">🚨 Emergency</div>
@@ -4377,10 +4420,10 @@ END:VCALENDAR`;
                     }
                 });
 
-                html += `
+                    html += `
                     <button class="add-bookmark-btn" type="button" aria-label="Add Bookmark" title="Add Bookmark" data-i18n-aria="wizard.addBookmark" data-i18n-title="wizard.addBookmark">
                         <div class="icon-wrapper" aria-hidden="true">+</div>
-                        <div class="label" data-i18n="wizard.addBookmark">Add Bookmark</div>
+                        <div class="label" data-i18n="wizard.addBookmark">Add Bookmark</div><span class="info-icon" tabindex="0" data-tooltip="Bookmarks are stored only on this device. Back them up if needed.">ℹ️</span>
                     </button>
                 `;
 

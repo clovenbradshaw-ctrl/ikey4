@@ -436,12 +436,47 @@
             .categories-grid { grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); }
             .category-card { padding: 12px; }
             .category-icon { font-size: 1.5rem; }
-            .stats { flex-direction: column; gap: 15px; }
-            .faq-question { font-size: 1rem; }
-            .expand-icon { right: 15px; }
-            .faq-header { padding: 20px; }
-            .faq-answer-content { padding: 0 20px 20px 20px; }
-            .security-tiers { grid-template-columns: 1fr; }
+        .stats { flex-direction: column; gap: 15px; }
+        .faq-question { font-size: 1rem; }
+        .expand-icon { right: 15px; }
+        .faq-header { padding: 20px; }
+        .faq-answer-content { padding: 0 20px 20px 20px; }
+        .security-tiers { grid-template-columns: 1fr; }
+    }
+
+        .info-icon {
+            display: inline-block;
+            margin-left: 4px;
+            color: #4f46e5;
+            cursor: pointer;
+            position: relative;
+            font-weight: 600;
+        }
+
+        .info-icon::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 125%;
+            background: #1e293b;
+            color: white;
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            white-space: normal;
+            width: 200px;
+            max-width: 250px;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 1000;
+        }
+
+        .info-icon:hover::after,
+        .info-icon:focus::after {
+            visibility: visible;
+            opacity: 1;
         }
     </style>
 </head>
@@ -457,12 +492,12 @@
         <div class="security-tiers">
             <div class="tier-card">
                 <div class="tier-icon">🔓</div>
-                <div class="tier-name" data-i18n="faq.publicTier">Public Tier</div>
+                <div class="tier-name" data-i18n="faq.publicTier">Public Tier <span class="info-icon" tabindex="0" data-tooltip="Basic emergency details anyone can read from your QR code.">ℹ️</span></div>
                 <div class="tier-desc" data-i18n="faq.publicDesc">Emergency info accessible via QR code - contact details and critical information without password</div>
             </div>
             <div class="tier-card">
                 <div class="tier-icon">🔐</div>
-                <div class="tier-name" data-i18n="faq.protectedTier">Password-Protected Tier</div>
+                <div class="tier-name" data-i18n="faq.protectedTier">Password-Protected Tier <span class="info-icon" tabindex="0" data-tooltip="Encrypted with your password; iKey never uploads this content.">ℹ️</span></div>
                 <div class="tier-desc" data-i18n="faq.protectedDesc">Your personal files, documents, and sensitive information - secured with encryption</div>
             </div>
         </div>
