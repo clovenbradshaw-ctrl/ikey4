@@ -1688,6 +1688,10 @@
                         </div>
                         <div class="progress-step" data-step="6">
                             <div class="progress-dot">6</div>
+                            <div class="progress-label">If Found</div>
+                        </div>
+                        <div class="progress-step" data-step="7">
+                            <div class="progress-dot">7</div>
                             <div class="progress-label">Review</div>
                         </div>
                     </div>
@@ -1914,8 +1918,53 @@
                         </details>
                     </div>
 
-                    <!-- Step 6: Review -->
+                    <!-- Step 6: If Found Instructions -->
                     <div class="wizard-step" data-step="6">
+                        <h2>If Found Instructions</h2>
+                        <p>What should someone do if they find your medical ID?</p>
+                        <p style="margin:10px 0; color: var(--secondary);">⚠️ This information will be visible to anyone who finds your card</p>
+                        <div class="form-group">
+                            <label>
+                                <input type="radio" name="if-found" value="destroy" />
+                                Destroy it for my privacy
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="radio" name="if-found" value="mail" />
+                                Mail to this address:
+                            </label>
+                            <textarea id="mail-address" placeholder="123 Main St..." disabled maxlength="200"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="radio" name="if-found" value="contact" />
+                                Contact someone:
+                            </label>
+                            <select id="contact-who" disabled>
+                                <option value="emergency">My emergency contact</option>
+                                <option value="case-manager">My case manager</option>
+                                <option value="other">Other person</option>
+                            </select>
+                            <input type="text" id="contact-other" placeholder="Name & phone" style="display:none;" maxlength="200" />
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="radio" name="if-found" value="other" />
+                                Other instructions:
+                            </label>
+                            <textarea id="other-instructions" placeholder="Please..." disabled maxlength="200"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="radio" name="if-found" value="none" checked />
+                                No special instructions
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Step 7: Review -->
+                    <div class="wizard-step" data-step="7">
                         <h2>Review Your Information</h2>
                         <div id="review-content"></div>
                         <div style="background: #fef3c7; border: 1px solid #facc15; border-radius: 10px; padding: 15px; margin-top: 20px;">
@@ -1979,6 +2028,7 @@
     </div>
     <p class="privacy-note">Scanning reveals full medical info</p>
   </div>
+  <div id="qr-if-found" class="info-card" style="background: #fef3c7; border: 2px dashed #f59e0b; margin-top: 10px; display:none;"></div>
 </div>
 
                     <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 20px;">
@@ -2731,7 +2781,7 @@
 
         function nextStep() {
             if (validateStep(currentStep)) {
-                if (currentStep === 5) {
+                if (currentStep === 6) {
                     showReview();
                 }
 
@@ -2766,8 +2816,8 @@
 
             // Update buttons
             document.getElementById('btn-back').style.display = currentStep === 1 ? 'none' : 'block';
-            document.getElementById('btn-next').classList.toggle('hidden', currentStep === 6);
-            document.getElementById('btn-generate').classList.toggle('hidden', currentStep !== 6);
+            document.getElementById('btn-next').classList.toggle('hidden', currentStep === 7);
+            document.getElementById('btn-generate').classList.toggle('hidden', currentStep !== 7);
         }
 
         
@@ -2799,6 +2849,34 @@
                 }
             }
 
+            if (step === 6) {
+                const action = document.querySelector('input[name="if-found"]:checked').value;
+                if (action === 'mail') {
+                    const addr = document.getElementById('mail-address').value.trim();
+                    if (!addr) {
+                        alert('Please enter a mailing address');
+                        return false;
+                    }
+                }
+                if (action === 'contact') {
+                    const who = document.getElementById('contact-who').value;
+                    if (who === 'other') {
+                        const info = document.getElementById('contact-other').value.trim();
+                        if (!info) {
+                            alert('Please enter contact information');
+                            return false;
+                        }
+                    }
+                }
+                if (action === 'other') {
+                    const inst = document.getElementById('other-instructions').value.trim();
+                    if (!inst) {
+                        alert('Please enter instructions');
+                        return false;
+                    }
+                }
+            }
+
             return true;
         }
 
@@ -2816,6 +2894,22 @@
                 if (link && type) {
                     docs.push({ t: type, l: link });
                 }
+            }
+            const ifFoundAction = document.querySelector('input[name="if-found"]:checked').value;
+            const ifFound = { action: ifFoundAction };
+            switch (ifFoundAction) {
+                case 'mail':
+                    ifFound.mailAddress = document.getElementById('mail-address').value.trim();
+                    break;
+                case 'contact':
+                    ifFound.contactType = document.getElementById('contact-who').value;
+                    if (ifFound.contactType === 'other') {
+                        ifFound.contactInfo = document.getElementById('contact-other').value.trim();
+                    }
+                    break;
+                case 'other':
+                    ifFound.instructions = document.getElementById('other-instructions').value.trim();
+                    break;
             }
 
             formData = {
@@ -2835,7 +2929,8 @@
                 cm: document.getElementById('cm-name').value.trim(),
                 co: document.getElementById('cm-org').value.trim(),
                 cp: document.getElementById('cm-phone').value.trim(),
-                docs
+                docs,
+                ifFound
             };
 
             let docsHTML = '';
@@ -2845,6 +2940,33 @@
                     docsHTML += `<li><a href="${d.l}" target="_blank">${d.t}</a></li>`;
                 });
                 docsHTML += '</ul></div>';
+            }
+
+            let ifFoundHTML = '';
+            if (formData.ifFound && formData.ifFound.action !== 'none') {
+                ifFoundHTML = '<div class="info-card" style="background: #fef3c7; border: 2px dashed #f59e0b;">';
+                ifFoundHTML += '<div class="subtitle-text">📍 IF FOUND</div>';
+                switch (formData.ifFound.action) {
+                    case 'destroy':
+                        ifFoundHTML += '<div style="font-weight: 600;">Please destroy this card for privacy</div>';
+                        break;
+                    case 'mail':
+                        ifFoundHTML += `<div style="font-weight: 600;">Please mail to:<br>${formData.ifFound.mailAddress}</div>`;
+                        break;
+                    case 'contact':
+                        if (formData.ifFound.contactType === 'emergency') {
+                            ifFoundHTML += `<div style="font-weight: 600;">Please contact emergency contact:<br>${formData.ec} - ${formData.ep}</div>`;
+                        } else if (formData.ifFound.contactType === 'case-manager') {
+                            ifFoundHTML += `<div style="font-weight: 600;">Please contact case manager:<br>${formData.cm} - ${formData.cp}</div>`;
+                        } else {
+                            ifFoundHTML += `<div style="font-weight: 600;">Please contact:<br>${formData.ifFound.contactInfo}</div>`;
+                        }
+                        break;
+                    case 'other':
+                        ifFoundHTML += `<div style="font-weight: 600;">${formData.ifFound.instructions}</div>`;
+                        break;
+                }
+                ifFoundHTML += '</div>';
             }
 
             const reviewHTML = `
@@ -2910,6 +3032,7 @@
                     </div>
                 </div>` : ''}
                 ${docsHTML}
+                ${ifFoundHTML}
             `;
 
             document.getElementById('review-content').innerHTML = reviewHTML;
@@ -2949,6 +3072,34 @@
             document.getElementById('qr-name').textContent = formData.n || '';
             document.getElementById('qr-blood').textContent = formData.b || '';
             document.getElementById('qr-allergies').textContent = formData.a || '';
+            const ifFoundEl = document.getElementById('qr-if-found');
+            if (formData.ifFound && formData.ifFound.action !== 'none') {
+                let text = '';
+                switch (formData.ifFound.action) {
+                    case 'destroy':
+                        text = '<div style="font-weight: 600;">Please destroy this card for privacy</div>';
+                        break;
+                    case 'mail':
+                        text = `<div style="font-weight: 600;">Please mail to:<br>${formData.ifFound.mailAddress}</div>`;
+                        break;
+                    case 'contact':
+                        if (formData.ifFound.contactType === 'emergency') {
+                            text = `<div style="font-weight: 600;">Please contact emergency contact:<br>${formData.ec} - ${formData.ep}</div>`;
+                        } else if (formData.ifFound.contactType === 'case-manager') {
+                            text = `<div style="font-weight: 600;">Please contact case manager:<br>${formData.cm} - ${formData.cp}</div>`;
+                        } else {
+                            text = `<div style="font-weight: 600;">Please contact:<br>${formData.ifFound.contactInfo}</div>`;
+                        }
+                        break;
+                    case 'other':
+                        text = `<div style="font-weight: 600;">${formData.ifFound.instructions}</div>`;
+                        break;
+                }
+                ifFoundEl.innerHTML = '<div class="subtitle-text">📍 IF FOUND</div>' + text;
+                ifFoundEl.style.display = 'block';
+            } else {
+                ifFoundEl.style.display = 'none';
+            }
         }
 
         function getQRCodeCanvas(target = 'qrcode') {
@@ -4728,6 +4879,38 @@ Generated: ${new Date().toLocaleString()}`;
 
             ['phone','ec-phone','cm-phone','custom-phone'].forEach(setupPhoneInput);
 
+            document.querySelectorAll('input[name="if-found"]').forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    document.getElementById('mail-address').disabled = true;
+                    document.getElementById('contact-who').disabled = true;
+                    document.getElementById('contact-other').style.display = 'none';
+                    document.getElementById('other-instructions').disabled = true;
+
+                    switch(e.target.value) {
+                        case 'mail':
+                            document.getElementById('mail-address').disabled = false;
+                            break;
+                        case 'contact':
+                            document.getElementById('contact-who').disabled = false;
+                            break;
+                        case 'other':
+                            document.getElementById('other-instructions').disabled = false;
+                            break;
+                    }
+                });
+            });
+
+            document.getElementById('contact-who').addEventListener('change', (e) => {
+                const otherField = document.getElementById('contact-other');
+                if (e.target.value === 'other') {
+                    otherField.style.display = 'block';
+                    otherField.required = true;
+                } else {
+                    otherField.style.display = 'none';
+                    otherField.required = false;
+                }
+            });
+
             // Initialize home page status cards
             if (document.getElementById('status-cards')) {
                 renderHomeStatus();
@@ -4930,6 +5113,32 @@ Generated: ${new Date().toLocaleString()}`;
                             <div class="subtitle-text">Documents</div>
                             <ul style="margin-left: 20px;">${data.docs.map(d => `<li><a href="${d.l}" target="_blank" style="color: var(--primary); text-decoration: none;">📄 ${d.t}</a></li>`).join('')}</ul>
                         </div>`;
+                    }
+
+                    if (data.ifFound && data.ifFound.action !== 'none') {
+                        html += '<div class="info-card" style="background: #fef3c7; border: 2px dashed #f59e0b;">';
+                        html += '<div class="subtitle-text">📍 IF FOUND</div>';
+                        switch(data.ifFound.action) {
+                            case 'destroy':
+                                html += '<div style="font-weight: 600;">Please destroy this card for privacy</div>';
+                                break;
+                            case 'mail':
+                                html += `<div style="font-weight: 600;">Please mail to:<br>${data.ifFound.mailAddress}</div>`;
+                                break;
+                            case 'contact':
+                                if (data.ifFound.contactType === 'emergency') {
+                                    html += `<div style="font-weight: 600;">Please contact emergency contact:<br>${data.ec} - ${data.ep}</div>`;
+                                } else if (data.ifFound.contactType === 'case-manager') {
+                                    html += `<div style="font-weight: 600;">Please contact case manager:<br>${data.cm} - ${data.cp}</div>`;
+                                } else {
+                                    html += `<div style="font-weight: 600;">Please contact:<br>${data.ifFound.contactInfo}</div>`;
+                                }
+                                break;
+                            case 'other':
+                                html += `<div style="font-weight: 600;">${data.ifFound.instructions}</div>`;
+                                break;
+                        }
+                        html += '</div>';
                     }
 
                     html += '</div></details>';
