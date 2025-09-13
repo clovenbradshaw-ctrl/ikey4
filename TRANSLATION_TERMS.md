@@ -445,7 +445,14 @@
             "gpsCopied": "GPS coordinates copied!",
             "plusCodeCopied": "Plus Code copied!",
             "allLocationCopied": "All location info copied!",
-            "fillRequiredFields": "Please fill in all required fields"
+            "fillRequiredFields": "Please fill in all required fields",
+            "sendBackupEmail": "Send backup via email? Cancel for text.",
+            "shareUnavailable": "Share not available. Copy link to clipboard instead?",
+            "createNewIKey": "Create a new iKey? This will take you to the base URL.",
+            "removeBookmark": "Remove this bookmark?",
+            "clearShareHistory": "Clear all share history?",
+            "enterNewKeyName": "Enter new key name",
+            "newKeyCreated": "New key created. Reprint and redistribute your card."
         },
         "resources": {
             "wttin": "Where To Turn in Nashville",
@@ -453,6 +460,19 @@
             "policeDispatch": "Nashville Police Dispatch",
             "crisisLine": "Suicide & Crisis Lifeline: 988",
             "poisonControlNumber": "Poison Control: 1-800-222-1222"
+        },
+        "home": {
+            "myIKey": "My iKey",
+            "scannedCard": "Scanned Card",
+            "backToMyKey": "Back to My iKey",
+            "activeBadge": "iKey Emergency ID ACTIVE",
+            "noKeyBadge": "NO iKey Emergency ID",
+            "createMyIKey": "Create Your iKey Emergency ID",
+            "addEmergencyInfo": "Tap to add emergency information",
+            "createIKeyButton": "Create iKey Emergency ID",
+            "locationServices": "LOCATION SERVICES",
+            "readyToShare": "Ready for emergency sharing",
+            "noAlerts": "No alerts"
         },
         "card": {
             "title": "iKey ID Card Generator",
@@ -920,7 +940,14 @@
             "gpsCopied": "¡Coordenadas GPS copiadas!",
             "plusCodeCopied": "¡Código Plus copiado!",
             "allLocationCopied": "¡Toda la info de ubicación copiada!",
-            "fillRequiredFields": "Por favor completa todos los campos requeridos"
+            "fillRequiredFields": "Por favor completa todos los campos requeridos",
+            "sendBackupEmail": "¿Enviar copia de seguridad por correo electrónico? Cancelar para texto.",
+            "shareUnavailable": "Compartir no disponible. ¿Copiar enlace al portapapeles?",
+            "createNewIKey": "¿Crear un nuevo iKey? Esto te llevará a la URL base.",
+            "removeBookmark": "¿Eliminar este marcador?",
+            "clearShareHistory": "¿Borrar todo el historial de compartir?",
+            "enterNewKeyName": "Ingresa nuevo nombre de clave",
+            "newKeyCreated": "Nueva clave creada. Vuelve a imprimir y distribuye tu tarjeta."
         },
         "resources": {
             "wttin": "Where To Turn in Nashville",
@@ -928,6 +955,19 @@
             "policeDispatch": "Despacho Policial de Nashville",
             "crisisLine": "Línea de Suicidio y Crisis: 988",
             "poisonControlNumber": "Control de Venenos: 1-800-222-1222"
+        },
+        "home": {
+            "myIKey": "Mi iKey",
+            "scannedCard": "Tarjeta escaneada",
+            "backToMyKey": "Volver a mi iKey",
+            "activeBadge": "iKey ID de emergencia ACTIVO",
+            "noKeyBadge": "SIN ID de emergencia iKey",
+            "createMyIKey": "Crea tu ID de emergencia iKey",
+            "addEmergencyInfo": "Toca para añadir información de emergencia",
+            "createIKeyButton": "Crear ID de emergencia iKey",
+            "locationServices": "SERVICIOS DE UBICACIÓN",
+            "readyToShare": "Listo para compartir en emergencia",
+            "noAlerts": "Sin alertas"
         },
         "card": {
             "title": "Generador de Tarjeta de ID de iKey",
@@ -1385,7 +1425,14 @@
             "gpsCopied": "تم نسخ إحداثيات GPS!",
             "plusCodeCopied": "تم نسخ رمز Plus!",
             "allLocationCopied": "تم نسخ جميع معلومات الموقع!",
-            "fillRequiredFields": "يرجى ملء جميع الحقول المطلوبة"
+            "fillRequiredFields": "يرجى ملء جميع الحقول المطلوبة",
+            "sendBackupEmail": "إرسال نسخة احتياطية بالبريد الإلكتروني؟ إلغاء للرسالة النصية.",
+            "shareUnavailable": "المشاركة غير متاحة. هل تنسخ الرابط إلى الحافظة؟",
+            "createNewIKey": "إنشاء iKey جديد؟ سيأخذك إلى الرابط الأساسي.",
+            "removeBookmark": "إزالة هذه الإشارة؟",
+            "clearShareHistory": "مسح كل سجل المشاركة؟",
+            "enterNewKeyName": "أدخل اسم مفتاح جديد",
+            "newKeyCreated": "تم إنشاء مفتاح جديد. أعد الطباعة ووزع بطاقتك."
         },
         "resources": {
             "wttin": "Where To Turn in Nashville",
@@ -1393,6 +1440,19 @@
             "policeDispatch": "إرسال شرطة ناشفيل",
             "crisisLine": "خط الأزمات والانتحار: 988",
             "poisonControlNumber": "مراقبة السموم: 1-800-222-1222"
+        },
+        "home": {
+            "myIKey": "مفتاحي iKey",
+            "scannedCard": "بطاقة ممسوحة",
+            "backToMyKey": "العودة إلى مفتاحي iKey",
+            "activeBadge": "معرّف طوارئ iKey مفعل",
+            "noKeyBadge": "لا يوجد معرّف طوارئ iKey",
+            "createMyIKey": "أنشئ معرّف طوارئ iKey الخاص بك",
+            "addEmergencyInfo": "اضغط لإضافة معلومات طارئة",
+            "createIKeyButton": "إنشاء معرّف طوارئ iKey",
+            "locationServices": "خدمات الموقع",
+            "readyToShare": "جاهز للمشاركة في الطوارئ",
+            "noAlerts": "لا توجد تنبيهات"
         },
         "card": {
             "title": "مولد بطاقة هوية iKey",
@@ -1844,7 +1904,14 @@
             "gpsCopied": "Koordînatên GPS hatin kopîkirin!",
             "plusCodeCopied": "Koda Plus hat kopîkirin!",
             "allLocationCopied": "Hemû agahdariya cihê hat kopîkirin!",
-            "fillRequiredFields": "Ji kerema xwe hemû qadên pêwîst dagirin"
+            "fillRequiredFields": "Ji kerema xwe hemû qadên pêwîst dagirin",
+            "sendBackupEmail": "Backup bi e-nameyê bişîne? Ji bo nivîsê betal bike.",
+            "shareUnavailable": "Parvekirin tune ye. Girêdanê kopî bikî?",
+            "createNewIKey": "iKey-ê nû biafirînî? Ev ê te bibe ser URL-a bingehî.",
+            "removeBookmark": "Ev nîşanê jê bibe?",
+            "clearShareHistory": "Hemû dîroka parvekirinê paqij bike?",
+            "enterNewKeyName": "Navê mifteyê nû binivîse",
+            "newKeyCreated": "Mifteya nû hat afirandin. Kartê xwe ji nû ve çap û belav bike."
         },
         "resources": {
             "wttin": "Where To Turn in Nashville",
@@ -1852,6 +1919,19 @@
             "policeDispatch": "Şandina Polîsê Nashville",
             "crisisLine": "Xeta Xwekujtin û Krîzê: 988",
             "poisonControlNumber": "Kontrola Jehrê: 1-800-222-1222"
+        },
+        "home": {
+            "myIKey": "iKey-a min",
+            "scannedCard": "Kartê şopandî",
+            "backToMyKey": "Vegere iKey-a min",
+            "activeBadge": "Nasnameya FHN a iKey Çalak e",
+            "noKeyBadge": "Nasnameya FHN ya iKey tune ye",
+            "createMyIKey": "Nasnameya FHN ya iKey ya xwe biafirîne",
+            "addEmergencyInfo": "Ji bo zêdekirina agahdariya fercî bitikîne",
+            "createIKeyButton": "Nasnameya FHN ya iKey biafirîne",
+            "locationServices": "XIZMETA CIHÛHATÊ",
+            "readyToShare": "Ji parvekirina fercî amade ye",
+            "noAlerts": "Hişyarî tune ye"
         },
         "misc": {
             "apps": "Proton Apps",
@@ -2202,7 +2282,14 @@
             "gpsCopied": "Iskudubaridka GPS waa la koobiyay!",
             "plusCodeCopied": "Koodka Plus waa la koobiyay!",
             "allLocationCopied": "Dhammaan macluumaadka goobta waa la koobiyay!",
-            "fillRequiredFields": "Fadlan buuxi dhammaan beeraha loo baahan yahay"
+            "fillRequiredFields": "Fadlan buuxi dhammaan beeraha loo baahan yahay",
+            "sendBackupEmail": "U dir kayd email? Ka noqo qoraal.",
+            "shareUnavailable": "La wadaagis ma jiro. Ma nuqulisaa linkiga looxa?",
+            "createNewIKey": "Samee iKey cusub? Tani waxay ku geyn doontaa URL-ka aasaasiga ah.",
+            "removeBookmark": "Ka saar calaamaddan?",
+            "clearShareHistory": "Tirtir dhammaan taariikhda la wadaagga?",
+            "enterNewKeyName": "Geli magac furaha cusub",
+            "newKeyCreated": "Fure cusub waa la sameeyay. Ka dib dib u daabac oo qaybi kaarkaaga."
         },
         "resources": {
             "wttin": "Where To Turn in Nashville",
@@ -2210,6 +2297,19 @@
             "policeDispatch": "Dirista Booliska Nashville",
             "crisisLine": "Khadka Ismiidaaminta & Dhibaatada: 988",
             "poisonControlNumber": "Xakamaynta Sunta: 1-800-222-1222"
+        },
+        "home": {
+            "myIKey": "iKey-gayga",
+            "scannedCard": "Kaarka la sawiray",
+            "backToMyKey": "Ku laabo iKey-gayga",
+            "activeBadge": "Aqoonsiga Degdegga iKey FIRAN",
+            "noKeyBadge": "AQOONSIGA DEGDEGGA IKKEY MA JIRO",
+            "createMyIKey": "Samee Aqoonsiga Degdegga iKey",
+            "addEmergencyInfo": "Taabo si aad u geliso macluumaad degdeg ah",
+            "createIKeyButton": "Samee Aqoonsiga Degdegga iKey",
+            "locationServices": "ADEEGYADA GOOBTA",
+            "readyToShare": "Diyaar u ah wadaagga degdegga ah",
+            "noAlerts": "Wax digniin ah ma jiraan"
         },
         "misc": {
             "apps": "Proton Apps",
@@ -2560,7 +2660,14 @@
             "gpsCopied": "GPS坐标已复制！",
             "plusCodeCopied": "Plus代码已复制！",
             "allLocationCopied": "所有位置信息已复制！",
-            "fillRequiredFields": "请填写所有必填字段"
+            "fillRequiredFields": "请填写所有必填字段",
+            "sendBackupEmail": "通过电子邮件发送备份？取消则发送短信。",
+            "shareUnavailable": "无法分享。要复制链接到剪贴板吗？",
+            "createNewIKey": "创建新的 iKey？这将带你到基础 URL。",
+            "removeBookmark": "移除此书签？",
+            "clearShareHistory": "清除所有分享历史？",
+            "enterNewKeyName": "输入新的密钥名称",
+            "newKeyCreated": "已创建新密钥。请重新打印并分发你的卡片。"
         },
         "resources": {
             "wttin": "Where To Turn in Nashville",
@@ -2568,6 +2675,19 @@
             "policeDispatch": "纳什维尔警察调度",
             "crisisLine": "自杀与危机生命线：988",
             "poisonControlNumber": "中毒控制：1-800-222-1222"
+        },
+        "home": {
+            "myIKey": "我的 iKey",
+            "scannedCard": "扫描的卡",
+            "backToMyKey": "返回我的 iKey",
+            "activeBadge": "iKey 紧急 ID 已激活",
+            "noKeyBadge": "无 iKey 紧急 ID",
+            "createMyIKey": "创建你的 iKey 紧急 ID",
+            "addEmergencyInfo": "点击添加紧急信息",
+            "createIKeyButton": "创建 iKey 紧急 ID",
+            "locationServices": "定位服务",
+            "readyToShare": "已准备好紧急共享",
+            "noAlerts": "无警报"
         },
         "misc": {
             "apps": "Proton Apps",
