@@ -564,6 +564,14 @@
                 "selfHost": "self-host"
             }
         },
+        "about": {
+            "security": "You can set a password to encrypt your saved data so only you can read it."
+        },
+        "security": {
+            "prompt": "Enter your password to unlock your data",
+            "set": "Set a password to encrypt your data",
+            "invalid": "Incorrect password"
+        },
         "misc": {
             "apps": "Proton Apps",
             "proton": "Proton",
@@ -1033,6 +1041,14 @@
                 "selfHost": "autoalojado"
             }
         },
+        "about": {
+            "security": "Puedes establecer una contraseña para cifrar tus datos guardados y que solo tú puedas leerlos."
+        },
+        "security": {
+            "prompt": "Introduce tu contraseña para desbloquear tus datos",
+            "set": "Establece una contraseña para cifrar tus datos",
+            "invalid": "Contraseña incorrecta"
+        },
         "misc": {
             "apps": "Proton Apps",
             "proton": "Proton",
@@ -1492,6 +1508,14 @@
                 "selfHost": "استضافة ذاتية"
             }
         },
+        "about": {
+            "security": "يمكنك تعيين كلمة مرور لتشفير بياناتك المحفوظة بحيث لا يستطيع قراءتها إلا أنت."
+        },
+        "security": {
+            "prompt": "أدخل كلمة المرور لفتح بياناتك",
+            "set": "عيّن كلمة مرور لتشفير بياناتك",
+            "invalid": "كلمة المرور غير صحيحة"
+        },
         "misc": {
             "apps": "Proton Apps",
             "proton": "Proton",
@@ -1843,6 +1867,14 @@
             "policeDispatch": "Şandina Polîsê Nashville",
             "crisisLine": "Xeta Xwekujtin û Krîzê: 988",
             "poisonControlNumber": "Kontrola Jehrê: 1-800-222-1222"
+        },
+        "about": {
+            "security": "Dikarî şîfreyek saz bikî da ku daneyên te yên tomarkirî bêne şifrkirin û tenê tu wan bixwînî."
+        },
+        "security": {
+            "prompt": "Şîfreya xwe binivîse da ku daneyên xwe veke",
+            "set": "Ji bo şifrkirina daneyên xwe şîfreyek saz bike",
+            "invalid": "Şîfre çewt e"
         },
         "misc": {
             "apps": "Proton Apps",
@@ -2196,6 +2228,14 @@
             "crisisLine": "Khadka Ismiidaaminta & Dhibaatada: 988",
             "poisonControlNumber": "Xakamaynta Sunta: 1-800-222-1222"
         },
+        "about": {
+            "security": "Waxaad dejin kartaa eray sir ah si aad u qariso xogtaada kaydsan oo adiga kaliya akhriyi karto."
+        },
+        "security": {
+            "prompt": "Geli eray sirtaada si aad u furto xogtaada",
+            "set": "Deji eray sir ah si aad u qariso xogtaada",
+            "invalid": "Erey sir khaldan"
+        },
         "misc": {
             "apps": "Proton Apps",
             "proton": "Proton",
@@ -2547,6 +2587,14 @@
             "policeDispatch": "纳什维尔警察调度",
             "crisisLine": "自杀与危机生命线：988",
             "poisonControlNumber": "中毒控制：1-800-222-1222"
+        },
+        "about": {
+            "security": "你可以设置密码来加密已保存的数据，只有你能查看。"
+        },
+        "security": {
+            "prompt": "请输入密码以解锁你的数据",
+            "set": "设置密码以加密你的数据",
+            "invalid": "密码不正确"
         },
         "misc": {
             "apps": "Proton Apps",

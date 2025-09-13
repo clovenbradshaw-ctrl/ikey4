@@ -2,7 +2,7 @@
 
 ## Overview
 
-iKey is a lightweight, client‑side web app that keeps your location and key personal safety information readily available without relying on any server. Everything runs in the browser and data is stored in `localStorage`, allowing the app to work offline and without user accounts.
+iKey is a lightweight, client‑side web app that keeps your location and key personal safety information readily available without relying on any server. Everything runs in the browser and data is stored in `localStorage` with optional password‑based encryption, allowing the app to work offline and without user accounts.
 
 ## Features
 
@@ -17,7 +17,7 @@ iKey is a lightweight, client‑side web app that keeps your location and key pe
 
 - No data ever leaves your browser unless you choose to share it.
 - Clearing browser storage removes all saved information and favorites.
-- There is currently **no encryption** or password protection; treat the app as a convenience layer for readily shareable info.
+- Stored data can be encrypted with a password you choose using the Web Crypto API.
 
 ## Running the App
 
@@ -46,7 +46,7 @@ When adding DOM elements at runtime (wizards, modals, etc.), call the global `tr
 ### Privacy
 
 - Keep all data client-side; avoid adding analytics or external trackers.
-- Clearly communicate that information is stored in `localStorage` without encryption.
+- Clearly communicate that information is stored in `localStorage` and can be protected with a password.
 - Only collect data that is essential for emergency use and allow users to remove it.
 
 ### Translations
