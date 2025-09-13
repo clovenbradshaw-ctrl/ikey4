@@ -137,75 +137,126 @@
 
         /* Tab Navigation */
         .tab-nav {
-            background: #ffffff;
+            background: white;
             border-bottom: 1px solid #e5e7eb;
             display: flex;
-            overflow-x: auto;
+            height: 44px;
+            padding: 0;
             position: sticky;
             top: 0;
             z-index: 100;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-behavior: smooth;
             -webkit-overflow-scrolling: touch;
         }
 
         .tab-btn {
-            flex: 1;
-            min-width: 100px;
-            padding: 18px 20px;
+            flex: 0 0 auto;
+            min-width: 64px;
+            padding: 4px 8px;
             background: none;
             border: none;
             color: #64748b;
-            font-size: 0.9rem;
+            font-size: 11px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 2px;
             border-bottom: 3px solid transparent;
             white-space: nowrap;
-            -webkit-user-select: none;
-            user-select: none;
+            position: relative;
         }
 
         .tab-btn:active {
-            transform: scale(0.95);
-        }
-
-        .tab-btn:hover {
-            background: var(--light);
-            color: var(--primary);
-        }
-
-        .tab-btn:focus-visible {
-            background: var(--light);
-            box-shadow: inset 0 0 0 2px var(--primary);
+            background: rgba(0,0,0,0.05);
         }
 
         .tab-btn.active {
-            color: #ffffff;
-            background: #4f46e5;
-            border-radius: 8px;
-            margin: 4px;
-        }
-
-        .tab-btn.proton-btn {
-            padding: 0 20px;
-            height: 56px;
-        }
-
-        .tab-btn.proton-btn .proton-icon {
-            height: 100%;
-            width: auto;
-            object-fit: contain;
+            background: transparent;
+            border-bottom: 3px solid #4f46e5;
+            border-radius: 0;
+            margin: 0;
+            padding-bottom: 5px;
+            color: #4f46e5;
         }
 
         .tab-icon {
-            font-size: 1.3rem;
+            font-size: 18px;
+            line-height: 1;
+            height: 18px;
         }
 
         .tab-label {
-            font-size: 0.9rem;
+            font-size: 10px;
+            line-height: 1;
+            opacity: 0.9;
+            margin-top: 2px;
+        }
+
+        /* Hide Proton image in compact mode */
+        .tab-btn.proton-btn {
+            padding: 4px 12px;
+        }
+
+        .tab-btn.proton-btn .proton-icon {
+            height: 20px;
+            width: auto;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            padding: 4px;
+            top: 44px;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            z-index: 99;
+        }
+
+        .dropdown-menu button {
+            background: none;
+            border: none;
+            padding: 4px 8px;
+            text-align: left;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .dropdown-menu button:hover {
+            background: #f3f4f6;
+        }
+
+        @media (max-width: 480px) {
+            .tab-label {
+                display: none;
+            }
+
+            .tab-btn {
+                padding: 8px;
+                min-width: 48px;
+            }
+
+            .tab-icon {
+                font-size: 20px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .tab-nav {
+                display: grid;
+                grid-template-columns: repeat(5, 1fr);
+                grid-template-rows: repeat(2, 24px);
+                height: 48px;
+                gap: 0;
+            }
         }
 
         /* Tab Content */
@@ -1006,35 +1057,12 @@
                 padding: 20px;
             }
 
-            .tab-nav {
-                flex-wrap: wrap;
-                overflow-x: hidden;
-            }
-
-            .tab-btn {
-                flex: 1 0 50%;
-                padding: 16px 15px;
-                font-size: 0.85rem;
-            }
-
             .progress-label {
                 font-size: 0.7rem;
             }
 
             .weather-stats {
                 grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .tab-btn {
-                flex: 1 0 33.333%;
-                min-width: auto;
-                padding: 12px;
-            }
-
-            .tab-label {
-                display: none;
             }
         }
 
@@ -1849,29 +1877,25 @@
             <span class="tab-icon">⛈️</span>
             <span class="tab-label" data-i18n="nav.weather">Weather</span>
         </button>
-        <button class="tab-btn" onclick="switchTab('wttin')" aria-label="Resources" data-i18n-aria="nav.wttin">
-            <img src="https://wttin.org/wp-content/uploads/2024/05/Group-184-1.png"
-                 alt="Resources"
-                 style="width: 20px; height: 20px; object-fit: contain;">
-            <span class="tab-label" data-i18n="nav.wttin">Resources</span>
-        </button>
-        <button class="tab-btn" onclick="switchTab('meals')" aria-label="Meals" data-i18n-aria="nav.meals">
-            <span class="tab-icon">🍽️</span>
-            <span class="tab-label" data-i18n="nav.meals">Meals</span>
+        <button class="tab-btn" onclick="toggleResourceMenu()" aria-label="More">
+            <span class="tab-icon">📚</span>
+            <span class="tab-label">More</span>
         </button>
         <button id="dispatch-tab-btn" class="tab-btn" style="display: none;" onclick="switchTab('dispatch')" aria-label="Dispatch" data-i18n-aria="nav.dispatch">
             <span class="tab-icon">📡</span>
             <span class="tab-label" data-i18n="nav.dispatch">Dispatch</span>
-        </button>
-        <button class="tab-btn proton-btn" onclick="switchTab('apps')" aria-label="Proton Apps">
-            <img src="https://appfairness.org/wp-content/uploads/2021/09/logos-proton.jpg"
-                 alt="Proton" class="proton-icon">
         </button>
         <button class="tab-btn" onclick="switchTab('settings')" aria-label="Settings" data-i18n-aria="nav.settings">
             <span class="tab-icon">⚙️</span>
             <span class="tab-label" data-i18n="nav.settings">Settings</span>
         </button>
     </nav>
+    <!-- Hidden dropdown for grouped resources -->
+    <div id="resource-menu" class="dropdown-menu hidden">
+        <button onclick="switchTab('wttin'); toggleResourceMenu();" data-i18n="nav.wttin">Resources</button>
+        <button onclick="switchTab('meals'); toggleResourceMenu();" data-i18n="nav.meals">Meals</button>
+        <button onclick="switchTab('apps'); toggleResourceMenu();">Proton</button>
+    </div>
 
     <!-- Home Tab -->
     <div id="home" class="tab-content">
@@ -2838,8 +2862,22 @@
     </div>
 
     <script>
+        // Toggle resource dropdown
+        function toggleResourceMenu() {
+            const menu = document.getElementById('resource-menu');
+            if (menu) {
+                menu.classList.toggle('hidden');
+            }
+        }
+
         // Tab switching
         function switchTab(tabName) {
+            // Hide dropdown when switching tabs
+            const menu = document.getElementById('resource-menu');
+            if (menu) {
+                menu.classList.add('hidden');
+            }
+
             // Update nav buttons
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('active');
