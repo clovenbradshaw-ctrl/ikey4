@@ -579,55 +579,77 @@
         /* iKey Tab Styles */
         .wizard-progress {
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            margin-bottom: 40px;
             position: relative;
-            padding: 0 10px;
+            margin-bottom: 40px;
+            padding: 0 30px;
         }
 
-        .wizard-progress::before {
-            content: '';
+        .progress-line {
             position: absolute;
-            top: 30px;
-            left: 10%;
-            right: 10%;
-            height: 2px;
+            top: 24px;
+            left: 30px;
+            right: 30px;
+            height: 4px;
             background: var(--border);
             z-index: 0;
         }
 
-        .progress-step {
-            flex: 1;
-            text-align: center;
-            position: relative;
+        .progress-line-filled {
+            position: absolute;
+            top: 24px;
+            left: 30px;
+            height: 4px;
+            background: var(--primary);
+            width: 0%;
             z-index: 1;
+            transition: width 0.3s ease;
         }
 
-        .progress-dot {
-            width: 60px;
-            height: 60px;
-            background: white;
-            border: 2px solid var(--border);
+        .progress-step {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            flex: 1;
+        }
+
+        .step-icon {
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
-            margin: 0 auto 8px;
+            background: #f0f0f0;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
+            margin: 0 auto 8px;
+            font-size: 20px;
             transition: all 0.3s ease;
+            border: 3px solid #f0f0f0;
         }
 
-        .progress-step.active .progress-dot {
+        .step-icon.active {
             background: var(--primary);
             color: white;
             border-color: var(--primary);
             transform: scale(1.1);
         }
 
-        .progress-step.completed .progress-dot {
+        .step-icon.completed {
             background: var(--success);
             color: white;
             border-color: var(--success);
+        }
+
+        .step-label {
+            font-size: 12px;
+            color: var(--secondary);
+            font-weight: 500;
+        }
+
+        .step-label.active {
+            color: var(--primary);
+            font-weight: 600;
         }
 
         #btn-next.start-btn {
@@ -1157,12 +1179,18 @@
                 padding: 20px;
             }
 
-            .progress-label {
+            .step-label {
                 font-size: 0.7rem;
             }
 
             .weather-stats {
                 grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .wizard-progress .step-label {
+                display: none;
             }
         }
 
@@ -2084,33 +2112,35 @@
                 <div id="wizard-view">
                     <!-- Progress Bar -->
                     <div class="wizard-progress">
-                        <div class="progress-step active" data-step="1">
-                            <div class="progress-dot">1</div>
-                            <div class="progress-label">Welcome</div>
+                        <div class="progress-line"></div>
+                        <div class="progress-line-filled"></div>
+                        <div class="progress-step" data-step="1">
+                            <div class="step-icon active" data-icon="👋">👋</div>
+                            <div class="step-label active">Welcome</div>
                         </div>
                         <div class="progress-step" data-step="2">
-                            <div class="progress-dot">2</div>
-                            <div class="progress-label">Secure Email</div>
+                            <div class="step-icon" data-icon="🔒">🔒</div>
+                            <div class="step-label">Secure</div>
                         </div>
                         <div class="progress-step" data-step="3">
-                            <div class="progress-dot">3</div>
-                            <div class="progress-label">Basic</div>
+                            <div class="step-icon" data-icon="📝">📝</div>
+                            <div class="step-label">Basic</div>
                         </div>
                         <div class="progress-step" data-step="4">
-                            <div class="progress-dot">4</div>
-                            <div class="progress-label">Health</div>
+                            <div class="step-icon" data-icon="❤️">❤️</div>
+                            <div class="step-label">Health</div>
                         </div>
                         <div class="progress-step" data-step="5">
-                            <div class="progress-dot">5</div>
-                            <div class="progress-label">Contacts</div>
+                            <div class="step-icon" data-icon="📞">📞</div>
+                            <div class="step-label">Contacts</div>
                         </div>
                         <div class="progress-step" data-step="6">
-                            <div class="progress-dot">6</div>
-                            <div class="progress-label">If Found</div>
+                            <div class="step-icon" data-icon="📍">📍</div>
+                            <div class="step-label">If Found</div>
                         </div>
                         <div class="progress-step" data-step="7">
-                            <div class="progress-dot">7</div>
-                            <div class="progress-label">Review</div>
+                            <div class="step-icon" data-icon="✅">✅</div>
+                            <div class="step-label">Review</div>
                         </div>
                     </div>
 
@@ -3277,6 +3307,8 @@ let lastGeneratedPhoto = '';
 let dataListenersSet = false;
 let pendingMyKeyHash = null;
 
+updateWizardDisplay();
+
 function promptSetAsMyKey(email, hash, name) {
     if (!email) return;
     if (confirm('Set this as my iKey on this device?')) {
@@ -3379,23 +3411,33 @@ function promptSetAsMyKey(email, hash, name) {
         }
 
         function updateWizardDisplay() {
-            // Update progress dots
+            const progressPercent = ((currentStep - 1) / 6) * 100;
+            const filled = document.querySelector('.progress-line-filled');
+            if (filled) {
+                filled.style.width = progressPercent + '%';
+            }
+
             document.querySelectorAll('.progress-step').forEach((step, index) => {
-                step.classList.remove('active', 'completed');
+                const icon = step.querySelector('.step-icon');
+                const label = step.querySelector('.step-label');
+                icon.classList.remove('active', 'completed');
+                label.classList.remove('active');
+                icon.textContent = icon.dataset.icon;
+
                 if (index + 1 < currentStep) {
-                    step.classList.add('completed');
+                    icon.classList.add('completed');
+                    icon.textContent = '✓';
                 } else if (index + 1 === currentStep) {
-                    step.classList.add('active');
+                    icon.classList.add('active');
+                    label.classList.add('active');
                 }
             });
 
-            // Show current step
             document.querySelectorAll('.wizard-step').forEach(step => {
                 step.classList.remove('active');
             });
             document.querySelector(`.wizard-step[data-step="${currentStep}"]`).classList.add('active');
 
-            // Update buttons
             document.getElementById('btn-back').style.display = currentStep === 1 ? 'none' : 'block';
             const nextBtn = document.getElementById('btn-next');
             nextBtn.classList.toggle('hidden', currentStep === 7);
