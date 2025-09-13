@@ -136,6 +136,10 @@
         }
 
         /* Tab Navigation */
+        .nav-wrapper {
+            position: relative;
+        }
+
         .tab-nav {
             background: white;
             border-bottom: 1px solid #e5e7eb;
@@ -212,8 +216,8 @@
             border: 1px solid #e5e7eb;
             border-radius: 4px;
             padding: 4px;
-            top: 44px;
-            left: 0;
+            top: 100%;
+            right: 0;
             display: flex;
             flex-direction: column;
             z-index: 99;
@@ -1744,7 +1748,8 @@
     </div>
 
     <!-- Tab Navigation -->
-    <nav class="tab-nav">
+    <div class="nav-wrapper">
+        <nav class="tab-nav">
         <button class="tab-btn" onclick="switchTab('home')" aria-label="Home" data-i18n-aria="nav.home">
             <span class="tab-icon">🏠</span>
             <span class="tab-label" data-i18n="nav.home">Home</span>
@@ -1777,12 +1782,13 @@
             <span class="tab-icon">⚙️</span>
             <span class="tab-label" data-i18n="nav.settings">Settings</span>
         </button>
-    </nav>
-    <!-- Hidden dropdown for grouped resources -->
-    <div id="resource-menu" class="dropdown-menu hidden">
-        <button onclick="switchTab('wttin'); toggleResourceMenu();" data-i18n="nav.wttin">Resources</button>
-        <button onclick="switchTab('meals'); toggleResourceMenu();" data-i18n="nav.meals">Meals</button>
-        <button onclick="switchTab('apps'); toggleResourceMenu();">Proton</button>
+        </nav>
+        <!-- Hidden dropdown for grouped resources -->
+        <div id="resource-menu" class="dropdown-menu hidden">
+            <button onclick="switchTab('wttin'); toggleResourceMenu();" data-i18n="nav.wttin">Resources</button>
+            <button onclick="switchTab('meals'); toggleResourceMenu();" data-i18n="nav.meals">Meals</button>
+            <button onclick="switchTab('apps'); toggleResourceMenu();">Proton</button>
+        </div>
     </div>
 
     <!-- Home Tab -->
