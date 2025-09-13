@@ -6,7 +6,7 @@
         "homeTitle": "iKey Home",
         "nav": {
             "home": "Home",
-            "iKey": "iKey",
+            "iKey": "My iKey",
             "weather": "Weather",
             "wttin": "Where To Turn in Nashville",
             "hotlines": "Hotlines",

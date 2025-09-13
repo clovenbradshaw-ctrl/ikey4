@@ -1941,6 +1941,19 @@
             </div>
         </div>
     </div>
+    <div id="scan-confirm-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="scan-confirm-title" tabindex="-1" aria-hidden="true">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header" style="padding: 20px; border-bottom: 1px solid var(--border);">
+                <h2 id="scan-confirm-title" style="margin: 0;">View scanned iKey?</h2>
+                <button class="modal-close" onclick="cancelScanConfirmModal()">×</button>
+            </div>
+            <div id="scan-confirm-name" style="padding: 20px;"></div>
+            <div class="modal-actions" style="padding: 20px; display: flex; gap: 10px; justify-content: flex-end;">
+                <button id="scan-cancel-btn" class="btn btn-secondary">Cancel</button>
+                <button id="scan-view-btn" class="btn btn-primary">View</button>
+            </div>
+        </div>
+    </div>
     <!-- Header -->
     <header class="app-header">
         <div id="language-toggle">
@@ -1960,7 +1973,7 @@
 
     <div id="key-banner" class="key-banner hidden">
         <span id="key-banner-text"></span>
-        <button id="back-to-my-key" class="btn btn-secondary hidden" onclick="returnToMyKey()">Back to my key</button>
+        <button id="back-to-my-key" class="btn btn-secondary hidden" onclick="returnToMyKey()">Return to My iKey</button>
     </div>
 
     <!-- Tab Navigation -->
@@ -1970,9 +1983,9 @@
             <span class="tab-icon">🏠</span>
             <span class="tab-label" data-i18n="nav.home">Home</span>
         </button>
-        <button class="tab-btn active" data-tab="ikey" id="tab-ikey" role="tab" aria-controls="ikey" aria-selected="true" tabindex="0" onclick="switchTab('ikey')" aria-label="iKey" data-i18n-aria="nav.iKey">
+        <button class="tab-btn active" data-tab="ikey" id="tab-ikey" role="tab" aria-controls="ikey" aria-selected="true" tabindex="0" onclick="switchTab('ikey')" aria-label="My iKey" data-i18n-aria="nav.iKey">
             <span class="tab-icon">🏥</span>
-            <span class="tab-label" data-i18n="nav.iKey">iKey</span>
+            <span class="tab-label" data-i18n="nav.iKey">My iKey</span>
         </button>
         <button class="tab-btn" data-tab="emergency" id="tab-emergency" role="tab" aria-controls="emergency" aria-selected="false" tabindex="-1" onclick="switchTab('emergency')" aria-label="Emergency" data-i18n-aria="nav.emergency">
             <span class="tab-icon">🚨</span>
@@ -4310,7 +4323,9 @@ END:VCALENDAR`;
                 let html = '<div class="favorites-container">';
                 html += '<div class="favorites' + (this.editMode ? ' editing' : '') + '" id="favorites">';
 
-                const qrLabel = (displayData && !isOwnKey) ? (displayData.n || 'QR') : 'My QR';
+                const qrLabel = (displayData && !isOwnKey)
+                    ? (displayData.n ? `${displayData.n}'s QR` : 'Scanned QR')
+                    : 'My QR';
                 html += `
                     <button class="favorite qr-widget" type="button" data-action="qr" draggable="false" aria-label="${qrLabel}">
                         <div class="icon-wrapper">
@@ -4344,12 +4359,14 @@ END:VCALENDAR`;
                     }
                 });
 
-                html += `
+                if (isOwnKey) {
+                    html += `
                     <button class="add-bookmark-btn" type="button">
                         <div class="icon-wrapper">+</div>
                         <div class="label">Add</div>
                     </button>
-                `;
+                    `;
+                }
 
                 html += '</div>';
 
@@ -4451,6 +4468,7 @@ END:VCALENDAR`;
             }
 
             startLongPress() {
+                if (!isOwnKey) return;
                 this.longPressTimer = setTimeout(() => {
                     this.enterEditMode();
                 }, 1500);
@@ -4529,6 +4547,7 @@ END:VCALENDAR`;
             }
 
             enterEditMode() {
+                if (!isOwnKey) return;
                 this.editMode = true;
                 this.render();
             }
@@ -4539,6 +4558,7 @@ END:VCALENDAR`;
             }
 
             openAddModal() {
+                if (!isOwnKey) return;
                 const existingModal = document.querySelector('.bookmark-modal');
                 if (existingModal) {
                     existingModal.remove();
@@ -5342,6 +5362,41 @@ Generated: ${new Date().toLocaleString()}`;
         let displayData = null;
         let isOwnKey = false;
 
+        function closeScanConfirmModal() {
+            const modal = document.getElementById('scan-confirm-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.setAttribute('aria-hidden', 'true');
+                releaseFocus(modal);
+            }
+        }
+
+        function cancelScanConfirmModal() {
+            closeScanConfirmModal();
+            displayData = null;
+            updateKeyBanner();
+            returnToMyKey();
+        }
+
+        function showScanConfirmModal(data, hash) {
+            const modal = document.getElementById('scan-confirm-modal');
+            const nameEl = document.getElementById('scan-confirm-name');
+            const viewBtn = document.getElementById('scan-view-btn');
+            const cancelBtn = document.getElementById('scan-cancel-btn');
+            if (!modal || !nameEl || !viewBtn || !cancelBtn) return;
+            nameEl.textContent = data.n ? `View ${data.n}'s iKey?` : 'View scanned iKey?';
+            modal.classList.remove('hidden');
+            modal.setAttribute('aria-hidden', 'false');
+            lastFocusedElement = document.activeElement;
+            trapFocus(modal, cancelScanConfirmModal);
+            cancelBtn.onclick = cancelScanConfirmModal;
+            viewBtn.onclick = () => {
+                closeScanConfirmModal();
+                localStorage.setItem(`scanned_${hash}`, '1');
+                showEmergencyModal(data);
+            };
+        }
+
         function showEmergencyModal(data) {
             const modal = document.getElementById('emergency-modal');
             const content = document.getElementById('emergency-modal-content');
@@ -5708,7 +5763,9 @@ Generated: ${new Date().toLocaleString()}`;
             const myEmail = localStorage.getItem('myKeyEmail');
             const myHash = localStorage.getItem('myKeyData');
             isOwnKey = myEmail && displayData.pe && displayData.pe === myEmail;
-            textEl.textContent = isOwnKey ? 'Viewing your own key' : "Viewing someone else's key - read only";
+            textEl.textContent = isOwnKey ? 'Viewing your iKey' : `Viewing ${displayData.n || "someone's"} iKey`;
+            document.body.classList.toggle('scanned-mode', !isOwnKey);
+            document.body.classList.toggle('my-key-mode', isOwnKey);
             if (isOwnKey) {
                 backBtn.classList.add('hidden');
             } else {
@@ -6182,8 +6239,7 @@ Generated: ${new Date().toLocaleString()}`;
 
                     const scanKey = `scanned_${hash}`;
                     if (!localStorage.getItem(scanKey)) {
-                        localStorage.setItem(scanKey, '1');
-                        showEmergencyModal(data);
+                        showScanConfirmModal(data, hash);
                     } else {
                         initializeDisplayView(data);
                     }
