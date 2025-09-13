@@ -58,3 +58,7 @@ When adding DOM elements at runtime (wizards, modals, etc.), call the global `tr
 ## License
 
 This project is provided as a public good. Use at your own discretion and always verify critical information before sharing it in emergencies.
+
+## Changelog
+
+- Verified that no legacy `ikey2` or `ikey3` references remain in the codebase and confirmed all JavaScript files under `scripts/` are active with no dead code paths.
