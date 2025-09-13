@@ -342,6 +342,7 @@
         .label-green { color: #16a34a; }
         .label-purple { color: #7c3aed; }
         .label-gray { color: #6b7280; }
+        .label-yellow { color: #d97706; }
 
         .btn {
             padding: 14px 28px;
@@ -2090,42 +2091,33 @@
                         <p>What should someone do if they find your medical ID?</p>
                         <p style="margin:10px 0; color: var(--secondary);">⚠️ This information will be visible to anyone who finds your card</p>
                         <div class="form-group">
-                            <label>
-                                <input type="radio" name="if-found" value="destroy" />
-                                Destroy it for my privacy
-                            </label>
+                            <label for="if-found-action" class="label-yellow">Choose an action</label>
+                            <select id="if-found-action">
+                                <option value="none" selected>No special instructions</option>
+                                <option value="destroy">Destroy it for my privacy</option>
+                                <option value="mail">Mail to this address</option>
+                                <option value="contact">Contact someone</option>
+                                <option value="other">Other instructions</option>
+                            </select>
                         </div>
-                        <div class="form-group">
-                            <label>
-                                <input type="radio" name="if-found" value="mail" />
-                                Mail to this address:
-                            </label>
-                            <textarea id="mail-address" placeholder="123 Main St..." disabled maxlength="200"></textarea>
+                        <div class="form-group hidden" id="mail-group">
+                            <label for="mail-address" class="label-yellow">Mailing Address</label>
+                            <textarea id="mail-address" placeholder="123 Main St..." maxlength="200"></textarea>
+                            <div class="char-counter good" id="mail-address-counter">0 / 200 characters</div>
                         </div>
-                        <div class="form-group">
-                            <label>
-                                <input type="radio" name="if-found" value="contact" />
-                                Contact someone:
-                            </label>
-                            <select id="contact-who" disabled>
+                        <div class="form-group hidden" id="contact-group">
+                            <label for="contact-who" class="label-yellow">Who should they contact?</label>
+                            <select id="contact-who">
                                 <option value="emergency">My emergency contact</option>
                                 <option value="case-manager">My case manager</option>
                                 <option value="other">Other person</option>
                             </select>
-                            <input type="text" id="contact-other" placeholder="Name & phone" style="display:none;" maxlength="200" />
+                            <input type="text" id="contact-other" class="hidden" placeholder="Name & phone" maxlength="200" />
                         </div>
-                        <div class="form-group">
-                            <label>
-                                <input type="radio" name="if-found" value="other" />
-                                Other instructions:
-                            </label>
-                            <textarea id="other-instructions" placeholder="Please..." disabled maxlength="200"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>
-                                <input type="radio" name="if-found" value="none" checked />
-                                No special instructions
-                            </label>
+                        <div class="form-group hidden" id="other-group">
+                            <label for="other-instructions" class="label-yellow">Instructions</label>
+                            <textarea id="other-instructions" placeholder="Please..." maxlength="200"></textarea>
+                            <div class="char-counter good" id="other-instructions-counter">0 / 200 characters</div>
                         </div>
                     </div>
 
@@ -2941,7 +2933,7 @@
         }
 
         function setupCharacterCounters() {
-            const fields = ['allergies', 'medications', 'conditions'];
+            const fields = ['allergies', 'medications', 'conditions', 'mail-address', 'other-instructions'];
             fields.forEach(field => {
                 const textarea = document.getElementById(field);
                 const counter = document.getElementById(`${field}-counter`);
@@ -3050,7 +3042,7 @@
             }
 
             if (step === 6) {
-                const action = document.querySelector('input[name="if-found"]:checked').value;
+                const action = document.getElementById('if-found-action').value;
                 if (action === 'mail') {
                     const addr = document.getElementById('mail-address').value.trim();
                     if (!addr) {
@@ -3095,7 +3087,7 @@
                     docs.push({ t: type, l: link });
                 }
             }
-            const ifFoundAction = document.querySelector('input[name="if-found"]:checked').value;
+            const ifFoundAction = document.getElementById('if-found-action').value;
             const ifFound = { action: ifFoundAction };
             switch (ifFoundAction) {
                 case 'mail':
@@ -5447,34 +5439,40 @@ Generated: ${new Date().toLocaleString()}`;
 
             ['phone','ec-phone','cm-phone','custom-phone'].forEach(setupPhoneInput);
 
-            document.querySelectorAll('input[name="if-found"]').forEach(radio => {
-                radio.addEventListener('change', (e) => {
-                    document.getElementById('mail-address').disabled = true;
-                    document.getElementById('contact-who').disabled = true;
-                    document.getElementById('contact-other').style.display = 'none';
-                    document.getElementById('other-instructions').disabled = true;
+            const actionSelect = document.getElementById('if-found-action');
+            const mailGroup = document.getElementById('mail-group');
+            const contactGroup = document.getElementById('contact-group');
+            const otherGroup = document.getElementById('other-group');
+            const otherField = document.getElementById('contact-other');
 
-                    switch(e.target.value) {
+            if (actionSelect) {
+                actionSelect.addEventListener('change', (e) => {
+                    mailGroup.classList.add('hidden');
+                    contactGroup.classList.add('hidden');
+                    otherGroup.classList.add('hidden');
+                    otherField.classList.add('hidden');
+                    otherField.required = false;
+
+                    switch (e.target.value) {
                         case 'mail':
-                            document.getElementById('mail-address').disabled = false;
+                            mailGroup.classList.remove('hidden');
                             break;
                         case 'contact':
-                            document.getElementById('contact-who').disabled = false;
+                            contactGroup.classList.remove('hidden');
                             break;
                         case 'other':
-                            document.getElementById('other-instructions').disabled = false;
+                            otherGroup.classList.remove('hidden');
                             break;
                     }
                 });
-            });
+            }
 
             document.getElementById('contact-who').addEventListener('change', (e) => {
-                const otherField = document.getElementById('contact-other');
                 if (e.target.value === 'other') {
-                    otherField.style.display = 'block';
+                    otherField.classList.remove('hidden');
                     otherField.required = true;
                 } else {
-                    otherField.style.display = 'none';
+                    otherField.classList.add('hidden');
                     otherField.required = false;
                 }
             });
