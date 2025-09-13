@@ -21,6 +21,19 @@
       font-family: inherit;
     }
 
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: #fff;
+      color: #000;
+      padding: 8px 16px;
+      z-index: 1000;
+    }
+    .skip-link:focus {
+      top: 0;
+    }
+
     .home-container {
       display: grid;
       grid-template-columns: 1fr;
@@ -164,6 +177,8 @@
   </style>
 </head>
 <body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <main id="main-content">
   <div id="card-container" class="home-container">
     <div class="loading"></div>
   </div>
@@ -171,6 +186,7 @@
   <div style="text-align:center; padding: 16px;">
     <a href="about.html" data-i18n="home.aboutLink">About &amp; Privacy</a>
   </div>
+  </main>
 
   <div id="toast" class="toast" style="display: none"></div>
 

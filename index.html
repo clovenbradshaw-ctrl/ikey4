@@ -55,6 +55,20 @@
             touch-action: manipulation;
         }
 
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #fff;
+            color: #000;
+            padding: 8px 16px;
+            z-index: 1000;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+
         *:focus-visible {
             outline: 3px solid #4f46e5;
             outline-offset: 2px;
@@ -1903,6 +1917,7 @@
         </style>
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <!-- Emergency Info Modal -->
     <div id="emergency-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="emergency-modal-title" tabindex="-1" aria-hidden="true">
         <div class="modal-content" style="max-width: 500px; max-height: 90vh; overflow-y: auto;">
@@ -1921,7 +1936,7 @@
         </div>
     </div>
     <!-- Header -->
-    <div class="app-header">
+    <header class="app-header">
         <div id="language-toggle">
             <button id="language-btn" aria-label="Change language">🌐</button>
             <div id="language-menu">
@@ -1935,7 +1950,7 @@
         </div>
         <h1><img src="https://storage.googleapis.com/art_homelessness/1.png" alt="iKey logo" class="logo"> iKey</h1>
         <p data-i18n="appTagline">Safe location and help hub</p>
-    </div>
+    </header>
 
     <div id="key-banner" class="key-banner hidden">
         <span id="key-banner-text"></span>
@@ -1943,8 +1958,8 @@
     </div>
 
     <!-- Tab Navigation -->
-    <div class="nav-wrapper">
-        <nav class="tab-nav" role="tablist">
+    <nav class="nav-wrapper">
+        <div class="tab-nav" role="tablist">
         <button class="tab-btn" data-tab="home" id="tab-home" role="tab" aria-controls="home" aria-selected="false" tabindex="-1" onclick="switchTab('home')" aria-label="Home" data-i18n-aria="nav.home">
             <span class="tab-icon">🏠</span>
             <span class="tab-label" data-i18n="nav.home">Home</span>
@@ -1977,7 +1992,7 @@
             <span class="tab-icon">⚙️</span>
             <span class="tab-label" data-i18n="nav.settings">Settings</span>
         </button>
-        </nav>
+        </div>
         <!-- Hidden dropdown for grouped resources -->
         <div id="resource-menu" class="dropdown-menu hidden" role="menu">
             <button onclick="switchTab('wttin')" role="menuitem" tabindex="-1">
@@ -1997,8 +2012,9 @@
                 <span>Proton</span>
             </button>
         </div>
-    </div>
+    </nav>
 
+    <main id="main-content">
     <!-- Home Tab -->
     <div id="home" class="tab-content" role="tabpanel" aria-labelledby="tab-home" tabindex="0" aria-hidden="true">
         <div class="container">
@@ -2974,6 +2990,7 @@
             </div>
         </div>
     </div>
+    </main>
 
     <script>
 

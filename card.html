@@ -25,6 +25,20 @@
             color: #1e293b;
         }
 
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #fff;
+            color: #000;
+            padding: 8px 16px;
+            z-index: 1000;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+
         *:focus-visible {
             outline: 3px solid #4f46e5;
             outline-offset: 2px;
@@ -591,15 +605,17 @@
     </style>
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <div class="container">
-        <div class="header">
+        <header class="header">
             <h1>
                 <div class="main-logo">iK</div>
                 <span data-i18n="card.header">iKey ID Card Generator</span>
             </h1>
             <p data-i18n="card.tagline">Minimalist secure iKey Emergency ID with unique identifier</p>
-        </div>
+        </header>
 
+        <main id="main-content">
         <div class="controls">
             <div class="section-title" data-i18n="card.photoUpload">Photo Upload (Optional)</div>
             <div class="photo-section">
@@ -869,6 +885,7 @@
                 </div>
             </div>
         </div>
+        </main>
     </div>
 
     <script>
