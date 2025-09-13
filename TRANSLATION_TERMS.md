@@ -123,6 +123,48 @@
             "warning": "⚠️ Bookmarks are saved only in this browser and will be lost if the device is lost or data is cleared. For secure backup, add a note in Proton Drive or save in an email.",
             "extendedWarning": "These bookmarks are only saved in this browser and will be lost if the device or browser data is lost. For secure backup, add a note in Proton Drive or save in an email."
         },
+        "wizard": {
+            "addBookmark": "Add Bookmark",
+            "protonApps": "Proton Apps",
+            "quickActions": "Quick Actions",
+            "appFeatures": "App Features",
+            "customBookmark": "Custom Bookmark",
+            "type": "Type",
+            "website": "Website",
+            "phoneCall": "Phone Call",
+            "textMessage": "Text Message",
+            "email": "Email",
+            "addCustom": "Add Custom",
+            "websiteName": "Website Name",
+            "url": "URL",
+            "contactName": "Contact Name",
+            "phoneNumber": "Phone Number",
+            "emailAddress": "Email Address",
+            "quick": {
+                "call911": "911",
+                "text911": "Text 911",
+                "call988": "Crisis",
+                "callPoison": "Poison",
+                "textQuick": "Text"
+            },
+            "pages": {
+                "ikey": "Medical",
+                "emergency": "Emergency",
+                "weather": "Weather",
+                "wttin": "Resources",
+                "dispatch": "Dispatch",
+                "meals": "Meals",
+                "apps": "Proton Apps",
+                "settings": "Settings"
+            },
+            "placeholders": {
+                "websiteName": "Example: Google",
+                "url": "https://google.com",
+                "contactName": "John Doe",
+                "phoneNumber": "555-0123",
+                "emailAddress": "john@example.com"
+            }
+        },
         "protonModal": {
             "shareContact": "Share Contact Info"
         },
@@ -402,6 +444,48 @@
             "selectFavorite": "Seleccionar Favorito",
             "warning": "⚠️ Los marcadores se guardan solo en este navegador y se perderán si el dispositivo se pierde o se borran los datos. Para respaldo seguro, agrega una nota en Proton Drive o guarda en un correo.",
             "extendedWarning": "Estos marcadores solo se guardan en este navegador y se perderán si el dispositivo o los datos del navegador se pierden. Para respaldo seguro, agrega una nota en Proton Drive o guarda en un correo."
+        },
+        "wizard": {
+            "addBookmark": "Agregar marcador",
+            "protonApps": "Aplicaciones Proton",
+            "quickActions": "Acciones rápidas",
+            "appFeatures": "Funciones de la app",
+            "customBookmark": "Marcador personalizado",
+            "type": "Tipo",
+            "website": "Sitio web",
+            "phoneCall": "Llamada telefónica",
+            "textMessage": "Mensaje de texto",
+            "email": "Correo electrónico",
+            "addCustom": "Agregar personalizado",
+            "websiteName": "Nombre del sitio web",
+            "url": "URL",
+            "contactName": "Nombre del contacto",
+            "phoneNumber": "Número de teléfono",
+            "emailAddress": "Dirección de correo",
+            "quick": {
+                "call911": "911",
+                "text911": "Texto 911",
+                "call988": "Crisis",
+                "callPoison": "Veneno",
+                "textQuick": "Texto"
+            },
+            "pages": {
+                "ikey": "Médico",
+                "emergency": "Emergencia",
+                "weather": "Clima",
+                "wttin": "Recursos",
+                "dispatch": "Despacho",
+                "meals": "Comidas",
+                "apps": "Aplicaciones Proton",
+                "settings": "Ajustes"
+            },
+            "placeholders": {
+                "websiteName": "Ejemplo: Google",
+                "url": "https://google.com",
+                "contactName": "Juan Pérez",
+                "phoneNumber": "555-0123",
+                "emailAddress": "juan@example.com"
+            }
         },
         "protonModal": {
             "shareContact": "Compartir Información de Contacto"
@@ -683,6 +767,48 @@
             "warning": "⚠️ يتم حفظ الإشارات المرجعية في هذا المتصفح فقط وستفقد إذا فُقد الجهاز أو تم مسح البيانات. للنسخ الاحتياطي الآمن، أضف ملاحظة في Proton Drive أو احفظ في بريد إلكتروني.",
             "extendedWarning": "يتم حفظ هذه الإشارات المرجعية في هذا المتصفح فقط وستفقد إذا فُقد الجهاز أو بيانات المتصفح. للنسخ الاحتياطي الآمن، أضف ملاحظة في Proton Drive أو احفظ في بريد إلكتروني."
         },
+        "wizard": {
+            "addBookmark": "إضافة إشارة مرجعية",
+            "protonApps": "تطبيقات بروتون",
+            "quickActions": "إجراءات سريعة",
+            "appFeatures": "ميزات التطبيق",
+            "customBookmark": "إشارة مخصصة",
+            "type": "النوع",
+            "website": "موقع ويب",
+            "phoneCall": "مكالمة هاتفية",
+            "textMessage": "رسالة نصية",
+            "email": "بريد إلكتروني",
+            "addCustom": "إضافة مخصص",
+            "websiteName": "اسم الموقع",
+            "url": "الرابط",
+            "contactName": "اسم جهة الاتصال",
+            "phoneNumber": "رقم الهاتف",
+            "emailAddress": "عنوان البريد",
+            "quick": {
+                "call911": "911",
+                "text911": "نص 911",
+                "call988": "أزمة",
+                "callPoison": "سموم",
+                "textQuick": "نص"
+            },
+            "pages": {
+                "ikey": "طبي",
+                "emergency": "طوارئ",
+                "weather": "طقس",
+                "wttin": "موارد",
+                "dispatch": "إرسال",
+                "meals": "وجبات",
+                "apps": "تطبيقات بروتون",
+                "settings": "إعدادات"
+            },
+            "placeholders": {
+                "websiteName": "مثال: Google",
+                "url": "https://google.com",
+                "contactName": "أحمد علي",
+                "phoneNumber": "555-0123",
+                "emailAddress": "ahmed@example.com"
+            }
+        },
         "protonModal": {
             "shareContact": "مشاركة معلومات الاتصال"
         },
@@ -962,6 +1088,48 @@
             "selectFavorite": "Bijarte Hilbijêre",
             "warning": "⚠️ Nîşan tenê di vê gerokê de têne tomar kirin û eger cîhaz winda bibe yan dane jêbirin dê winda bibin. Ji bo piştgiriya ewledar, nîşeyek li Proton Drive zêde bikin yan di e-nameyekê de tomar bikin.",
             "extendedWarning": "Ev nîşan tenê di vê gerokê de têne tomar kirin û eger cîhaz yan daneyên gerokê winda bibin dê winda bibin. Ji bo piştgiriya ewledar, nîşeyek li Proton Drive zêde bikin yan di e-nameyekê de tomar bikin."
+        },
+        "wizard": {
+            "addBookmark": "Add Bookmark",
+            "protonApps": "Proton Apps",
+            "quickActions": "Quick Actions",
+            "appFeatures": "App Features",
+            "customBookmark": "Custom Bookmark",
+            "type": "Type",
+            "website": "Website",
+            "phoneCall": "Phone Call",
+            "textMessage": "Text Message",
+            "email": "Email",
+            "addCustom": "Add Custom",
+            "websiteName": "Website Name",
+            "url": "URL",
+            "contactName": "Contact Name",
+            "phoneNumber": "Phone Number",
+            "emailAddress": "Email Address",
+            "quick": {
+                "call911": "911",
+                "text911": "Text 911",
+                "call988": "Crisis",
+                "callPoison": "Poison",
+                "textQuick": "Text"
+            },
+            "pages": {
+                "ikey": "Medical",
+                "emergency": "Emergency",
+                "weather": "Weather",
+                "wttin": "Resources",
+                "dispatch": "Dispatch",
+                "meals": "Meals",
+                "apps": "Proton Apps",
+                "settings": "Settings"
+            },
+            "placeholders": {
+                "websiteName": "Example: Google",
+                "url": "https://google.com",
+                "contactName": "John Doe",
+                "phoneNumber": "555-0123",
+                "emailAddress": "john@example.com"
+            }
         },
         "protonModal": {
             "shareContact": "Agahdariya Têkiliyê Parve Bike"
@@ -1243,6 +1411,48 @@
             "warning": "⚠️ Calaamadaha waxaa lagu kaydiyaa browser-kan kaliya oo waa la waayaa haddii qalabka la waayo ama xogta la tirtiro. Kaydinta ammaan ah, ku dar xusuus Proton Drive ama kaydi iimayl.",
             "extendedWarning": "Calaamadahani waxaa lagu kaydiyaa browser-kan kaliya oo waa la waayaa haddii qalabka ama xogta browser-ka la waayo. Kaydinta ammaan ah, ku dar xusuus Proton Drive ama kaydi iimayl."
         },
+        "wizard": {
+            "addBookmark": "Ku dar calaamad",
+            "protonApps": "Barnaamijyada Proton",
+            "quickActions": "Tallaabooyin degdeg ah",
+            "appFeatures": "Astaamaha app-ka",
+            "customBookmark": "Calaamad gaar ah",
+            "type": "Nooc",
+            "website": "Bogga webka",
+            "phoneCall": "Wicitaan",
+            "textMessage": "Fariin qoraal",
+            "email": "Iimayl",
+            "addCustom": "Ku dar khaas",
+            "websiteName": "Magaca bogga",
+            "url": "URL",
+            "contactName": "Magaca xiriirka",
+            "phoneNumber": "Lambarka telefoonka",
+            "emailAddress": "Cinwaanka iimaylka",
+            "quick": {
+                "call911": "911",
+                "text911": "Qoraal 911",
+                "call988": "Krisis",
+                "callPoison": "Sun",
+                "textQuick": "Qoraal"
+            },
+            "pages": {
+                "ikey": "Caafimaad",
+                "emergency": "Degdeg",
+                "weather": "Cimilada",
+                "wttin": "Khayraad",
+                "dispatch": "Dirid",
+                "meals": "Cunto",
+                "apps": "Barnaamijyada Proton",
+                "settings": "Dejinta"
+            },
+            "placeholders": {
+                "websiteName": "Tusaale: Google",
+                "url": "https://google.com",
+                "contactName": "Ali Ahmed",
+                "phoneNumber": "555-0123",
+                "emailAddress": "ali@example.com"
+            }
+        },
         "protonModal": {
             "shareContact": "Wadaag Macluumaadka Xiriirka"
         },
@@ -1522,6 +1732,48 @@
             "selectFavorite": "选择收藏",
             "warning": "⚠️ 书签仅保存在此浏览器中，如果设备丢失或数据被清除，书签将丢失。为了安全备份，请在Proton Drive中添加备注或保存在邮件中。",
             "extendedWarning": "这些书签仅保存在此浏览器中，如果设备或浏览器数据丢失，书签将丢失。为了安全备份，请在Proton Drive中添加备注或保存在邮件中。"
+        },
+        "wizard": {
+            "addBookmark": "添加书签",
+            "protonApps": "Proton 应用",
+            "quickActions": "快速操作",
+            "appFeatures": "应用功能",
+            "customBookmark": "自定义书签",
+            "type": "类型",
+            "website": "网站",
+            "phoneCall": "电话",
+            "textMessage": "短信",
+            "email": "电子邮件",
+            "addCustom": "添加自定义",
+            "websiteName": "网站名称",
+            "url": "网址",
+            "contactName": "联系人姓名",
+            "phoneNumber": "电话号码",
+            "emailAddress": "邮箱地址",
+            "quick": {
+                "call911": "911",
+                "text911": "短信 911",
+                "call988": "危机",
+                "callPoison": "中毒",
+                "textQuick": "短信"
+            },
+            "pages": {
+                "ikey": "医疗",
+                "emergency": "紧急",
+                "weather": "天气",
+                "wttin": "资源",
+                "dispatch": "调度",
+                "meals": "餐食",
+                "apps": "Proton 应用",
+                "settings": "设置"
+            },
+            "placeholders": {
+                "websiteName": "例如：Google",
+                "url": "https://google.com",
+                "contactName": "张三",
+                "phoneNumber": "555-0123",
+                "emailAddress": "zhang@example.com"
+            }
         },
         "protonModal": {
             "shareContact": "分享联系信息"

@@ -3274,7 +3274,8 @@ END:VCALENDAR`;
 
                 const modal = this.createModal();
                 document.body.appendChild(modal);
-
+                const currentLang = document.documentElement.lang || 'en';
+                setLanguage(currentLang);
                 this.updateCustomForm();
             }
 
@@ -3284,47 +3285,47 @@ END:VCALENDAR`;
                 modal.innerHTML = `
             <div class="bookmark-modal-content">
                 <div class="modal-header">
-                    <h3>Add Bookmark</h3>
+                    <h3 data-i18n="wizard.addBookmark">Add Bookmark</h3>
                     <button class="modal-close" onclick="bookmarkManager.closeModal()">×</button>
                 </div>
-                
+
                 <div class="bookmark-categories">
                     <div class="category-section">
-                        <div class="category-title">Proton Apps</div>
+                        <div class="category-title" data-i18n="wizard.protonApps">Proton Apps</div>
                         <div class="category-grid">
                             ${this.getProtonAppsHTML()}
                         </div>
                     </div>
-                    
+
                     <div class="category-section">
-                        <div class="category-title">Quick Actions</div>
+                        <div class="category-title" data-i18n="wizard.quickActions">Quick Actions</div>
                         <div class="category-grid">
                             ${this.getQuickActionsHTML()}
                         </div>
                     </div>
-                    
+
                     <div class="category-section">
-                        <div class="category-title">App Features</div>
+                        <div class="category-title" data-i18n="wizard.appFeatures">App Features</div>
                         <div class="category-grid">
                             ${this.getInternalPagesHTML()}
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="custom-form">
-                    <div class="category-title">Custom Bookmark</div>
+                    <div class="category-title" data-i18n="wizard.customBookmark">Custom Bookmark</div>
                     <div class="form-field">
-                        <label>Type</label>
+                        <label data-i18n="wizard.type">Type</label>
                         <select id="custom-type" onchange="bookmarkManager.updateCustomForm()">
-                            <option value="website">Website</option>
-                            <option value="call">Phone Call</option>
-                            <option value="text">Text Message</option>
-                            <option value="email">Email</option>
+                            <option value="website" data-i18n="wizard.website">Website</option>
+                            <option value="call" data-i18n="wizard.phoneCall">Phone Call</option>
+                            <option value="text" data-i18n="wizard.textMessage">Text Message</option>
+                            <option value="email" data-i18n="wizard.email">Email</option>
                         </select>
                     </div>
                     <div id="custom-fields"></div>
                     <div class="form-actions">
-                        <button class="btn btn-primary" onclick="bookmarkManager.addCustomBookmark()">Add Custom</button>
+                        <button class="btn btn-primary" onclick="bookmarkManager.addCustomBookmark()" data-i18n="wizard.addCustom">Add Custom</button>
                     </div>
                 </div>
             </div>
@@ -3336,20 +3337,20 @@ END:VCALENDAR`;
                 return Object.entries(this.protonApps).map(([id, app]) => `
             <div class="bookmark-option" onclick="bookmarkManager.addProtonApp('${id}')">
                 <div class="option-icon">
-                    <img src="${app.icon}" alt="${app.name}">
+                    <img src="${app.icon}" alt="${t('protonApps.' + id, app.name)}">
                 </div>
-                <div class="option-label">${app.name.replace('Proton ', '')}</div>
+                <div class="option-label" data-i18n="protonApps.${id}">${app.name}</div>
             </div>
         `).join('');
             }
 
             getQuickActionsHTML() {
                 const actions = [
-                    { type: 'call-911', name: '911', icon: '🚨' },
-                    { type: 'text-911', name: 'Text 911', icon: '✉️' },
-                    { type: 'call-988', name: 'Crisis', icon: '💬' },
-                    { type: 'call-poison', name: 'Poison', icon: '☠️' },
-                    { type: 'text-quick', name: 'Text', icon: '💬' }
+                    { type: 'call-911', key: 'wizard.quick.call911', name: '911', icon: '🚨' },
+                    { type: 'text-911', key: 'wizard.quick.text911', name: 'Text 911', icon: '✉️' },
+                    { type: 'call-988', key: 'wizard.quick.call988', name: 'Crisis', icon: '💬' },
+                    { type: 'call-poison', key: 'wizard.quick.callPoison', name: 'Poison', icon: '☠️' },
+                    { type: 'text-quick', key: 'wizard.quick.textQuick', name: 'Text', icon: '💬' }
                 ];
 
                 return actions.map(action => `
@@ -3357,21 +3358,21 @@ END:VCALENDAR`;
                 <div class="option-icon">
                     <span class="option-emoji">${action.icon}</span>
                 </div>
-                <div class="option-label">${action.name}</div>
+                <div class="option-label" data-i18n="${action.key}">${action.name}</div>
             </div>
         `).join('');
             }
 
             getInternalPagesHTML() {
                 const pages = [
-                    { id: 'ikey', name: 'Medical', icon: '🏥' },
-                    { id: 'emergency', name: 'Emergency', icon: '📍' },
-                    { id: 'weather', name: 'Weather', icon: '⛈️' },
-                    { id: 'wttin', name: 'Resources', icon: '🏠' },
-                    { id: 'dispatch', name: 'Dispatch', icon: '📡' },
-                    { id: 'meals', name: 'Meals', icon: '🍽️' },
-                    { id: 'apps', name: 'Proton Apps', icon: '📱' },
-                    { id: 'settings', name: 'Settings', icon: '⚙️' }
+                    { id: 'ikey', key: 'wizard.pages.ikey', name: 'Medical', icon: '🏥' },
+                    { id: 'emergency', key: 'wizard.pages.emergency', name: 'Emergency', icon: '📍' },
+                    { id: 'weather', key: 'wizard.pages.weather', name: 'Weather', icon: '⛈️' },
+                    { id: 'wttin', key: 'wizard.pages.wttin', name: 'Resources', icon: '🏠' },
+                    { id: 'dispatch', key: 'wizard.pages.dispatch', name: 'Dispatch', icon: '📡' },
+                    { id: 'meals', key: 'wizard.pages.meals', name: 'Meals', icon: '🍽️' },
+                    { id: 'apps', key: 'wizard.pages.apps', name: 'Proton Apps', icon: '📱' },
+                    { id: 'settings', key: 'wizard.pages.settings', name: 'Settings', icon: '⚙️' }
                 ];
 
                 return pages.map(page => `
@@ -3379,7 +3380,7 @@ END:VCALENDAR`;
                 <div class="option-icon">
                     <span class="option-emoji">${page.icon}</span>
                 </div>
-                <div class="option-label">${page.name}</div>
+                <div class="option-label" data-i18n="${page.key}">${page.name}</div>
             </div>
         `).join('');
             }
@@ -3394,12 +3395,12 @@ END:VCALENDAR`;
                     case 'website':
                         html = `
                     <div class="form-field">
-                        <label>Website Name</label>
-                        <input type="text" id="custom-name" placeholder="Example: Google">
+                        <label data-i18n="wizard.websiteName">Website Name</label>
+                        <input type="text" id="custom-name" placeholder="Example: Google" data-i18n-placeholder="wizard.placeholders.websiteName">
                     </div>
                     <div class="form-field">
-                        <label>URL</label>
-                        <input type="url" id="custom-url" placeholder="https://google.com">
+                        <label data-i18n="wizard.url">URL</label>
+                        <input type="url" id="custom-url" placeholder="https://google.com" data-i18n-placeholder="wizard.placeholders.url">
                     </div>
                 `;
                         break;
@@ -3408,12 +3409,12 @@ END:VCALENDAR`;
                     case 'text':
                         html = `
                     <div class="form-field">
-                        <label>Contact Name</label>
-                        <input type="text" id="custom-name" placeholder="John Doe">
+                        <label data-i18n="wizard.contactName">Contact Name</label>
+                        <input type="text" id="custom-name" placeholder="John Doe" data-i18n-placeholder="wizard.placeholders.contactName">
                     </div>
                     <div class="form-field">
-                        <label>Phone Number</label>
-                        <input type="tel" id="custom-phone" placeholder="555-0123">
+                        <label data-i18n="wizard.phoneNumber">Phone Number</label>
+                        <input type="tel" id="custom-phone" placeholder="555-0123" data-i18n-placeholder="wizard.placeholders.phoneNumber">
                     </div>
                 `;
                         break;
@@ -3421,18 +3422,20 @@ END:VCALENDAR`;
                     case 'email':
                         html = `
                     <div class="form-field">
-                        <label>Contact Name</label>
-                        <input type="text" id="custom-name" placeholder="John Doe">
+                        <label data-i18n="wizard.contactName">Contact Name</label>
+                        <input type="text" id="custom-name" placeholder="John Doe" data-i18n-placeholder="wizard.placeholders.contactName">
                     </div>
                     <div class="form-field">
-                        <label>Email Address</label>
-                        <input type="email" id="custom-email" placeholder="john@example.com">
+                        <label data-i18n="wizard.emailAddress">Email Address</label>
+                        <input type="email" id="custom-email" placeholder="john@example.com" data-i18n-placeholder="wizard.placeholders.emailAddress">
                     </div>
                 `;
                         break;
                 }
 
                 fieldsDiv.innerHTML = html;
+                const currentLang = document.documentElement.lang || 'en';
+                setLanguage(currentLang);
             }
 
             addProtonApp(appId) {
