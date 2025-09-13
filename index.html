@@ -470,7 +470,7 @@
         .wizard-progress {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
             position: relative;
             padding: 0 10px;
         }
@@ -478,7 +478,7 @@
         .wizard-progress::before {
             content: '';
             position: absolute;
-            top: 20px;
+            top: 30px;
             left: 10%;
             right: 10%;
             height: 2px;
@@ -494,8 +494,8 @@
         }
 
         .progress-dot {
-            width: 40px;
-            height: 40px;
+            width: 60px;
+            height: 60px;
             background: white;
             border: 2px solid var(--border);
             border-radius: 50%;
@@ -518,6 +518,11 @@
             background: var(--success);
             color: white;
             border-color: var(--success);
+        }
+
+        #btn-next.start-btn {
+            font-size: 1.25rem;
+            padding: 15px 30px;
         }
 
         .wizard-step {
@@ -1863,6 +1868,8 @@
                         </div>
                     </div>
 
+                    <p id="progress-estimate" style="text-align: center; margin-top: 10px;">Takes about 3–5 minutes</p>
+
                     <!-- Step 1: Welcome -->
                     <div class="wizard-step active" data-step="1">
                         <h2>Create Your iKey</h2>
@@ -1903,15 +1910,26 @@
                             <input type="text" id="name" placeholder="John Smith" required>
                         </div>
                         <div class="form-group">
-                            <label for="pronouns" class="label-gray">Pronouns</label>
-                            <input type="text" id="pronouns" placeholder="they/them">
+                            <label for="pronouns-select" class="label-gray">Pronouns (optional)</label>
+                            <select id="pronouns-select">
+                                <option value="">Prefer not to say</option>
+                                <option value="He/Him">He/Him</option>
+                                <option value="She/Her">She/Her</option>
+                                <option value="They/Them">They/Them</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                            <input type="text" id="pronouns-custom" placeholder="Enter pronouns" style="display:none; margin-top:10px;">
                         </div>
                         <div class="form-group">
-                            <label for="dob" class="label-gray">Date of Birth</label>
-                            <input type="date" id="dob">
+                            <label class="label-gray">Date of Birth (optional)</label>
+                            <div style="display:flex; gap:10px;">
+                                <input type="text" id="dob-month" placeholder="MM" pattern="\d{1,2}" inputmode="numeric" style="width:60px;">
+                                <input type="text" id="dob-day" placeholder="DD" pattern="\d{1,2}" inputmode="numeric" style="width:60px;">
+                                <input type="text" id="dob-year" placeholder="YYYY" pattern="\d{4}" inputmode="numeric" style="width:80px;">
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label for="blood" class="label-red">Blood Type</label>
+                            <label for="blood" class="label-red">Blood Type (optional)</label>
                             <select id="blood">
                                 <option value="">Unknown / Not Sure</option>
                                 <option value="A+">A+</option>
@@ -1925,15 +1943,16 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="phone">Your Phone Number</label>
-                            <input type="tel" id="phone" placeholder="555-555-5555" pattern="\d{3}-?\d{3}-?\d{4}" inputmode="tel" title="Enter a 10-digit phone number">
+                            <label for="phone">Your Phone Number (optional)</label>
+                            <input type="tel" id="phone" placeholder="e.g., 555-555-5555" pattern="\d{3}-?\d{3}-?\d{4}" inputmode="tel" title="Enter a 10-digit phone number">
                         </div>
                     </div>
 
                     <!-- Step 4: Health Info -->
                     <div class="wizard-step" data-step="4">
                         <h2>Health Information</h2>
-                        <p style="margin-bottom: 20px; color: var(--secondary);">Keep entries brief - focus on critical information</p>
+                        <p style="margin-bottom: 10px; color: var(--secondary);">Keep entries brief - focus on critical information</p>
+                        <p style="margin-bottom: 20px; color: var(--secondary); font-size: 0.9rem;">Leave blank if not applicable. Info stored only in your QR code.</p>
                         <div class="form-group">
                             <label for="allergies" class="label-red">Allergies</label>
                             <textarea id="allergies" placeholder="e.g., Penicillin, peanuts, latex"></textarea>
@@ -1975,16 +1994,16 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="cm-name" class="label-green">Case Manager Name</label>
+                            <label for="cm-name" class="label-green">Case Manager Name (optional)</label>
                             <input type="text" id="cm-name" placeholder="Dr. Jones">
                         </div>
                         <div class="form-group">
-                            <label for="cm-org" class="label-green">Organization</label>
+                            <label for="cm-org" class="label-green">Organization (optional)</label>
                             <input type="text" id="cm-org" placeholder="Hospital or Agency">
                         </div>
                         <div class="form-group">
-                            <label for="cm-phone" class="label-green">Case Manager Phone</label>
-                            <input type="tel" id="cm-phone" placeholder="555-555-5555" pattern="\d{3}-?\d{3}-?\d{4}" inputmode="tel" title="Enter a 10-digit phone number">
+                            <label for="cm-phone" class="label-green">Case Manager Phone (optional)</label>
+                            <input type="tel" id="cm-phone" placeholder="e.g., 555-555-5555" pattern="\d{3}-?\d{3}-?\d{4}" inputmode="tel" title="Enter a 10-digit phone number">
                         </div>
 
                         <details style="margin-top: 20px;" class="document-section">
@@ -2136,7 +2155,7 @@
                     <!-- Wizard Actions -->
                     <div class="wizard-actions">
                         <button class="btn btn-secondary" id="btn-back" onclick="previousStep()">← Back</button>
-                        <button class="btn btn-primary" id="btn-next" onclick="nextStep()">Next →</button>
+                        <button class="btn btn-primary start-btn" id="btn-next" onclick="nextStep()">Start →</button>
                         <button class="btn btn-success hidden" id="btn-generate" onclick="generateQR()">Generate QR Code</button>
                     </div>
                 </div>
@@ -3008,7 +3027,10 @@
 
             // Update buttons
             document.getElementById('btn-back').style.display = currentStep === 1 ? 'none' : 'block';
-            document.getElementById('btn-next').classList.toggle('hidden', currentStep === 7);
+            const nextBtn = document.getElementById('btn-next');
+            nextBtn.classList.toggle('hidden', currentStep === 7);
+            nextBtn.textContent = currentStep === 1 ? 'Start →' : 'Next →';
+            nextBtn.classList.toggle('start-btn', currentStep === 1);
             document.getElementById('btn-generate').classList.toggle('hidden', currentStep !== 7);
         }
 
@@ -3029,6 +3051,16 @@
                 if (!name) {
                     alert('Please enter your name');
                     return false;
+                }
+                const m = document.getElementById('dob-month').value;
+                const d = document.getElementById('dob-day').value;
+                const y = document.getElementById('dob-year').value;
+                if (m || d || y) {
+                    const date = new Date(`${y}-${m}-${d}`);
+                    if (isNaN(date) || date.getMonth() + 1 != parseInt(m) || date.getDate() != parseInt(d) || date.getFullYear() != parseInt(y)) {
+                        alert('Please enter a valid date of birth');
+                        return false;
+                    }
                 }
             }
 
@@ -3108,9 +3140,23 @@
                 v: 3, // Schema version
                 pe: document.getElementById('secure-email').value.trim(),
                 n: document.getElementById('name').value.trim(),
-                pr: document.getElementById('pronouns').value.trim(),
+                pr: (function(){
+                    const sel = document.getElementById('pronouns-select').value;
+                    if (sel === 'custom') {
+                        return document.getElementById('pronouns-custom').value.trim();
+                    }
+                    return sel;
+                })(),
                 ph: document.getElementById('phone').value.trim(),
-                d: document.getElementById('dob').value,
+                d: (function(){
+                    const m = document.getElementById('dob-month').value;
+                    const d = document.getElementById('dob-day').value;
+                    const y = document.getElementById('dob-year').value;
+                    if (m && d && y) {
+                        return `${y.padStart(4,'0')}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
+                    }
+                    return '';
+                })(),
                 b: document.getElementById('blood').value,
                 a: document.getElementById('allergies').value.trim(),
                 m: document.getElementById('medications').value.trim(),
@@ -5442,6 +5488,14 @@ Generated: ${new Date().toLocaleString()}`;
 
 
             ['phone','ec-phone','cm-phone','custom-phone'].forEach(setupPhoneInput);
+
+            const pronounsSelect = document.getElementById('pronouns-select');
+            const pronounsCustom = document.getElementById('pronouns-custom');
+            if (pronounsSelect && pronounsCustom) {
+                pronounsSelect.addEventListener('change', () => {
+                    pronounsCustom.style.display = pronounsSelect.value === 'custom' ? 'block' : 'none';
+                });
+            }
 
             const actionSelect = document.getElementById('if-found-action');
             const mailGroup = document.getElementById('mail-group');
