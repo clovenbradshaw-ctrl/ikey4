@@ -1887,6 +1887,7 @@
                     <div class="loading-spinner"></div>
                     <p>Acquiring secure location...</p>
                     <p style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;">Please allow location access</p>
+                    <button class="btn btn-secondary" onclick="getLocation()" style="margin-top: 10px;" data-i18n="emergency.enableLocation">Enable Location</button>
                 </div>
                 
                 <div id="emergency-content" style="display: none;">
@@ -2222,6 +2223,13 @@
                         </div>
                         <span style="color: var(--secondary);">→</span>
                     </div>
+                    <a href="https://team211.communityos.org/homepage-uwgn" target="_blank" class="settings-item">
+                        <div>
+                            <div style="font-weight: 600;">📞 211</div>
+                            <div style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;">Community resources directory</div>
+                        </div>
+                        <span style="color: var(--secondary);">→</span>
+                    </a>
                 </div>
 
                 <div class="settings-section">
@@ -2612,6 +2620,7 @@
             `;
 
             document.getElementById('review-content').innerHTML = reviewHTML;
+            translateFragment(document.getElementById('review-content'));
         }
         function generateQR() {
             const cleanData = {};
@@ -3119,6 +3128,7 @@ END:VCALENDAR`;
                 html += '</div>';
 
                 container.innerHTML = html;
+                translateFragment(container);
                 this.attachHandlers();
             }
 
@@ -3276,6 +3286,8 @@ END:VCALENDAR`;
                 document.body.appendChild(modal);
                 const currentLang = document.documentElement.lang || 'en';
                 setLanguage(currentLang);
+                translateFragment(modal);
+
                 this.updateCustomForm();
             }
 
@@ -3436,6 +3448,7 @@ END:VCALENDAR`;
                 fieldsDiv.innerHTML = html;
                 const currentLang = document.documentElement.lang || 'en';
                 setLanguage(currentLang);
+                translateFragment(fieldsDiv);
             }
 
             addProtonApp(appId) {
@@ -3761,6 +3774,12 @@ Generated: ${new Date().toLocaleString()}`;
         }
 
         function getLocation() {
+            if (watchId) {
+                navigator.geolocation.clearWatch(watchId);
+                watchId = null;
+            }
+            document.getElementById('emergency-loading').style.display = 'block';
+            document.getElementById('emergency-content').style.display = 'none';
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     position => {
@@ -3771,7 +3790,11 @@ Generated: ${new Date().toLocaleString()}`;
                         document.getElementById('emergency-loading').innerHTML = `
                             <p style="color: var(--danger);">Unable to get location</p>
                             <p style="font-size: 0.85rem;">Please enable location services and refresh</p>
+                            <button class="btn btn-secondary" onclick="getLocation()" style="margin-top: 10px;" data-i18n="emergency.enableLocation">Enable Location</button>
                         `;
+                        if (typeof setLanguage === 'function') {
+                            setLanguage(document.documentElement.lang || 'en');
+                        }
                     },
                     {
                         enableHighAccuracy: true,
@@ -3779,7 +3802,7 @@ Generated: ${new Date().toLocaleString()}`;
                         maximumAge: 0
                     }
                 );
-                
+
                 watchId = navigator.geolocation.watchPosition(
                     position => {
                         updateLocationDisplay(position);

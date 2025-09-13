@@ -26,21 +26,25 @@ function t(key, fallback = '') {
   return text || fallback;
 }
 
+function translateFragment(root = document) {
+  root.querySelectorAll('[data-i18n]').forEach(el => {
+    el.textContent = t(el.dataset.i18n, el.textContent);
+  });
+  root.querySelectorAll('[data-i18n-aria]').forEach(el => {
+    el.setAttribute('aria-label', t(el.dataset.i18nAria, el.getAttribute('aria-label') || ''));
+  });
+  root.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    el.setAttribute('placeholder', t(el.dataset.i18nPlaceholder, el.getAttribute('placeholder') || ''));
+  });
+}
+
 function setLanguage(lang) {
   document.documentElement.lang = lang;
   localStorage.setItem('language', lang);
   document.querySelectorAll('.lang-option').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.lang === lang);
   });
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    el.textContent = t(el.dataset.i18n, el.textContent);
-  });
-  document.querySelectorAll('[data-i18n-aria]').forEach(el => {
-    el.setAttribute('aria-label', t(el.dataset.i18nAria, el.getAttribute('aria-label') || ''));
-  });
-  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-    el.setAttribute('placeholder', t(el.dataset.i18nPlaceholder, el.getAttribute('placeholder') || ''));
-  });
+  translateFragment(document);
 }
 
 const languageBtn = document.getElementById('language-btn');
@@ -56,5 +60,7 @@ if (languageBtn && languageMenu) {
     });
   });
 }
+
+window.translateFragment = translateFragment;
 
 document.addEventListener('DOMContentLoaded', loadTranslations);
