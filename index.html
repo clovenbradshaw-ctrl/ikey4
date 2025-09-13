@@ -3483,7 +3483,7 @@ END:VCALENDAR`;
                         if (typeof switchTab === 'function') {
                             switchTab(tab);
                         }
-                    } else if (url.startsWith('sms:911')) {
+                    } else if (url === 'sms:') {
                         text911();
                     } else if (url.startsWith('tel:') || url.startsWith('sms:') || url.startsWith('mailto:')) {
                         window.location.href = url;
@@ -3734,7 +3734,7 @@ END:VCALENDAR`;
             addQuickAction(actionType) {
                 const actions = {
                     'call-911': { name: 'Emergency', url: 'tel:911', icon: '🚨' },
-                    'text-911': { name: 'Text 911', url: 'sms:911', icon: '💬' },
+                    'text-911': { name: 'Text 911', url: 'sms:', icon: '💬' },
                     'call-988': { name: 'Crisis Line', url: 'tel:988', icon: '💬' },
                     'call-poison': { name: 'Poison Control', url: 'tel:+18002221222', icon: '☠️' },
                     'text-quick': { name: 'Quick Text', url: 'sms:', icon: '💬' }
@@ -3967,7 +3967,7 @@ Generated: ${new Date().toLocaleString()}`;
                 ? `${currentLocation.address} (GPS: ${currentLocation.latitude}, ${currentLocation.longitude})`
                 : `${currentLocation.latitude}, ${currentLocation.longitude}`;
             const message = `My location is ${loc}. The emergency is the following: `;
-            window.location.href = `sms:911?body=${encodeURIComponent(message)}`;
+            window.location.href = `sms:?body=${encodeURIComponent(message)}`;
         }
 
         function openInMaps() {
