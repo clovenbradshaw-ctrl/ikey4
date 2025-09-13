@@ -591,6 +591,9 @@
                     "hours": "Mon-Fri 12pm"
                 }
             }
+        },
+        "errors": {
+            "storage": "Browser storage is unavailable. Settings will not be saved."
         }
     },
     "es": {
@@ -1076,6 +1079,9 @@
             "reading": "lectura",
             "whats": "qué",
             "grandma": "abuela"
+        },
+        "errors": {
+            "storage": "El almacenamiento del navegador no está disponible. La configuración no se guardará."
         }
     },
     "ar": {
@@ -1561,6 +1567,9 @@
             "reading": "قراءة",
             "whats": "ماذا",
             "grandma": "جدة"
+        },
+        "errors": {
+            "storage": "تخزين المتصفح غير متاح. لن يتم حفظ الإعدادات."
         }
     },
     "ku": {
@@ -1939,6 +1948,9 @@
             "reading": "xwendin",
             "whats": "çi",
             "grandma": "dapîr"
+        },
+        "errors": {
+            "storage": "ئامێری خەزنەکردنی وێب بەردەست نییە. ڕێکخستەکان پاشەکەوت ناکرێن."
         }
     },
     "so": {
@@ -2317,6 +2329,9 @@
             "reading": "akhrinta",
             "whats": "maxay",
             "grandma": "ayeeyo"
+        },
+        "errors": {
+            "storage": "Kaydinta biraawsarka lama heli karo. Dejinta lama kaydin doono."
         }
     },
     "zh": {
@@ -2695,6 +2710,9 @@
             "reading": "阅读",
             "whats": "什么",
             "grandma": "奶奶"
+        },
+        "errors": {
+            "storage": "浏览器存储不可用，设置将不会被保存。"
         }
     }
 }
