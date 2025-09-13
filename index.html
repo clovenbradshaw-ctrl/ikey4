@@ -3433,11 +3433,10 @@
         }
 
         function shareQR(target = 'qrcode') {
-            const canvas = getQRCodeCanvas(target);
-            if (!canvas) {
-                alert('Please generate QR code first');
-                return;
-            }
+            // Allow sharing even if a QR code hasn't been generated yet.
+            // The previous implementation required an existing QR canvas and
+            // alerted users when it was missing. However, the share action only
+            // needs the current URL, so we can proceed regardless of QR state.
 
             const shareUrl = window.location.href;
             const shareText = `My iKey Emergency Info: ${shareUrl}`;
