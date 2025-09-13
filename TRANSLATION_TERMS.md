@@ -355,7 +355,7 @@
         "card": {
             "title": "iKey ID Card Generator",
             "header": "iKey ID Card Generator",
-            "tagline": "Minimalist secure medical ID with unique identifier",
+            "tagline": "Minimalist secure iKey Emergency ID with unique identifier",
             "photoUpload": "Photo Upload (Optional)",
             "noPhoto": "No Photo",
             "takePhoto": "📸 Take Photo",
