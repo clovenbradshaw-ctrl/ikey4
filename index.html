@@ -210,30 +210,98 @@
             width: auto;
         }
 
+        /* Replace the existing .dropdown-menu styles */
         .dropdown-menu {
             position: absolute;
             background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 4px;
-            padding: 4px;
-            top: 100%;
-            right: 0;
-            display: flex;
-            flex-direction: column;
-            z-index: 99;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 12px;
+            padding: 8px;
+            top: calc(100% + 8px);
+            right: 10px;
+            min-width: 200px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12),
+                        0 2px 8px rgba(0, 0, 0, 0.08);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-10px) scale(0.95);
+            pointer-events: none;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .dropdown-menu:not(.hidden) {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+
+        /* Arrow pointing to parent button */
+        .dropdown-menu::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            right: 20px;
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-left: 1px solid rgba(0, 0, 0, 0.08);
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
+            transform: rotate(45deg);
+            z-index: -1;
         }
 
         .dropdown-menu button {
             background: none;
             border: none;
-            padding: 4px 8px;
+            padding: 10px 14px;
             text-align: left;
-            font-size: 12px;
+            font-size: 15px;
+            font-weight: 500;
             cursor: pointer;
+            width: 100%;
+            border-radius: 8px;
+            transition: all 0.15s ease;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .dropdown-menu button:hover {
-            background: #f3f4f6;
+            background: var(--light);
+            transform: translateX(2px);
+        }
+
+        .dropdown-menu button:active {
+            background: var(--border);
+            transform: scale(0.98);
+        }
+
+        .dropdown-menu button + button {
+            margin-top: 2px;
+        }
+
+        /* Style the Resources button to indicate dropdown state */
+        .tab-btn[onclick*='toggleResourceMenu'] {
+            position: relative;
+        }
+
+        .tab-btn[onclick*='toggleResourceMenu'].menu-open {
+            background: rgba(79, 70, 229, 0.05);
+            border-bottom-color: var(--primary);
+        }
+
+        /* Add a chevron to the Resources button */
+        .tab-btn[onclick*='toggleResourceMenu'] .tab-label::after {
+            content: '▾';
+            margin-left: 4px;
+            font-size: 10px;
+            transition: transform 0.2s;
+            display: inline-block;
+        }
+
+        .tab-btn[onclick*='toggleResourceMenu'].menu-open .tab-label::after {
+            transform: rotate(180deg);
         }
 
         @media (max-width: 480px) {
@@ -248,6 +316,16 @@
 
             .tab-label {
                 font-size: 0.8rem;
+            }
+
+            .dropdown-menu {
+                right: 5px;
+                min-width: 160px;
+            }
+
+            .dropdown-menu button {
+                font-size: 14px;
+                padding: 8px 12px;
             }
         }
 
@@ -1795,9 +1873,9 @@
             <span class="tab-icon">⛈️</span>
             <span class="tab-label" data-i18n="nav.weather">Weather</span>
         </button>
-        <button class="tab-btn" onclick="toggleResourceMenu()" aria-label="More">
+        <button class="tab-btn" onclick="toggleResourceMenu()" aria-label="Resources">
             <span class="tab-icon">📚</span>
-            <span class="tab-label">More</span>
+            <span class="tab-label">Resources</span>
         </button>
         <button id="dispatch-tab-btn" class="tab-btn" data-tab="dispatch" style="display: none;" onclick="switchTab('dispatch')" aria-label="Dispatch" data-i18n-aria="nav.dispatch">
             <span class="tab-icon">📡</span>
@@ -1810,10 +1888,22 @@
         </nav>
         <!-- Hidden dropdown for grouped resources -->
         <div id="resource-menu" class="dropdown-menu hidden">
-            <button onclick="switchTab('wttin'); toggleResourceMenu();" data-i18n="nav.wttin">Resources</button>
-            <button onclick="switchTab('hotlines'); toggleResourceMenu();" data-i18n="nav.hotlines">Hotlines</button>
-            <button onclick="switchTab('meals'); toggleResourceMenu();" data-i18n="nav.meals">Meals</button>
-            <button onclick="switchTab('apps'); toggleResourceMenu();">Proton</button>
+            <button onclick="switchTab('wttin'); toggleResourceMenu();">
+                <span>🏠</span>
+                <span>Where To Turn in Nashville</span>
+            </button>
+            <button onclick="switchTab('hotlines'); toggleResourceMenu();">
+                <span>☎️</span>
+                <span data-i18n="nav.hotlines">Hotlines</span>
+            </button>
+            <button onclick="switchTab('meals'); toggleResourceMenu();">
+                <span>🍽️</span>
+                <span data-i18n="nav.meals">Meals</span>
+            </button>
+            <button onclick="switchTab('apps'); toggleResourceMenu();">
+                <span>🚀</span>
+                <span>Proton</span>
+            </button>
         </div>
     </div>
 
@@ -2709,7 +2799,7 @@
                     </div>
                     <div class="settings-item" style="cursor: default;">
                         <div>
-                            <div style="font-weight: 600;" data-i18n="nav.wttin">Resources</div>
+                            <div style="font-weight: 600;" data-i18n="nav.wttin">Where To Turn in Nashville</div>
                         </div>
                         <input type="checkbox" class="tab-visibility-toggle" data-tab="wttin" checked>
                     </div>
@@ -2793,21 +2883,55 @@
         // Toggle resource dropdown
         function toggleResourceMenu() {
             const menu = document.getElementById('resource-menu');
+            const resourceBtn = document.querySelector(".tab-btn[onclick*='toggleResourceMenu']");
+
             if (!menu) return;
+
+            const isOpening = menu.classList.contains('hidden');
+
             menu.classList.toggle('hidden');
-            if (!menu.classList.contains('hidden')) {
-                setTimeout(() => document.addEventListener('click', handleOutsideMenuClick));
+            resourceBtn?.classList.toggle('menu-open', isOpening);
+
+            if (isOpening) {
+                // Position menu under the Resources button
+                const btnRect = resourceBtn.getBoundingClientRect();
+                menu.style.right = `${window.innerWidth - btnRect.right}px`;
+
+                // Add click-outside listener
+                setTimeout(() => {
+                    document.addEventListener('click', handleOutsideMenuClick);
+                }, 10);
+
+                // Add escape key handler
+                document.addEventListener('keydown', handleEscapeKey);
             } else {
                 document.removeEventListener('click', handleOutsideMenuClick);
+                document.removeEventListener('keydown', handleEscapeKey);
             }
         }
 
         function handleOutsideMenuClick(e) {
             const menu = document.getElementById('resource-menu');
-            const moreBtn = document.querySelector(".tab-btn[onclick*='toggleResourceMenu']");
-            if (menu && !menu.contains(e.target) && moreBtn && !moreBtn.contains(e.target)) {
+            const resourceBtn = document.querySelector(".tab-btn[onclick*='toggleResourceMenu']");
+
+            if (menu && !menu.contains(e.target) && resourceBtn && !resourceBtn.contains(e.target)) {
                 menu.classList.add('hidden');
+                resourceBtn?.classList.remove('menu-open');
                 document.removeEventListener('click', handleOutsideMenuClick);
+                document.removeEventListener('keydown', handleEscapeKey);
+            }
+        }
+
+        function handleEscapeKey(e) {
+            if (e.key === 'Escape') {
+                const menu = document.getElementById('resource-menu');
+                const resourceBtn = document.querySelector(".tab-btn[onclick*='toggleResourceMenu']");
+                if (menu && !menu.classList.contains('hidden')) {
+                    menu.classList.add('hidden');
+                    resourceBtn?.classList.remove('menu-open');
+                    document.removeEventListener('keydown', handleEscapeKey);
+                    document.removeEventListener('click', handleOutsideMenuClick);
+                }
             }
         }
 
@@ -2815,9 +2939,11 @@
         function switchTab(tabName) {
             // Hide dropdown when switching tabs
             const menu = document.getElementById('resource-menu');
+            const resourceBtn = document.querySelector(".tab-btn[onclick*='toggleResourceMenu']");
             if (menu) {
                 menu.classList.add('hidden');
             }
+            resourceBtn?.classList.remove('menu-open');
 
             // Update nav buttons
             document.querySelectorAll('.tab-btn').forEach(btn => {

@@ -8,7 +8,7 @@
             "home": "Home",
             "iKey": "iKey",
             "weather": "Weather",
-            "wttin": "Resources",
+            "wttin": "Where To Turn in Nashville",
             "hotlines": "Hotlines",
             "meals": "Meals",
             "dispatch": "Dispatch",
@@ -153,7 +153,7 @@
                 "ikey": "Medical",
                 "emergency": "Emergency",
                 "weather": "Weather",
-                "wttin": "Resources",
+                "wttin": "Where To Turn in Nashville",
                 "hotlines": "Hotlines",
                 "dispatch": "Dispatch",
                 "meals": "Meals",
@@ -253,7 +253,7 @@
             "title": "External Tools",
             "policeDispatch": "📡 Nashville Police Dispatch",
             "policeDispatchDesc": "View active police dispatches in Nashville",
-            "wttin": "🏠 Where To Turn in Nashville",
+            "wttin": "Where To Turn in Nashville",
             "wttinDesc": "Community resources and support services"
         },
         "settings": {
@@ -444,7 +444,7 @@
             "fillRequiredFields": "Please fill in all required fields"
         },
         "resources": {
-            "wttin": "Resources",
+            "wttin": "Where To Turn in Nashville",
             "meals": "Meals Resources",
             "policeDispatch": "Nashville Police Dispatch",
             "crisisLine": "Suicide & Crisis Lifeline: 988",
@@ -568,7 +568,7 @@
             "home": "Inicio",
             "iKey": "iKey",
             "weather": "Clima",
-            "wttin": "Recursos",
+            "wttin": "Where To Turn in Nashville",
             "hotlines": "Hotlines",
             "meals": "Comidas",
             "dispatch": "Despacho",
@@ -713,7 +713,7 @@
                 "ikey": "Médico",
                 "emergency": "Emergencia",
                 "weather": "Clima",
-                "wttin": "Recursos",
+                "wttin": "Where To Turn in Nashville",
                 "hotlines": "Hotlines",
                 "dispatch": "Despacho",
                 "meals": "Comidas",
@@ -813,7 +813,7 @@
             "title": "Herramientas Externas",
             "policeDispatch": "📡 Despacho Policial de Nashville",
             "policeDispatchDesc": "Ver despachos policiales activos en Nashville",
-            "wttin": "🏠 Where To Turn in Nashville",
+            "wttin": "Where To Turn in Nashville",
             "wttinDesc": "Recursos comunitarios y servicios de apoyo"
         },
         "settings": {
@@ -908,7 +908,7 @@
             "fillRequiredFields": "Por favor completa todos los campos requeridos"
         },
         "resources": {
-            "wttin": "Recursos",
+            "wttin": "Where To Turn in Nashville",
             "meals": "Recursos de Comidas",
             "policeDispatch": "Despacho Policial de Nashville",
             "crisisLine": "Línea de Suicidio y Crisis: 988",
@@ -1032,7 +1032,7 @@
             "home": "الرئيسية",
             "iKey": "iKey",
             "weather": "الطقس",
-            "wttin": "الموارد",
+            "wttin": "Where To Turn in Nashville",
             "hotlines": "Hotlines",
             "meals": "الوجبات",
             "dispatch": "الإرسال",
@@ -1177,7 +1177,7 @@
                 "ikey": "طبي",
                 "emergency": "طوارئ",
                 "weather": "طقس",
-                "wttin": "موارد",
+                "wttin": "Where To Turn in Nashville",
                 "hotlines": "Hotlines",
                 "dispatch": "إرسال",
                 "meals": "وجبات",
@@ -1277,7 +1277,7 @@
             "title": "الأدوات الخارجية",
             "policeDispatch": "📡 إرسال شرطة ناشفيل",
             "policeDispatchDesc": "عرض إرساليات الشرطة النشطة في ناشفيل",
-            "wttin": "🏠 Where To Turn in Nashville",
+            "wttin": "Where To Turn in Nashville",
             "wttinDesc": "موارد المجتمع وخدمات الدعم"
         },
         "settings": {
@@ -1372,7 +1372,7 @@
             "fillRequiredFields": "يرجى ملء جميع الحقول المطلوبة"
         },
         "resources": {
-            "wttin": "الموارد",
+            "wttin": "Where To Turn in Nashville",
             "meals": "موارد الوجبات",
             "policeDispatch": "إرسال شرطة ناشفيل",
             "crisisLine": "خط الأزمات والانتحار: 988",
@@ -1496,7 +1496,7 @@
             "home": "Mal",
             "iKey": "iKey",
             "weather": "Hewa",
-            "wttin": "Çavkaniyên",
+            "wttin": "Where To Turn in Nashville",
             "hotlines": "Hotlines",
             "meals": "Xwarin",
             "dispatch": "Şandin",
@@ -1641,7 +1641,7 @@
                 "ikey": "Medical",
                 "emergency": "Emergency",
                 "weather": "Weather",
-                "wttin": "Resources",
+                "wttin": "Where To Turn in Nashville",
                 "hotlines": "Hotlines",
                 "dispatch": "Dispatch",
                 "meals": "Meals",
@@ -1741,7 +1741,7 @@
             "title": "Amûrên Derve",
             "policeDispatch": "📡 Şandina Polîsê Nashville",
             "policeDispatchDesc": "Şandinên polîsê yên çalak li Nashville bibînin",
-            "wttin": "🏠 Where To Turn in Nashville",
+            "wttin": "Where To Turn in Nashville",
             "wttinDesc": "Çavkaniyên civakê û karûbarên piştgiriyê"
         },
         "settings": {
@@ -1830,7 +1830,7 @@
             "fillRequiredFields": "Ji kerema xwe hemû qadên pêwîst dagirin"
         },
         "resources": {
-            "wttin": "Çavkaniyên",
+            "wttin": "Where To Turn in Nashville",
             "meals": "Çavkaniyên Xwarinan",
             "policeDispatch": "Şandina Polîsê Nashville",
             "crisisLine": "Xeta Xwekujtin û Krîzê: 988",
@@ -1853,7 +1853,7 @@
             "home": "Guri",
             "iKey": "iKey",
             "weather": "Cimilada",
-            "wttin": "Ilaha",
+            "wttin": "Where To Turn in Nashville",
             "hotlines": "Hotlines",
             "meals": "Cunto",
             "dispatch": "Dirista",
@@ -1998,7 +1998,7 @@
                 "ikey": "Caafimaad",
                 "emergency": "Degdeg",
                 "weather": "Cimilada",
-                "wttin": "Khayraad",
+                "wttin": "Where To Turn in Nashville",
                 "hotlines": "Hotlines",
                 "dispatch": "Dirid",
                 "meals": "Cunto",
@@ -2099,7 +2099,7 @@
             "title": "Qalabka Dibadda",
             "policeDispatch": "📡 Dirista Booliska Nashville",
             "policeDispatchDesc": "Arag dirisyada booliska firfircoon ee Nashville",
-            "wttin": "🏠 Where To Turn in Nashville",
+            "wttin": "Where To Turn in Nashville",
             "wttinDesc": "Ilaha bulshada iyo adeegyada taageerada"
         },
         "settings": {
@@ -2187,7 +2187,7 @@
             "fillRequiredFields": "Fadlan buuxi dhammaan beeraha loo baahan yahay"
         },
         "resources": {
-            "wttin": "Ilaha",
+            "wttin": "Where To Turn in Nashville",
             "meals": "Ilaha Cuntada",
             "policeDispatch": "Dirista Booliska Nashville",
             "crisisLine": "Khadka Ismiidaaminta & Dhibaatada: 988",
@@ -2210,7 +2210,7 @@
             "home": "主页",
             "iKey": "iKey",
             "weather": "天气",
-            "wttin": "资源",
+            "wttin": "Where To Turn in Nashville",
             "hotlines": "Hotlines",
             "meals": "餐食",
             "dispatch": "调度",
@@ -2355,7 +2355,7 @@
                 "ikey": "医疗",
                 "emergency": "紧急",
                 "weather": "天气",
-                "wttin": "资源",
+                "wttin": "Where To Turn in Nashville",
                 "hotlines": "Hotlines",
                 "dispatch": "调度",
                 "meals": "餐食",
@@ -2456,7 +2456,7 @@
             "title": "外部工具",
             "policeDispatch": "📡 纳什维尔警察调度",
             "policeDispatchDesc": "查看纳什维尔的活跃警察调度",
-            "wttin": "🏠 纳什维尔求助处",
+            "wttin": "Where To Turn in Nashville",
             "wttinDesc": "社区资源和支持服务"
         },
         "settings": {
@@ -2544,7 +2544,7 @@
             "fillRequiredFields": "请填写所有必填字段"
         },
         "resources": {
-            "wttin": "资源",
+            "wttin": "Where To Turn in Nashville",
             "meals": "餐食资源",
             "policeDispatch": "纳什维尔警察调度",
             "crisisLine": "自杀与危机生命线：988",
