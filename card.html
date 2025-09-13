@@ -601,6 +601,42 @@
             }
         }
 
+        /* Tooltip icon */
+        .info-icon {
+            display: inline-block;
+            margin-left: 4px;
+            color: #4f46e5;
+            cursor: pointer;
+            position: relative;
+            font-weight: 600;
+        }
+
+        .info-icon::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 125%;
+            background: #1e293b;
+            color: white;
+            padding: 8px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            white-space: normal;
+            width: 200px;
+            max-width: 250px;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 1000;
+        }
+
+        .info-icon:hover::after,
+        .info-icon:focus::after {
+            visibility: visible;
+            opacity: 1;
+        }
+
         /* Dark mode styles removed to maintain accessible contrast */
     </style>
 </head>
