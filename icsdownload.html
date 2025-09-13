@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendar Event Generator</title>
+    <title>Email Calendar Invite Generator</title>
     <style>
         * {
             margin: 0;
@@ -12,152 +12,234 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             padding: 20px;
         }
         
         .container {
+            max-width: 600px;
+            margin: 0 auto;
             background: white;
             border-radius: 20px;
-            padding: 40px;
-            max-width: 500px;
-            width: 100%;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);
+            color: white;
+            padding: 30px;
             text-align: center;
         }
         
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
+        .header h1 {
             font-size: 2em;
+            margin-bottom: 10px;
         }
         
-        .event-details {
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .form-container {
+            padding: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+            font-family: inherit;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 15px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .primary-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .primary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .secondary-btn {
+            background: #f0f0f0;
+            color: #333;
+        }
+        
+        .secondary-btn:hover {
+            background: #e0e0e0;
+        }
+        
+        .preview-section {
+            margin-top: 30px;
+            padding: 20px;
             background: #f8f9fa;
             border-radius: 12px;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: left;
+            display: none;
         }
         
-        .event-details h2 {
-            color: #4285f4;
-            font-size: 1.5em;
-            margin-bottom: 15px;
+        .preview-section.active {
+            display: block;
         }
         
-        .detail-row {
-            display: flex;
-            padding: 10px 0;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        
-        .detail-row:last-child {
-            border-bottom: none;
-        }
-        
-        .detail-label {
-            font-weight: bold;
-            color: #666;
-            width: 100px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .detail-value {
-            flex: 1;
+        .preview-section h3 {
             color: #333;
-        }
-        
-        .icon {
-            margin-right: 8px;
+            margin-bottom: 15px;
             font-size: 1.2em;
         }
         
-        .download-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 1.1em;
-            font-weight: bold;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-            margin: 20px 0;
+        .preview-content {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
         }
         
-        .download-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        .preview-urls {
+            margin: 15px 0;
         }
         
-        .download-btn:active {
-            transform: translateY(0);
+        .url-display {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 6px;
+            word-break: break-all;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            margin: 10px 0;
+            color: #666;
         }
         
-        .calendar-options {
+        .action-buttons {
             display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin: 20px 0;
-            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
         }
         
-        .cal-option {
-            padding: 10px 20px;
+        .action-btn {
+            flex: 1;
+            padding: 12px;
             background: white;
             border: 2px solid #e0e0e0;
             border-radius: 8px;
             text-decoration: none;
             color: #333;
+            text-align: center;
+            font-weight: 600;
             transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            cursor: pointer;
         }
         
-        .cal-option:hover {
+        .action-btn:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+        
+        .action-btn.primary {
+            background: #4285f4;
+            color: white;
             border-color: #4285f4;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
         
-        .loading {
-            display: none;
-            margin: 20px 0;
+        .action-btn.primary:hover {
+            background: #3367d6;
+            border-color: #3367d6;
         }
         
-        .loading.active {
-            display: block;
+        .copy-btn {
+            padding: 8px 16px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
         }
         
-        .spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #4285f4;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
+        .copy-btn:hover {
+            background: #5a6268;
         }
         
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .quick-fills {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .quick-fill-btn {
+            padding: 8px 16px;
+            background: #e3f2fd;
+            color: #1976d2;
+            border: 1px solid #90caf9;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.2s ease;
+        }
+        
+        .quick-fill-btn:hover {
+            background: #bbdefb;
         }
         
         .status {
-            padding: 15px;
+            padding: 12px;
             border-radius: 8px;
-            margin: 20px 0;
+            margin: 15px 0;
             display: none;
+            animation: slideIn 0.3s ease;
         }
         
         .status.success {
@@ -167,289 +249,380 @@
             display: block;
         }
         
-        .status.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
             display: block;
         }
         
-        .share-section {
-            margin-top: 30px;
-            padding-top: 30px;
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .recipients-section {
+            margin-top: 20px;
+            padding-top: 20px;
             border-top: 2px solid #e0e0e0;
         }
         
-        .share-url {
-            background: #f8f9fa;
-            padding: 10px;
-            border-radius: 8px;
-            word-break: break-all;
-            font-family: monospace;
-            font-size: 0.9em;
-            margin: 10px 0;
+        .recipients-section h4 {
             color: #666;
-        }
-        
-        .copy-btn {
-            background: #6c757d;
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .copy-btn:hover {
-            background: #5a6268;
-        }
-        
-        .no-event {
-            color: #666;
+            margin-bottom: 10px;
             font-size: 1.1em;
-            line-height: 1.6;
         }
         
-        .create-link {
-            color: #4285f4;
-            text-decoration: none;
-            font-weight: bold;
+        .email-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
         }
         
-        .create-link:hover {
-            text-decoration: underline;
+        .email-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            background: #e3f2fd;
+            border-radius: 20px;
+            font-size: 0.9em;
+            color: #1976d2;
+        }
+        
+        .email-chip .remove {
+            margin-left: 8px;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .email-chip .remove:hover {
+            color: #d32f2f;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📅 Calendar Event</h1>
+        <div class="header">
+            <h1>📧 Email Calendar Invite Generator</h1>
+            <p>Create email invites with downloadable calendar links</p>
+        </div>
         
-        <div id="content">
-            <!-- Content will be dynamically inserted here -->
+        <div class="form-container">
+            <div class="quick-fills">
+                <button type="button" class="quick-fill-btn" onclick="fillSampleMeeting()">
+                    Sample Meeting
+                </button>
+                <button type="button" class="quick-fill-btn" onclick="fillTeamStandup()">
+                    Team Standup
+                </button>
+                <button type="button" class="quick-fill-btn" onclick="fillClientCall()">
+                    Client Call
+                </button>
+            </div>
+            
+            <form id="event-form">
+                <div class="form-group">
+                    <label for="title">Event Title *</label>
+                    <input type="text" id="title" name="title" required placeholder="e.g., Team Strategy Meeting">
+                </div>
+                
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input type="text" id="location" name="location" placeholder="e.g., Conference Room A or Zoom">
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="datetime">Date & Time *</label>
+                        <input type="datetime-local" id="datetime" name="datetime" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="duration">Duration</label>
+                        <select id="duration" name="duration">
+                            <option value="15">15 min</option>
+                            <option value="30">30 min</option>
+                            <option value="45">45 min</option>
+                            <option value="60" selected>1 hour</option>
+                            <option value="90">1.5 hours</option>
+                            <option value="120">2 hours</option>
+                            <option value="180">3 hours</option>
+                            <option value="240">4 hours</option>
+                            <option value="480">All day</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" placeholder="Add agenda items, meeting links, or other details..."></textarea>
+                </div>
+                
+                <div class="recipients-section">
+                    <h4>Recipients (Optional)</h4>
+                    <div class="form-group">
+                        <input type="email" id="recipients" placeholder="Enter email addresses separated by commas">
+                        <div class="email-chips" id="email-chips"></div>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button type="submit" class="primary-btn">Generate Email Invite</button>
+                    <button type="button" class="secondary-btn" onclick="resetForm()">Clear</button>
+                </div>
+            </form>
+            
+            <div id="status" class="status"></div>
+            
+            <div id="preview" class="preview-section">
+                <h3>📋 Your Calendar Invite is Ready!</h3>
+                
+                <div class="preview-content">
+                    <h4>Event Details:</h4>
+                    <div id="event-summary"></div>
+                    
+                    <div class="preview-urls">
+                        <h4>Calendar Link:</h4>
+                        <div id="calendar-url" class="url-display"></div>
+                        <button class="copy-btn" onclick="copyCalendarURL()">📋 Copy Calendar URL</button>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <a href="#" id="mailto-link" class="action-btn primary">
+                            📧 Open Email Client
+                        </a>
+                        <a href="#" id="calendar-link" target="_blank" class="action-btn">
+                            📅 Preview Calendar Event
+                        </a>
+                        <button onclick="copyMailtoLink()" class="action-btn">
+                            🔗 Copy Email Link
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // Parse event data from URL hash
-        function parseEventFromHash() {
-            const hash = window.location.hash.substring(1);
-            if (!hash) return null;
-            
-            const params = new URLSearchParams(hash);
-            
-            // Check if we have the minimum required data
-            if (!params.get('t')) return null;
-            
-            // Parse the datetime
-            const dateStr = params.get('d') || '';
-            const year = dateStr.substring(0, 4) || '2024';
-            const month = dateStr.substring(4, 6) || '01';
-            const day = dateStr.substring(6, 8) || '15';
-            const hour = dateStr.substring(9, 11) || '14';
-            const minute = dateStr.substring(11, 13) || '00';
-            
-            // Calculate end time (default 1 hour duration)
-            const duration = parseInt(params.get('dur') || '60');
-            const startDate = new Date(`${year}-${month}-${day}T${hour}:${minute}:00`);
-            const endDate = new Date(startDate.getTime() + duration * 60000);
-            
-            return {
-                title: decodeURIComponent(params.get('t')),
-                location: decodeURIComponent(params.get('l') || 'TBD'),
-                description: decodeURIComponent(params.get('desc') || 'Event created via calendar generator'),
-                startDate: `${year}${month}${day}`,
-                startTime: `${hour}${minute}00`,
-                endDate: formatDate(endDate),
-                endTime: formatTime(endDate),
-                duration: duration,
-                organizer: decodeURIComponent(params.get('org') || 'organizer@example.com'),
-                // For display
-                displayDate: `${month}/${day}/${year}`,
-                displayTime: `${hour}:${minute}`
-            };
+        // Base URL for your calendar generator
+        const CALENDAR_BASE_URL = 'https://clovenbradshaw-ctrl.github.io/ikey4/';
+        
+        // Store generated URLs
+        let currentCalendarURL = '';
+        let currentMailtoURL = '';
+        let recipientEmails = [];
+        
+        // Initialize datetime input with current date/time
+        document.addEventListener('DOMContentLoaded', function() {
+            const now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            now.setMinutes(Math.ceil(now.getMinutes() / 15) * 15); // Round to next 15 min
+            document.getElementById('datetime').value = now.toISOString().slice(0, 16);
+        });
+        
+        // Handle form submission
+        document.getElementById('event-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            generateEmailInvite();
+        });
+        
+        // Handle recipient emails
+        document.getElementById('recipients').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' || e.key === ',') {
+                e.preventDefault();
+                addRecipientEmail(this.value);
+                this.value = '';
+            }
+        });
+        
+        document.getElementById('recipients').addEventListener('blur', function() {
+            if (this.value) {
+                addRecipientEmail(this.value);
+                this.value = '';
+            }
+        });
+        
+        function addRecipientEmail(email) {
+            email = email.trim().replace(',', '');
+            if (email && validateEmail(email) && !recipientEmails.includes(email)) {
+                recipientEmails.push(email);
+                updateEmailChips();
+            }
         }
         
-        function formatDate(date) {
+        function validateEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+        
+        function updateEmailChips() {
+            const container = document.getElementById('email-chips');
+            container.innerHTML = recipientEmails.map((email, index) => 
+                `<span class="email-chip">
+                    ${email}
+                    <span class="remove" onclick="removeRecipient(${index})">×</span>
+                </span>`
+            ).join('');
+        }
+        
+        function removeRecipient(index) {
+            recipientEmails.splice(index, 1);
+            updateEmailChips();
+        }
+        
+        function generateEmailInvite() {
+            // Get form values
+            const title = document.getElementById('title').value;
+            const location = document.getElementById('location').value;
+            const datetime = document.getElementById('datetime').value;
+            const duration = document.getElementById('duration').value;
+            const description = document.getElementById('description').value;
+            
+            // Format date for calendar URL
+            const date = new Date(datetime);
             const year = date.getFullYear();
             const month = String(date.getMonth() + 1).padStart(2, '0');
             const day = String(date.getDate()).padStart(2, '0');
-            return `${year}${month}${day}`;
-        }
-        
-        function formatTime(date) {
             const hours = String(date.getHours()).padStart(2, '0');
             const minutes = String(date.getMinutes()).padStart(2, '0');
-            return `${hours}${minutes}00`;
+            const dateStr = `${year}${month}${day}T${hours}${minutes}`;
+            
+            // Calculate end time for display
+            const endDate = new Date(date.getTime() + parseInt(duration) * 60000);
+            
+            // Build calendar URL
+            const params = new URLSearchParams({
+                t: title,
+                l: location || 'TBD',
+                d: dateStr,
+                dur: duration,
+                desc: description || 'No additional details'
+            });
+            
+            currentCalendarURL = `${CALENDAR_BASE_URL}#${params.toString()}`;
+            
+            // Format nice date/time strings for email
+            const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const timeOptions = { hour: 'numeric', minute: '2-digit' };
+            const formattedDate = date.toLocaleDateString('en-US', dateOptions);
+            const formattedTime = date.toLocaleTimeString('en-US', timeOptions);
+            const formattedEndTime = endDate.toLocaleTimeString('en-US', timeOptions);
+            
+            // Build email body
+            const emailBody = `You're invited to: ${title}
+
+📅 When: ${formattedDate}
+🕐 Time: ${formattedTime} - ${formattedEndTime} (${duration} minutes)
+📍 Location: ${location || 'TBD'}
+
+📝 Details:
+${description || 'No additional details provided'}
+
+➡️ Add to your calendar:
+${currentCalendarURL}
+
+Click the link above to download the calendar file (.ics) that you can add to any calendar application (Google Calendar, Outlook, Apple Calendar, Proton Calendar, etc.)
+
+---
+This invite was created using the Calendar Generator`;
+            
+            // Build mailto URL
+            const subject = `Calendar Invite: ${title}`;
+            const recipients = recipientEmails.join(',');
+            
+            currentMailtoURL = `mailto:${recipients}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
+            
+            // Update preview
+            updatePreview({
+                title,
+                location,
+                date: formattedDate,
+                time: `${formattedTime} - ${formattedEndTime}`,
+                duration,
+                description
+            });
+            
+            // Show success status
+            showStatus('Email invite generated successfully!', 'success');
         }
         
-        function generateICS(event) {
-            const uid = Date.now() + '@calendar-generator.github.io';
-            const now = new Date();
-            const dtstamp = formatDate(now) + 'T' + formatTime(now) + 'Z';
+        function updatePreview(event) {
+            document.getElementById('event-summary').innerHTML = `
+                <p><strong>${event.title}</strong></p>
+                <p>📍 ${event.location || 'TBD'}</p>
+                <p>📅 ${event.date}</p>
+                <p>🕐 ${event.time}</p>
+                ${event.description ? `<p>📝 ${event.description}</p>` : ''}
+                ${recipientEmails.length > 0 ? `<p>📧 To: ${recipientEmails.join(', ')}</p>` : ''}
+            `;
             
-            return `BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//GitHub Calendar Generator//EN
-METHOD:REQUEST
-BEGIN:VEVENT
-UID:${uid}
-DTSTAMP:${dtstamp}
-ORGANIZER;CN=Event Organizer:mailto:${event.organizer}
-DTSTART:${event.startDate}T${event.startTime}Z
-DTEND:${event.endDate}T${event.endTime}Z
-SUMMARY:${event.title}
-DESCRIPTION:${event.description}
-LOCATION:${event.location}
-SEQUENCE:0
-STATUS:CONFIRMED
-TRANSP:OPAQUE
-END:VEVENT
-END:VCALENDAR`;
+            document.getElementById('calendar-url').textContent = currentCalendarURL;
+            document.getElementById('mailto-link').href = currentMailtoURL;
+            document.getElementById('calendar-link').href = currentCalendarURL;
+            
+            document.getElementById('preview').classList.add('active');
         }
         
-        function downloadICS(event) {
-            const icsContent = generateICS(event);
-            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${event.title.replace(/[^a-z0-9]/gi, '-').toLowerCase()}.ics`;
-            
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            // Show success message
-            const status = document.getElementById('status');
-            if (status) {
-                status.className = 'status success';
-                status.textContent = '✅ Calendar file downloaded! Open it to add to your calendar.';
-            }
-        }
-        
-        function copyShareURL() {
-            const url = window.location.href;
-            navigator.clipboard.writeText(url).then(() => {
-                const btn = document.querySelector('.copy-btn');
-                const originalText = btn.textContent;
-                btn.textContent = '✅ Copied!';
-                setTimeout(() => {
-                    btn.textContent = originalText;
-                }, 2000);
+        function copyCalendarURL() {
+            navigator.clipboard.writeText(currentCalendarURL).then(() => {
+                showStatus('Calendar URL copied to clipboard!', 'info');
             });
         }
         
-        function createGoogleCalendarURL(event) {
-            const start = `${event.startDate}T${event.startTime}Z`;
-            const end = `${event.endDate}T${event.endTime}Z`;
-            const details = encodeURIComponent(event.description);
-            const location = encodeURIComponent(event.location);
-            const text = encodeURIComponent(event.title);
-            
-            return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${text}&dates=${start}/${end}&details=${details}&location=${location}`;
+        function copyMailtoLink() {
+            navigator.clipboard.writeText(currentMailtoURL).then(() => {
+                showStatus('Email link copied to clipboard!', 'info');
+            });
         }
         
-        function createOutlookURL(event) {
-            const start = `${event.startDate.substring(0,4)}-${event.startDate.substring(4,6)}-${event.startDate.substring(6,8)}T${event.startTime.substring(0,2)}:${event.startTime.substring(2,4)}:00Z`;
-            const end = `${event.endDate.substring(0,4)}-${event.endDate.substring(4,6)}-${event.endDate.substring(6,8)}T${event.endTime.substring(0,2)}:${event.endTime.substring(2,4)}:00Z`;
-            const body = encodeURIComponent(event.description);
-            const location = encodeURIComponent(event.location);
-            const subject = encodeURIComponent(event.title);
-            
-            return `https://outlook.live.com/calendar/0/deeplink/compose?subject=${subject}&startdt=${start}&enddt=${end}&body=${body}&location=${location}`;
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+            setTimeout(() => {
+                status.className = 'status';
+            }, 3000);
         }
         
-        function renderEventPage(event) {
-            const content = document.getElementById('content');
+        function resetForm() {
+            document.getElementById('event-form').reset();
+            document.getElementById('preview').classList.remove('active');
+            recipientEmails = [];
+            updateEmailChips();
             
-            if (!event) {
-                content.innerHTML = `
-                    <div class="no-event">
-                        <p>No event data found in the URL.</p>
-                        <p>To create a calendar event link, use this format:</p>
-                        <div class="share-url">
-                            ${window.location.origin}${window.location.pathname}#t=Event%20Title&l=Location&d=20240115T1400&desc=Description
-                        </div>
-                        <p>Or <a href="#t=Sample%20Event&l=Conference%20Room&d=20240115T1400&desc=This%20is%20a%20sample%20event" class="create-link">try this sample event</a></p>
-                    </div>
-                `;
-                return;
-            }
-            
-            content.innerHTML = `
-                <div class="event-details">
-                    <h2>${event.title}</h2>
-                    <div class="detail-row">
-                        <div class="detail-label"><span class="icon">📍</span> Location:</div>
-                        <div class="detail-value">${event.location}</div>
-                    </div>
-                    <div class="detail-row">
-                        <div class="detail-label"><span class="icon">📅</span> Date:</div>
-                        <div class="detail-value">${event.displayDate}</div>
-                    </div>
-                    <div class="detail-row">
-                        <div class="detail-label"><span class="icon">🕐</span> Time:</div>
-                        <div class="detail-value">${event.displayTime} (${event.duration} minutes)</div>
-                    </div>
-                    <div class="detail-row">
-                        <div class="detail-label"><span class="icon">📝</span> Details:</div>
-                        <div class="detail-value">${event.description}</div>
-                    </div>
-                </div>
-                
-                <button class="download-btn" onclick="downloadICS(currentEvent)">
-                    📥 Download Calendar File (.ics)
-                </button>
-                
-                <div id="status" class="status"></div>
-                
-                <div class="calendar-options">
-                    <a href="${createGoogleCalendarURL(event)}" target="_blank" class="cal-option">
-                        <span>📅</span> Add to Google
-                    </a>
-                    <a href="${createOutlookURL(event)}" target="_blank" class="cal-option">
-                        <span>📅</span> Add to Outlook
-                    </a>
-                    <a href="mailto:?subject=${encodeURIComponent(event.title)}&body=${encodeURIComponent(`Event: ${event.title}\nLocation: ${event.location}\nDate: ${event.displayDate}\nTime: ${event.displayTime}\n\nAdd to calendar: ${window.location.href}`)}" class="cal-option">
-                        <span>✉️</span> Email Invite
-                    </a>
-                </div>
-                
-                <div class="share-section">
-                    <h3>Share this event:</h3>
-                    <div class="share-url">${window.location.href}</div>
-                    <button class="copy-btn" onclick="copyShareURL()">📋 Copy Link</button>
-                </div>
-            `;
+            // Reset datetime to current
+            const now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            now.setMinutes(Math.ceil(now.getMinutes() / 15) * 15);
+            document.getElementById('datetime').value = now.toISOString().slice(0, 16);
         }
         
-        // Global variable to store current event
-        let currentEvent = null;
-        
-        // Initialize on page load
-        function init() {
-            currentEvent = parseEventFromHash();
-            renderEventPage(currentEvent);
-            
-            // Auto-download if specified in URL
-            const params = new URLSearchParams(window.location.hash.substring(1));
-            if (params.get('auto') === '1' && currentEvent) {
-                setTimeout(() => {
-                    downloadICS(currentEvent);
-                }, 1000);
-            }
+        // Quick fill functions
+        function fillSampleMeeting() {
+            document.getElementById('title').value = 'Team Strategy Meeting';
+            document.getElementById('location').value = 'Conference Room A';
+            document.getElementById('duration').value = '90';
+            document.getElementById('description').value = 'Quarterly planning session. Please review the attached documents before the meeting.';
         }
         
-        // Handle hash changes
-        window.addEventListener('hashchange', init);
-        window.addEventListener('load', init);
+        function fillTeamStandup() {
+            document.getElementById('title').value = 'Daily Standup';
+            document.getElementById('location').value = 'Zoom: https://zoom.us/j/123456789';
+            document.getElementById('duration').value = '15';
+            document.getElementById('description').value = 'Daily team sync - share updates, blockers, and priorities.';
+        }
         
-        // If coming from a mailto link, show loading first
-        if (window.location.hash) {
-            document.getElementById('content').innerHTML = '<div class="loading active"><div class="spinner"></div><p>Loading event...</p></div>';
+        function fillClientCall() {
+            document.getElementById('title').value = 'Client Review Call';
+            document.getElementById('location').value = 'Google Meet';
+            document.getElementById('duration').value = '60';
+            document.getElementById('description').value = 'Project status review and next steps discussion.';
         }
     </script>
 </body>
