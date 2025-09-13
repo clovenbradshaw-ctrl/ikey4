@@ -2785,7 +2785,13 @@
             },
             trigger: function(pattern = 'light') {
                 if (!this.isSupported()) return;
-                const hapticsEnabled = localStorage.getItem('hapticsEnabled') !== 'false';
+                let hapticsEnabled = false;
+                try {
+                    hapticsEnabled = localStorage.getItem('hapticsEnabled') !== 'false';
+                } catch (e) {
+                    console.error('Error accessing localStorage for haptics:', e);
+                    hapticsEnabled = false;
+                }
                 if (!hapticsEnabled) return;
                 const vibrationPattern = this.patterns[pattern] || pattern;
                 try {
@@ -2824,7 +2830,9 @@
 
         // Tab switching
         function switchTab(tabName) {
-            HapticFeedback.trigger('light');
+            if (typeof HapticFeedback !== 'undefined' && typeof HapticFeedback.trigger === 'function') {
+                HapticFeedback.trigger('light');
+            }
             // Hide dropdown when switching tabs
             const menu = document.getElementById('resource-menu');
             if (menu) {
