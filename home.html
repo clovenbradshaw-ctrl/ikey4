@@ -100,6 +100,23 @@
       background: var(--emergency-color);
       color: white;
     }
+    .favorite .move {
+      display: none;
+      position: absolute;
+      left: -8px;
+      width: 24px;
+      height: 24px;
+      border: none;
+      border-radius: 50%;
+      background: var(--primary-color, #666);
+      color: white;
+      font-size: 16px;
+      line-height: 24px;
+      cursor: pointer;
+    }
+    .favorite .move.up { top: -8px; }
+    .favorite .move.down { bottom: -8px; }
+    .favorites.editing .move { display: block; }
     .favorites.editing .delete { display: block; }
     .favorite.add-favorite { font-size: 32px; }
 
@@ -310,18 +327,20 @@
         return `<div class="text-body">${t('home.noFavorites', 'No favorites yet')}</div>`;
       }
       const listHtml = details.map(d => `
-            <div class="favorite" draggable="${editMode}" data-index="${d.index}" data-url="${d.info.url}">
+            <div class="favorite" tabindex="0" draggable="${editMode}" data-index="${d.index}" data-url="${d.info.url}">
+              <button class="move up" aria-label="${t('home.moveUp', 'Move up')}" onclick="event.stopPropagation(); moveFavorite(${d.index}, 'up')">▲</button>
+              <button class="move down" aria-label="${t('home.moveDown', 'Move down')}" onclick="event.stopPropagation(); moveFavorite(${d.index}, 'down')">▼</button>
               <span class="icon"><img src="${d.info.icon}" alt="${d.info.name}" width="32" height="32"></span>
               <span class="label">${d.info.name}</span>
               <button class="delete" onclick="event.stopPropagation(); deleteFavorite(${d.index})">✕</button>
             </div>
           `).join('');
-      const addTile = editMode ? '<div class="favorite add-favorite" onclick="addFavorite()">+</div>' : '';
+      const addTile = editMode ? '<div class="favorite add-favorite" tabindex="0" onclick="addFavorite()">+</div>' : '';
       return `
         <div class="favorites ${editMode ? 'editing' : ''}" id="favorites">
           ${listHtml}${addTile}
         </div>
-        ${editMode ? `<div class="button-group"><button onclick="exitEdit()">${t('common.done', 'Done')}</button></div>` : ''}
+        ${editMode ? `<div class="text-caption">${t('home.moveHint', 'Use Alt+↑/↓ to move favorites')}</div><div class="button-group"><button onclick="exitEdit()">${t('common.done', 'Done')}</button></div>` : ''}
       `;
     }
 
@@ -335,12 +354,16 @@
       renderHome();
     }
 
-    function moveFavorite(from, to) {
-      if (from === to) return;
+    function moveFavorite(from, toOrDir) {
+      let to = typeof toOrDir === 'string' ? (toOrDir === 'up' ? from - 1 : from + 1) : toOrDir;
+      if (to < 0 || to >= favoriteApps.length || from === to) return;
       const [moved] = favoriteApps.splice(from, 1);
       favoriteApps.splice(to, 0, moved);
       saveFavorites();
       renderHome();
+      const container = document.getElementById('favorites');
+      const item = container && container.querySelector(`.favorite[data-index="${to}"]`);
+      if (item) item.focus();
     }
 
     function exitEdit() {
@@ -395,6 +418,17 @@
           const from = Number(e.dataTransfer.getData('text/plain'));
           const to = Number(e.currentTarget.dataset.index);
           moveFavorite(from, to);
+        });
+
+        item.addEventListener('keydown', e => {
+          if (!editMode) return;
+          if (e.altKey && e.key === 'ArrowUp') {
+            e.preventDefault();
+            moveFavorite(index, 'up');
+          } else if (e.altKey && e.key === 'ArrowDown') {
+            e.preventDefault();
+            moveFavorite(index, 'down');
+          }
         });
       });
     }
