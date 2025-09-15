@@ -461,6 +461,13 @@
             "crisisLine": "Suicide & Crisis Lifeline: 988",
             "poisonControlNumber": "Poison Control: 1-800-222-1222"
         },
+        "setKeyModal": {
+            "title": "Set as My iKey?",
+            "body": "Set %s as My iKey on this device?",
+            "replaceWarning": "This will replace your saved key for %s.",
+            "cancel": "Cancel",
+            "confirm": "Set as My iKey"
+        },
         "home": {
             "myIKey": "My iKey",
             "scannedCard": "Scanned Card",
@@ -956,6 +963,13 @@
             "crisisLine": "Línea de Suicidio y Crisis: 988",
             "poisonControlNumber": "Control de Venenos: 1-800-222-1222"
         },
+        "setKeyModal": {
+            "title": "¿Guardar como mi iKey?",
+            "body": "¿Guardar %s como mi iKey en este dispositivo?",
+            "replaceWarning": "Esto reemplazará tu llave guardada para %s.",
+            "cancel": "Cancelar",
+            "confirm": "Establecer como mi iKey"
+        },
         "home": {
             "myIKey": "Mi iKey",
             "scannedCard": "Tarjeta escaneada",
@@ -1441,6 +1455,13 @@
             "crisisLine": "خط الأزمات والانتحار: 988",
             "poisonControlNumber": "مراقبة السموم: 1-800-222-1222"
         },
+        "setKeyModal": {
+            "title": "تعيين كمفتاحي؟",
+            "body": "تعيين %s كمفتاحي على هذا الجهاز؟",
+            "replaceWarning": "سيؤدي ذلك إلى استبدال المفتاح المحفوظ لـ %s.",
+            "cancel": "إلغاء",
+            "confirm": "تعيين كمفتاحي"
+        },
         "home": {
             "myIKey": "مفتاحي iKey",
             "scannedCard": "بطاقة ممسوحة",
@@ -1920,6 +1941,13 @@
             "crisisLine": "Xeta Xwekujtin û Krîzê: 988",
             "poisonControlNumber": "Kontrola Jehrê: 1-800-222-1222"
         },
+        "setKeyModal": {
+            "title": "Bibihêle wekî iKey a min?",
+            "body": "%s wekî iKey a min li vê cîhazê saz bikim?",
+            "replaceWarning": "Ev ê mifteya tomarkirî ya %s biguhezîne.",
+            "cancel": "Betal",
+            "confirm": "Wekî iKey a min saz bike"
+        },
         "home": {
             "myIKey": "iKey-a min",
             "scannedCard": "Kartê şopandî",
@@ -2298,6 +2326,13 @@
             "crisisLine": "Khadka Ismiidaaminta & Dhibaatada: 988",
             "poisonControlNumber": "Xakamaynta Sunta: 1-800-222-1222"
         },
+        "setKeyModal": {
+            "title": "U deji iKeygeyga?",
+            "body": "Ma rabtaa in %s laga dhigo iKeygeyga qalabkan?",
+            "replaceWarning": "Tani waxay beddeli doontaa furaha aad kaydisay ee %s.",
+            "cancel": "Ka noqo",
+            "confirm": "U deji iKeygeyga"
+        },
         "home": {
             "myIKey": "iKey-gayga",
             "scannedCard": "Kaarka la sawiray",
@@ -2675,6 +2710,13 @@
             "policeDispatch": "纳什维尔警察调度",
             "crisisLine": "自杀与危机生命线：988",
             "poisonControlNumber": "中毒控制：1-800-222-1222"
+        },
+        "setKeyModal": {
+            "title": "设为我的 iKey？",
+            "body": "在此设备上将 %s 设为我的 iKey？",
+            "replaceWarning": "这将替换你为 %s 保存的密钥。",
+            "cancel": "取消",
+            "confirm": "设为我的 iKey"
         },
         "home": {
             "myIKey": "我的 iKey",
