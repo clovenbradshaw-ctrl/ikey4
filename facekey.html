@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Face Recognition</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            background: rgba(26, 26, 46, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+        
+        .video-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            background: #000;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        #video {
+            display: block;
+            transform: scaleX(-1);
+        }
+        
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%) scaleX(-1);
+            pointer-events: none;
+        }
+        
+        /* Status bar */
+        .status-bar {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+        
+        .status-text {
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #666;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-indicator.active {
+            background: #4CAF50;
+        }
+        
+        .status-indicator.warning {
+            background: #FFC107;
+        }
+        
+        .status-indicator.error {
+            background: #F44336;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* Quality indicators */
+        .quality-checks {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+            display: none;
+            z-index: 10;
+        }
+        
+        .quality-item {
+            margin: 5px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .quality-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        
+        .quality-good {
+            background: #4CAF50;
+        }
+        
+        .quality-bad {
+            background: #F44336;
+        }
+        
+        /* Capture progress */
+        .capture-progress {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 20px 40px;
+            border-radius: 30px;
+            color: white;
+            display: none;
+            text-align: center;
+        }
+        
+        .progress-title {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .progress-bar {
+            width: 200px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #4CAF50;
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+        
+        .progress-text {
+            font-size: 14px;
+            color: #aaa;
+        }
+        
+        /* Controls */
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 24px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-100%);
+            transition: transform 0.3s;
+        }
+        
+        button:hover:not(:disabled)::before {
+            transform: translateX(0);
+        }
+        
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:disabled {
+            background: #444;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        
+        button.success {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+        }
+        
+        button.danger {
+            background: linear-gradient(135deg, #F44336 0%, #da190b 100%);
+        }
+        
+        /* Confidence display */
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .metric-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .metric-label {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .metric-value {
+            font-size: 48px;
+            font-weight: bold;
+            color: white;
+            margin: 10px 0;
+        }
+        
+        .metric-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .metric-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        
+        /* Flash effect */
+        .flash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 9999;
+        }
+        
+        .flash.active {
+            animation: flashAnimation 0.3s;
+        }
+        
+        @keyframes flashAnimation {
+            0% { opacity: 0; }
+            50% { opacity: 0.7; }
+            100% { opacity: 0; }
+        }
+        
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: white;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid #667eea;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Face guide overlay */
+        .face-guide {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 250px;
+            height: 320px;
+            border: 3px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            pointer-events: none;
+            display: none;
+        }
+        
+        .face-guide.active {
+            display: block;
+            animation: guideGlow 2s infinite;
+        }
+        
+        @keyframes guideGlow {
+            0%, 100% { border-color: rgba(255, 255, 255, 0.3); }
+            50% { border-color: rgba(76, 175, 80, 0.8); }
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        /* Settings panel */
+        .settings {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            color: white;
+        }
+        
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 15px 0;
+        }
+        
+        .setting-label {
+            font-size: 14px;
+        }
+        
+        .setting-value {
+            font-size: 14px;
+            color: #667eea;
+        }
+        
+        input[type="range"] {
+            width: 150px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Enhanced Face Recognition</h1>
+        <div class="subtitle">High-accuracy biometric authentication</div>
+        
+        <div class="status-bar">
+            <div class="status-text">
+                <div class="status-indicator" id="statusIndicator"></div>
+                <span id="statusText">Initializing...</span>
+            </div>
+            <div id="fps" style="color: #666; font-size: 14px;"></div>
+        </div>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <div>Loading AI Models...</div>
+            <div style="color: #666; margin-top: 10px; font-size: 14px;">This may take a moment</div>
+        </div>
+        
+        <div class="hidden" id="mainInterface">
+            <div class="video-container">
+                <video id="video" width="640" height="480" autoplay muted></video>
+                <canvas id="canvas" width="640" height="480"></canvas>
+                
+                <div class="face-guide" id="faceGuide"></div>
+                
+                <div class="quality-checks" id="qualityChecks">
+                    <div class="quality-item">
+                        <div class="quality-icon" id="qFace">⏳</div>
+                        <span>Face Detection</span>
+                    </div>
+                    <div class="quality-item">
+                        <div class="quality-icon" id="qSize">⏳</div>
+                        <span>Face Size</span>
+                    </div>
+                    <div class="quality-item">
+                        <div class="quality-icon" id="qCenter">⏳</div>
+                        <span>Centered</span>
+                    </div>
+                    <div class="quality-item">
+                        <div class="quality-icon" id="qBright">⏳</div>
+                        <span>Lighting</span>
+                    </div>
+                </div>
+                
+                <div class="capture-progress" id="captureProgress">
+                    <div class="progress-title">Capturing Profile</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-text" id="progressText">Keep your face centered</div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button id="startCamera" onclick="startCamera()">📷 Start Camera</button>
+                <button id="startCapture" onclick="startCapture()" disabled>🎯 Capture Profile</button>
+                <button id="toggleRecognition" onclick="toggleRecognition()" disabled class="success">✅ Start Recognition</button>
+                <button id="clearProfile" onclick="clearProfile()" disabled class="danger">🗑️ Clear Profile</button>
+            </div>
+            
+            <div class="metrics hidden" id="metrics">
+                <div class="metric-card">
+                    <div class="metric-label">Confidence</div>
+                    <div class="metric-value" id="confidenceValue">--%</div>
+                    <div class="metric-bar">
+                        <div class="metric-fill" id="confidenceFill" style="width: 0%; background: #F44336;"></div>
+                    </div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-label">Match Quality</div>
+                    <div class="metric-value" id="matchStatus">--</div>
+                    <div class="metric-bar">
+                        <div class="metric-fill" id="matchFill" style="width: 0%; background: #666;"></div>
+                    </div>
+                </div>
+                
+                <div class="metric-card">
+                    <div class="metric-label">Samples</div>
+                    <div class="metric-value" id="samplesCount">0</div>
+                    <div style="color: #666; font-size: 12px; margin-top: 5px;">Profile descriptors</div>
+                </div>
+            </div>
+            
+            <div class="settings">
+                <div class="setting-item">
+                    <span class="setting-label">Security Level:</span>
+                    <select id="securityLevel" onchange="updateSecurityLevel()">
+                        <option value="high">High (Banking)</option>
+                        <option value="medium" selected>Medium (Default)</option>
+                        <option value="low">Low (Convenience)</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <span class="setting-label">Match Threshold:</span>
+                    <span class="setting-value" id="thresholdValue">0.45</span>
+                </div>
+                <div class="setting-item">
+                    <span class="setting-label">Min Confidence:</span>
+                    <span class="setting-value" id="minConfValue">85%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="flash" id="flash"></div>
+
+    <script>
+        let video, canvas, ctx;
+        let modelsLoaded = false;
+        let recognitionActive = false;
+        let captureInProgress = false;
+        
+        // Store multiple descriptors instead of averaging
+        let profileDescriptors = [];
+        let captureCount = 0;
+        
+        // Improved thresholds
+        const SECURITY_LEVELS = {
+            high: { threshold: 0.35, minConfidence: 95, samples: 10 },
+            medium: { threshold: 0.45, minConfidence: 85, samples: 7 },
+            low: { threshold: 0.55, minConfidence: 75, samples: 5 }
+        };
+        
+        let currentSecurity = SECURITY_LEVELS.medium;
+        
+        const MODEL_URL = 'https://justadudewhohacks.github.io/face-api.js/models';
+        
+        // FPS tracking
+        let lastTime = performance.now();
+        let fps = 0;
+        
+        window.addEventListener('DOMContentLoaded', async () => {
+            setTimeout(async () => {
+                if (typeof faceapi === 'undefined') {
+                    updateStatus('Failed to load face-api.js', 'error');
+                    return;
+                }
+                
+                video = document.getElementById('video');
+                canvas = document.getElementById('canvas');
+                ctx = canvas.getContext('2d');
+                
+                await loadModels();
+            }, 500);
+        });
+        
+        async function loadModels() {
+            try {
+                updateStatus('Loading face detection model...', 'warning');
+                await faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL);
+                
+                updateStatus('Loading landmark model...', 'warning');
+                await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
+                
+                updateStatus('Loading recognition model...', 'warning');
+                await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
+                
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('mainInterface').classList.remove('hidden');
+                
+                modelsLoaded = true;
+                updateStatus('Ready - Click Start Camera', 'active');
+                
+            } catch (error) {
+                console.error('Error loading models:', error);
+                updateStatus('Failed to load AI models', 'error');
+            }
+        }
+        
+        async function startCamera() {
+            try {
+                updateStatus('Requesting camera access...', 'warning');
+                
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { 
+                        width: { ideal: 640 },
+                        height: { ideal: 480 },
+                        facingMode: 'user'
+                    }
+                });
+                
+                video.srcObject = stream;
+                
+                video.addEventListener('loadedmetadata', () => {
+                    updateStatus('Camera ready', 'active');
+                    document.getElementById('startCamera').disabled = true;
+                    document.getElementById('startCapture').disabled = false;
+                    
+                    // Start quality check loop
+                    qualityCheckLoop();
+                });
+                
+            } catch (error) {
+                console.error('Camera error:', error);
+                updateStatus('Camera access denied', 'error');
+            }
+        }
+        
+        async function qualityCheckLoop() {
+            if (!video.srcObject) return;
+            
+            const detection = await detectFace();
+            
+            if (captureInProgress) {
+                updateQualityIndicators(detection);
+            }
+            
+            // Update FPS
+            const currentTime = performance.now();
+            fps = Math.round(1000 / (currentTime - lastTime));
+            lastTime = currentTime;
+            document.getElementById('fps').textContent = `${fps} FPS`;
+            
+            requestAnimationFrame(qualityCheckLoop);
+        }
+        
+        function updateQualityIndicators(detection) {
+            const checks = document.getElementById('qualityChecks');
+            if (!captureInProgress) {
+                checks.style.display = 'none';
+                return;
+            }
+            
+            checks.style.display = 'block';
+            
+            // Face detection check
+            const faceIcon = document.getElementById('qFace');
+            if (detection && detection.detection.score > 0.8) {
+                faceIcon.className = 'quality-icon quality-good';
+                faceIcon.textContent = '✓';
+            } else {
+                faceIcon.className = 'quality-icon quality-bad';
+                faceIcon.textContent = '✗';
+            }
+            
+            if (detection) {
+                const box = detection.detection.box;
+                
+                // Size check
+                const sizeIcon = document.getElementById('qSize');
+                const faceArea = box.width * box.height;
+                const imageArea = 640 * 480;
+                if (faceArea > imageArea * 0.08 && faceArea < imageArea * 0.4) {
+                    sizeIcon.className = 'quality-icon quality-good';
+                    sizeIcon.textContent = '✓';
+                } else {
+                    sizeIcon.className = 'quality-icon quality-bad';
+                    sizeIcon.textContent = '✗';
+                }
+                
+                // Center check
+                const centerIcon = document.getElementById('qCenter');
+                const faceCenterX = box.x + box.width / 2;
+                const faceCenterY = box.y + box.height / 2;
+                if (Math.abs(faceCenterX - 320) < 100 && Math.abs(faceCenterY - 240) < 100) {
+                    centerIcon.className = 'quality-icon quality-good';
+                    centerIcon.textContent = '✓';
+                } else {
+                    centerIcon.className = 'quality-icon quality-bad';
+                    centerIcon.textContent = '✗';
+                }
+                
+                // Brightness check (simplified)
+                const brightIcon = document.getElementById('qBright');
+                if (detection.detection.score > 0.9) {
+                    brightIcon.className = 'quality-icon quality-good';
+                    brightIcon.textContent = '✓';
+                } else {
+                    brightIcon.className = 'quality-icon quality-bad';
+                    brightIcon.textContent = '✗';
+                }
+            }
+        }
+        
+        async function startCapture() {
+            if (captureInProgress) return;
+            
+            captureInProgress = true;
+            profileDescriptors = [];
+            captureCount = 0;
+            
+            document.getElementById('startCapture').disabled = true;
+            document.getElementById('clearProfile').disabled = true;
+            document.getElementById('toggleRecognition').disabled = true;
+            document.getElementById('captureProgress').style.display = 'block';
+            document.getElementById('faceGuide').classList.add('active');
+            
+            updateStatus('Capturing profile...', 'warning');
+            
+            const requiredSamples = currentSecurity.samples;
+            let consecutiveFailures = 0;
+            
+            while (captureCount < requiredSamples && captureInProgress) {
+                updateProgress(captureCount, requiredSamples);
+                
+                // Wait a bit between captures
+                await sleep(captureCount === 0 ? 1000 : 600);
+                
+                const success = await captureHighQualityPhoto();
+                
+                if (success) {
+                    captureCount++;
+                    consecutiveFailures = 0;
+                    
+                    // Feedback
+                    triggerFlash();
+                    updateProgress(captureCount, requiredSamples);
+                    
+                    if (captureCount < requiredSamples) {
+                        const remaining = requiredSamples - captureCount;
+                        document.getElementById('progressText').textContent = 
+                            `${remaining} more photo${remaining > 1 ? 's' : ''} needed`;
+                    }
+                } else {
+                    consecutiveFailures++;
+                    if (consecutiveFailures > 10) {
+                        updateStatus('Having trouble detecting face. Try better lighting.', 'error');
+                        await sleep(2000);
+                        consecutiveFailures = 0;
+                    }
+                }
+            }
+            
+            if (captureInProgress) {
+                finishCapture();
+            }
+        }
+        
+        async function captureHighQualityPhoto() {
+            const detection = await detectFaceWithQuality();
+            
+            if (!detection) {
+                document.getElementById('progressText').textContent = 'No face detected';
+                return false;
+            }
+            
+            const qualityCheck = checkFaceQuality(detection);
+            
+            if (!qualityCheck.passed) {
+                document.getElementById('progressText').textContent = qualityCheck.message;
+                return false;
+            }
+            
+            // Store the descriptor
+            profileDescriptors.push(Array.from(detection.descriptor));
+            
+            // Draw success box
+            drawBox(detection.detection.box, '#4CAF50', 3);
+            
+            return true;
+        }
+        
+        function checkFaceQuality(detection) {
+            const box = detection.detection.box;
+            const score = detection.detection.score;
+            
+            // Check detection confidence
+            if (score < 0.8) {
+                return { passed: false, message: 'Low detection confidence' };
+            }
+            
+            // Check face size
+            const faceArea = box.width * box.height;
+            const imageArea = 640 * 480;
+            const areaRatio = faceArea / imageArea;
+            
+            if (areaRatio < 0.08) {
+                return { passed: false, message: 'Move closer to camera' };
+            }
+            if (areaRatio > 0.4) {
+                return { passed: false, message: 'Move further from camera' };
+            }
+            
+            // Check if centered
+            const faceCenterX = box.x + box.width / 2;
+            const faceCenterY = box.y + box.height / 2;
+            
+            if (Math.abs(faceCenterX - 320) > 150) {
+                return { passed: false, message: 'Center your face horizontally' };
+            }
+            if (Math.abs(faceCenterY - 240) > 150) {
+                return { passed: false, message: 'Center your face vertically' };
+            }
+            
+            // Check face landmarks for frontal pose
+            if (detection.landmarks) {
+                const landmarks = detection.landmarks.positions;
+                const leftEye = landmarks[36];
+                const rightEye = landmarks[45];
+                const nose = landmarks[30];
+                
+                // Simple check for face rotation
+                const eyeDistance = Math.abs(leftEye.x - rightEye.x);
+                const expectedDistance = box.width * 0.3;
+                
+                if (eyeDistance < expectedDistance * 0.7) {
+                    return { passed: false, message: 'Face too turned - look straight' };
+                }
+            }
+            
+            return { passed: true, message: 'Good quality' };
+        }
+        
+        function updateProgress(current, total) {
+            const percentage = (current / total) * 100;
+            document.getElementById('progressFill').style.width = percentage + '%';
+            
+            if (current === 0) {
+                document.getElementById('progressText').textContent = 'Position your face in the guide';
+            } else if (current === total) {
+                document.getElementById('progressText').textContent = 'Complete!';
+            }
+        }
+        
+        function finishCapture() {
+            captureInProgress = false;
+            document.getElementById('captureProgress').style.display = 'none';
+            document.getElementById('qualityChecks').style.display = 'none';
+            document.getElementById('faceGuide').classList.remove('active');
+            
+            if (profileDescriptors.length < currentSecurity.samples / 2) {
+                updateStatus('Not enough quality photos. Please try again.', 'error');
+                document.getElementById('startCapture').disabled = false;
+                return;
+            }
+            
+            updateStatus(`Profile created with ${profileDescriptors.length} samples`, 'active');
+            document.getElementById('toggleRecognition').disabled = false;
+            document.getElementById('clearProfile').disabled = false;
+            document.getElementById('startCapture').disabled = false;
+            document.getElementById('samplesCount').textContent = profileDescriptors.length;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        
+        function toggleRecognition() {
+            if (recognitionActive) {
+                stopRecognition();
+            } else {
+                startRecognition();
+            }
+        }
+        
+        function startRecognition() {
+            recognitionActive = true;
+            document.getElementById('toggleRecognition').textContent = '⏹️ Stop Recognition';
+            document.getElementById('toggleRecognition').className = 'danger';
+            document.getElementById('metrics').classList.remove('hidden');
+            updateStatus('Recognition active - Show your face', 'active');
+            
+            recognitionLoop();
+        }
+        
+        function stopRecognition() {
+            recognitionActive = false;
+            document.getElementById('toggleRecognition').textContent = '✅ Start Recognition';
+            document.getElementById('toggleRecognition').className = 'success';
+            updateStatus('Recognition stopped', 'warning');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        
+        async function recognitionLoop() {
+            if (!recognitionActive) return;
+            
+            const detection = await detectFaceWithQuality();
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            if (detection && detection.descriptor) {
+                const result = calculateBestMatch(detection.descriptor);
+                
+                if (result.matched) {
+                    drawBox(detection.detection.box, '#4CAF50', 4);
+                    updateStatus('✓ Verified', 'active');
+                    document.getElementById('matchStatus').textContent = 'MATCH';
+                    document.getElementById('matchStatus').style.color = '#4CAF50';
+                } else {
+                    drawBox(detection.detection.box, '#F44336', 2);
+                    updateStatus('✗ Not verified', 'error');
+                    document.getElementById('matchStatus').textContent = 'NO MATCH';
+                    document.getElementById('matchStatus').style.color = '#F44336';
+                }
+                
+                // Update metrics
+                updateMetrics(result);
+                
+            } else {
+                document.getElementById('confidenceValue').textContent = '--%';
+                document.getElementById('matchStatus').textContent = '--';
+                document.getElementById('confidenceFill').style.width = '0%';
+                document.getElementById('matchFill').style.width = '0%';
+                updateStatus('No face detected', 'warning');
+            }
+            
+            setTimeout(() => recognitionLoop(), 100);
+        }
+        
+        function calculateBestMatch(testDescriptor) {
+            if (profileDescriptors.length === 0) {
+                return { matched: false, confidence: 0, distance: 1 };
+            }
+            
+            // Find the minimum distance (best match) across all stored descriptors
+            let minDistance = Infinity;
+            let distances = [];
+            
+            for (const storedDesc of profileDescriptors) {
+                const distance = faceapi.euclideanDistance(
+                    new Float32Array(storedDesc), 
+                    testDescriptor
+                );
+                distances.push(distance);
+                minDistance = Math.min(minDistance, distance);
+            }
+            
+            // Calculate average distance for additional validation
+            const avgDistance = distances.reduce((a, b) => a + b, 0) / distances.length;
+            
+            // Non-linear confidence mapping for better UX
+            let confidence;
+            if (minDistance < 0.3) confidence = 99;
+            else if (minDistance < 0.35) confidence = 95;
+            else if (minDistance < 0.4) confidence = 90;
+            else if (minDistance < 0.45) confidence = 85;
+            else if (minDistance < 0.5) confidence = 75;
+            else if (minDistance < 0.55) confidence = 60;
+            else confidence = Math.max(0, (1 - minDistance) * 100);
+            
+            const matched = minDistance < currentSecurity.threshold && 
+                           confidence >= currentSecurity.minConfidence;
+            
+            return {
+                matched,
+                confidence: Math.round(confidence),
+                distance: minDistance,
+                avgDistance
+            };
+        }
+        
+        function updateMetrics(result) {
+            // Confidence
+            const confValue = result.confidence + '%';
+            const confElem = document.getElementById('confidenceValue');
+            confElem.textContent = confValue;
+            
+            // Color based on confidence
+            if (result.confidence >= 90) {
+                confElem.style.color = '#4CAF50';
+            } else if (result.confidence >= 70) {
+                confElem.style.color = '#FFC107';
+            } else {
+                confElem.style.color = '#F44336';
+            }
+            
+            // Confidence bar
+            const confFill = document.getElementById('confidenceFill');
+            confFill.style.width = result.confidence + '%';
+            if (result.confidence >= 85) {
+                confFill.style.background = '#4CAF50';
+            } else if (result.confidence >= 70) {
+                confFill.style.background = '#FFC107';
+            } else {
+                confFill.style.background = '#F44336';
+            }
+            
+            // Match quality bar
+            const matchQuality = Math.max(0, 100 - (result.distance * 100));
+            const matchFill = document.getElementById('matchFill');
+            matchFill.style.width = matchQuality + '%';
+            matchFill.style.background = result.matched ? '#4CAF50' : '#F44336';
+        }
+        
+        async function detectFace() {
+            try {
+                return await faceapi
+                    .detectSingleFace(video, new faceapi.SsdMobilenetv1Options({ 
+                        minConfidence: 0.5 
+                    }))
+                    .withFaceLandmarks()
+                    .withFaceDescriptor();
+            } catch (error) {
+                console.error('Detection error:', error);
+                return null;
+            }
+        }
+        
+        async function detectFaceWithQuality() {
+            try {
+                // Create preprocessed canvas for better detection
+                const tempCanvas = document.createElement('canvas');
+                const tempCtx = tempCanvas.getContext('2d');
+                tempCanvas.width = 640;
+                tempCanvas.height = 480;
+                
+                // Apply slight preprocessing
+                tempCtx.filter = 'contrast(1.1) brightness(1.05)';
+                tempCtx.drawImage(video, 0, 0);
+                
+                return await faceapi
+                    .detectSingleFace(tempCanvas, new faceapi.SsdMobilenetv1Options({ 
+                        minConfidence: 0.6
+                    }))
+                    .withFaceLandmarks()
+                    .withFaceDescriptor();
+            } catch (error) {
+                console.error('Detection error:', error);
+                return null;
+            }
+        }
+        
+        function drawBox(box, color, lineWidth = 3) {
+            ctx.strokeStyle = color;
+            ctx.lineWidth = lineWidth;
+            ctx.strokeRect(box.x, box.y, box.width, box.height);
+            
+            // Add corner accents
+            const cornerLength = 20;
+            ctx.lineWidth = lineWidth + 1;
+            
+            // Top-left
+            ctx.beginPath();
+            ctx.moveTo(box.x, box.y + cornerLength);
+            ctx.lineTo(box.x, box.y);
+            ctx.lineTo(box.x + cornerLength, box.y);
+            ctx.stroke();
+            
+            // Top-right
+            ctx.beginPath();
+            ctx.moveTo(box.x + box.width - cornerLength, box.y);
+            ctx.lineTo(box.x + box.width, box.y);
+            ctx.lineTo(box.x + box.width, box.y + cornerLength);
+            ctx.stroke();
+            
+            // Bottom-left
+            ctx.beginPath();
+            ctx.moveTo(box.x, box.y + box.height - cornerLength);
+            ctx.lineTo(box.x, box.y + box.height);
+            ctx.lineTo(box.x + cornerLength, box.y + box.height);
+            ctx.stroke();
+            
+            // Bottom-right
+            ctx.beginPath();
+            ctx.moveTo(box.x + box.width - cornerLength, box.y + box.height);
+            ctx.lineTo(box.x + box.width, box.y + box.height);
+            ctx.lineTo(box.x + box.width, box.y + box.height - cornerLength);
+            ctx.stroke();
+        }
+        
+        function clearProfile() {
+            profileDescriptors = [];
+            captureCount = 0;
+            stopRecognition();
+            updateStatus('Profile cleared', 'warning');
+            document.getElementById('toggleRecognition').disabled = true;
+            document.getElementById('clearProfile').disabled = true;
+            document.getElementById('startCapture').disabled = false;
+            document.getElementById('samplesCount').textContent = '0';
+            document.getElementById('metrics').classList.add('hidden');
+        }
+        
+        function triggerFlash() {
+            const flash = document.getElementById('flash');
+            flash.classList.add('active');
+            setTimeout(() => flash.classList.remove('active'), 300);
+        }
+        
+        function updateStatus(message, type = '') {
+            document.getElementById('statusText').textContent = message;
+            const indicator = document.getElementById('statusIndicator');
+            indicator.className = 'status-indicator';
+            if (type) indicator.classList.add(type);
+        }
+        
+        function updateSecurityLevel() {
+            const level = document.getElementById('securityLevel').value;
+            currentSecurity = SECURITY_LEVELS[level];
+            
+            document.getElementById('thresholdValue').textContent = currentSecurity.threshold;
+            document.getElementById('minConfValue').textContent = currentSecurity.minConfidence + '%';
+            
+            if (profileDescriptors.length > 0 && profileDescriptors.length < currentSecurity.samples) {
+                updateStatus(`Profile has ${profileDescriptors.length} samples, ${currentSecurity.samples} recommended for this security level`, 'warning');
+            }
+        }
+        
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+    </script>
+</body>
+</html>
