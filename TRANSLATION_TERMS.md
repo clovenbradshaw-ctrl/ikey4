@@ -472,7 +472,12 @@
             "createIKeyButton": "Create iKey Emergency ID",
             "locationServices": "LOCATION SERVICES",
             "readyToShare": "Ready for emergency sharing",
-            "noAlerts": "No alerts"
+            "noAlerts": "No alerts",
+            "scannedBannerSubheading": "This iKey belongs to someone else. Your saved iKey is not affected.",
+            "setAsMyKey": "Set as My iKey",
+            "returnToMyKey": "Return to My iKey",
+            "replaceWarning": "Setting this as your iKey will replace your saved iKey. Continue?",
+            "cancel": "Cancel"
         },
         "card": {
             "title": "iKey ID Card Generator",
@@ -967,7 +972,12 @@
             "createIKeyButton": "Crear ID de emergencia iKey",
             "locationServices": "SERVICIOS DE UBICACIÓN",
             "readyToShare": "Listo para compartir en emergencia",
-            "noAlerts": "Sin alertas"
+            "noAlerts": "Sin alertas",
+            "scannedBannerSubheading": "Este iKey pertenece a otra persona. Tu iKey guardado no se ve afectado.",
+            "setAsMyKey": "Establecer como mi iKey",
+            "returnToMyKey": "Volver a mi iKey",
+            "replaceWarning": "Al establecer esto como tu iKey, se reemplazará tu iKey guardado. ¿Continuar?",
+            "cancel": "Cancelar"
         },
         "card": {
             "title": "Generador de Tarjeta de ID de iKey",
@@ -1452,7 +1462,12 @@
             "createIKeyButton": "إنشاء معرّف طوارئ iKey",
             "locationServices": "خدمات الموقع",
             "readyToShare": "جاهز للمشاركة في الطوارئ",
-            "noAlerts": "لا توجد تنبيهات"
+            "noAlerts": "لا توجد تنبيهات",
+            "scannedBannerSubheading": "هذا iKey يخص شخصًا آخر. لا يتأثر iKey المحفوظ لديك.",
+            "setAsMyKey": "تعيينه كـ iKey الخاص بي",
+            "returnToMyKey": "العودة إلى iKey الخاص بي",
+            "replaceWarning": "سيؤدي تعيين هذا كـ iKey الخاص بك إلى استبدال iKey المحفوظ لديك. هل تريد المتابعة؟",
+            "cancel": "إلغاء"
         },
         "card": {
             "title": "مولد بطاقة هوية iKey",
@@ -1931,7 +1946,12 @@
             "createIKeyButton": "Nasnameya FHN ya iKey biafirîne",
             "locationServices": "XIZMETA CIHÛHATÊ",
             "readyToShare": "Ji parvekirina fercî amade ye",
-            "noAlerts": "Hişyarî tune ye"
+            "noAlerts": "Hişyarî tune ye",
+            "scannedBannerSubheading": "Ev iKey ya kesekî din e. iKey'a te ya tomarkirî ne tê bandorkirin.",
+            "setAsMyKey": "Wekî iKey'a min saz bike",
+            "returnToMyKey": "Vegere iKey'a min",
+            "replaceWarning": "Heke ev wekî iKey'a xwe saz bikî, iKey'a tomarkirî ya te dê were guherandin. Bixwazî bidomînî?",
+            "cancel": "Betalke"
         },
         "misc": {
             "apps": "Proton Apps",
@@ -2309,7 +2329,12 @@
             "createIKeyButton": "Samee Aqoonsiga Degdegga iKey",
             "locationServices": "ADEEGYADA GOOBTA",
             "readyToShare": "Diyaar u ah wadaagga degdegga ah",
-            "noAlerts": "Wax digniin ah ma jiraan"
+            "noAlerts": "Wax digniin ah ma jiraan",
+            "scannedBannerSubheading": "iKey-kan wuxuu leeyahay qof kale. iKey-gaaga kaydsan ma saameynayo.",
+            "setAsMyKey": "U deji sida iKey-gayga",
+            "returnToMyKey": "Ku noqo iKey-gayga",
+            "replaceWarning": "Haddii aad tan u dejiso sidii iKey-gaaga, iKey-ga kaydsan waa la beddeli doonaa. Ma doonaysaa inaad sii waddo?",
+            "cancel": "Jooji"
         },
         "misc": {
             "apps": "Proton Apps",
@@ -2687,7 +2712,12 @@
             "createIKeyButton": "创建 iKey 紧急 ID",
             "locationServices": "定位服务",
             "readyToShare": "已准备好紧急共享",
-            "noAlerts": "无警报"
+            "noAlerts": "无警报",
+            "scannedBannerSubheading": "此 iKey 属于他人。你保存的 iKey 不受影响。",
+            "setAsMyKey": "设为我的 iKey",
+            "returnToMyKey": "返回我的 iKey",
+            "replaceWarning": "将其设为你的 iKey 会替换你已保存的 iKey。是否继续？",
+            "cancel": "取消"
         },
         "misc": {
             "apps": "Proton Apps",

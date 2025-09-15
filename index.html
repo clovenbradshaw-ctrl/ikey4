@@ -119,6 +119,16 @@
             margin-left: 10px;
         }
 
+        .my-key-banner {
+            background: #dcfce7;
+            color: var(--success);
+        }
+
+        .scanned-key-banner {
+            background: #fef3c7;
+            color: var(--warning);
+        }
+
         #language-toggle {
             position: absolute;
             top: 10px;
@@ -1283,6 +1293,20 @@
         .modal-actions input:focus {
             outline: none;
             border-color: var(--primary);
+        }
+
+        .modal-button {
+            padding: 12px 20px;
+            border-radius: var(--radius);
+            border: 2px solid var(--border);
+            background: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .modal-button:hover {
+            background: var(--light);
         }
         .qr-modal-content {
             width: 90%;
