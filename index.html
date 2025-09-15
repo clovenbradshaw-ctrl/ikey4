@@ -109,14 +109,46 @@
             text-align: center;
             padding: 8px 10px;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
         }
 
         .key-banner.hidden {
             display: none;
         }
 
-        .key-banner .btn {
-            margin-left: 10px;
+        .key-banner .banner-texts {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .key-banner .banner-subheading {
+            font-size: 0.85rem;
+            font-weight: 400;
+        }
+
+        .key-banner .banner-icon {
+            font-size: 1.5rem;
+        }
+
+        .key-banner .return-btn {
+            position: absolute;
+            top: 8px;
+            right: 10px;
+            font-size: 1.1rem;
+        }
+
+        .my-key-banner {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .scanned-key-banner {
+            background: #fee2e2;
+            color: #7f1d1d;
         }
 
         #language-toggle {
@@ -2026,8 +2058,12 @@
     </header>
 
     <div id="key-banner" class="key-banner hidden">
-        <span id="key-banner-text"></span>
-        <button id="back-to-my-key" class="btn btn-secondary hidden" onclick="returnToMyKey()" data-i18n="home.backToMyKey">Back to My iKey</button>
+        <span id="key-banner-icon" class="banner-icon" role="img" aria-label=""></span>
+        <div class="banner-texts">
+            <span id="key-banner-text" class="banner-title"></span>
+            <span id="key-banner-subheading" class="banner-subheading"></span>
+        </div>
+        <button id="back-to-my-key" class="btn btn-primary return-btn hidden" onclick="returnToMyKey()" data-i18n="home.returnToMyKey">Return to My iKey</button>
     </div>
 
     <!-- Tab Navigation -->
@@ -5934,6 +5970,8 @@ Generated: ${new Date().toLocaleString()}`;
         function updateKeyBanner() {
             const banner = document.getElementById('key-banner');
             const textEl = document.getElementById('key-banner-text');
+            const subEl = document.getElementById('key-banner-subheading');
+            const iconEl = document.getElementById('key-banner-icon');
             const backBtn = document.getElementById('back-to-my-key');
             if (!banner || !textEl) return;
             if (!displayData) {
@@ -5943,18 +5981,47 @@ Generated: ${new Date().toLocaleString()}`;
             const myEmail = localStorage.getItem('myKeyEmail');
             const myHash = localStorage.getItem('myKeyData');
             isOwnKey = myEmail && displayData.pe && displayData.pe === myEmail;
-            textEl.textContent = isOwnKey ? 'My iKey' : 'Scanned Card';
-            textEl.dataset.i18n = isOwnKey ? 'home.myIKey' : 'home.scannedCard';
-            if (backBtn) {
-                backBtn.dataset.i18n = 'home.backToMyKey';
+
+            banner.classList.remove('my-key-banner', 'scanned-key-banner');
+
+            if (isOwnKey) {
+                textEl.textContent = t('home.myIKey', 'My iKey');
+                textEl.dataset.i18n = 'home.myIKey';
+                if (subEl) {
+                    subEl.textContent = '';
+                    subEl.classList.add('hidden');
+                }
+                if (iconEl) {
+                    iconEl.textContent = '👤';
+                    iconEl.dataset.i18nAria = 'home.userIcon';
+                }
+                if (backBtn) backBtn.classList.add('hidden');
+                banner.classList.add('my-key-banner');
+            } else {
+                const bannerText = displayData.n || displayData.pe;
+                if (bannerText) {
+                    textEl.textContent = bannerText;
+                    textEl.removeAttribute('data-i18n');
+                } else {
+                    textEl.textContent = t('home.scannedIKey', 'scanned iKey');
+                    textEl.dataset.i18n = 'home.scannedIKey';
+                }
+                if (subEl) {
+                    subEl.textContent = t('home.scannedKeyWarning', 'This iKey belongs to someone else. Your saved iKey is not affected.');
+                    subEl.dataset.i18n = 'home.scannedKeyWarning';
+                    subEl.classList.remove('hidden');
+                }
+                if (iconEl) {
+                    iconEl.textContent = 'ℹ️';
+                    iconEl.dataset.i18nAria = 'home.infoIcon';
+                }
+                if (backBtn) {
+                    backBtn.classList.toggle('hidden', !myHash);
+                    backBtn.dataset.i18n = 'home.returnToMyKey';
+                }
+                banner.classList.add('scanned-key-banner');
             }
             translateFragment(banner);
-            if (isOwnKey) {
-                backBtn.classList.add('hidden');
-            } else {
-                if (myHash) backBtn.classList.remove('hidden');
-                else backBtn.classList.add('hidden');
-            }
             banner.classList.remove('hidden');
             if (bookmarkManager) bookmarkManager.render();
         }
