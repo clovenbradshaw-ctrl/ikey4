@@ -2591,7 +2591,7 @@
                 <button class="btn btn-primary" onclick="confirmLocationRequest()" data-i18n="location.share">Share Location</button><span class="info-icon" tabindex="0" data-tooltip="Gets GPS from your device; nothing is stored or sent automatically.">ℹ️</span>
             </div>
         </div>
-    </div>
+</div>
 </div>
 
 <!-- About Modal -->
@@ -2607,6 +2607,24 @@
             <p data-i18n="about.security">You can set a password to encrypt your saved data so only you can read it.</p>
             <p data-i18n="about.clear">To clear your data, open your browser settings and remove site data for this page or use the "Clear browsing data" option.</p>
             <p data-i18n="about.trainingLink"><a href="resources/training/index.html">Training Materials</a></p>
+        </div>
+    </div>
+</div>
+
+<!-- Set My Key Modal -->
+<div id="set-my-key-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="set-my-key-title" tabindex="-1" aria-hidden="true">
+    <div class="modal-content" style="max-width: 500px;">
+        <div class="modal-header" style="padding: 20px; border-bottom: 1px solid var(--border);">
+            <h3 id="set-my-key-title" data-i18n="setKeyModal.title" style="margin: 0;">Set as My iKey?</h3>
+            <button class="modal-close" onclick="closeSetMyKeyModal()">×</button>
+        </div>
+        <div style="padding: 20px;">
+            <p id="set-my-key-text"></p>
+            <p id="set-my-key-warning" style="color: var(--danger); font-weight: 600;"></p>
+            <div class="modal-actions" style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
+                <button class="btn btn-secondary" onclick="closeSetMyKeyModal()" data-i18n="setKeyModal.cancel">Cancel</button>
+                <button class="btn btn-primary" onclick="handleSetMyKeyConfirm()" data-i18n="setKeyModal.confirm">Set as My iKey</button>
+            </div>
         </div>
     </div>
 </div>
@@ -3362,16 +3380,54 @@ let lastGeneratedDataString = null;
 let lastGeneratedPhoto = '';
 let dataListenersSet = false;
 let pendingMyKeyHash = null;
+let setMyKeyPending = { email: null, hash: null, name: null };
 
 updateWizardDisplay();
 
-function promptSetAsMyKey(email, hash, name) {
+function showSetMyKeyModal(email, hash, name) {
     if (!email) return;
-    if (confirm('Set this as my iKey on this device?')) {
-        if (hash) localStorage.setItem('myKeyData', hash);
-        localStorage.setItem('myKeyEmail', email);
-        if (name) localStorage.setItem('myKeyName', name);
+    setMyKeyPending = { email, hash, name };
+    const modal = document.getElementById('set-my-key-modal');
+    if (!modal) return;
+    const textEl = document.getElementById('set-my-key-text');
+    const warnEl = document.getElementById('set-my-key-warning');
+    const label = name || email;
+    textEl.textContent = t('setKeyModal.body').replace('%s', label);
+    const existingName = localStorage.getItem('myKeyName');
+    const existingEmail = localStorage.getItem('myKeyEmail');
+    if (existingName || existingEmail) {
+        const existing = existingName || existingEmail;
+        warnEl.textContent = t('setKeyModal.replaceWarning').replace('%s', existing);
+    } else {
+        warnEl.textContent = '';
     }
+    lastFocusedElement = document.getElementById('back-to-my-key');
+    if (!lastFocusedElement) {
+        lastFocusedElement = document.getElementById('display-view');
+        if (lastFocusedElement) lastFocusedElement.setAttribute('tabindex', '-1');
+    }
+    modal.classList.remove('hidden');
+    modal.setAttribute('aria-hidden', 'false');
+    trapFocus(modal, closeSetMyKeyModal);
+}
+
+function closeSetMyKeyModal() {
+    const modal = document.getElementById('set-my-key-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.setAttribute('aria-hidden', 'true');
+        releaseFocus(modal);
+    }
+}
+
+function handleSetMyKeyConfirm() {
+    const { email, hash, name } = setMyKeyPending;
+    if (!email) return;
+    if (hash) localStorage.setItem('myKeyData', hash);
+    localStorage.setItem('myKeyEmail', email);
+    if (name) localStorage.setItem('myKeyName', name);
+    closeSetMyKeyModal();
+    updateKeyBanner();
 }
 
         function compressData(data) {
@@ -3769,7 +3825,7 @@ function promptSetAsMyKey(email, hash, name) {
 
             displayData = cleanData;
             renderHomeStatus();
-            promptSetAsMyKey(cleanData.pe, compressed, cleanData.n);
+            showSetMyKeyModal(cleanData.pe, compressed, cleanData.n);
             updateKeyBanner();
 
             document.getElementById('wizard-view').classList.add('hidden');
@@ -5735,7 +5791,7 @@ Generated: ${new Date().toLocaleString()}`;
             displayData = data;
             renderHomeStatus();
             if (pendingMyKeyHash && data.pe) {
-                promptSetAsMyKey(data.pe, pendingMyKeyHash, data.n);
+                showSetMyKeyModal(data.pe, pendingMyKeyHash, data.n);
                 pendingMyKeyHash = null;
             }
             updateKeyBanner();
