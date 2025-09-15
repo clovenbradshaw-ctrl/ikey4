@@ -3259,9 +3259,9 @@
         }
 
         function applyHiddenTabs() {
-            let hidden = JSON.parse(localStorage.getItem('hiddenTabs') || '[]');
+            let hidden = JSON.parse(localStorage.getItem(`${storagePrefix}_hiddenTabs`) || '[]');
             hidden = hidden.filter(tab => !nonHideableTabs.includes(tab));
-            localStorage.setItem('hiddenTabs', JSON.stringify(hidden));
+            localStorage.setItem(`${storagePrefix}_hiddenTabs`, JSON.stringify(hidden));
             allTabs.forEach(tab => {
                 const btn = getTabButton(tab);
                 if (btn) {
@@ -3280,7 +3280,7 @@
 
         function toggleTabVisibility(tab, isVisible) {
             if (nonHideableTabs.includes(tab)) return;
-            let hidden = JSON.parse(localStorage.getItem('hiddenTabs') || '[]');
+            let hidden = JSON.parse(localStorage.getItem(`${storagePrefix}_hiddenTabs`) || '[]');
             if (!isVisible) {
                 if (!hidden.includes(tab)) hidden.push(tab);
                 const active = document.querySelector('.tab-content.active');
@@ -3290,7 +3290,7 @@
             } else {
                 hidden = hidden.filter(t => t !== tab);
             }
-            localStorage.setItem('hiddenTabs', JSON.stringify(hidden));
+            localStorage.setItem(`${storagePrefix}_hiddenTabs`, JSON.stringify(hidden));
             applyHiddenTabs();
         }
 
@@ -3332,7 +3332,7 @@ function promptSetAsMyKey(email, hash, name) {
             return LZString.decompressFromEncodedURIComponent(data);
         }
 
-        const storagePrefix = window.location.hash.slice(1) || 'default';
+        let storagePrefix = window.location.hash.slice(1) || 'default';
         const storage = {
             get: (key) => localStorage.getItem(`${storagePrefix}_${key}`),
             set: (key, value) => localStorage.setItem(`${storagePrefix}_${key}`, value)
@@ -3455,6 +3455,7 @@ function promptSetAsMyKey(email, hash, name) {
         
 
         function validateStep(step) {
+            if (displayData && !isOwnKey) return true;
             if (step === 2) {
                 const email = document.getElementById('secure-email').value.trim();
                 const regex = /^[^\s@]+@(proton\.me|protonmail\.com|protonmail\.ch|pm\.me)$/i;
@@ -4094,7 +4095,7 @@ function promptSetAsMyKey(email, hash, name) {
                     keyData[k.slice(storagePrefix.length + 1)] = localStorage.getItem(k);
                 }
             }
-            const bookmarks = JSON.parse(localStorage.getItem('homeBookmarks') || '[]');
+            const bookmarks = JSON.parse(localStorage.getItem(`${storagePrefix}_homeBookmarks`) || '[]');
             const backup = { key: storagePrefix, data: keyData, bookmarks };
             const text = JSON.stringify(backup, null, 2);
             const sendEmail = confirm(t('messages.sendBackupEmail'));
@@ -4427,7 +4428,7 @@ END:VCALENDAR`;
 
         class BookmarkManager {
             constructor() {
-                this.bookmarks = JSON.parse(localStorage.getItem('homeBookmarks') || '[]');
+                this.bookmarks = JSON.parse(localStorage.getItem(`${storagePrefix}_homeBookmarks`) || '[]');
                 this.editMode = false;
                 this.longPressTimer = null;
                 this.draggedElement = null;
@@ -4662,6 +4663,7 @@ END:VCALENDAR`;
             }
 
             startLongPress() {
+                if (displayData && !isOwnKey) return;
                 this.longPressTimer = setTimeout(() => {
                     this.enterEditMode();
                 }, 1500);
@@ -4740,6 +4742,7 @@ END:VCALENDAR`;
             }
 
             enterEditMode() {
+                if (displayData && !isOwnKey) return;
                 this.editMode = true;
                 this.render();
             }
@@ -4750,6 +4753,7 @@ END:VCALENDAR`;
             }
 
             openAddModal() {
+                if (displayData && !isOwnKey) return;
                 const existingModal = document.querySelector('.bookmark-modal');
                 if (existingModal) {
                     existingModal.remove();
@@ -4931,6 +4935,7 @@ END:VCALENDAR`;
             }
 
             addProtonApp(appId) {
+                if (displayData && !isOwnKey) return;
                 const app = this.protonApps[appId];
                 if (app) {
                     this.bookmarks.push({
@@ -4944,6 +4949,7 @@ END:VCALENDAR`;
             }
 
             addQuickAction(actionType) {
+                if (displayData && !isOwnKey) return;
                 const actions = {
                     'call-911': { name: 'Emergency', url: 'tel:911', icon: '🚨' },
                     'text-911': { name: 'Text 911', url: 'sms:', icon: '💬' },
@@ -4964,6 +4970,7 @@ END:VCALENDAR`;
             }
 
             addInternalPage(pageId) {
+                if (displayData && !isOwnKey) return;
                 const pages = {
                     ikey: { name: 'iKey Emergency ID', icon: '🏥' },
                     'emergency': { name: 'Emergency', icon: '🚨' },
@@ -4990,6 +4997,7 @@ END:VCALENDAR`;
             }
 
             addCustomBookmark() {
+                if (displayData && !isOwnKey) return;
                 const type = document.getElementById('custom-type').value;
                 const name = document.getElementById('custom-name')?.value;
 
@@ -5048,6 +5056,7 @@ END:VCALENDAR`;
             }
 
             removeBookmark(index) {
+                if (displayData && !isOwnKey) return;
                 if (confirm(t('messages.removeBookmark'))) {
                     this.bookmarks.splice(index, 1);
                     this.save();
@@ -5055,6 +5064,7 @@ END:VCALENDAR`;
             }
 
             moveBookmark(fromIndex, toIndex) {
+                if (displayData && !isOwnKey) return;
                 if (fromIndex === toIndex) return;
 
                 const [moved] = this.bookmarks.splice(fromIndex, 1);
@@ -5094,7 +5104,7 @@ END:VCALENDAR`;
             }
 
             save() {
-                localStorage.setItem('homeBookmarks', JSON.stringify(this.bookmarks));
+                localStorage.setItem(`${storagePrefix}_homeBookmarks`, JSON.stringify(this.bookmarks));
                 this.render();
             }
         }
@@ -5931,6 +5941,42 @@ Generated: ${new Date().toLocaleString()}`;
             translateFragment(container);
         } // This closing brace was missing!
 
+        function applyOwnershipPermissions() {
+            const editingDisabled = displayData && !isOwnKey;
+            const addBtn = document.querySelector('.add-bookmark-btn');
+            if (addBtn) {
+                if (editingDisabled) {
+                    addBtn.setAttribute('disabled', 'true');
+                    addBtn.title = 'Editing is disabled for scanned iKeys.';
+                } else {
+                    addBtn.removeAttribute('disabled');
+                    addBtn.title = t('wizard.addBookmark', 'Add Bookmark');
+                }
+            }
+
+            const emergencyFields = document.querySelectorAll('#ec-name, #ec-phone, #ec-relationship, #cm-name, #cm-org, #cm-phone');
+            emergencyFields.forEach(field => {
+                if (editingDisabled) {
+                    field.setAttribute('disabled', 'true');
+                    field.title = 'Editing is disabled for scanned iKeys.';
+                } else {
+                    field.removeAttribute('disabled');
+                    field.removeAttribute('title');
+                }
+            });
+
+            const emergencyEditButtons = document.querySelectorAll('.emergency-edit-btn');
+            emergencyEditButtons.forEach(btn => {
+                if (editingDisabled) {
+                    btn.setAttribute('disabled', 'true');
+                    btn.title = 'Editing is disabled for scanned iKeys.';
+                } else {
+                    btn.removeAttribute('disabled');
+                    btn.removeAttribute('title');
+                }
+            });
+        }
+
         function updateKeyBanner() {
             const banner = document.getElementById('key-banner');
             const textEl = document.getElementById('key-banner-text');
@@ -5956,14 +6002,41 @@ Generated: ${new Date().toLocaleString()}`;
                 else backBtn.classList.add('hidden');
             }
             banner.classList.remove('hidden');
-            if (bookmarkManager) bookmarkManager.render();
+            if (bookmarkManager) {
+                if (displayData && !isOwnKey) bookmarkManager.editMode = false;
+                bookmarkManager.render();
+            }
+            applyOwnershipPermissions();
         }
 
         function returnToMyKey() {
             const myHash = localStorage.getItem('myKeyData');
             if (myHash) {
                 window.location.hash = myHash;
-                location.reload();
+                storagePrefix = myHash;
+                try {
+                    const data = JSON.parse(decompressData(myHash));
+                    displayData = data;
+                    initializeDisplayView(data);
+                } catch (e) {
+                    console.error('Failed to load my key:', e);
+                }
+                applyHiddenTabs();
+                if (bookmarkManager) {
+                    bookmarkManager.bookmarks = JSON.parse(localStorage.getItem(`${storagePrefix}_homeBookmarks`) || '[]');
+                    bookmarkManager.editMode = false;
+                    bookmarkManager.render();
+                }
+                const dispatchFrame = document.querySelector('#dispatch iframe');
+                if (dispatchFrame) {
+                    dispatchFrame.src = `dispatch.html?key=${encodeURIComponent(storagePrefix)}`;
+                }
+                const inviteAppLink = document.querySelector('a.app-card[href="invite.html"]');
+                if (inviteAppLink) {
+                    inviteAppLink.href = `invite.html?key=${encodeURIComponent(storagePrefix)}`;
+                }
+                switchTab('home');
+                updateKeyBanner();
             }
         }
 
