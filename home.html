@@ -213,13 +213,17 @@
 
     let editMode = false;
     let favoriteApps = JSON.parse(localStorage.getItem('protonBookmarks') || '[]').filter(Boolean);
-    if (!favoriteApps.includes('readynow')) {
-      favoriteApps.unshift('readynow');
-    }
+    let favoritesUpdated = false;
 
     if (favoriteApps.length === 0) {
       favoriteApps = ['readynow'];
+      favoritesUpdated = true;
+    } else if (!favoriteApps.includes('readynow')) {
+      favoriteApps.unshift('readynow');
+      favoritesUpdated = true;
+    }
 
+    if (favoritesUpdated) {
       localStorage.setItem('protonBookmarks', JSON.stringify(favoriteApps));
     }
 

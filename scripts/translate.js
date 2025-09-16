@@ -65,4 +65,8 @@ window.translateFragment = translateFragment;
 window.t = t;
 window.setLanguage = setLanguage;
 
-document.addEventListener('DOMContentLoaded', loadTranslations);
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', loadTranslations, { once: true });
+} else {
+  loadTranslations();
+}
