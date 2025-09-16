@@ -213,22 +213,8 @@
 
     let editMode = false;
     let favoriteApps = JSON.parse(localStorage.getItem('protonBookmarks') || '[]').filter(Boolean);
-    let favoritesUpdated = false;
-
-    if (favoriteApps.length === 0) {
-      favoriteApps = ['readynow'];
-      favoritesUpdated = true;
-    } else if (!favoriteApps.includes('readynow')) {
-      favoriteApps.unshift('readynow');
-      favoritesUpdated = true;
-    }
-
-    if (favoritesUpdated) {
-      localStorage.setItem('protonBookmarks', JSON.stringify(favoriteApps));
-    }
 
     const PROTON_APPS = [
-      { id: 'readynow', name: 'ReadyNow', url: 'readynow.html', icon: 'https://www.literacypittsburgh.org/uploads/thumb/website-news-template-(1)_008.png' },
       { id: 'mail', name: 'Proton Mail', url: 'https://account.proton.me/mail', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fmail_xxy4bg.svg' },
       { id: 'drive', name: 'Proton Drive', url: 'https://drive.proton.me/', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fdrive_wo2nx4.svg' },
       { id: 'vpn', name: 'Proton VPN', url: 'https://account.protonvpn.com/dashboard', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fvpn_f9embt.svg' },
