@@ -3194,6 +3194,9 @@
             get: (key) => localStorage.getItem(`${storagePrefix}_${key}`),
             set: (key, value) => localStorage.setItem(`${storagePrefix}_${key}`, value)
         };
+        let displayData = null;
+        let isOwnKey = false;
+        let bookmarkManager;
 
         // Toggle resource dropdown
         function toggleResourceMenu() {
@@ -5229,8 +5232,6 @@ END:VCALENDAR`;
             }
         }
 
-        let bookmarkManager;
-
         const CODE_ALPHABET = '23456789CFGHJMPQRVWX';
 
         function encodePlusCode(latitude, longitude) {
@@ -5698,9 +5699,6 @@ Generated: ${new Date().toLocaleString()}`;
                 loadWeatherForCity(cityName);
             }
         }
-
-        let displayData = null;
-        let isOwnKey = false;
 
         function showEmergencyModal(data) {
             const modal = document.getElementById('emergency-modal');
