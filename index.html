@@ -2215,13 +2215,13 @@
 
                     <!-- Step 2: Secure Email -->
                     <div class="wizard-step" data-step="2">
-                        <h2>Secure Email <span class="info-icon" tabindex="0" data-tooltip="iKey uses your email as an identifier. Proton offers end-to-end encryption, but any address works.">ℹ️</span></h2>
+                        <h2>Secure Email <span class="info-icon" tabindex="0" data-tooltip="iKey uses your email as an identifier. Proton is a privacy-focused option, but any address works.">ℹ️</span></h2>
                         <div class="form-group" style="margin-top:10px;">
-                            <label for="secure-email" class="label-purple">Secure Email * <span class="info-icon" tabindex="0" data-tooltip="iKey never reads your mail or contacts Proton. Using an encrypted provider keeps your address private.">ℹ️</span></label>
-                            <input type="email" id="secure-email" placeholder="you@proton.me" required>
+                            <label for="secure-email" class="label-purple">Secure Email * <span class="info-icon" tabindex="0" data-tooltip="iKey never reads your mail or contacts your provider. Choosing an encrypted service keeps your address private.">ℹ️</span></label>
+                            <input type="email" id="secure-email" placeholder="you@example.com" required>
                         </div>
                         <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
-                            <a href="https://account.proton.me/signup" target="_blank" class="btn btn-primary">Create Account</a><span class="info-icon" tabindex="0" data-tooltip="You can use any email provider; Proton is suggested for its encryption.">ℹ️</span>
+                            <a href="https://account.proton.me/signup" target="_blank" class="btn btn-primary">Create Account</a><span class="info-icon" tabindex="0" data-tooltip="You can use any email provider; Proton is suggested for its encryption benefits.">ℹ️</span>
                             <a href="https://account.proton.me/u/13/safety-review/phrase" target="_blank" class="btn btn-secondary">Download Kit</a>
                         </div>
                         <p style="margin-top: 10px; color: var(--secondary); font-size: 0.9rem;">
@@ -3564,9 +3564,9 @@ function handleSetMyKeyConfirm() {
             if (displayData && !isOwnKey) return true;
             if (step === 2) {
                 const email = document.getElementById('secure-email').value.trim();
-                const regex = /^[^\s@]+@(proton\.me|protonmail\.com|protonmail\.ch|pm\.me)$/i;
+                const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 if (!regex.test(email)) {
-                    alert('Please enter a valid Proton email address');
+                    alert('Please enter a valid email address');
                     return false;
                 }
             }
