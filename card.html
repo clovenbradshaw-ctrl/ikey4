@@ -678,7 +678,6 @@
                     </div>
                 </div>
                 <div class="photo-controls">
-                    <button class="photo-btn" onclick="capturePhoto()" data-i18n="card.takePhoto">📸 Take Photo</button>
                     <button class="photo-btn" onclick="document.getElementById('fileInput').click()" data-i18n="card.uploadPhoto">📁 Upload Photo</button>
                     <button class="photo-btn remove-photo" onclick="removePhoto()" style="display:none;" id="removeBtn" data-i18n="card.removePhoto">❌ Remove</button>
                     <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">
@@ -1076,92 +1075,6 @@
                 }
             }
 
-        }
-
-        function capturePhoto() {
-            const video = document.createElement('video');
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-
-            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
-                .then(stream => {
-                    video.srcObject = stream;
-                    video.play();
-
-                    const captureUI = document.createElement('div');
-                    captureUI.style.cssText = `
-                        position: fixed;
-                        top: 0;
-                        left: 0;
-                        right: 0;
-                        bottom: 0;
-                        background: rgba(0,0,0,0.9);
-                        z-index: 9999;
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                        justify-content: center;
-                    `;
-
-                    video.style.cssText = `
-                        width: 250px;
-                        height: 300px;
-                        border-radius: 12px;
-                        object-fit: cover;
-                    `;
-
-                    const captureBtn = document.createElement('button');
-                    captureBtn.textContent = '📸 Capture';
-                    captureBtn.style.cssText = `
-                        margin-top: 20px;
-                        padding: 12px 30px;
-                        background: #4CAF50;
-                        color: white;
-                        border: none;
-                        border-radius: 8px;
-                        font-size: 1.1rem;
-                        cursor: pointer;
-                        font-weight: 600;
-                    `;
-
-                    const cancelBtn = document.createElement('button');
-                    cancelBtn.textContent = 'Cancel';
-                    cancelBtn.style.cssText = `
-                        margin-top: 10px;
-                        padding: 10px 25px;
-                        background: #666;
-                        color: white;
-                        border: none;
-                        border-radius: 8px;
-                        cursor: pointer;
-                    `;
-
-                    captureUI.appendChild(video);
-                    captureUI.appendChild(captureBtn);
-                    captureUI.appendChild(cancelBtn);
-                    document.body.appendChild(captureUI);
-
-                    captureBtn.onclick = () => {
-                        canvas.width = video.videoWidth;
-                        canvas.height = video.videoHeight;
-                        context.drawImage(video, 0, 0);
-
-                        photoData = canvas.toDataURL('image/jpeg');
-                        displayPhoto(photoData);
-
-                        stream.getTracks().forEach(track => track.stop());
-                        document.body.removeChild(captureUI);
-                    };
-
-                    cancelBtn.onclick = () => {
-                        stream.getTracks().forEach(track => track.stop());
-                        document.body.removeChild(captureUI);
-                    };
-                })
-                .catch(err => {
-                    alert('Camera access denied or not available');
-                    console.error(err);
-                });
         }
 
         function handleFileSelect(event) {

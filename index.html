@@ -2276,7 +2276,6 @@
                         <div class="form-group">
                             <label for="photo-upload" class="label-gray">Photo (optional)</label>
                             <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
-                                <button type="button" id="photo-capture" class="btn btn-secondary" data-i18n="card.takePhoto">📸 Take Photo</button>
                                 <button type="button" id="photo-upload-btn" class="btn btn-secondary" data-i18n="card.uploadPhoto">📁 Upload Photo</button>
                                 <button type="button" id="photo-remove" class="btn btn-secondary" style="display:none;" data-i18n="card.removePhoto">❌ Remove</button>
                             </div>
@@ -3973,93 +3972,6 @@ function handleSetMyKeyConfirm() {
                 preview.innerHTML = '';
                 if (removeBtn) removeBtn.style.display = 'none';
             }
-        }
-
-        function capturePhoto() {
-            const video = document.createElement('video');
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-
-            navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
-                .then(stream => {
-                    video.srcObject = stream;
-                    video.play();
-
-                    const captureUI = document.createElement('div');
-                    captureUI.style.cssText = `
-                        position: fixed;
-                        top: 0;
-                        left: 0;
-                        right: 0;
-                        bottom: 0;
-                        background: rgba(0,0,0,0.9);
-                        z-index: 9999;
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                        justify-content: center;
-                    `;
-
-                    video.style.cssText = `
-                        width: 250px;
-                        height: 300px;
-                        border-radius: 12px;
-                        object-fit: cover;
-                    `;
-
-                    const captureBtn = document.createElement('button');
-                    captureBtn.textContent = '📸 Capture';
-                    captureBtn.style.cssText = `
-                        margin-top: 20px;
-                        padding: 12px 30px;
-                        background: #4CAF50;
-                        color: white;
-                        border: none;
-                        border-radius: 8px;
-                        font-size: 1.1rem;
-                        cursor: pointer;
-                        font-weight: 600;
-                    `;
-
-                    const cancelBtn = document.createElement('button');
-                    cancelBtn.textContent = 'Cancel';
-                    cancelBtn.style.cssText = `
-                        margin-top: 10px;
-                        padding: 10px 25px;
-                        background: #666;
-                        color: white;
-                        border: none;
-                        border-radius: 8px;
-                        cursor: pointer;
-                    `;
-
-                    captureUI.appendChild(video);
-                    captureUI.appendChild(captureBtn);
-                    captureUI.appendChild(cancelBtn);
-                    document.body.appendChild(captureUI);
-
-                    captureBtn.onclick = () => {
-                        canvas.width = video.videoWidth;
-                        canvas.height = video.videoHeight;
-                        context.drawImage(video, 0, 0);
-
-                        localStorage.setItem(photoKey, canvas.toDataURL('image/jpeg'));
-                        loadPhoto();
-                        checkForReprint();
-
-                        stream.getTracks().forEach(track => track.stop());
-                        document.body.removeChild(captureUI);
-                    };
-
-                    cancelBtn.onclick = () => {
-                        stream.getTracks().forEach(track => track.stop());
-                        document.body.removeChild(captureUI);
-                    };
-                })
-                .catch(err => {
-                    alert('Camera access denied or not available');
-                    console.error(err);
-                });
         }
 
         function handlePhotoUpload(e) {
@@ -6652,11 +6564,9 @@ Generated: ${new Date().toLocaleString()}`;
 
             const photoInput = document.getElementById('photo-upload');
             const removeBtn = document.getElementById('photo-remove');
-            const captureBtn = document.getElementById('photo-capture');
             const uploadBtn = document.getElementById('photo-upload-btn');
             if (photoInput) photoInput.addEventListener('change', handlePhotoUpload);
             if (removeBtn) removeBtn.addEventListener('click', removePhoto);
-            if (captureBtn) captureBtn.addEventListener('click', capturePhoto);
             if (uploadBtn) uploadBtn.addEventListener('click', () => photoInput && photoInput.click());
             loadPhoto();
 
