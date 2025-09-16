@@ -3177,6 +3177,24 @@
 
     <script>
 
+        if (typeof window.t !== 'function') {
+            window.t = function(key, defaultValue) {
+                return defaultValue || key;
+            };
+        }
+        if (typeof window.translateFragment !== 'function') {
+            window.translateFragment = function() {};
+        }
+        if (typeof window.setLanguage !== 'function') {
+            window.setLanguage = function() {};
+        }
+
+        let storagePrefix = window.location.hash.slice(1) || 'default';
+        const storage = {
+            get: (key) => localStorage.getItem(`${storagePrefix}_${key}`),
+            set: (key, value) => localStorage.setItem(`${storagePrefix}_${key}`, value)
+        };
+
         // Toggle resource dropdown
         function toggleResourceMenu() {
             const menu = document.getElementById('resource-menu');
@@ -3438,12 +3456,6 @@ function handleSetMyKeyConfirm() {
             return LZString.decompressFromEncodedURIComponent(data);
         }
 
-        let storagePrefix = window.location.hash.slice(1) || 'default';
-        const storage = {
-            get: (key) => localStorage.getItem(`${storagePrefix}_${key}`),
-            set: (key, value) => localStorage.setItem(`${storagePrefix}_${key}`, value)
-        };
-
         function setupPhoneInput(id) {
             const input = document.getElementById(id);
             if (!input) return;
@@ -3523,6 +3535,8 @@ function handleSetMyKeyConfirm() {
         }
 
         function updateWizardDisplay() {
+            console.log('Current step:', currentStep);
+            console.log('Display data:', displayData);
             const progressPercent = ((currentStep - 1) / 6) * 100;
             const filled = document.querySelector('.progress-line-filled');
             if (filled) {
@@ -6563,7 +6577,9 @@ Generated: ${new Date().toLocaleString()}`;
                 renderHomeStatus();
             }
             if (document.getElementById('favorites-section')) {
-                bookmarkManager = new BookmarkManager();
+                setTimeout(() => {
+                    bookmarkManager = new BookmarkManager();
+                }, 100);
             }
             fetch('dispatch.html', {method: 'HEAD'}).then(r => {
                 if (r.ok) {
@@ -6696,7 +6712,12 @@ Generated: ${new Date().toLocaleString()}`;
 
     <script>
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').catch(err => console.error('SW registration failed', err));
+            navigator.serviceWorker.register('sw.js')
+                .then(() => console.log('SW registered'))
+                .catch(err => {
+                    console.error('SW registration failed:', err);
+                    // Continue without service worker
+                });
         }
     </script>
     <script>

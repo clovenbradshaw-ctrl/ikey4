@@ -62,5 +62,7 @@ if (languageBtn && languageMenu) {
 }
 
 window.translateFragment = translateFragment;
+window.t = t;
+window.setLanguage = setLanguage;
 
 document.addEventListener('DOMContentLoaded', loadTranslations);
