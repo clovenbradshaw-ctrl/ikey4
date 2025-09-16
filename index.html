@@ -3574,7 +3574,35 @@ function handleSetMyKeyConfirm() {
             document.getElementById('btn-generate').classList.toggle('hidden', currentStep !== 7);
         }
 
-        
+
+        function createDateFromInputs(monthStr, dayStr, yearStr) {
+            const month = parseInt(monthStr, 10);
+            const day = parseInt(dayStr, 10);
+            const year = parseInt(yearStr, 10);
+
+            if ([month, day, year].some(value => Number.isNaN(value))) {
+                return null;
+            }
+
+            const date = new Date(year, month - 1, day);
+            if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
+                return null;
+            }
+
+            return date;
+        }
+
+        function formatStoredDate(dateString) {
+            if (!dateString) return '';
+            const parts = dateString.split('-');
+            if (parts.length !== 3) return dateString;
+            const [yearStr, monthStr, dayStr] = parts;
+            const date = createDateFromInputs(monthStr, dayStr, yearStr);
+            if (!date) return dateString;
+            return date.toLocaleDateString();
+        }
+
+
 
         function validateStep(step) {
             if (displayData && !isOwnKey) return true;
@@ -3593,12 +3621,12 @@ function handleSetMyKeyConfirm() {
                     alert('Please enter your name');
                     return false;
                 }
-                const m = document.getElementById('dob-month').value;
-                const d = document.getElementById('dob-day').value;
-                const y = document.getElementById('dob-year').value;
+                const m = document.getElementById('dob-month').value.trim();
+                const d = document.getElementById('dob-day').value.trim();
+                const y = document.getElementById('dob-year').value.trim();
                 if (m || d || y) {
-                    const date = new Date(`${y}-${m}-${d}`);
-                    if (isNaN(date) || date.getMonth() + 1 != parseInt(m) || date.getDate() != parseInt(d) || date.getFullYear() != parseInt(y)) {
+                    const date = createDateFromInputs(m, d, y);
+                    if (!date) {
                         alert('Please enter a valid date of birth');
                         return false;
                     }
@@ -3689,9 +3717,9 @@ function handleSetMyKeyConfirm() {
                 })(),
                 ph: document.getElementById('phone').value.trim(),
                 d: (function(){
-                    const m = document.getElementById('dob-month').value;
-                    const d = document.getElementById('dob-day').value;
-                    const y = document.getElementById('dob-year').value;
+                    const m = document.getElementById('dob-month').value.trim();
+                    const d = document.getElementById('dob-day').value.trim();
+                    const y = document.getElementById('dob-year').value.trim();
                     if (m && d && y) {
                         return `${y.padStart(4,'0')}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
                     }
@@ -3773,7 +3801,7 @@ function handleSetMyKeyConfirm() {
                 ${formData.d ? `
                 <div class="info-card">
                     <div class="subtitle-text">Date of Birth</div>
-                    <div style="font-weight: 600;">${new Date(formData.d).toLocaleDateString()}</div>
+                    <div style="font-weight: 600;">${formatStoredDate(formData.d)}</div>
                 </div>` : ''}
                 ${formData.b ? `
                 <div class="info-card">
@@ -4071,7 +4099,7 @@ function handleSetMyKeyConfirm() {
             if (data.n) lines.push(`Name: ${data.n}`);
             if (data.pr) lines.push(`Pronouns: ${data.pr}`);
             if (data.ph) lines.push(`Phone: ${data.ph}`);
-            if (data.d) lines.push(`Date of Birth: ${new Date(data.d).toLocaleDateString()}`);
+            if (data.d) lines.push(`Date of Birth: ${formatStoredDate(data.d)}`);
             if (data.b) lines.push(`Blood Type: ${data.b}`);
             if (data.a) lines.push(`Allergies: ${data.a}`);
             if (data.m) lines.push(`Medications: ${data.m}`);
@@ -5679,7 +5707,7 @@ Generated: ${new Date().toLocaleString()}`;
                 }
 
                 if (data.d) {
-                    html += `<div style="margin-bottom: 5px;"><strong>Date of Birth:</strong> ${new Date(data.d).toLocaleDateString()}</div>`;
+                    html += `<div style="margin-bottom: 5px;"><strong>Date of Birth:</strong> ${formatStoredDate(data.d)}</div>`;
                 }
 
                 if (data.cm) {

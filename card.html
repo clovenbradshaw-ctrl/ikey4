@@ -1128,7 +1128,16 @@
 
         function formatDate(dateString) {
             if (!dateString) return '';
-            const date = new Date(dateString);
+            const parts = dateString.split('-');
+            if (parts.length !== 3) return dateString;
+            const [yearStr, monthStr, dayStr] = parts;
+            const month = parseInt(monthStr, 10);
+            const day = parseInt(dayStr, 10);
+            const year = parseInt(yearStr, 10);
+            if ([month, day, year].some(value => Number.isNaN(value))) {
+                return dateString;
+            }
+            const date = new Date(year, month - 1, day);
             return `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}/${date.getFullYear()}`;
         }
 
