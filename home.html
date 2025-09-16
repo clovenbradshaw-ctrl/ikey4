@@ -215,6 +215,7 @@
     let favoriteApps = JSON.parse(localStorage.getItem('protonBookmarks') || '[]').filter(Boolean);
     if (!favoriteApps.includes('readynow')) {
       favoriteApps.unshift('readynow');
+    }
 
     if (favoriteApps.length === 0) {
       favoriteApps = ['readynow'];
