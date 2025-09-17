@@ -55,6 +55,16 @@ function translateFragment(root = document) {
   root.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
     el.setAttribute('placeholder', t(el.dataset.i18nPlaceholder, el.getAttribute('placeholder') || ''));
   });
+  applyDynamicPlaceholders(root);
+}
+
+function applyDynamicPlaceholders(root = document) {
+  const currentYear = new Date().getFullYear();
+  root.querySelectorAll('[data-year-placeholder]').forEach(el => {
+    const template = el.getAttribute('data-year-template') || el.textContent;
+    el.setAttribute('data-year-template', template);
+    el.textContent = template.replace(/\{\{\s*year\s*\}\}/gi, currentYear);
+  });
 }
 
 function setLanguage(lang) {

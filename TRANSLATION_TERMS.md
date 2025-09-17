@@ -357,7 +357,8 @@
             "about": "About iKey",
             "version": "Version 1.0",
             "aboutText": "iKey helps you keep your location secure while providing quick access to emergency services. Your privacy and safety are our top priorities.",
-            "disclaimer": "iKey is not affiliated with Proton or any other services. Proton is referenced solely for privacy and convenience. No usage data is stored; users are responsible for securely backing up their data and for using strong passwords and two-factor authentication where necessary."
+            "disclaimer": "iKey is not affiliated with Proton or any other services. Proton is referenced solely for privacy and convenience. No usage data is stored; users are responsible for securely backing up their data and for using strong passwords and two-factor authentication where necessary.",
+            "copyright": "© {{year}} iKey. All rights reserved."
         },
         "dispatch": {
             "title": "Nashville Police Active Dispatches",
@@ -1183,7 +1184,8 @@
             "about": "Acerca de iKey",
             "version": "Versión 1.0",
             "aboutText": "iKey te ayuda a mantener tu ubicación segura mientras proporciona acceso rápido a servicios de emergencia. Tu privacidad y seguridad son nuestras principales prioridades.",
-            "disclaimer": "iKey no está afiliado con Proton ni ningún otro servicio. Proton se menciona únicamente por privacidad y conveniencia. No se almacenan datos de uso; los usuarios son responsables de respaldar sus datos de forma segura y de usar contraseñas fuertes y autenticación de dos factores cuando sea necesario."
+            "disclaimer": "iKey no está afiliado con Proton ni ningún otro servicio. Proton se menciona únicamente por privacidad y conveniencia. No se almacenan datos de uso; los usuarios son responsables de respaldar sus datos de forma segura y de usar contraseñas fuertes y autenticación de dos factores cuando sea necesario.",
+            "copyright": "© {{year}} iKey. Todos los derechos reservados."
         },
         "dispatch": {
             "title": "Despachos Activos de la Policía de Nashville",
@@ -1935,7 +1937,8 @@
             "about": "حول iKey",
             "version": "الإصدار 1.0",
             "aboutText": "يساعدك iKey في الحفاظ على موقعك آمناً مع توفير وصول سريع لخدمات الطوارئ. خصوصيتك وسلامتك هما أولوياتنا القصوى.",
-            "disclaimer": "iKey غير تابع لـ Proton أو أي خدمات أخرى. يُشار إلى Proton فقط للخصوصية والراحة. لا يتم تخزين بيانات الاستخدام؛ المستخدمون مسؤولون عن النسخ الاحتياطي الآمن لبياناتهم واستخدام كلمات مرور قوية والمصادقة الثنائية عند الضرورة."
+            "disclaimer": "iKey غير تابع لـ Proton أو أي خدمات أخرى. يُشار إلى Proton فقط للخصوصية والراحة. لا يتم تخزين بيانات الاستخدام؛ المستخدمون مسؤولون عن النسخ الاحتياطي الآمن لبياناتهم واستخدام كلمات مرور قوية والمصادقة الثنائية عند الضرورة.",
+            "copyright": "© {{year}} iKey. جميع الحقوق محفوظة."
         },
         "dispatch": {
             "title": "إرساليات شرطة ناشفيل النشطة",
@@ -2687,7 +2690,8 @@
             "about": "Der barê iKey de",
             "version": "Guherto 1.0",
             "aboutText": "iKey alîkariya we dike ku cihê xwe ewledar bihêlin dema ku gihîştina bilez a karûbarên lezgîn peyda dike. Nepenîtî û ewlehiya we pêşengiyên me ne.",
-            "disclaimer": "iKey bi Proton yan karûbarên din ve girêdayî nîne. Proton tenê ji bo nepenîtî û rehetiyê tê referanskirin. Daneyên bikaranînê nayên hilanîn; bikarhêner berpirsiyar in ku daneyên xwe bi ewlehî piştgirî bikin û şîfreyên xurt û rastkirina du-faktorî bikar bînin."
+            "disclaimer": "iKey bi Proton yan karûbarên din ve girêdayî nîne. Proton tenê ji bo nepenîtî û rehetiyê tê referanskirin. Daneyên bikaranînê nayên hilanîn; bikarhêner berpirsiyar in ku daneyên xwe bi ewlehî piştgirî bikin û şîfreyên xurt û rastkirina du-faktorî bikar bînin.",
+            "copyright": "© {{year}} iKey. Hemû mafên parastinê."
         },
         "dispatch": {
             "title": "Şandinên Çalak ên Polîsê Nashville",
@@ -3333,7 +3337,8 @@
             "about": "Ku saabsan iKey",
             "version": "Nooca 1.0",
             "aboutText": "iKey wuxuu kaa caawinayaa inaad goobtaada ammaan u ilaaliso iyada oo bixinaysa helitaan degdeg ah adeegyada degdegga. Qarsoondiyaada iyo badbaadadaada waa mudnaantayada ugu sareysa.",
-            "disclaimer": "iKey kuma xidhan Proton ama adeegyo kale. Proton waxaa loo tixraacaa oo kaliya qarsoondida iyo fududaynta. Xogta isticmaalka lama kaydiyo; isticmaalayaashu waxay mas'uul ka yihiin inay si ammaan ah u kaydiyaan xogtoodaa oo ay isticmaalaan erayada sirta adag iyo xaqiijinta laba-arrimood marka loo baahdo."
+            "disclaimer": "iKey kuma xidhan Proton ama adeegyo kale. Proton waxaa loo tixraacaa oo kaliya qarsoondida iyo fududaynta. Xogta isticmaalka lama kaydiyo; isticmaalayaashu waxay mas'uul ka yihiin inay si ammaan ah u kaydiyaan xogtoodaa oo ay isticmaalaan erayada sirta adag iyo xaqiijinta laba-arrimood marka loo baahdo.",
+            "copyright": "© {{year}} iKey. Dhammaan xuquuqaha way xafidan yihiin."
         },
         "dispatch": {
             "title": "Dirisyada Firfircoon ee Booliska Nashville",
@@ -3978,7 +3983,8 @@
             "about": "关于iKey",
             "version": "版本 1.0",
             "aboutText": "iKey帮助您保护位置安全，同时提供快速访问紧急服务。您的隐私和安全是我们的首要任务。",
-            "disclaimer": "iKey与Proton或任何其他服务无关联。提及Proton仅为了隐私和便利。不存储使用数据；用户负责安全备份其数据，并在必要时使用强密码和双因素认证。"
+            "disclaimer": "iKey与Proton或任何其他服务无关联。提及Proton仅为了隐私和便利。不存储使用数据；用户负责安全备份其数据，并在必要时使用强密码和双因素认证。",
+            "copyright": "© {{year}} iKey。保留所有权利。"
         },
         "dispatch": {
             "title": "纳什维尔警察活跃调度",
