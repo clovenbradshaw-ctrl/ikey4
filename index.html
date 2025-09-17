@@ -2040,7 +2040,7 @@
         </style>
 </head>
 <body>
-    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <a href="#main-content" class="skip-link" data-i18n="accessibility.skipToContent">Skip to main content</a>
     <!-- Emergency Info Modal -->
     <div id="emergency-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="emergency-modal-title" tabindex="-1" aria-hidden="true">
         <div class="modal-content" style="max-width: 500px; max-height: 90vh; overflow-y: auto;">
@@ -2586,8 +2586,8 @@
         <div style="padding: 20px;">
             <p data-i18n="location.shareDesc">Your GPS coordinates stay on this device unless you choose to send them. Allow access?</p>
             <div class="modal-actions" style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
-                <button class="btn btn-secondary" onclick="closeLocationModal()" data-i18n="location.cancel">Close</button>
-                <button class="btn btn-primary" onclick="confirmLocationRequest()" data-i18n="location.share">Share Location</button><span class="info-icon" tabindex="0" data-tooltip="Gets GPS from your device; nothing is stored or sent automatically.">ℹ️</span>
+                <button class="btn btn-secondary" onclick="closeLocationModal()" data-i18n="buttons.close">Close</button>
+                <button class="btn btn-primary" onclick="confirmLocationRequest()" data-i18n="emergency.shareLocation">Share Location</button><span class="info-icon" tabindex="0" data-tooltip="Gets GPS from your device; nothing is stored or sent automatically.">ℹ️</span>
             </div>
         </div>
 </div>
@@ -3062,7 +3062,7 @@
                     <h3 style="margin-bottom: 15px; color: var(--primary);" data-i18n="settings.qrCode">QR Code</h3>
                     <div class="settings-item" onclick="createNew()">
                         <div>
-                            <div style="font-weight: 600;" data-i18n="createNewQR">🆕 Create New QR Code</div>
+                            <div style="font-weight: 600;" data-i18n="buttons.createNewQR">🆕 Create New QR Code</div>
                             <div style="font-size: 0.85rem; color: var(--secondary); margin-top: 5px;" data-i18n="settings.generateReplacement">Generate a replacement iKey</div>
                         </div>
                         <span style="color: var(--secondary);">→</span>

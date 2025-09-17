@@ -582,7 +582,9 @@
             "conditions": "Diabetes Type 2, Hypertension",
             "medications": "Metformin 500mg daily",
             "insurance": "Blue Cross Blue Shield",
-            "physician": "Dr. Sarah Smith"
+            "physician": "Dr. Sarah Smith",
+            "eventTitle": "Example: Outreach Check-in",
+            "location": "Example: Community Center"
         },
         "messages": {
             "enterValidEmail": "Please enter a valid secure email address",
@@ -639,7 +641,8 @@
             "setAsMyKey": "Set as My iKey",
             "returnToMyKey": "Return to My iKey",
             "replaceWarning": "Setting this as your iKey will replace your saved iKey. Continue?",
-            "cancel": "Cancel"
+            "cancel": "Cancel",
+            "aboutLink": "About & Privacy"
         },
         "card": {
             "title": "iKey ID Card Generator",
@@ -793,6 +796,33 @@
         "wizardFlow": {
             "characterCount": "{count} / 200 characters",
             "generateTooltip": "Generating creates an image stored only here. Regenerate to update."
+        },
+        "about": {
+            "title": "About & Privacy",
+            "heading": "About & Privacy",
+            "storage": "iKey runs entirely in your browser. Favorites and recent locations are saved in localStorage on your device.",
+            "offline": "Once loaded, the app works offline and no data leaves your device unless you choose to share it.",
+            "security": "You can set a password to encrypt your saved data so only you can read it.",
+            "clear": "To clear your data, open your browser settings and remove site data for this page or use the \"Clear browsing data\" option.",
+            "trainingLink": "Training Materials",
+            "back": "Back to Home"
+        },
+        "location": {
+            "shareTitle": "Share location?",
+            "shareDesc": "Your GPS coordinates stay on this device unless you choose to send them. Allow access?"
+        },
+        "accessibility": {
+            "skipToContent": "Skip to main content"
+        },
+        "training": {
+            "title": "Training Guide",
+            "intro": "Follow these steps to get started.",
+            "steps": {
+                "step1": "Open the iKey app.",
+                "step2": "Tap Save to record your location.",
+                "step3": "Share with trusted contacts."
+            },
+            "back": "Back to Home"
         }
     },
     "es": {
@@ -1203,7 +1233,9 @@
             "conditions": "Diabetes Tipo 2, Hipertensión",
             "medications": "Metformina 500mg diaria",
             "insurance": "Blue Cross Blue Shield",
-            "physician": "Dra. Sarah Smith"
+            "physician": "Dra. Sarah Smith",
+            "eventTitle": "Ejemplo: Registro de alcance",
+            "location": "Ejemplo: Centro comunitario"
         },
         "messages": {
             "enterValidEmail": "Por favor ingresa una dirección de correo seguro válida",
@@ -1260,7 +1292,8 @@
             "setAsMyKey": "Establecer como mi iKey",
             "returnToMyKey": "Volver a mi iKey",
             "replaceWarning": "Al establecer esto como tu iKey, se reemplazará tu iKey guardado. ¿Continuar?",
-            "cancel": "Cancelar"
+            "cancel": "Cancelar",
+            "aboutLink": "Acerca de y Privacidad"
         },
         "card": {
             "title": "Generador de Tarjeta de ID de iKey",
@@ -1515,6 +1548,33 @@
             "footer": {
                 "updated": "Último verificado: septiembre de 2025 | Toda la información verificada de datos contra fuentes oficiales"
             }
+        },
+        "about": {
+            "title": "Acerca de y Privacidad",
+            "heading": "Acerca de y Privacidad",
+            "storage": "iKey se ejecuta completamente en tu navegador. Los favoritos y las ubicaciones recientes se guardan en el almacenamiento local de tu dispositivo.",
+            "offline": "Una vez cargada, la aplicación funciona sin conexión y ningún dato sale de tu dispositivo a menos que elijas compartirlo.",
+            "security": "Puedes establecer una contraseña para cifrar los datos guardados y que solo tú puedas leerlos.",
+            "clear": "Para borrar tus datos, abre la configuración del navegador y elimina los datos del sitio para esta página o usa la opción \"Borrar datos de navegación\".",
+            "trainingLink": "Materiales de capacitación",
+            "back": "Volver al inicio"
+        },
+        "location": {
+            "shareTitle": "¿Compartir ubicación?",
+            "shareDesc": "Tus coordenadas GPS permanecen en este dispositivo a menos que elijas enviarlas. ¿Permitir acceso?"
+        },
+        "accessibility": {
+            "skipToContent": "Ir al contenido principal"
+        },
+        "training": {
+            "title": "Guía de capacitación",
+            "intro": "Sigue estos pasos para comenzar.",
+            "steps": {
+                "step1": "Abre la aplicación iKey.",
+                "step2": "Toca Guardar para registrar tu ubicación.",
+                "step3": "Comparte con contactos de confianza."
+            },
+            "back": "Volver al inicio"
         }
     },
     "ar": {
@@ -1925,7 +1985,9 @@
             "conditions": "داء السكري من النوع 2، ارتفاع ضغط الدم",
             "medications": "ميتفورمين 500 ملغ يوميًا",
             "insurance": "بلو كروس بلو شيلد",
-            "physician": "د. سارة سميث"
+            "physician": "د. سارة سميث",
+            "eventTitle": "مثال: تسجيل المتابعة",
+            "location": "مثال: المركز المجتمعي"
         },
         "messages": {
             "enterValidEmail": "يرجى إدخال عنوان بريد آمن صالح",
@@ -1982,7 +2044,8 @@
             "setAsMyKey": "تعيينه كـ iKey الخاص بي",
             "returnToMyKey": "العودة إلى iKey الخاص بي",
             "replaceWarning": "سيؤدي تعيين هذا كـ iKey الخاص بك إلى استبدال iKey المحفوظ لديك. هل تريد المتابعة؟",
-            "cancel": "إلغاء"
+            "cancel": "إلغاء",
+            "aboutLink": "حول وخصوصية"
         },
         "card": {
             "title": "مولد بطاقة هوية iKey",
@@ -2237,6 +2300,33 @@
             "footer": {
                 "updated": "آخر التحقق: سبتمبر 2025 | جميع المعلومات التي تم التحقق من الحقائق ضد المصادر الرسمية"
             }
+        },
+        "about": {
+            "title": "حول وخصوصية",
+            "heading": "حول وخصوصية",
+            "storage": "يعمل iKey بالكامل في متصفحك. يتم حفظ المفضلات والمواقع الأخيرة في التخزين المحلي على جهازك.",
+            "offline": "بمجرد التحميل، يعمل التطبيق دون اتصال ولا تغادر أي بيانات جهازك ما لم تختر مشاركتها.",
+            "security": "يمكنك تعيين كلمة مرور لتشفير بياناتك المحفوظة حتى لا يقرأها غيرك.",
+            "clear": "لحذف بياناتك، افتح إعدادات المتصفح وأزل بيانات الموقع لهذه الصفحة أو استخدم خيار \"مسح بيانات التصفح\".",
+            "trainingLink": "مواد التدريب",
+            "back": "العودة إلى الصفحة الرئيسية"
+        },
+        "location": {
+            "shareTitle": "مشاركة الموقع؟",
+            "shareDesc": "تبقى إحداثيات GPS على هذا الجهاز ما لم تختر إرسالها. هل تسمح بالوصول؟"
+        },
+        "accessibility": {
+            "skipToContent": "تخطي إلى المحتوى الرئيسي"
+        },
+        "training": {
+            "title": "دليل التدريب",
+            "intro": "اتبع هذه الخطوات للبدء.",
+            "steps": {
+                "step1": "افتح تطبيق iKey.",
+                "step2": "اضغط على حفظ لتسجيل موقعك.",
+                "step3": "شارك مع جهات الاتصال الموثوقة."
+            },
+            "back": "العودة إلى الصفحة الرئيسية"
         }
     },
     "ku": {
@@ -2641,7 +2731,9 @@
             "caseManager": "Dr. Mustafa",
             "enterCity": "Bajarê binivîse...",
             "organizerEmail": "e-nameya-we@proton.me",
-            "additionalEmails": "beşdar1@mînak.com, beşdar2@mînak.com"
+            "additionalEmails": "beşdar1@mînak.com, beşdar2@mînak.com",
+            "eventTitle": "Mînak: Kontrola gihîştinê",
+            "location": "Mînak: Navenda civakê"
         },
         "messages": {
             "enterValidEmail": "Ji kerema xwe navnîşana e-nameya ewledar a derbasdar binivîse",
@@ -2698,7 +2790,8 @@
             "setAsMyKey": "Wekî iKey'a min saz bike",
             "returnToMyKey": "Vegere iKey'a min",
             "replaceWarning": "Heke ev wekî iKey'a xwe saz bikî, iKey'a tomarkirî ya te dê were guherandin. Bixwazî bidomînî?",
-            "cancel": "Betalke"
+            "cancel": "Betalke",
+            "aboutLink": "Derbarê û Nepenî"
         },
         "misc": {
             "apps": "Proton Apps",
@@ -2852,6 +2945,33 @@
             "footer": {
                 "updated": "Dawîn Verified: 20lon 2025 | Hemî agahdarî li dijî çavkaniyên fermî têne kontrol kirin"
             }
+        },
+        "about": {
+            "title": "Derbarê û Nepenî",
+            "heading": "Derbarê û Nepenî",
+            "storage": "iKey tevahî di geroka te de dixebite. Favorît û cihên dawî di depoya herêmî ya cîhaza te de tên tomarkirin.",
+            "offline": "Dema barkir, sepan bê tor dixebite û tu daneyek ji cîhaza te dernaçe heya ku tu hilbijêrî ku parve bikî.",
+            "security": "Tu dikarî şîfreyek saz bikî da ku daneyên tomarkirî bin şîfrekirin û tenê tu bixwînî.",
+            "clear": "Ji bo paqijkirina daneyan, mîhengên gerokê veke û daneyên malperê ji bo vê rûpelê jê bibe an jî vebijarka \"Daneyên gerokê paqij bike\" bi kar bîne.",
+            "trainingLink": "Materyalên fêrkirinê",
+            "back": "Vegere serûpelê"
+        },
+        "location": {
+            "shareTitle": "Cih parve bikî?",
+            "shareDesc": "Koordinatên GPS li ser vê cîhazê dimînin heya ku tu hilbijêrî ku wan bişînî. Destûr bide?"
+        },
+        "accessibility": {
+            "skipToContent": "Derbas bibe bo naveroka sereke"
+        },
+        "training": {
+            "title": "Rêberê Fêrkirinê",
+            "intro": "Ev gav bişopîne da dest pê bikî.",
+            "steps": {
+                "step1": "Sepana iKey veke.",
+                "step2": "Ji bo tomar kirina cihê xwe bişkoka Tomarê bikî.",
+                "step3": "Bi kesên ewledar parve bike."
+            },
+            "back": "Vegere serûpelê"
         }
     },
     "so": {
@@ -3256,7 +3376,9 @@
             "caseManager": "Dr. Xasan",
             "enterCity": "Geli magaalada...",
             "organizerEmail": "iimaylkaaga@proton.me",
-            "additionalEmails": "kaqaybgale1@tusaale.com, kaqaybgale2@tusaale.com"
+            "additionalEmails": "kaqaybgale1@tusaale.com, kaqaybgale2@tusaale.com",
+            "eventTitle": "Tusaale: Hubinta Outreach",
+            "location": "Tusaale: Xarunta Bulshada"
         },
         "messages": {
             "enterValidEmail": "Fadlan geli cinwaan iimayl ammaan ah oo sax ah",
@@ -3313,7 +3435,8 @@
             "setAsMyKey": "U deji sida iKey-gayga",
             "returnToMyKey": "Ku noqo iKey-gayga",
             "replaceWarning": "Haddii aad tan u dejiso sidii iKey-gaaga, iKey-ga kaydsan waa la beddeli doonaa. Ma doonaysaa inaad sii waddo?",
-            "cancel": "Jooji"
+            "cancel": "Jooji",
+            "aboutLink": "Ku saabsan & Asturnaanta"
         },
         "misc": {
             "apps": "Proton Apps",
@@ -3467,6 +3590,33 @@
             "footer": {
                 "updated": "Markii ugu dambeysay ee la xaqiijiyey: Sebtember 2025 | Dhammaan macluumaadka xaqiiqada ah ee laga hubiyay ilaha rasmiga ah"
             }
+        },
+        "about": {
+            "title": "Ku saabsan & Asturnaanta",
+            "heading": "Ku saabsan & Asturnaanta",
+            "storage": "iKey wuxuu ka shaqeeyaa gabi ahaan browser-kaaga. Waxyaabaha la jecel yahay iyo goobaha dhow waxaa lagu kaydiyaa kaydinta gudaha ee qalabkaaga.",
+            "offline": "Marka la soo raro, app-ku wuxuu ka shaqeeyaa offline oo xog kama bixi doonto qalabkaaga ilaa aad doorato inaad wadaagto.",
+            "security": "Waad dejin kartaa eray sir ah si aad u sirguddo xogta kaydsan si adiga keliya aad u akhrido.",
+            "clear": "Si aad xogta uga saarto, fur dejimaha browser-ka oo tirtir xogta goobtan ama isticmaal ikhtiyaarka \"Tirtir xogta browser-ka\".",
+            "trainingLink": "Qalabka Tababarka",
+            "back": "Ku noqo Bogga Hore"
+        },
+        "location": {
+            "shareTitle": "Ma wadaagtaa goobta?",
+            "shareDesc": "Isuduwahaaga GPS waxay ku sii jiraan qalabkan ilaa aad doorato inaad dirto. Ma ogolaataa gelitaanka?"
+        },
+        "accessibility": {
+            "skipToContent": "U bood nuxurka ugu weyn"
+        },
+        "training": {
+            "title": "Hagaha Tababarka",
+            "intro": "Raac talaabooyinkan si aad u bilowdo.",
+            "steps": {
+                "step1": "Fur app-ka iKey.",
+                "step2": "Taabo Kaydi si aad u diiwaan geliso goobtaada.",
+                "step3": "La wadaag dadka aad ku kalsoon tahay."
+            },
+            "back": "Ku noqo Bogga Hore"
         }
     },
     "zh": {
@@ -3871,7 +4021,9 @@
             "caseManager": "王医生",
             "enterCity": "输入城市...",
             "organizerEmail": "你的邮箱@proton.me",
-            "additionalEmails": "参与者1@example.com, 参与者2@example.com"
+            "additionalEmails": "参与者1@example.com, 参与者2@example.com",
+            "eventTitle": "示例：外展签到",
+            "location": "示例：社区中心"
         },
         "messages": {
             "enterValidEmail": "请输入有效的安全邮箱地址",
@@ -3928,7 +4080,8 @@
             "setAsMyKey": "设为我的 iKey",
             "returnToMyKey": "返回我的 iKey",
             "replaceWarning": "将其设为你的 iKey 会替换你已保存的 iKey。是否继续？",
-            "cancel": "取消"
+            "cancel": "取消",
+            "aboutLink": "关于与隐私"
         },
         "misc": {
             "apps": "Proton Apps",
@@ -4082,6 +4235,33 @@
             "footer": {
                 "updated": "最后验证：2025年9月|所有信息对官方资料进行了事实检查"
             }
+        },
+        "about": {
+            "title": "关于与隐私",
+            "heading": "关于与隐私",
+            "storage": "iKey 完全在您的浏览器中运行。收藏和最近的位置会保存在您设备的本地存储中。",
+            "offline": "加载完成后，应用可离线使用，除非您选择分享，否则不会有任何数据离开您的设备。",
+            "security": "您可以设置密码来加密已保存的数据，以便只有您可以查看。",
+            "clear": "如需清除数据，请打开浏览器设置，删除此页面的站点数据或使用“清除浏览数据”选项。",
+            "trainingLink": "培训资料",
+            "back": "返回首页"
+        },
+        "location": {
+            "shareTitle": "共享位置？",
+            "shareDesc": "您的 GPS 坐标会保留在此设备上，除非您选择发送。允许访问吗？"
+        },
+        "accessibility": {
+            "skipToContent": "跳到主要内容"
+        },
+        "training": {
+            "title": "培训指南",
+            "intro": "按照以下步骤开始使用。",
+            "steps": {
+                "step1": "打开 iKey 应用。",
+                "step2": "点击保存以记录您的位置。",
+                "step3": "与信任的联系人分享。"
+            },
+            "back": "返回首页"
         }
     }
 }
