@@ -55,6 +55,17 @@
             touch-action: manipulation;
         }
 
+        .app-footer {
+            text-align: center;
+            padding: 40px 20px;
+            font-size: 0.85rem;
+            color: #94a3b8;
+        }
+
+        .app-footer__text {
+            margin: 0;
+        }
+
         .skip-link {
             position: absolute;
             top: -40px;
@@ -3183,6 +3194,10 @@
         </div>
     </div>
     </main>
+
+    <footer class="app-footer" aria-label="Legal">
+        <p class="app-footer__text" data-year-placeholder data-i18n="settings.copyright">© {{year}} iKey. All rights reserved.</p>
+    </footer>
 
     <script>
 
