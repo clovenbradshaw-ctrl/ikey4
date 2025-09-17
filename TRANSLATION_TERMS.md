@@ -412,7 +412,9 @@
                 "for": "For:",
                 "text": "Text:",
                 "available247": "Available 24/7",
-                "hours": "Hours:"
+                "hours": "Hours:",
+                "otherLines": "Other Lines:",
+                "alsoAccessible": "Also accessible as:"
             },
             "badges": {
                 "confidential": "100% Confidential",
@@ -428,7 +430,8 @@
                 "lifeline": {
                     "name": "988 Suicide & Crisis Lifeline",
                     "call": "Call 988",
-                    "text": "Text 988"
+                    "text": "Text 988",
+                    "languages": "English, Spanish, 240+ languages via Language Line"
                 },
                 "veterans": {
                     "name": "Veterans Crisis Line",
@@ -439,56 +442,129 @@
                 "domestic": {
                     "name": "National Domestic Violence Hotline",
                     "call": "1-800-799-7233",
-                    "text": "Text START to 88788"
+                    "text": "Text START to 88788",
+                    "languages": "200+ languages"
                 },
                 "rainn": {
                     "name": "RAINN Sexual Assault Hotline",
                     "call": "1-800-656-4673",
-                    "text": "Online chat: rainn.org"
+                    "text": "Online chat: rainn.org",
+                    "languages": "English, Spanish (primary)"
                 },
                 "samhsa": {
                     "name": "SAMHSA Substance Abuse Helpline",
                     "call": "1-800-662-4357",
-                    "for": "Mental Health & Substance Use"
+                    "for": "Treatment Referral & Information",
+                    "languages": "English, Spanish"
                 },
                 "poison": {
                     "name": "Poison Control",
-                    "call": "1-800-222-1222"
+                    "call": "1-800-222-1222",
+                    "languages": "161 languages"
                 },
                 "childhelp": {
                     "name": "Childhelp Child Abuse Hotline",
-                    "call": "1-800-422-4453"
+                    "call": "1-800-422-4453",
+                    "languages": "170+ languages"
                 },
                 "crisisText": {
                     "name": "Crisis Text Line",
-                    "call": "Text HOME to 741741"
+                    "call": "Text HOME to 741741",
+                    "languages": "English, Spanish (text HOLA)"
                 },
                 "trans": {
                     "name": "Trans Lifeline",
                     "call": "1-877-565-8860",
-                    "hours": "⚠️ Hours: Mon-Fri, 10am-6pm PT (1pm-9pm ET)"
+                    "hours": "⚠️ Reduced Hours (was 24/7): Monday-Friday, 10am-6pm PT (1pm-9pm ET)",
+                    "languages": "English, Spanish (press 2)",
+                    "note": "Note: Service reduced from 24/7 in Jan 2024 due to funding cuts"
                 },
                 "trafficking": {
                     "name": "Human Trafficking Hotline",
                     "call": "1-888-373-7888",
-                    "text": "Text: 233733"
+                    "text": "Text: 233733",
+                    "languages": "200+ languages"
                 },
                 "lgbtq": {
                     "name": "LGBTQ National Hotline",
-                    "call": "1-888-234-5327",
-                    "hours": "Hours: 1pm-9pm PT"
+                    "call": "1-888-843-4564",
+                    "hours": "Monday-Friday: 11am-8pm PT, Saturday: 9am-2pm PT"
                 },
                 "runaway": {
                     "name": "National Runaway Safeline",
-                    "call": "1-800-786-2929"
+                    "call": "1-800-786-2929",
+                    "alsoAccessible": "1-800-RUNAWAY"
                 }
             },
             "footer": {
                 "remember": "Remember: You are not alone. Help is available.",
                 "disclaimer": "All hotlines listed provide free, confidential support. Most are available 24/7/365. If you are in immediate danger, please call 911.",
-                "updated": "Last updated: September 2025 | Information verified from official sources"
+                "updated": "Last verified: September 2025 | All information fact-checked against official sources"
             },
-            "error": "Failed to load hotlines."
+            "error": "Failed to load hotlines.",
+            "lastVerified": "✓ Last Verified: September 2025",
+            "updateNotice": {
+                "title": "⚠️ Recent Service Changes (2025)",
+                "lgbtqYouth": {
+                    "title": "988 LGBTQI+ Youth Option:",
+                    "description": "Press 3 option discontinued July 17, 2025 due to federal funding expiration"
+                },
+                "transLifeline": {
+                    "title": "Trans Lifeline:",
+                    "description": "Reduced from 24/7 to weekday hours due to funding cuts (Jan 2024)"
+                },
+                "poisonControl": {
+                    "title": "Poison Control:",
+                    "description": "DC metro transitioned to digital operations March 31, 2025"
+                }
+            },
+            "citations": {
+                "title": "Sources & Verification",
+                "lifeline": {
+                    "source1": "SAMHSA Official FAQ",
+                    "source2": "FCC 988 Information"
+                },
+                "veterans": {
+                    "source1": "VA News - Official Statistics"
+                },
+                "domestic": {
+                    "source1": "TheHotline.org",
+                    "source2": "Official About Page"
+                },
+                "rainn": {
+                    "source1": "RAINN Official Information"
+                },
+                "samhsa": {
+                    "source1": "SAMHSA.gov"
+                },
+                "poison": {
+                    "source1": "HRSA Poison Help",
+                    "source2": "Poison.org"
+                },
+                "childhelp": {
+                    "source1": "Childhelp National Hotline",
+                    "source2": "ACF Hotlines"
+                },
+                "crisisText": {
+                    "source1": "Wikipedia - Crisis Text Line"
+                },
+                "trans": {
+                    "source1": "Trans Lifeline Official",
+                    "source2": "Wikipedia - Trans Lifeline"
+                },
+                "trafficking": {
+                    "source1": "Official Hotline Site",
+                    "source2": "Polaris Project"
+                },
+                "lgbtq": {
+                    "source1": "LGBT National Help Center",
+                    "source2": "HRC LGBTQ+ Resources"
+                },
+                "runaway": {
+                    "source1": "1800RUNAWAY.org",
+                    "source2": "ACF National Runaway Safeline"
+                }
+            }
         },
         "placeholders": {
             "email": "you@proton.me",
@@ -1328,6 +1404,117 @@
         "wizardFlow": {
             "characterCount": "{count} / 200 caracteres",
             "generateTooltip": "Generar crea una imagen almacenada solo aquí. Vuelve a generar para actualizar."
+        },
+        "hotlines": {
+            "lastVerified": "✓ Último verificado: septiembre de 2025",
+            "updateNotice": {
+                "title": "⚠️ Cambios de servicio recientes (2025)",
+                "lgbtqYouth": {
+                    "title": "988 LGBTQI+ Opción juvenil:",
+                    "description": "Presione 3 opción descontinuada el 17 de julio de 2025 debido a la vencimiento de la financiación federal"
+                },
+                "transLifeline": {
+                    "title": "Trans Lifeline:",
+                    "description": "Reducido de 24/7 a horas de lunes a viernes debido a recortes de fondos (enero de 2024)"
+                },
+                "poisonControl": {
+                    "title": "Control de envenenamiento:",
+                    "description": "DC Metro Transitionó a las operaciones digitales el 31 de marzo de 2025"
+                }
+            },
+            "labels": {
+                "otherLines": "Otras líneas:",
+                "alsoAccessible": "También accesible como:"
+            },
+            "cards": {
+                "lifeline": {
+                    "languages": "Inglés, español, más de 240 idiomas a través de la línea de idiomas"
+                },
+                "domestic": {
+                    "languages": "Más de 200 idiomas"
+                },
+                "rainn": {
+                    "languages": "Inglés, español (primaria)"
+                },
+                "samhsa": {
+                    "languages": "Inglés, español",
+                    "for": "Referencia e información de tratamiento"
+                },
+                "poison": {
+                    "languages": "161 idiomas"
+                },
+                "childhelp": {
+                    "languages": "Más de 170 idiomas"
+                },
+                "crisisText": {
+                    "languages": "Inglés, español (texto HOLA)"
+                },
+                "trans": {
+                    "languages": "Inglés, español (presiona 2)",
+                    "hours": "⚠️ Horario reducido (antes 24/7): de lunes a viernes, 10 a. m. - 6 p. m. PT (1 p. m. - 9 p. m. ET)",
+                    "note": "Nota: Servicio reducido desde las 24 horas del día, los 7 días de la semana en enero de 2024 debido a los recortes de fondos"
+                },
+                "trafficking": {
+                    "languages": "Más de 200 idiomas"
+                },
+                "lgbtq": {
+                    "hours": "De lunes a viernes: 11 a. m. - 8 p. m. PT, sábado: 9 a. m. - 2 p. m. PT",
+                    "call": "1-888-843-4564"
+                },
+                "runaway": {
+                    "alsoAccessible": "1-800-RUNAWAY"
+                }
+            },
+            "citations": {
+                "title": "Fuentes y verificación",
+                "lifeline": {
+                    "source1": "Preguntas frecuentes oficiales de Samhsa",
+                    "source2": "Información de FCC 988"
+                },
+                "veterans": {
+                    "source1": "VA News - Estadísticas oficiales"
+                },
+                "domestic": {
+                    "source1": "Thehotline.org",
+                    "source2": "Oficial sobre la página"
+                },
+                "rainn": {
+                    "source1": "Información oficial de Rainn"
+                },
+                "samhsa": {
+                    "source1": "Samhsa.gov"
+                },
+                "poison": {
+                    "source1": "Ayuda de veneno de HRSA",
+                    "source2": "Venenoso.org"
+                },
+                "childhelp": {
+                    "source1": "Línea directa nacional de niños",
+                    "source2": "Líneas directas de ACF"
+                },
+                "crisisText": {
+                    "source1": "Wikipedia - Línea de texto de crisis"
+                },
+                "trans": {
+                    "source1": "Oficial de Trans Lifeline",
+                    "source2": "Wikipedia - Trans Lifeline"
+                },
+                "trafficking": {
+                    "source1": "Sitio oficial de la línea directa",
+                    "source2": "Proyecto Polaris"
+                },
+                "lgbtq": {
+                    "source1": "Centro de ayuda nacional LGBT",
+                    "source2": "HRC LGBTQ+ recursos"
+                },
+                "runaway": {
+                    "source1": "1800runaway.org",
+                    "source2": "ACF National Runaway Safeline"
+                }
+            },
+            "footer": {
+                "updated": "Último verificado: septiembre de 2025 | Toda la información verificada de datos contra fuentes oficiales"
+            }
         }
     },
     "ar": {
@@ -1939,6 +2126,117 @@
         "wizardFlow": {
             "characterCount": "{count} / 200 حرفاً",
             "generateTooltip": "يؤدي التوليد إلى إنشاء صورة مخزنة هنا فقط. أعد التوليد للتحديث."
+        },
+        "hotlines": {
+            "lastVerified": "✓ آخر التحقق: سبتمبر 2025",
+            "updateNotice": {
+                "title": "⚠ تغييرات الخدمة الحديثة (2025)",
+                "lgbtqYouth": {
+                    "title": "988 LGBTQI+ خيار الشباب:",
+                    "description": "تم إيقاف خيار PRESS 3 في 17 يوليو 2025 بسبب انتهاء صلاحية التمويل الفيدرالي"
+                },
+                "transLifeline": {
+                    "title": "شريان الحياة عبر:",
+                    "description": "تم تخفيضه من 24/7 إلى ساعات الأسبوع بسبب تخفيضات التمويل (يناير 2024)"
+                },
+                "poisonControl": {
+                    "title": "السيطرة على السم:",
+                    "description": "تم نقل مترو العاصمة إلى العمليات الرقمية في 31 مارس 2025"
+                }
+            },
+            "labels": {
+                "otherLines": "خطوط أخرى:",
+                "alsoAccessible": "يمكن الوصول إليه أيضًا على النحو التالي:"
+            },
+            "cards": {
+                "lifeline": {
+                    "languages": "اللغة الإنجليزية ، الإسبانية ، 240+ لغة عبر خط اللغة"
+                },
+                "domestic": {
+                    "languages": "200+ لغة"
+                },
+                "rainn": {
+                    "languages": "اللغة الإنجليزية ، الإسبانية (الابتدائية)"
+                },
+                "samhsa": {
+                    "languages": "اللغة الإنجليزية ، الإسبانية",
+                    "for": "إحالة ومعلومات العلاج"
+                },
+                "poison": {
+                    "languages": "161 لغة"
+                },
+                "childhelp": {
+                    "languages": "170+ لغة"
+                },
+                "crisisText": {
+                    "languages": "اللغة الإنجليزية ، الإسبانية (نص هولا)"
+                },
+                "trans": {
+                    "languages": "اللغة الإنجليزية ، الإسبانية (الصحافة 2)",
+                    "hours": "⚠ ساعات مخفضة (كانت 24/7): Mon-FRI ، 10 صباحًا إلى 6 مساءً (1 مساءً-9 مساءً بالتوقيت الشرقي)",
+                    "note": "ملاحظة: تم تخفيض الخدمة من 24/7 في يناير 2024 بسبب تخفيضات التمويل"
+                },
+                "trafficking": {
+                    "languages": "200+ لغة"
+                },
+                "lgbtq": {
+                    "hours": "Mon-FRI: 11 صباحًا-8 مساءً ، السبت: 9 صباحًا إلى 2 مساءً",
+                    "call": "1-888-843-4564"
+                },
+                "runaway": {
+                    "alsoAccessible": "1-800-RUNAWAY"
+                }
+            },
+            "citations": {
+                "title": "المصادر والتحقق",
+                "lifeline": {
+                    "source1": "أسئلة وأجوبة سامسا الرسمية",
+                    "source2": "معلومات FCC 988"
+                },
+                "veterans": {
+                    "source1": "أخبار VA - الإحصاءات الرسمية"
+                },
+                "domestic": {
+                    "source1": "thehotline.org",
+                    "source2": "مسؤول عن الصفحة"
+                },
+                "rainn": {
+                    "source1": "معلومات رسمية رين"
+                },
+                "samhsa": {
+                    "source1": "Samhsa.gov"
+                },
+                "poison": {
+                    "source1": "مساعدة السم HRSA",
+                    "source2": "poison.org"
+                },
+                "childhelp": {
+                    "source1": "خط الساخن الوطني",
+                    "source2": "الخطوط الساخنة ACF"
+                },
+                "crisisText": {
+                    "source1": "ويكيبيديا - خط نص الأزمة"
+                },
+                "trans": {
+                    "source1": "عابرة شريان الحياة المسؤول",
+                    "source2": "ويكيبيديا - شريان الحياة عبر"
+                },
+                "trafficking": {
+                    "source1": "موقع الخط الساخن الرسمي",
+                    "source2": "مشروع Polaris"
+                },
+                "lgbtq": {
+                    "source1": "مركز المساعدة الوطني LGBT",
+                    "source2": "HRC LGBTQ+ الموارد"
+                },
+                "runaway": {
+                    "source1": "1800Runaway.org",
+                    "source2": "ACF National Runaway Safeline"
+                }
+            },
+            "footer": {
+                "updated": "آخر التحقق: سبتمبر 2025 | جميع المعلومات التي تم التحقق من الحقائق ضد المصادر الرسمية"
+            }
         }
     },
     "ku": {
@@ -2443,6 +2741,117 @@
         "wizardFlow": {
             "characterCount": "{count} / 200 tîpan",
             "generateTooltip": "Afirandin tenê li vir wêneyek diafirîne. Ji bo rojanekirinê ji nû ve biafirîne."
+        },
+        "hotlines": {
+            "lastVerified": "✓ Verified Dawîn: 20lon 2025",
+            "updateNotice": {
+                "title": "Guhertinên karûbarê dawî (2025)",
+                "lgbtqYouth": {
+                    "title": "988 LGBTQI + Vebijarka Ciwanan:",
+                    "description": "Ji ber qedandina Fona Federasyona Federasyona Federal 3 vebijarka Tîrmehê 3-ê Tîrmehê ya 2025-an vekişîne"
+                },
+                "transLifeline": {
+                    "title": "Lifeline Transelîn:",
+                    "description": "Ji 24/7 heya demjimêrên hefteyê ji ber qutkirina fînansê kêm kirin (2024 Janile)"
+                },
+                "poisonControl": {
+                    "title": "Kontrola Poison:",
+                    "description": "Metroya DC 31ê Adarê, 2025 veguheztiye"
+                }
+            },
+            "labels": {
+                "otherLines": "Rêzên din:",
+                "alsoAccessible": "Her weha gihîştî wekî:"
+            },
+            "cards": {
+                "lifeline": {
+                    "languages": "Englishngilîzî, Spanî, 240+ zimanan bi zimanê xeta"
+                },
+                "domestic": {
+                    "languages": "200+ zimanan"
+                },
+                "rainn": {
+                    "languages": "Englishngilîzî, Spanî (bingehîn)"
+                },
+                "samhsa": {
+                    "languages": "Englishngilîzî, Spanî",
+                    "for": "Dermankirina Referans & Agahdariya"
+                },
+                "poison": {
+                    "languages": "161 Ziman"
+                },
+                "childhelp": {
+                    "languages": "170+ zimanan"
+                },
+                "crisisText": {
+                    "languages": "Englishngilîzî, Spanî (Nivîsa Text Hola)"
+                },
+                "trans": {
+                    "languages": "Englishngilîzî, Spanî (çapemeniyê 2)",
+                    "hours": "Hoursên kêmkirî (24/7) bû: Duşem-Duşem, 10 AM-6PM PT (1 PM-9PM ET)",
+                    "note": "Nîşe: Xizmet ji 24/7 di sala 2024-an de ji ber qutkirina fînansê kêm dibe"
+                },
+                "trafficking": {
+                    "languages": "200+ zimanan"
+                },
+                "lgbtq": {
+                    "hours": "Mon-Fri: 11 AM-8PM PT, Sat: 9 AM-2PM PT",
+                    "call": "1-888-843-4564"
+                },
+                "runaway": {
+                    "alsoAccessible": "1-800-RUNAWAY"
+                }
+            },
+            "citations": {
+                "title": "SOURS & VERIFICATION",
+                "lifeline": {
+                    "source1": "FAQên fermî yên Samhsa",
+                    "source2": "Agahdariya FCC 988"
+                },
+                "veterans": {
+                    "source1": "Nûçeyên VA - Statîstikên Fermî"
+                },
+                "domestic": {
+                    "source1": "Thehotline.org",
+                    "source2": "Li ser rûpelê fermî"
+                },
+                "rainn": {
+                    "source1": "Agahdariya fermî ya Rainn"
+                },
+                "samhsa": {
+                    "source1": "Sambhsa.gov"
+                },
+                "poison": {
+                    "source1": "HRSA POSP POSP POONC",
+                    "source2": "Asoon"
+                },
+                "childhelp": {
+                    "source1": "Hotline Neteweyî ya Childhelp",
+                    "source2": "Acf Hotlines"
+                },
+                "crisisText": {
+                    "source1": "Wikipedia - xeta nivîsê ya Krîzê"
+                },
+                "trans": {
+                    "source1": "Official Lifeline Transeline",
+                    "source2": "Wikipedia - Lifeline trans"
+                },
+                "trafficking": {
+                    "source1": "Malpera Official Hotline",
+                    "source2": "Projeya Polaris"
+                },
+                "lgbtq": {
+                    "source1": "Navenda Alîkariya Neteweyî ya LGBT",
+                    "source2": "HRC LGBTQ + Resourcesavkaniyên"
+                },
+                "runaway": {
+                    "source1": "1800runaway.org",
+                    "source2": "ACF National SafeLine Runaway"
+                }
+            },
+            "footer": {
+                "updated": "Dawîn Verified: 20lon 2025 | Hemî agahdarî li dijî çavkaniyên fermî têne kontrol kirin"
+            }
         }
     },
     "so": {
@@ -2947,6 +3356,117 @@
         "wizardFlow": {
             "characterCount": "{count} / 200 xaraf",
             "generateTooltip": "Abuuristu waxay sameysaa sawir kaliya halkan lagu kaydiyo. Si aad u cusboonaysiiso dib u abuuro."
+        },
+        "hotlines": {
+            "lastVerified": "✓ Markii ugu dambeysay ee la xaqiijiyey: Sebtember 2025",
+            "updateNotice": {
+                "title": "⚠️ Isbeddelka adeegga dhowaan (2025)",
+                "lgbtqYouth": {
+                    "title": "988 LGBTQI + Xulashada dhalinyarada:",
+                    "description": "Riix 3 ikhtiyaar oo la joojiyay July 17, 2025 sababo la xiriira dhicitaanka maalgelinta federaalka"
+                },
+                "transLifeline": {
+                    "title": "NATIIJADA:",
+                    "description": "Hoos u dhigay laga bilaabo 24/7 ilaa saacadaha maalmaha shaqada sababtoo ah dhimista dhimista (Jan 2024)"
+                },
+                "poisonControl": {
+                    "title": "Xakamaynta sunta:",
+                    "description": "DC Metro waxay u gudubtay howlaha dijitaalka ah March 31, 2025"
+                }
+            },
+            "labels": {
+                "otherLines": "Khadadka kale:",
+                "alsoAccessible": "Sidoo kale waa la heli karaa sida:"
+            },
+            "cards": {
+                "lifeline": {
+                    "languages": "Ingiriis, Isbaanish, 240+ luuqadood oo loo maro khadka luqadda"
+                },
+                "domestic": {
+                    "languages": "200 + luuqadood"
+                },
+                "rainn": {
+                    "languages": "Ingiriisiga, Isbaanishka (Koowaad)"
+                },
+                "samhsa": {
+                    "languages": "Ingiriis, Isbaanish",
+                    "for": "Tixraac Daaweynta & Macluumaadka"
+                },
+                "poison": {
+                    "languages": "161 luqadood"
+                },
+                "childhelp": {
+                    "languages": "170+ luqadood"
+                },
+                "crisisText": {
+                    "languages": "Ingiriisiga, Isbaanishka (Qoraalka Hola)"
+                },
+                "trans": {
+                    "languages": "Ingiriisiga, Isbaanishka (Press 2)",
+                    "hours": "Saacadaha dhimis (waxay ahayd 24/7): Isniin-Jimco, 10 am --6pm pt (1 pm-9pm et)",
+                    "note": "Xusuusin: Adeegga ayaa laga yareeyay 24/7 Jan 2024 sababtuna tahay dhimista"
+                },
+                "trafficking": {
+                    "languages": "200 + luuqadood"
+                },
+                "lgbtq": {
+                    "hours": "Isniinta-Fri: 11 am --8pm pt, sat: 9 subaxnimo 24 subaxnimo pt",
+                    "call": "1-888-843-4564"
+                },
+                "runaway": {
+                    "alsoAccessible": "1-800-RUNAWAY"
+                }
+            },
+            "citations": {
+                "title": "Ilo & xaqiijinta",
+                "lifeline": {
+                    "source1": "Samhsa Rasmiso FAQ",
+                    "source2": "FCC 988 Macluumaadka"
+                },
+                "veterans": {
+                    "source1": "VA News - Tirakoobka rasmiga ah"
+                },
+                "domestic": {
+                    "source1": "Thehotline.org",
+                    "source2": "Rasmi ah oo ku saabsan bogga"
+                },
+                "rainn": {
+                    "source1": "Macluumaadka rasmiga ah ee roobka"
+                },
+                "samhsa": {
+                    "source1": "Samhsa.gov"
+                },
+                "poison": {
+                    "source1": "HRSA Caawinta sunta",
+                    "source2": "Sun.org"
+                },
+                "childhelp": {
+                    "source1": "Khadka Tooska ah ee Qaranka ee Childheelp",
+                    "source2": "Hilibka ACF"
+                },
+                "crisisText": {
+                    "source1": "Wikipedia - khadka qoraalka ee xasaradda"
+                },
+                "trans": {
+                    "source1": "Rasuulka Nolosha",
+                    "source2": "Wikipedia - twelinta TWEL"
+                },
+                "trafficking": {
+                    "source1": "Goobta khadka tooska ah ee tooska ah",
+                    "source2": "Mashruuca Polaris"
+                },
+                "lgbtq": {
+                    "source1": "LGBT CAAWIMADA CAAWIMAADKA",
+                    "source2": "HRC LGBTQ + Kheyraadka"
+                },
+                "runaway": {
+                    "source1": "1800runaw.org",
+                    "source2": "ACF Qaranka Guusha Safeline"
+                }
+            },
+            "footer": {
+                "updated": "Markii ugu dambeysay ee la xaqiijiyey: Sebtember 2025 | Dhammaan macluumaadka xaqiiqada ah ee laga hubiyay ilaha rasmiga ah"
+            }
         }
     },
     "zh": {
@@ -3451,6 +3971,117 @@
         "wizardFlow": {
             "characterCount": "{count} / 200 个字符",
             "generateTooltip": "生成的图片仅存于此。若需更新，请重新生成。"
+        },
+        "hotlines": {
+            "lastVerified": "✓上次验证：2025年9月",
+            "updateNotice": {
+                "title": "⚠️最近的服务变化（2025）",
+                "lgbtqYouth": {
+                    "title": "988 LGBTQI+青年选项：",
+                    "description": "由于联邦资金到期，Press 3 Opepon终止了2025年7月17日"
+                },
+                "transLifeline": {
+                    "title": "跨性生命线：",
+                    "description": "由于削减资金，从24/7降低到工作日（2024年1月）"
+                },
+                "poisonControl": {
+                    "title": "毒物控制：",
+                    "description": "DC Metro于2025年3月31日过渡到数字运营"
+                }
+            },
+            "labels": {
+                "otherLines": "其他行：",
+                "alsoAccessible": "也可以访问："
+            },
+            "cards": {
+                "lifeline": {
+                    "languages": "英语，西班牙语，240多种语言通过语言线"
+                },
+                "domestic": {
+                    "languages": "200多种语言"
+                },
+                "rainn": {
+                    "languages": "英语，西班牙语（主要）"
+                },
+                "samhsa": {
+                    "languages": "英语，西班牙语",
+                    "for": "治疗转诊和信息"
+                },
+                "poison": {
+                    "languages": "161种语言"
+                },
+                "childhelp": {
+                    "languages": "170多种语言"
+                },
+                "crisisText": {
+                    "languages": "英语，西班牙语（文本hola）"
+                },
+                "trans": {
+                    "languages": "英语，西班牙语（按2）",
+                    "hours": "⚠️减少小时（为24/7）：星期一至周五，上午10点至下午6点（ET 1 pm-9pm）",
+                    "note": "注意：由于削减资金，服务从2024年1月的24/7降低"
+                },
+                "trafficking": {
+                    "languages": "200多种语言"
+                },
+                "lgbtq": {
+                    "hours": "星期一至周五：下午11点至晚上8点，星期六：上午9点2pm pt",
+                    "call": "1-888-843-4564"
+                },
+                "runaway": {
+                    "alsoAccessible": "1-800-RUNAWAY"
+                }
+            },
+            "citations": {
+                "title": "来源和验证",
+                "lifeline": {
+                    "source1": "SAMHSA官方常见问题解答",
+                    "source2": "FCC 988信息"
+                },
+                "veterans": {
+                    "source1": "VA新闻 - 官方统计"
+                },
+                "domestic": {
+                    "source1": "thehotline.org",
+                    "source2": "关于页面的官员"
+                },
+                "rainn": {
+                    "source1": "雷恩官方信息"
+                },
+                "samhsa": {
+                    "source1": "samhsa.gov"
+                },
+                "poison": {
+                    "source1": "HRSA毒药帮助",
+                    "source2": "毒"
+                },
+                "childhelp": {
+                    "source1": "ChildHelp国家热线",
+                    "source2": "ACF热线"
+                },
+                "crisisText": {
+                    "source1": "Wikipedia-危机文本线"
+                },
+                "trans": {
+                    "source1": "跨性别生命线官员",
+                    "source2": "Wikipedia -Trans生命线"
+                },
+                "trafficking": {
+                    "source1": "官方热线网站",
+                    "source2": "北极星项目"
+                },
+                "lgbtq": {
+                    "source1": "LGBT国家帮助中心",
+                    "source2": "HRC LGBTQ+资源"
+                },
+                "runaway": {
+                    "source1": "1800runaway.org",
+                    "source2": "ACF国家逃亡者安全线"
+                }
+            },
+            "footer": {
+                "updated": "最后验证：2025年9月|所有信息对官方资料进行了事实检查"
+            }
         }
     }
 }
