@@ -3084,6 +3084,16 @@
                 </div>
 
                 <div class="settings-section">
+                    <h3 style="margin-bottom: 15px; color: var(--primary);">Tagged iKey</h3>
+                    <div style="background: var(--light); padding: 20px; border-radius: 12px;">
+                        <div style="font-weight: 600;">📧 Secure Email</div>
+                        <div id="tagged-ikey-email" style="font-size: 0.9rem; color: var(--secondary); margin-top: 5px; word-break: break-all;">—</div>
+                        <div style="font-weight: 600; margin-top: 15px;">🆔 Key GUID</div>
+                        <div id="tagged-ikey-guid" style="font-size: 0.9rem; color: var(--secondary); margin-top: 5px; word-break: break-all; font-family: 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', monospace;">—</div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
                     <h3 style="margin-bottom: 15px; color: var(--primary);" data-i18n="externalTools.title">External Tools</h3>
                     <div class="settings-item" onclick="openDispatchTab()">
                         <div>
@@ -3448,6 +3458,7 @@ function handleSetMyKeyConfirm() {
     if (name) localStorage.setItem('myKeyName', name);
     closeSetMyKeyModal();
     updateKeyBanner();
+    updateTaggedKeyInfo();
 }
 
         function compressData(data) {
@@ -6090,6 +6101,41 @@ Generated: ${new Date().toLocaleString()}`;
             });
         }
 
+        function extractKeyGuidFromHash(hash) {
+            if (!hash) return '';
+            try {
+                const decompressed = decompressData(hash);
+                if (!decompressed) return '';
+                const data = JSON.parse(decompressed);
+                return data.guid || data.g || data.cardId || data.id || '';
+            } catch (error) {
+                console.warn('Failed to extract key GUID:', error);
+                return '';
+            }
+        }
+
+        function updateTaggedKeyInfo() {
+            const emailEl = document.getElementById('tagged-ikey-email');
+            const guidEl = document.getElementById('tagged-ikey-guid');
+            if (!emailEl || !guidEl) return;
+
+            const email = localStorage.getItem('myKeyEmail');
+            const hash = localStorage.getItem('myKeyData');
+            const notTaggedText = t('settings.noTaggedKey', 'No iKey tagged on this device');
+
+            emailEl.textContent = email || notTaggedText;
+
+            if (hash) {
+                const guid = extractKeyGuidFromHash(hash);
+                const value = guid || hash;
+                guidEl.textContent = value;
+                guidEl.title = value;
+            } else {
+                guidEl.textContent = notTaggedText;
+                guidEl.removeAttribute('title');
+            }
+        }
+
         function updateKeyBanner() {
             const banner = document.getElementById('key-banner');
             const textEl = document.getElementById('key-banner-text');
@@ -6150,6 +6196,7 @@ Generated: ${new Date().toLocaleString()}`;
                 }
                 switchTab('home');
                 updateKeyBanner();
+                updateTaggedKeyInfo();
             }
         }
 
@@ -6163,6 +6210,7 @@ Generated: ${new Date().toLocaleString()}`;
                 window.history.replaceState(null, '', baseURL);
                 renderHomeStatus();
                 updateKeyBanner();
+                updateTaggedKeyInfo();
             }
         }
 
@@ -6637,7 +6685,8 @@ Generated: ${new Date().toLocaleString()}`;
             }
 
             updateKeyBanner();
-            
+            updateTaggedKeyInfo();
+
             // Handle enter key in weather search
             document.getElementById('city-input').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
