@@ -13,6 +13,18 @@
             padding: 20px;
             line-height: 1.6;
         }
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: #fff;
+            color: #000;
+            padding: 8px 16px;
+            z-index: 1000;
+        }
+        .skip-link:focus {
+            top: 0;
+        }
         .container {
             max-width: 600px;
             margin: 0 auto;
@@ -27,7 +39,8 @@
     </style>
 </head>
 <body>
-    <main class="container">
+    <a href="#main-content" class="skip-link" data-i18n="accessibility.skipToContent">Skip to main content</a>
+    <main id="main-content" class="container">
         <h1 data-i18n="training.title">Training Guide</h1>
         <p data-i18n="training.intro">Follow these steps to get started.</p>
         <ol>
