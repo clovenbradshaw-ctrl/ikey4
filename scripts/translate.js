@@ -1,6 +1,19 @@
 const translations = {};
+
+function getTranslationsUrl() {
+  try {
+    const currentScript = document.currentScript || document.querySelector('script[src*="translate.js"]');
+    if (currentScript && currentScript.src) {
+      return new URL('../TRANSLATION_TERMS.md', currentScript.src).toString();
+    }
+  } catch (err) {
+    console.warn('Unable to resolve translation URL from script tag, falling back to relative path.', err);
+  }
+  return 'TRANSLATION_TERMS.md';
+}
+
 function loadTranslations() {
-  return fetch('TRANSLATION_TERMS.md')
+  return fetch(getTranslationsUrl())
     .then(resp => resp.text())
     .then(text => {
       try {
