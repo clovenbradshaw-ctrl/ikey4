@@ -33,6 +33,12 @@ function translateFragment(root = document) {
   root.querySelectorAll('[data-i18n-aria]').forEach(el => {
     el.setAttribute('aria-label', t(el.dataset.i18nAria, el.getAttribute('aria-label') || ''));
   });
+  root.querySelectorAll('[data-i18n-title]').forEach(el => {
+    el.setAttribute('title', t(el.dataset.i18nTitle, el.getAttribute('title') || ''));
+  });
+  root.querySelectorAll('[data-i18n-tooltip]').forEach(el => {
+    el.setAttribute('data-tooltip', t(el.dataset.i18nTooltip, el.getAttribute('data-tooltip') || ''));
+  });
   root.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
     el.setAttribute('placeholder', t(el.dataset.i18nPlaceholder, el.getAttribute('placeholder') || ''));
   });

@@ -2168,113 +2168,113 @@
                         <div class="progress-line-filled"></div>
                         <div class="progress-step" data-step="1">
                             <div class="step-icon active" data-icon="👋">👋</div>
-                            <div class="step-label active">Welcome</div>
+                            <div class="step-label active" data-i18n="steps.welcome">Welcome</div>
                         </div>
                         <div class="progress-step" data-step="2">
                             <div class="step-icon" data-icon="🔒">🔒</div>
-                            <div class="step-label">Secure</div>
+                            <div class="step-label" data-i18n="steps.secureEmail">Secure</div>
                         </div>
                         <div class="progress-step" data-step="3">
                             <div class="step-icon" data-icon="📝">📝</div>
-                            <div class="step-label">Basic</div>
+                            <div class="step-label" data-i18n="steps.basic">Basic</div>
                         </div>
                         <div class="progress-step" data-step="4">
                             <div class="step-icon" data-icon="❤️">❤️</div>
-                            <div class="step-label">Health</div>
+                            <div class="step-label" data-i18n="steps.health">Health</div>
                         </div>
                         <div class="progress-step" data-step="5">
                             <div class="step-icon" data-icon="📞">📞</div>
-                            <div class="step-label">Contacts</div>
+                            <div class="step-label" data-i18n="steps.contacts">Contacts</div>
                         </div>
                         <div class="progress-step" data-step="6">
                             <div class="step-icon" data-icon="📍">📍</div>
-                            <div class="step-label">If Found</div>
+                            <div class="step-label" data-i18n="steps.ifFound">If Found</div>
                         </div>
                         <div class="progress-step" data-step="7">
                             <div class="step-icon" data-icon="✅">✅</div>
-                            <div class="step-label">Review</div>
+                            <div class="step-label" data-i18n="steps.review">Review</div>
                         </div>
                     </div>
 
-                    <p id="progress-estimate" style="text-align: center; margin-top: 10px;">Takes about 3–5 minutes</p>
+                    <p id="progress-estimate" style="text-align: center; margin-top: 10px;" data-i18n="welcome.estimate">Takes about 3–5 minutes</p>
 
                     <!-- Step 1: Welcome -->
                     <div class="wizard-step active" data-step="1">
-                        <h2>Create Your iKey</h2>
-                        <p style="margin: 20px 0;">Generate a secure QR code with your essential information for emergency responders:</p>
+                        <h2 data-i18n="welcome.title">Create Your iKey</h2>
+                        <p style="margin: 20px 0;" data-i18n="welcome.description">Generate a secure QR code with your essential information for emergency responders:</p>
                         <ul style="margin-left: 20px; color: var(--secondary); line-height: 2;">
-                            <li>Name, pronouns and blood type</li>
-                            <li>Critical allergies and medications</li>
-                            <li>Health conditions</li>
-                            <li>Emergency & case manager contacts</li>
+                            <li data-i18n="welcome.features.0">Name, pronouns and blood type</li>
+                            <li data-i18n="welcome.features.1">Critical allergies and medications</li>
+                            <li data-i18n="welcome.features.2">Health conditions</li>
+                            <li data-i18n="welcome.features.3">Emergency & case manager contacts</li>
                         </ul>
                         <div style="background: #eff6ff; border: 1px solid #3b82f6; border-radius: 10px; padding: 15px; margin-top: 20px;">
-                            <strong>🔒 Privacy First:</strong> Your data is encoded directly in the QR code. No cloud storage, no accounts needed.
+                            <strong data-i18n="welcome.privacy">🔒 Privacy First:</strong> <span data-i18n="welcome.privacyDesc">Your data is encoded directly in the QR code. No cloud storage, no accounts needed.</span>
                         </div>
                     </div>
 
                     <!-- Step 2: Secure Email -->
                     <div class="wizard-step" data-step="2">
-                        <h2>Secure Email <span class="info-icon" tabindex="0" data-tooltip="iKey uses your email as an identifier. Proton is a privacy-focused option, but any address works.">ℹ️</span></h2>
+                        <h2><span data-i18n="secure.title">Secure Email</span> <span class="info-icon" tabindex="0" data-tooltip="iKey uses your email as an identifier. Proton is a privacy-focused option, but any address works." data-i18n-tooltip="secure.titleTooltip">ℹ️</span></h2>
                         <div class="form-group" style="margin-top:10px;">
-                            <label for="secure-email" class="label-purple">Secure Email * <span class="info-icon" tabindex="0" data-tooltip="iKey never reads your mail or contacts your provider. Choosing an encrypted service keeps your address private.">ℹ️</span></label>
-                            <input type="email" id="secure-email" placeholder="you@example.com" required>
+                            <label for="secure-email" class="label-purple"><span data-i18n="welcome.secureEmailLabel">Secure Email *</span> <span class="info-icon" tabindex="0" data-tooltip="iKey never reads your mail or contacts your provider. Choosing an encrypted service keeps your address private." data-i18n-tooltip="secure.labelTooltip">ℹ️</span></label>
+                            <input type="email" id="secure-email" placeholder="you@example.com" required data-i18n-placeholder="secure.emailPlaceholder">
                         </div>
                         <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
-                            <a href="https://account.proton.me/signup" target="_blank" class="btn btn-primary">Create Account</a><span class="info-icon" tabindex="0" data-tooltip="You can use any email provider; Proton is suggested for its encryption benefits.">ℹ️</span>
-                            <a href="https://account.proton.me/u/13/safety-review/phrase" target="_blank" class="btn btn-secondary">Download Kit</a>
+                            <a href="https://account.proton.me/signup" target="_blank" class="btn btn-primary" data-i18n="welcome.createAccount">Create Account</a><span class="info-icon" tabindex="0" data-tooltip="You can use any email provider; Proton is suggested for its encryption benefits." data-i18n-tooltip="secure.buttonTooltip">ℹ️</span>
+                            <a href="https://account.proton.me/u/13/safety-review/phrase" target="_blank" class="btn btn-secondary" data-i18n="welcome.downloadKit">Download Kit</a>
                         </div>
-                        <p style="margin-top: 10px; color: var(--secondary); font-size: 0.9rem;">
+                        <p style="margin-top: 10px; color: var(--secondary); font-size: 0.9rem;" data-i18n="welcome.kitInstructions">
                             After signing up, save the kit and share it with your case manager or someone you trust.
                         </p>
                     </div>
 
                     <!-- Step 3: Basic Info -->
                     <div class="wizard-step" data-step="3">
-                        <h2>Basic Information <span class="info-icon" tabindex="0" data-tooltip="These details stay on your device and go only into the QR code. Share only what you're comfortable with.">ℹ️</span></h2>
+                        <h2><span data-i18n="basic.title">Basic Information</span> <span class="info-icon" tabindex="0" data-tooltip="These details stay on your device and go only into the QR code. Share only what you're comfortable with." data-i18n-tooltip="basic.tooltip">ℹ️</span></h2>
                         <div class="form-group">
-                            <label for="name" class="label-gray">Full Name *</label>
-                            <input type="text" id="name" placeholder="John Smith" required>
+                            <label for="name" class="label-gray" data-i18n="basic.fullName">Full Name *</label>
+                            <input type="text" id="name" placeholder="John Smith" required data-i18n-placeholder="placeholders.name">
                         </div>
                         <div class="form-group">
-                            <label for="pronouns-select" class="label-gray">Pronouns (optional)</label>
+                            <label for="pronouns-select" class="label-gray" data-i18n="basic.pronouns">Pronouns (optional)</label>
                             <select id="pronouns-select">
-                                <option value="">Prefer not to say</option>
-                                <option value="He/Him">He/Him</option>
-                                <option value="She/Her">She/Her</option>
-                                <option value="They/Them">They/Them</option>
-                                <option value="custom">Custom</option>
+                                <option value="" data-i18n="basic.pronounOptions.unspecified">Prefer not to say</option>
+                                <option value="He/Him" data-i18n="basic.pronounOptions.he">He/Him</option>
+                                <option value="She/Her" data-i18n="basic.pronounOptions.she">She/Her</option>
+                                <option value="They/Them" data-i18n="basic.pronounOptions.they">They/Them</option>
+                                <option value="custom" data-i18n="basic.pronounOptions.custom">Custom</option>
                             </select>
-                            <input type="text" id="pronouns-custom" placeholder="Enter pronouns" style="display:none; margin-top:10px;">
+                            <input type="text" id="pronouns-custom" placeholder="Enter pronouns" style="display:none; margin-top:10px;" data-i18n-placeholder="basic.pronounsPlaceholder">
                         </div>
                         <div class="form-group">
-                            <label class="label-gray">Date of Birth (optional)</label>
+                            <label class="label-gray" data-i18n="basic.dateOfBirth">Date of Birth (optional)</label>
                             <div style="display:flex; gap:10px;">
-                                <input type="text" id="dob-month" placeholder="MM" pattern="\d{1,2}" inputmode="numeric" style="width:60px;">
-                                <input type="text" id="dob-day" placeholder="DD" pattern="\d{1,2}" inputmode="numeric" style="width:60px;">
-                                <input type="text" id="dob-year" placeholder="YYYY" pattern="\d{4}" inputmode="numeric" style="width:80px;">
+                                <input type="text" id="dob-month" placeholder="MM" pattern="\d{1,2}" inputmode="numeric" style="width:60px;" data-i18n-placeholder="basic.dobMonth">
+                                <input type="text" id="dob-day" placeholder="DD" pattern="\d{1,2}" inputmode="numeric" style="width:60px;" data-i18n-placeholder="basic.dobDay">
+                                <input type="text" id="dob-year" placeholder="YYYY" pattern="\d{4}" inputmode="numeric" style="width:80px;" data-i18n-placeholder="basic.dobYear">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="blood" class="label-red">Blood Type (optional)</label>
+                            <label for="blood" class="label-red" data-i18n="basic.bloodType">Blood Type (optional)</label>
                             <select id="blood">
-                                <option value="">Unknown / Not Sure</option>
-                                <option value="A+">A+</option>
-                                <option value="A-">A-</option>
-                                <option value="B+">B+</option>
-                                <option value="B-">B-</option>
-                                <option value="AB+">AB+</option>
-                                <option value="AB-">AB-</option>
-                                <option value="O+">O+</option>
-                                <option value="O-">O-</option>
+                                <option value="" data-i18n="basic.bloodTypes.unknown">Unknown / Not Sure</option>
+                                <option value="A+" data-i18n="basic.bloodTypes.aPos">A+</option>
+                                <option value="A-" data-i18n="basic.bloodTypes.aNeg">A-</option>
+                                <option value="B+" data-i18n="basic.bloodTypes.bPos">B+</option>
+                                <option value="B-" data-i18n="basic.bloodTypes.bNeg">B-</option>
+                                <option value="AB+" data-i18n="basic.bloodTypes.abPos">AB+</option>
+                                <option value="AB-" data-i18n="basic.bloodTypes.abNeg">AB-</option>
+                                <option value="O+" data-i18n="basic.bloodTypes.oPos">O+</option>
+                                <option value="O-" data-i18n="basic.bloodTypes.oNeg">O-</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="phone">Your Phone Number (optional)</label>
-                            <input type="tel" id="phone" placeholder="e.g., 555-555-5555" pattern="\d{3}-?\d{3}-?\d{4}" inputmode="tel" title="Enter a 10-digit phone number">
+                            <label for="phone" data-i18n="basic.phoneNumber">Your Phone Number (optional)</label>
+                            <input type="tel" id="phone" placeholder="e.g., 555-555-5555" pattern="\d{3}-?\d{3}-?\d{4}" inputmode="tel" title="Enter a 10-digit phone number" data-i18n-placeholder="basic.phonePlaceholder" data-i18n-title="basic.phoneTitle">
                         </div>
                         <div class="form-group">
-                            <label for="photo-upload" class="label-gray">Photo (optional)</label>
+                            <label for="photo-upload" class="label-gray" data-i18n="basic.photo">Photo (optional)</label>
                             <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
                                 <button type="button" id="photo-upload-btn" class="btn btn-secondary" data-i18n="card.uploadPhoto">📁 Upload Photo</button>
                                 <button type="button" id="photo-remove" class="btn btn-secondary" style="display:none;" data-i18n="card.removePhoto">❌ Remove</button>
@@ -2286,155 +2286,155 @@
 
                     <!-- Step 4: Health Info -->
                     <div class="wizard-step" data-step="4">
-                        <h2>Health Information <span class="info-icon" tabindex="0" data-tooltip="Medical notes are stored locally and encoded into the QR. Anyone scanning it can see them.">ℹ️</span></h2>
-                        <p style="margin-bottom: 10px; color: var(--secondary);">Keep entries brief - focus on critical information</p>
-                        <p style="margin-bottom: 20px; color: var(--secondary); font-size: 0.9rem;">Leave blank if not applicable. Info stored only in your QR code.</p>
+                        <h2><span data-i18n="health.title">Health Information</span> <span class="info-icon" tabindex="0" data-tooltip="Medical notes are stored locally and encoded into the QR. Anyone scanning it can see them." data-i18n-tooltip="health.tooltip">ℹ️</span></h2>
+                        <p style="margin-bottom: 10px; color: var(--secondary);" data-i18n="health.instructions">Keep entries brief - focus on critical information</p>
+                        <p style="margin-bottom: 20px; color: var(--secondary); font-size: 0.9rem;" data-i18n="health.note">Leave blank if not applicable. Info stored only in your QR code.</p>
                         <div class="form-group">
-                            <label for="allergies" class="label-red">Allergies</label>
-                            <textarea id="allergies" placeholder="e.g., Penicillin, peanuts, latex"></textarea>
-                            <div class="char-counter good" id="allergies-counter">0 / 200 characters</div>
+                            <label for="allergies" class="label-red" data-i18n="health.allergies">Allergies</label>
+                            <textarea id="allergies" placeholder="e.g., Penicillin, peanuts, latex" data-i18n-placeholder="health.allergiesPlaceholder"></textarea>
+                            <div class="char-counter good" id="allergies-counter" data-i18n="health.characterLimit">0 / 200 characters</div>
                         </div>
                         <div class="form-group">
-                            <label for="medications" class="label-red">Current Medications</label>
-                            <textarea id="medications" placeholder="e.g., Metformin 500mg, Lisinopril 10mg"></textarea>
-                            <div class="char-counter good" id="medications-counter">0 / 200 characters</div>
+                            <label for="medications" class="label-red" data-i18n="health.medications">Current Medications</label>
+                            <textarea id="medications" placeholder="e.g., Metformin 500mg, Lisinopril 10mg" data-i18n-placeholder="health.medicationsPlaceholder"></textarea>
+                            <div class="char-counter good" id="medications-counter" data-i18n="health.characterLimit">0 / 200 characters</div>
                         </div>
                         <div class="form-group">
-                            <label for="conditions" class="label-red">Health Conditions</label>
-                            <textarea id="conditions" placeholder="e.g., Type 2 Diabetes, Hypertension"></textarea>
-                            <div class="char-counter good" id="conditions-counter">0 / 200 characters</div>
+                            <label for="conditions" class="label-red" data-i18n="health.conditions">Health Conditions</label>
+                            <textarea id="conditions" placeholder="e.g., Type 2 Diabetes, Hypertension" data-i18n-placeholder="health.conditionsPlaceholder"></textarea>
+                            <div class="char-counter good" id="conditions-counter" data-i18n="health.characterLimit">0 / 200 characters</div>
                         </div>
                     </div>
 
                     <!-- Step 5: Contacts -->
                     <div class="wizard-step" data-step="5">
-                        <h2>Contacts <span class="info-icon" tabindex="0" data-tooltip="Emergency contacts you enter will appear to anyone who scans your card.">ℹ️</span></h2>
+                        <h2><span data-i18n="contacts.title">Contacts</span> <span class="info-icon" tabindex="0" data-tooltip="Emergency contacts you enter will appear to anyone who scans your card." data-i18n-tooltip="contacts.tooltip">ℹ️</span></h2>
                         <div class="form-group">
-                            <label for="ec-name" class="label-green">Emergency Contact Name *</label>
-                            <input type="text" id="ec-name" placeholder="Jane Smith" required>
+                            <label for="ec-name" class="label-green" data-i18n="contacts.emergencyName">Emergency Contact Name *</label>
+                            <input type="text" id="ec-name" placeholder="Jane Smith" required data-i18n-placeholder="placeholders.emergencyName">
                         </div>
                         <div class="form-group">
-                            <label for="ec-phone" class="label-green">Emergency Phone Number *</label>
-                            <input type="tel" id="ec-phone" placeholder="555-555-5555" pattern="\d{3}-?\d{3}-?\d{4}" inputmode="tel" title="Enter a 10-digit phone number" required>
+                            <label for="ec-phone" class="label-green" data-i18n="contacts.emergencyPhone">Emergency Phone Number *</label>
+                            <input type="tel" id="ec-phone" placeholder="555-555-5555" pattern="\d{3}-?\d{3}-?\d{4}" inputmode="tel" title="Enter a 10-digit phone number" required data-i18n-placeholder="placeholders.emergencyPhone" data-i18n-title="basic.phoneTitle">
                         </div>
                         <div class="form-group">
-                            <label for="ec-relationship" class="label-green">Relationship</label>
+                            <label for="ec-relationship" class="label-green" data-i18n="contacts.relationship">Relationship</label>
                             <select id="ec-relationship">
-                                <option value="">Select...</option>
-                                <option value="Spouse">Spouse/Partner</option>
-                                <option value="Parent">Parent</option>
-                                <option value="Child">Child</option>
-                                <option value="Sibling">Sibling</option>
-                                <option value="Friend">Friend</option>
-                                <option value="Other">Other</option>
+                                <option value="" data-i18n="contacts.relationshipSelect">Select...</option>
+                                <option value="Spouse" data-i18n="contacts.relationships.spouse">Spouse/Partner</option>
+                                <option value="Parent" data-i18n="contacts.relationships.parent">Parent</option>
+                                <option value="Child" data-i18n="contacts.relationships.child">Child</option>
+                                <option value="Sibling" data-i18n="contacts.relationships.sibling">Sibling</option>
+                                <option value="Friend" data-i18n="contacts.relationships.friend">Friend</option>
+                                <option value="Other" data-i18n="contacts.relationships.other">Other</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="cm-name" class="label-green">Case Manager Name (optional)</label>
-                            <input type="text" id="cm-name" placeholder="Dr. Jones">
+                            <label for="cm-name" class="label-green" data-i18n="contacts.caseManagerName">Case Manager Name (optional)</label>
+                            <input type="text" id="cm-name" placeholder="Dr. Jones" data-i18n-placeholder="placeholders.caseManager">
                         </div>
                         <div class="form-group">
-                            <label for="cm-org" class="label-green">Organization (optional)</label>
-                            <input type="text" id="cm-org" placeholder="Hospital or Agency">
+                            <label for="cm-org" class="label-green" data-i18n="contacts.organization">Organization (optional)</label>
+                            <input type="text" id="cm-org" placeholder="Hospital or Agency" data-i18n-placeholder="contacts.organizationPlaceholder">
                         </div>
                         <div class="form-group">
-                            <label for="cm-phone" class="label-green">Case Manager Phone (optional)</label>
-                            <input type="tel" id="cm-phone" placeholder="e.g., 555-555-5555" pattern="\d{3}-?\d{3}-?\d{4}" inputmode="tel" title="Enter a 10-digit phone number">
+                            <label for="cm-phone" class="label-green" data-i18n="contacts.caseManagerPhone">Case Manager Phone (optional)</label>
+                            <input type="tel" id="cm-phone" placeholder="e.g., 555-555-5555" pattern="\d{3}-?\d{3}-?\d{4}" inputmode="tel" title="Enter a 10-digit phone number" data-i18n-placeholder="basic.phonePlaceholder" data-i18n-title="basic.phoneTitle">
                         </div>
 
                         <details style="margin-top: 20px;" class="document-section">
-                            <summary style="cursor: pointer; font-weight: 600;">Important Documents (Optional)</summary>
-                            <p style="margin: 10px 0; color: var(--secondary);">
+                            <summary style="cursor: pointer; font-weight: 600;" data-i18n="contacts.documents.title">Important Documents (Optional)</summary>
+                            <p style="margin: 10px 0; color: var(--secondary);" data-i18n="contacts.documents.instructions">
                                 Upload these to your secure drive and paste public share links below.
                             </p>
 
                             <div class="document-group">
                                 <div class="form-group">
-                                    <label for="doc1-type">Document 1</label>
+                                    <label for="doc1-type" data-i18n="contacts.documents.document1">Document 1</label>
                                     <select id="doc1-type" class="doc-type">
-                                        <option value="">Select document</option>
-                                        <option>Medical Power of Attorney</option>
-                                        <option>Advance Directive/Living Will</option>
-                                        <option>DNR Order</option>
-                                        <option>Emergency Contact List</option>
-                                        <option>Current Medications List</option>
-                                        <option>Allergy and Medical Conditions Card</option>
-                                        <option>Blood Type Card</option>
-                                        <option>Temporary Guardianship Authorization</option>
-                                        <option>Pet Emergency Care Instructions</option>
-                                        <option>Organ Donor Designation</option>
-                                        <option>Doctor and Specialist Contact Sheet</option>
-                                        <option>Emergency Cash Envelope Note</option>
-                                        <option value="Other">Other</option>
+                                        <option value="" data-i18n="contacts.documents.select">Select document</option>
+                                        <option data-i18n="contacts.documents.options.medicalPower">Medical Power of Attorney</option>
+                                        <option data-i18n="contacts.documents.options.advanceDirective">Advance Directive/Living Will</option>
+                                        <option data-i18n="contacts.documents.options.dnr">DNR Order</option>
+                                        <option data-i18n="contacts.documents.options.emergencyContact">Emergency Contact List</option>
+                                        <option data-i18n="contacts.documents.options.currentMeds">Current Medications List</option>
+                                        <option data-i18n="contacts.documents.options.allergyCard">Allergy and Medical Conditions Card</option>
+                                        <option data-i18n="contacts.documents.options.bloodType">Blood Type Card</option>
+                                        <option data-i18n="contacts.documents.options.temporaryGuardianship">Temporary Guardianship Authorization</option>
+                                        <option data-i18n="contacts.documents.options.petInstructions">Pet Emergency Care Instructions</option>
+                                        <option data-i18n="contacts.documents.options.organDonor">Organ Donor Designation</option>
+                                        <option data-i18n="contacts.documents.options.doctorContact">Doctor and Specialist Contact Sheet</option>
+                                        <option data-i18n="contacts.documents.options.cashEnvelope">Emergency Cash Envelope Note</option>
+                                        <option value="Other" data-i18n="contacts.documents.options.other">Other</option>
                                     </select>
                                 </div>
                                 <div class="form-group hidden" id="doc1-other-group">
-                                    <label for="doc1-other">Document Type</label>
-                                    <input type="text" id="doc1-other" placeholder="e.g., Insurance Card">
+                                    <label for="doc1-other" data-i18n="contacts.documents.typeLabel">Document Type</label>
+                                    <input type="text" id="doc1-other" placeholder="e.g., Insurance Card" data-i18n-placeholder="contacts.documents.typePlaceholder">
                                 </div>
                                 <div class="form-group">
-                                    <label for="doc1-link">Link</label>
-                                    <input type="url" id="doc1-link" placeholder="https://example.com/document">
+                                    <label for="doc1-link" data-i18n="contacts.documents.linkLabel">Link</label>
+                                    <input type="url" id="doc1-link" placeholder="https://example.com/document" data-i18n-placeholder="contacts.documents.linkPlaceholder">
                                 </div>
                             </div>
 
                             <div class="document-group">
                                 <div class="form-group">
-                                    <label for="doc2-type">Document 2</label>
+                                    <label for="doc2-type" data-i18n="contacts.documents.document2">Document 2</label>
                                     <select id="doc2-type" class="doc-type">
-                                        <option value="">Select document</option>
-                                        <option>Medical Power of Attorney</option>
-                                        <option>Advance Directive/Living Will</option>
-                                        <option>DNR Order</option>
-                                        <option>Emergency Contact List</option>
-                                        <option>Current Medications List</option>
-                                        <option>Allergy and Medical Conditions Card</option>
-                                        <option>Blood Type Card</option>
-                                        <option>Temporary Guardianship Authorization</option>
-                                        <option>Pet Emergency Care Instructions</option>
-                                        <option>Organ Donor Designation</option>
-                                        <option>Doctor and Specialist Contact Sheet</option>
-                                        <option>Emergency Cash Envelope Note</option>
-                                        <option value="Other">Other</option>
+                                        <option value="" data-i18n="contacts.documents.select">Select document</option>
+                                        <option data-i18n="contacts.documents.options.medicalPower">Medical Power of Attorney</option>
+                                        <option data-i18n="contacts.documents.options.advanceDirective">Advance Directive/Living Will</option>
+                                        <option data-i18n="contacts.documents.options.dnr">DNR Order</option>
+                                        <option data-i18n="contacts.documents.options.emergencyContact">Emergency Contact List</option>
+                                        <option data-i18n="contacts.documents.options.currentMeds">Current Medications List</option>
+                                        <option data-i18n="contacts.documents.options.allergyCard">Allergy and Medical Conditions Card</option>
+                                        <option data-i18n="contacts.documents.options.bloodType">Blood Type Card</option>
+                                        <option data-i18n="contacts.documents.options.temporaryGuardianship">Temporary Guardianship Authorization</option>
+                                        <option data-i18n="contacts.documents.options.petInstructions">Pet Emergency Care Instructions</option>
+                                        <option data-i18n="contacts.documents.options.organDonor">Organ Donor Designation</option>
+                                        <option data-i18n="contacts.documents.options.doctorContact">Doctor and Specialist Contact Sheet</option>
+                                        <option data-i18n="contacts.documents.options.cashEnvelope">Emergency Cash Envelope Note</option>
+                                        <option value="Other" data-i18n="contacts.documents.options.other">Other</option>
                                     </select>
                                 </div>
                                 <div class="form-group hidden" id="doc2-other-group">
-                                    <label for="doc2-other">Document Type</label>
-                                    <input type="text" id="doc2-other" placeholder="e.g., Insurance Card">
+                                    <label for="doc2-other" data-i18n="contacts.documents.typeLabel">Document Type</label>
+                                    <input type="text" id="doc2-other" placeholder="e.g., Insurance Card" data-i18n-placeholder="contacts.documents.typePlaceholder">
                                 </div>
                                 <div class="form-group">
-                                    <label for="doc2-link">Link</label>
-                                    <input type="url" id="doc2-link" placeholder="https://example.com/document">
+                                    <label for="doc2-link" data-i18n="contacts.documents.linkLabel">Link</label>
+                                    <input type="url" id="doc2-link" placeholder="https://example.com/document" data-i18n-placeholder="contacts.documents.linkPlaceholder">
                                 </div>
                             </div>
 
                             <div class="document-group">
                                 <div class="form-group">
-                                    <label for="doc3-type">Document 3</label>
+                                    <label for="doc3-type" data-i18n="contacts.documents.document3">Document 3</label>
                                     <select id="doc3-type" class="doc-type">
-                                        <option value="">Select document</option>
-                                        <option>Medical Power of Attorney</option>
-                                        <option>Advance Directive/Living Will</option>
-                                        <option>DNR Order</option>
-                                        <option>Emergency Contact List</option>
-                                        <option>Current Medications List</option>
-                                        <option>Allergy and Medical Conditions Card</option>
-                                        <option>Blood Type Card</option>
-                                        <option>Temporary Guardianship Authorization</option>
-                                        <option>Pet Emergency Care Instructions</option>
-                                        <option>Organ Donor Designation</option>
-                                        <option>Doctor and Specialist Contact Sheet</option>
-                                        <option>Emergency Cash Envelope Note</option>
-                                        <option value="Other">Other</option>
+                                        <option value="" data-i18n="contacts.documents.select">Select document</option>
+                                        <option data-i18n="contacts.documents.options.medicalPower">Medical Power of Attorney</option>
+                                        <option data-i18n="contacts.documents.options.advanceDirective">Advance Directive/Living Will</option>
+                                        <option data-i18n="contacts.documents.options.dnr">DNR Order</option>
+                                        <option data-i18n="contacts.documents.options.emergencyContact">Emergency Contact List</option>
+                                        <option data-i18n="contacts.documents.options.currentMeds">Current Medications List</option>
+                                        <option data-i18n="contacts.documents.options.allergyCard">Allergy and Medical Conditions Card</option>
+                                        <option data-i18n="contacts.documents.options.bloodType">Blood Type Card</option>
+                                        <option data-i18n="contacts.documents.options.temporaryGuardianship">Temporary Guardianship Authorization</option>
+                                        <option data-i18n="contacts.documents.options.petInstructions">Pet Emergency Care Instructions</option>
+                                        <option data-i18n="contacts.documents.options.organDonor">Organ Donor Designation</option>
+                                        <option data-i18n="contacts.documents.options.doctorContact">Doctor and Specialist Contact Sheet</option>
+                                        <option data-i18n="contacts.documents.options.cashEnvelope">Emergency Cash Envelope Note</option>
+                                        <option value="Other" data-i18n="contacts.documents.options.other">Other</option>
                                     </select>
                                 </div>
                                 <div class="form-group hidden" id="doc3-other-group">
-                                    <label for="doc3-other">Document Type</label>
-                                    <input type="text" id="doc3-other" placeholder="e.g., Insurance Card">
+                                    <label for="doc3-other" data-i18n="contacts.documents.typeLabel">Document Type</label>
+                                    <input type="text" id="doc3-other" placeholder="e.g., Insurance Card" data-i18n-placeholder="contacts.documents.typePlaceholder">
                                 </div>
                                 <div class="form-group">
-                                    <label for="doc3-link">Link</label>
-                                    <input type="url" id="doc3-link" placeholder="https://example.com/document">
+                                    <label for="doc3-link" data-i18n="contacts.documents.linkLabel">Link</label>
+                                    <input type="url" id="doc3-link" placeholder="https://example.com/document" data-i18n-placeholder="contacts.documents.linkPlaceholder">
                                 </div>
                             </div>
                         </details>
@@ -2442,57 +2442,57 @@
 
                     <!-- Step 6: If Found Instructions -->
                     <div class="wizard-step" data-step="6">
-                        <h2>If Found Instructions</h2>
-                        <p>What should someone do if they find your iKey Emergency ID?</p>
-                        <p style="margin:10px 0; color: var(--secondary);">⚠️ This information will be visible to anyone who finds your card</p>
+                        <h2 data-i18n="ifFound.title">If Found Instructions</h2>
+                        <p data-i18n="ifFound.question">What should someone do if they find your iKey Emergency ID?</p>
+                        <p style="margin:10px 0; color: var(--secondary);" data-i18n="ifFound.warning">⚠️ This information will be visible to anyone who finds your card</p>
                         <div class="form-group">
-                            <label for="if-found-action" class="label-yellow">Choose an action</label>
+                            <label for="if-found-action" class="label-yellow" data-i18n="ifFound.chooseAction">Choose an action</label>
                             <select id="if-found-action">
-                                <option value="none" selected>No special instructions</option>
-                                <option value="destroy">Destroy it for my privacy</option>
-                                <option value="mail">Mail to this address</option>
-                                <option value="contact">Contact someone</option>
-                                <option value="other">Other instructions</option>
+                                <option value="none" selected data-i18n="ifFound.actions.none">No special instructions</option>
+                                <option value="destroy" data-i18n="ifFound.actions.destroy">Destroy it for my privacy</option>
+                                <option value="mail" data-i18n="ifFound.actions.mail">Mail to this address</option>
+                                <option value="contact" data-i18n="ifFound.actions.contact">Contact someone</option>
+                                <option value="other" data-i18n="ifFound.actions.other">Other instructions</option>
                             </select>
                         </div>
                         <div class="form-group hidden" id="mail-group">
-                            <label for="mail-address" class="label-yellow">Mailing Address</label>
-                            <textarea id="mail-address" placeholder="123 Main St..." maxlength="200"></textarea>
-                            <div class="char-counter good" id="mail-address-counter">0 / 200 characters</div>
+                            <label for="mail-address" class="label-yellow" data-i18n="ifFound.mailingAddress">Mailing Address</label>
+                            <textarea id="mail-address" placeholder="123 Main St..." maxlength="200" data-i18n-placeholder="ifFound.mailingPlaceholder"></textarea>
+                            <div class="char-counter good" id="mail-address-counter" data-i18n="health.characterLimit">0 / 200 characters</div>
                         </div>
                         <div class="form-group hidden" id="contact-group">
-                            <label for="contact-who" class="label-yellow">Who should they contact?</label>
+                            <label for="contact-who" class="label-yellow" data-i18n="ifFound.contactQuestion">Who should they contact?</label>
                             <select id="contact-who">
-                                <option value="emergency">My emergency contact</option>
-                                <option value="case-manager">My case manager</option>
-                                <option value="other">Other person</option>
+                                <option value="emergency" data-i18n="ifFound.contactOptions.emergency">My emergency contact</option>
+                                <option value="case-manager" data-i18n="ifFound.contactOptions.caseManager">My case manager</option>
+                                <option value="other" data-i18n="ifFound.contactOptions.other">Other person</option>
                             </select>
-                            <input type="text" id="contact-other" class="hidden" placeholder="Name & phone" maxlength="200" />
+                            <input type="text" id="contact-other" class="hidden" placeholder="Name & phone" maxlength="200" data-i18n-placeholder="ifFound.contactPlaceholder" />
                         </div>
                         <div class="form-group hidden" id="other-group">
-                            <label for="other-instructions" class="label-yellow">Instructions</label>
-                            <textarea id="other-instructions" placeholder="Please..." maxlength="200"></textarea>
-                            <div class="char-counter good" id="other-instructions-counter">0 / 200 characters</div>
+                            <label for="other-instructions" class="label-yellow" data-i18n="ifFound.instructionsLabel">Instructions</label>
+                            <textarea id="other-instructions" placeholder="Please..." maxlength="200" data-i18n-placeholder="ifFound.instructionsPlaceholder"></textarea>
+                            <div class="char-counter good" id="other-instructions-counter" data-i18n="health.characterLimit">0 / 200 characters</div>
                         </div>
                     </div>
 
                     <!-- Step 7: Review -->
                     <div class="wizard-step" data-step="7">
-                        <h2>Review Your Information</h2>
+                        <h2 data-i18n="review.title">Review Your Information</h2>
                         <div id="review-content"></div>
                         <div style="background: #fef3c7; border: 1px solid #facc15; border-radius: 10px; padding: 15px; margin-top: 20px;">
-                            <strong>⚠️ Heads up:</strong><span class="info-icon" tabindex="0" data-tooltip="Anyone with the image can read what you include.">ℹ️</span> Anyone who scans this QR code will be able to view the information you provide.
+                            <strong data-i18n="review.warning">⚠️ Heads up:</strong><span class="info-icon" tabindex="0" data-tooltip="Anyone with the image can read what you include." data-i18n-tooltip="review.warningTooltip">ℹ️</span> <span data-i18n="review.warningText">Anyone who scans this QR code will be able to view the information you provide.</span>
                         </div>
                         <div style="background: #dcfce7; border: 1px solid #86efac; border-radius: 10px; padding: 15px; margin-top: 20px;">
-                            <strong>✅ Ready to Generate:</strong> Your QR code is permanent once created. To make changes, you'll need to create a new one.
+                            <strong data-i18n="review.ready">✅ Ready to Generate:</strong> <span data-i18n="review.readyText">Your QR code is permanent once created. To make changes, you'll need to create a new one.</span>
                         </div>
                     </div>
 
                     <!-- Wizard Actions -->
                     <div class="wizard-actions">
-                        <button class="btn btn-secondary" id="btn-back" onclick="previousStep()">← Back</button>
-                        <button class="btn btn-primary start-btn" id="btn-next" onclick="nextStep()">Start →</button>
-                        <button class="btn btn-success hidden" id="btn-generate" onclick="generateQR()">Generate QR Code</button><span class="info-icon" tabindex="0" data-tooltip="Generating creates an image stored only here. Regenerate to update.">ℹ️</span>
+                        <button class="btn btn-secondary" id="btn-back" onclick="previousStep()" data-i18n="buttons.back">← Back</button>
+                        <button class="btn btn-primary start-btn" id="btn-next" onclick="nextStep()" data-i18n="buttons.start">Start →</button>
+                        <button class="btn btn-success hidden" id="btn-generate" onclick="generateQR()" data-i18n="buttons.generateQR">Generate QR Code</button><span class="info-icon" tabindex="0" data-tooltip="Generating creates an image stored only here. Regenerate to update." data-i18n-tooltip="wizardFlow.generateTooltip">ℹ️</span>
                     </div>
                 </div>
 
@@ -3473,7 +3473,7 @@ function handleSetMyKeyConfirm() {
             });
             input.addEventListener('blur', () => {
                 if (input.value.replace(/\D/g, '').length !== 10) {
-                    alert('Please enter a valid 10-digit phone number');
+                    alert(t('messages.enterValidPhone', 'Please enter a valid 10-digit phone number'));
                     input.focus();
                 }
             });
@@ -3488,8 +3488,9 @@ function handleSetMyKeyConfirm() {
                 if (textarea && counter) {
                     textarea.addEventListener('input', () => {
                         const length = textarea.value.length;
-                        counter.textContent = `${length} / 200 characters`;
-                        
+                        const template = t('wizardFlow.characterCount', '{count} / 200 characters');
+                        counter.textContent = template.replace('{count}', length);
+
                         if (length <= 100) {
                             counter.className = 'char-counter good';
                         } else if (length <= 150) {
@@ -3568,9 +3569,13 @@ function handleSetMyKeyConfirm() {
 
             document.getElementById('btn-back').style.display = currentStep === 1 ? 'none' : 'block';
             const nextBtn = document.getElementById('btn-next');
-            nextBtn.classList.toggle('hidden', currentStep === 7);
-            nextBtn.textContent = currentStep === 1 ? 'Start →' : 'Next →';
-            nextBtn.classList.toggle('start-btn', currentStep === 1);
+            if (nextBtn) {
+                nextBtn.classList.toggle('hidden', currentStep === 7);
+                const startLabel = t('buttons.start', 'Start →');
+                const nextLabel = t('buttons.next', 'Next →');
+                nextBtn.textContent = currentStep === 1 ? startLabel : nextLabel;
+                nextBtn.classList.toggle('start-btn', currentStep === 1);
+            }
             document.getElementById('btn-generate').classList.toggle('hidden', currentStep !== 7);
         }
 
@@ -3610,7 +3615,7 @@ function handleSetMyKeyConfirm() {
                 const email = document.getElementById('secure-email').value.trim();
                 const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 if (!regex.test(email)) {
-                    alert('Please enter a valid email address');
+                    alert(t('messages.enterValidEmail', 'Please enter a valid email address'));
                     return false;
                 }
             }
@@ -3618,7 +3623,7 @@ function handleSetMyKeyConfirm() {
             if (step === 3) {
                 const name = document.getElementById('name').value.trim();
                 if (!name) {
-                    alert('Please enter your name');
+                    alert(t('messages.enterName', 'Please enter your name'));
                     return false;
                 }
                 const m = document.getElementById('dob-month').value.trim();
@@ -3627,7 +3632,7 @@ function handleSetMyKeyConfirm() {
                 if (m || d || y) {
                     const date = createDateFromInputs(m, d, y);
                     if (!date) {
-                        alert('Please enter a valid date of birth');
+                        alert(t('messages.enterValidDob', 'Please enter a valid date of birth'));
                         return false;
                     }
                 }
@@ -3637,7 +3642,7 @@ function handleSetMyKeyConfirm() {
                 const ecName = document.getElementById('ec-name').value.trim();
                 const ecPhone = document.getElementById('ec-phone').value.trim();
                 if (!ecName || !ecPhone) {
-                    alert('Please enter emergency contact name and phone');
+                    alert(t('messages.enterEmergencyContact', 'Please enter emergency contact name and phone'));
                     return false;
                 }
             }
@@ -3647,7 +3652,7 @@ function handleSetMyKeyConfirm() {
                 if (action === 'mail') {
                     const addr = document.getElementById('mail-address').value.trim();
                     if (!addr) {
-                        alert('Please enter a mailing address');
+                        alert(t('messages.enterMailingAddress', 'Please enter a mailing address'));
                         return false;
                     }
                 }
@@ -3656,7 +3661,7 @@ function handleSetMyKeyConfirm() {
                     if (who === 'other') {
                         const info = document.getElementById('contact-other').value.trim();
                         if (!info) {
-                            alert('Please enter contact information');
+                            alert(t('messages.enterContactInfo', 'Please enter contact information'));
                             return false;
                         }
                     }
@@ -3664,7 +3669,7 @@ function handleSetMyKeyConfirm() {
                 if (action === 'other') {
                     const inst = document.getElementById('other-instructions').value.trim();
                     if (!inst) {
-                        alert('Please enter instructions');
+                        alert(t('messages.enterInstructions', 'Please enter instructions'));
                         return false;
                     }
                 }
@@ -3742,9 +3747,34 @@ function handleSetMyKeyConfirm() {
 
         function showReview() {
             formData = collectFormData();
+            const labels = {
+                name: t('review.labels.name', 'Name'),
+                notProvided: t('review.labels.notProvided', 'Not provided'),
+                secureEmail: t('review.labels.secureEmail', 'Secure Email'),
+                pronouns: t('review.labels.pronouns', 'Pronouns'),
+                phoneNumber: t('review.labels.phoneNumber', 'Phone Number'),
+                dateOfBirth: t('review.labels.dateOfBirth', 'Date of Birth'),
+                bloodType: t('review.labels.bloodType', 'Blood Type'),
+                allergies: t('review.labels.allergies', 'Allergies'),
+                medications: t('review.labels.medications', 'Medications'),
+                conditions: t('review.labels.conditions', 'Health Conditions'),
+                emergencyContact: t('review.labels.emergencyContact', 'Emergency Contact'),
+                caseManager: t('review.labels.caseManager', 'Case Manager'),
+                documents: t('review.labels.documents', 'Documents')
+            };
+
+            const relationshipMap = {
+                'Spouse': t('contacts.relationships.spouse', 'Spouse/Partner'),
+                'Parent': t('contacts.relationships.parent', 'Parent'),
+                'Child': t('contacts.relationships.child', 'Child'),
+                'Sibling': t('contacts.relationships.sibling', 'Sibling'),
+                'Friend': t('contacts.relationships.friend', 'Friend'),
+                'Other': t('contacts.relationships.other', 'Other')
+            };
+
             let docsHTML = '';
             if (formData.docs.length) {
-                docsHTML = '<div class="info-card"><div class="subtitle-text">Documents</div><ul style="margin-left: 20px;">';
+                docsHTML = `<div class="info-card"><div class="subtitle-text">${labels.documents}</div><ul style="margin-left: 20px;">`;
                 formData.docs.forEach(d => {
                     docsHTML += `<li><a href="${d.l}" target="_blank">${d.t}</a></li>`;
                 });
@@ -3753,22 +3783,22 @@ function handleSetMyKeyConfirm() {
 
             let ifFoundHTML = '';
             if (formData.ifFound && formData.ifFound.action !== 'none') {
-                ifFoundHTML = '<div class="info-card" style="background: #fef3c7; border: 2px dashed #f59e0b;">';
-                ifFoundHTML += '<div class="subtitle-text">📍 IF FOUND</div>';
+                const ifFoundLabel = t('review.ifFoundLabel', '📍 IF FOUND');
+                ifFoundHTML = `<div class="info-card" style="background: #fef3c7; border: 2px dashed #f59e0b;"><div class="subtitle-text">${ifFoundLabel}</div>`;
                 switch (formData.ifFound.action) {
                     case 'destroy':
-                        ifFoundHTML += '<div style="font-weight: 600;">Please destroy this card for privacy</div>';
+                        ifFoundHTML += `<div style="font-weight: 600;"><span data-i18n="review.ifFound.destroy">${t('review.ifFound.destroy', 'Please destroy this card for privacy')}</span></div>`;
                         break;
                     case 'mail':
-                        ifFoundHTML += `<div style="font-weight: 600;">Please mail to:<br>${formData.ifFound.mailAddress}</div>`;
+                        ifFoundHTML += `<div style="font-weight: 600;"><span data-i18n="review.ifFound.mail">${t('review.ifFound.mail', 'Please mail to:')}</span><br>${formData.ifFound.mailAddress}</div>`;
                         break;
                     case 'contact':
                         if (formData.ifFound.contactType === 'emergency') {
-                            ifFoundHTML += `<div style="font-weight: 600;">Please contact emergency contact:<br>${formData.ec} - ${formData.ep}</div>`;
+                            ifFoundHTML += `<div style="font-weight: 600;"><span data-i18n="review.ifFound.contactEmergency">${t('review.ifFound.contactEmergency', 'Please contact emergency contact:')}</span><br>${formData.ec} - ${formData.ep}</div>`;
                         } else if (formData.ifFound.contactType === 'case-manager') {
-                            ifFoundHTML += `<div style="font-weight: 600;">Please contact case manager:<br>${formData.cm} - ${formData.cp}</div>`;
+                            ifFoundHTML += `<div style="font-weight: 600;"><span data-i18n="review.ifFound.contactCaseManager">${t('review.ifFound.contactCaseManager', 'Please contact case manager:')}</span><br>${formData.cm} - ${formData.cp}</div>`;
                         } else {
-                            ifFoundHTML += `<div style="font-weight: 600;">Please contact:<br>${formData.ifFound.contactInfo}</div>`;
+                            ifFoundHTML += `<div style="font-weight: 600;"><span data-i18n="review.ifFound.contactOther">${t('review.ifFound.contactOther', 'Please contact:')}</span><br>${formData.ifFound.contactInfo}</div>`;
                         }
                         break;
                     case 'other':
@@ -3778,62 +3808,63 @@ function handleSetMyKeyConfirm() {
                 ifFoundHTML += '</div>';
             }
 
+            const relationshipText = formData.er && relationshipMap[formData.er] ? relationshipMap[formData.er] : formData.er;
             const reviewHTML = `
                 <div class="info-card">
-                    <div class="subtitle-text">Name</div>
-                    <div style="font-weight: 600;">${formData.n || 'Not provided'}</div>
+                    <div class="subtitle-text" data-i18n="review.labels.name">${labels.name}</div>
+                    <div style="font-weight: 600;">${formData.n || labels.notProvided}</div>
                 </div>
                 ${formData.pe ? `
                 <div class="info-card" style="border-left: 4px solid #6d4aff;">
-                    <div class="subtitle-text">Secure Email</div>
+                    <div class="subtitle-text" data-i18n="review.labels.secureEmail">${labels.secureEmail}</div>
                     <div style="font-weight: 600;">${formData.pe}</div>
                 </div>` : ''}
                 ${formData.pr ? `
                 <div class="info-card">
-                    <div class="subtitle-text">Pronouns</div>
+                    <div class="subtitle-text" data-i18n="review.labels.pronouns">${labels.pronouns}</div>
                     <div style="font-weight: 600;">${formData.pr}</div>
                 </div>` : ''}
                 ${formData.ph ? `
                 <div class="info-card">
-                    <div class="subtitle-text">Phone Number</div>
+                    <div class="subtitle-text" data-i18n="review.labels.phoneNumber">${labels.phoneNumber}</div>
                     <div style="font-weight: 600;">${formData.ph}</div>
                 </div>` : ''}
                 ${formData.d ? `
                 <div class="info-card">
-                    <div class="subtitle-text">Date of Birth</div>
+                    <div class="subtitle-text" data-i18n="review.labels.dateOfBirth">${labels.dateOfBirth}</div>
                     <div style="font-weight: 600;">${formatStoredDate(formData.d)}</div>
                 </div>` : ''}
                 ${formData.b ? `
                 <div class="info-card">
-                    <div class="subtitle-text">Blood Type</div>
+                    <div class="subtitle-text" data-i18n="review.labels.bloodType">${labels.bloodType}</div>
                     <div style="font-weight: 600;">${formData.b}</div>
                 </div>` : ''}
                 ${formData.a ? `
                 <div class="info-card">
-                    <div class="subtitle-text">Allergies</div>
+                    <div class="subtitle-text" data-i18n="review.labels.allergies">${labels.allergies}</div>
                     <div style="font-weight: 600;">${formData.a}</div>
                 </div>` : ''}
                 ${formData.m ? `
                 <div class="info-card">
-                    <div class="subtitle-text">Medications</div>
+                    <div class="subtitle-text" data-i18n="review.labels.medications">${labels.medications}</div>
                     <div style="font-weight: 600;">${formData.m}</div>
                 </div>` : ''}
                 ${formData.c ? `
                 <div class="info-card">
-                    <div class="subtitle-text">Health Conditions</div>
+                    <div class="subtitle-text" data-i18n="review.labels.conditions">${labels.conditions}</div>
                     <div style="font-weight: 600;">${formData.c}</div>
                 </div>` : ''}
                 <div class="info-card">
-                    <div class="subtitle-text">Emergency Contact</div>
+                    <div class="subtitle-text" data-i18n="review.labels.emergencyContact">${labels.emergencyContact}</div>
                     <div style="font-weight: 600;">
                         ${formData.ec}<br>
                         📞 ${formData.ep}
-                        ${formData.er ? `<br><small>${formData.er}</small>` : ''}
+                        ${relationshipText ? `<br><small>${relationshipText}</small>` : ''}
                     </div>
                 </div>
                 ${formData.cm ? `
                 <div class="info-card">
-                    <div class="subtitle-text">Case Manager</div>
+                    <div class="subtitle-text" data-i18n="review.labels.caseManager">${labels.caseManager}</div>
                     <div style="font-weight: 600;">
                         ${formData.cm}<br>
                         ${formData.co ? `<small>${formData.co}</small><br>` : ''}
@@ -3859,7 +3890,7 @@ function handleSetMyKeyConfirm() {
             const compressed = compressData(jsonStr);
             const dataSize = new Blob([compressed]).size;
             if (dataSize > 2500) {
-                alert('Warning: QR code data may be too large to scan reliably.');
+                alert(t('messages.qrTooLarge', 'Warning: QR code data may be too large to scan reliably.'));
             }
             const url = `${baseURL}#${compressed}`;
             const encodedUrl = encodeURI(url);
@@ -3895,27 +3926,28 @@ function handleSetMyKeyConfirm() {
             const ifFoundEl = document.getElementById('qr-if-found');
             if (formData.ifFound && formData.ifFound.action !== 'none') {
                 let text = '';
+                const ifFoundLabel = t('review.ifFoundLabel', '📍 IF FOUND');
                 switch (formData.ifFound.action) {
                     case 'destroy':
-                        text = '<div style="font-weight: 600;">Please destroy this card for privacy</div>';
+                        text = `<div style="font-weight: 600;">${t('review.ifFound.destroy', 'Please destroy this card for privacy')}</div>`;
                         break;
                     case 'mail':
-                        text = `<div style="font-weight: 600;">Please mail to:<br>${formData.ifFound.mailAddress}</div>`;
+                        text = `<div style="font-weight: 600;">${t('review.ifFound.mail', 'Please mail to:')}<br>${formData.ifFound.mailAddress}</div>`;
                         break;
                     case 'contact':
                         if (formData.ifFound.contactType === 'emergency') {
-                            text = `<div style="font-weight: 600;">Please contact emergency contact:<br>${formData.ec} - ${formData.ep}</div>`;
+                            text = `<div style="font-weight: 600;">${t('review.ifFound.contactEmergency', 'Please contact emergency contact:')}<br>${formData.ec} - ${formData.ep}</div>`;
                         } else if (formData.ifFound.contactType === 'case-manager') {
-                            text = `<div style="font-weight: 600;">Please contact case manager:<br>${formData.cm} - ${formData.cp}</div>`;
+                            text = `<div style="font-weight: 600;">${t('review.ifFound.contactCaseManager', 'Please contact case manager:')}<br>${formData.cm} - ${formData.cp}</div>`;
                         } else {
-                            text = `<div style="font-weight: 600;">Please contact:<br>${formData.ifFound.contactInfo}</div>`;
+                            text = `<div style="font-weight: 600;">${t('review.ifFound.contactOther', 'Please contact:')}<br>${formData.ifFound.contactInfo}</div>`;
                         }
                         break;
                     case 'other':
                         text = `<div style="font-weight: 600;">${formData.ifFound.instructions}</div>`;
                         break;
                 }
-                ifFoundEl.innerHTML = '<div class="subtitle-text">📍 IF FOUND</div>' + text;
+                ifFoundEl.innerHTML = `<div class="subtitle-text">${ifFoundLabel}</div>` + text;
                 ifFoundEl.style.display = 'block';
             } else {
                 ifFoundEl.style.display = 'none';
@@ -5754,6 +5786,28 @@ Generated: ${new Date().toLocaleString()}`;
             const bar = document.querySelector('.share-bar');
             if (bar) bar.style.display = 'block';
 
+            const reviewLabels = {
+                phoneNumber: t('review.labels.phoneNumber', 'Phone Number'),
+                pronouns: t('review.labels.pronouns', 'Pronouns'),
+                dateOfBirth: t('review.labels.dateOfBirth', 'Date of Birth'),
+                bloodType: t('review.labels.bloodType', 'Blood Type'),
+                allergies: t('review.labels.allergies', 'Allergies'),
+                medications: t('review.labels.medications', 'Medications'),
+                conditions: t('review.labels.conditions', 'Health Conditions'),
+                emergencyContact: t('review.labels.emergencyContact', 'Emergency Contact'),
+                caseManager: t('review.labels.caseManager', 'Case Manager'),
+                secureEmail: t('review.labels.secureEmail', 'Secure Email'),
+                documents: t('review.labels.documents', 'Documents')
+            };
+            const ifFoundLabel = t('review.ifFoundLabel', '📍 IF FOUND');
+            const ifFoundTexts = {
+                destroy: t('review.ifFound.destroy', 'Please destroy this card for privacy'),
+                mail: t('review.ifFound.mail', 'Please mail to:'),
+                contactEmergency: t('review.ifFound.contactEmergency', 'Please contact emergency contact:'),
+                contactCaseManager: t('review.ifFound.contactCaseManager', 'Please contact case manager:'),
+                contactOther: t('review.ifFound.contactOther', 'Please contact:')
+            };
+
             // Generate communication cards
             let commCards = '';
 
@@ -5838,35 +5892,35 @@ Generated: ${new Date().toLocaleString()}`;
 
             if (data.ph) {
                 html += `<div class="info-card">
-                            <div class="subtitle-text">Phone Number</div>
+                            <div class="subtitle-text" data-i18n="review.labels.phoneNumber">${reviewLabels.phoneNumber}</div>
                             <div style="font-weight: 600;"><a href="tel:${data.ph}" style="color: var(--primary); text-decoration: none;">${data.ph}</a></div>
                         </div>`;
             }
 
             if (data.pr) {
                 html += `<div class="info-card">
-                            <div class="subtitle-text">Pronouns</div>
+                            <div class="subtitle-text" data-i18n="review.labels.pronouns">${reviewLabels.pronouns}</div>
                             <div style="font-weight: 600;">${data.pr}</div>
                         </div>`;
             }
 
             if (data.b) {
                 html += `<div class="info-card" style="border-left: 4px solid var(--danger);">
-                            <div class="subtitle-text">Blood Type</div>
+                            <div class="subtitle-text" data-i18n="review.labels.bloodType">${reviewLabels.bloodType}</div>
                             <div style="font-weight: 600; color: var(--danger);">${data.b}</div>
                         </div>`;
             }
 
             if (data.a) {
                 html += `<div class="info-card" style="border-left: 4px solid var(--danger);">
-                            <div class="subtitle-text">⚠️ Allergies</div>
+                            <div class="subtitle-text">⚠️ <span data-i18n="review.labels.allergies">${reviewLabels.allergies}</span></div>
                             <div style="font-weight: 600; color: var(--danger);">${data.a}</div>
                         </div>`;
             }
 
             if (data.ec) {
                 html += `<div class="info-card" style="background: #dcfce7; border: 2px solid var(--success);">
-                            <div class="subtitle-text">📞 Emergency Contact</div>
+                            <div class="subtitle-text">📞 <span data-i18n="review.labels.emergencyContact">${reviewLabels.emergencyContact}</span></div>
                             <div style="font-weight: 600; font-size: 1.2rem;">
                                 ${data.ec}<br>
                                 <a href="tel:${data.ep}" style="color: var(--primary); text-decoration: none;">
@@ -5878,7 +5932,7 @@ Generated: ${new Date().toLocaleString()}`;
 
             if (data.cm) {
                 html += `<div class="info-card" style="background: #eff6ff; border: 2px solid var(--primary);">
-                            <div class="subtitle-text">👤 Case Manager</div>
+                            <div class="subtitle-text">👤 <span data-i18n="review.labels.caseManager">${reviewLabels.caseManager}</span></div>
                             <div style="font-weight: 600;">
                                 ${data.cm}<br>
                                 ${data.co ? `<small>${data.co}</small><br>` : ''}
@@ -5889,35 +5943,35 @@ Generated: ${new Date().toLocaleString()}`;
 
             if (data.pe) {
                 html += `<div class="info-card" style="border-left: 4px solid #6d4aff;">
-                            <div class="subtitle-text">Secure Email</div>
+                            <div class="subtitle-text" data-i18n="review.labels.secureEmail">${reviewLabels.secureEmail}</div>
                             <div style="font-weight: 600;">${data.pe}</div>
                         </div>`;
             }
 
             if (data.docs && data.docs.length) {
                 html += `<div class="info-card">
-                            <div class="subtitle-text">Documents</div>
+                            <div class="subtitle-text" data-i18n="review.labels.documents">${reviewLabels.documents}</div>
                             <ul style="margin-left: 20px;">${data.docs.map(d => `<li><a href="${d.l}" target="_blank" style="color: var(--primary); text-decoration: none;">📄 ${d.t}</a></li>`).join('')}</ul>
                         </div>`;
             }
 
             if (data.ifFound && data.ifFound.action !== 'none') {
                 html += '<div class="info-card" style="background: #fef3c7; border: 2px dashed #f59e0b;">';
-                html += '<div class="subtitle-text">📍 IF FOUND</div>';
+                html += `<div class="subtitle-text" data-i18n="review.ifFoundLabel">${ifFoundLabel}</div>`;
                 switch(data.ifFound.action) {
                     case 'destroy':
-                        html += '<div style="font-weight: 600;">Please destroy this card for privacy</div>';
+                        html += `<div style="font-weight: 600;"><span data-i18n="review.ifFound.destroy">${ifFoundTexts.destroy}</span></div>`;
                         break;
                     case 'mail':
-                        html += `<div style="font-weight: 600;">Please mail to:<br>${data.ifFound.mailAddress}</div>`;
+                        html += `<div style="font-weight: 600;"><span data-i18n="review.ifFound.mail">${ifFoundTexts.mail}</span><br>${data.ifFound.mailAddress}</div>`;
                         break;
                     case 'contact':
                         if (data.ifFound.contactType === 'emergency') {
-                            html += `<div style="font-weight: 600;">Please contact emergency contact:<br>${data.ec} - ${data.ep}</div>`;
+                            html += `<div style="font-weight: 600;"><span data-i18n="review.ifFound.contactEmergency">${ifFoundTexts.contactEmergency}</span><br>${data.ec} - ${data.ep}</div>`;
                         } else if (data.ifFound.contactType === 'case-manager') {
-                            html += `<div style="font-weight: 600;">Please contact case manager:<br>${data.cm} - ${data.cp}</div>`;
+                            html += `<div style="font-weight: 600;"><span data-i18n="review.ifFound.contactCaseManager">${ifFoundTexts.contactCaseManager}</span><br>${data.cm} - ${data.cp}</div>`;
                         } else {
-                            html += `<div style="font-weight: 600;">Please contact:<br>${data.ifFound.contactInfo}</div>`;
+                            html += `<div style="font-weight: 600;"><span data-i18n="review.ifFound.contactOther">${ifFoundTexts.contactOther}</span><br>${data.ifFound.contactInfo}</div>`;
                         }
                         break;
                     case 'other':
@@ -5930,6 +5984,7 @@ Generated: ${new Date().toLocaleString()}`;
             html += '</div></details>';
 
             document.getElementById('display-content').innerHTML = html;
+            translateFragment(document.getElementById('display-content'));
             const infoDetailsEl = document.querySelector('#display-content .info-details');
             if (infoDetailsEl) {
                 infoDetailsEl.addEventListener('toggle', () => {

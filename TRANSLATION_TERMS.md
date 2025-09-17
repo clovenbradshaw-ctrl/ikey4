@@ -28,7 +28,8 @@
             "basic": "Basic",
             "health": "Health",
             "contacts": "Contacts",
-            "review": "Review"
+            "review": "Review",
+            "ifFound": "If Found"
         },
         "welcome": {
             "title": "Create Your iKey",
@@ -46,14 +47,15 @@
             "secureEmailLabel": "Secure Email *",
             "createAccount": "Create Account",
             "downloadKit": "Download Kit",
-            "kitInstructions": "After signing up, save the kit and share it with your case manager or someone you trust."
+            "kitInstructions": "After signing up, save the kit and share it with your case manager or someone you trust.",
+            "estimate": "Takes about 3–5 minutes"
         },
         "basic": {
             "title": "Basic Information",
             "fullName": "Full Name *",
-            "pronouns": "Pronouns",
-            "dateOfBirth": "Date of Birth",
-            "bloodType": "Blood Type",
+            "pronouns": "Pronouns (optional)",
+            "dateOfBirth": "Date of Birth (optional)",
+            "bloodType": "Blood Type (optional)",
             "bloodTypes": {
                 "unknown": "Unknown / Not Sure",
                 "aPos": "A+",
@@ -65,7 +67,22 @@
                 "oPos": "O+",
                 "oNeg": "O-"
             },
-            "phoneNumber": "Your Phone Number"
+            "phoneNumber": "Your Phone Number (optional)",
+            "tooltip": "These details stay on your device and go only into the QR code. Share only what you're comfortable with.",
+            "pronounsPlaceholder": "Enter pronouns",
+            "dobMonth": "MM",
+            "dobDay": "DD",
+            "dobYear": "YYYY",
+            "phonePlaceholder": "e.g., 555-555-5555",
+            "phoneTitle": "Enter a valid 10-digit phone number",
+            "photo": "Photo (optional)",
+            "pronounOptions": {
+                "unspecified": "Prefer not to say",
+                "he": "He/Him",
+                "she": "She/Her",
+                "they": "They/Them",
+                "custom": "Custom"
+            }
         },
         "health": {
             "title": "Health Information",
@@ -76,7 +93,9 @@
             "medicationsPlaceholder": "e.g., Metformin 500mg, Lisinopril 10mg",
             "conditions": "Health Conditions",
             "conditionsPlaceholder": "e.g., Type 2 Diabetes, Hypertension",
-            "characterLimit": "0 / 200 characters"
+            "characterLimit": "0 / 200 characters",
+            "tooltip": "Medical notes are stored locally and encoded into the QR. Anyone scanning it can see them.",
+            "note": "Leave blank if not applicable. Info stored only in your QR code."
         },
         "contacts": {
             "emergencyName": "Emergency Contact Name *",
@@ -91,17 +110,70 @@
                 "friend": "Friend",
                 "other": "Other"
             },
-            "caseManagerName": "Case Manager Name",
-            "organization": "Organization",
+            "caseManagerName": "Case Manager Name (optional)",
+            "organization": "Organization (optional)",
             "organizationPlaceholder": "Hospital or Agency",
-            "caseManagerPhone": "Case Manager Phone"
+            "caseManagerPhone": "Case Manager Phone (optional)",
+            "title": "Contacts",
+            "tooltip": "Emergency contacts you enter will appear to anyone who scans your card.",
+            "documents": {
+                "title": "Important Documents (Optional)",
+                "instructions": "Upload these to your secure drive and paste public share links below.",
+                "document1": "Document 1",
+                "document2": "Document 2",
+                "document3": "Document 3",
+                "select": "Select document",
+                "typeLabel": "Document Type",
+                "typePlaceholder": "e.g., Insurance Card",
+                "linkLabel": "Link",
+                "linkPlaceholder": "https://example.com/document",
+                "options": {
+                    "medicalPower": "Medical Power of Attorney",
+                    "advanceDirective": "Advance Directive/Living Will",
+                    "dnr": "DNR Order",
+                    "emergencyContact": "Emergency Contact List",
+                    "currentMeds": "Current Medications List",
+                    "allergyCard": "Allergy and Medical Conditions Card",
+                    "bloodType": "Blood Type Card",
+                    "temporaryGuardianship": "Temporary Guardianship Authorization",
+                    "petInstructions": "Pet Emergency Care Instructions",
+                    "organDonor": "Organ Donor Designation",
+                    "doctorContact": "Doctor and Specialist Contact Sheet",
+                    "cashEnvelope": "Emergency Cash Envelope Note",
+                    "other": "Other"
+                }
+            }
         },
         "review": {
             "title": "Review Your Information",
             "warning": "⚠️ Heads up:",
             "warningText": "Anyone who scans this QR code will be able to view the information you provide.",
             "ready": "✅ Ready to Generate:",
-            "readyText": "Your QR code is permanent once created. To make changes, you'll need to create a new one."
+            "readyText": "Your QR code is permanent once created. To make changes, you'll need to create a new one.",
+            "warningTooltip": "Anyone with the image can read what you include.",
+            "ifFoundLabel": "📍 IF FOUND",
+            "labels": {
+                "name": "Name",
+                "notProvided": "Not provided",
+                "secureEmail": "Secure Email",
+                "pronouns": "Pronouns",
+                "phoneNumber": "Phone Number",
+                "dateOfBirth": "Date of Birth",
+                "bloodType": "Blood Type",
+                "allergies": "Allergies",
+                "medications": "Medications",
+                "conditions": "Health Conditions",
+                "emergencyContact": "Emergency Contact",
+                "caseManager": "Case Manager",
+                "documents": "Documents"
+            },
+            "ifFound": {
+                "destroy": "Please destroy this card for privacy",
+                "mail": "Please mail to:",
+                "contactEmergency": "Please contact emergency contact:",
+                "contactCaseManager": "Please contact case manager:",
+                "contactOther": "Please contact:"
+            }
         },
         "buttons": {
             "back": "← Back",
@@ -120,7 +192,8 @@
             "copy": "📋 Copy",
             "text": "💬 Text",
             "shareQR": "🔳 Share QR",
-            "close": "Close"
+            "close": "Close",
+            "start": "Start →"
         },
         "qrReady": {
             "title": "Your iKey is Ready!",
@@ -452,7 +525,13 @@
             "removeBookmark": "Remove this bookmark?",
             "clearShareHistory": "Clear all share history?",
             "enterNewKeyName": "Enter new key name",
-            "newKeyCreated": "New key created. Reprint and redistribute your card."
+            "newKeyCreated": "New key created. Reprint and redistribute your card.",
+            "enterValidDob": "Please enter a valid date of birth",
+            "enterMailingAddress": "Please enter a mailing address",
+            "enterContactInfo": "Please enter contact information",
+            "enterInstructions": "Please enter instructions",
+            "enterValidPhone": "Please enter a valid 10-digit phone number",
+            "qrTooLarge": "Warning: QR code data may be too large to scan reliably."
         },
         "resources": {
             "wttin": "Where To Turn in Nashville",
@@ -603,6 +682,41 @@
                     "hours": "Mon-Fri 12pm"
                 }
             }
+        },
+        "secure": {
+            "title": "Secure Email",
+            "titleTooltip": "iKey uses your email as an identifier. Proton is a privacy-focused option, but any address works.",
+            "labelTooltip": "iKey never reads your mail or contacts your provider. Choosing an encrypted service keeps your address private.",
+            "emailPlaceholder": "you@example.com",
+            "buttonTooltip": "You can use any email provider; Proton is suggested for its encryption benefits."
+        },
+        "ifFound": {
+            "title": "If Found Instructions",
+            "question": "What should someone do if they find your iKey Emergency ID?",
+            "warning": "⚠️ This information will be visible to anyone who finds your card",
+            "chooseAction": "Choose an action",
+            "actions": {
+                "none": "No special instructions",
+                "destroy": "Destroy it for my privacy",
+                "mail": "Mail to this address",
+                "contact": "Contact someone",
+                "other": "Other instructions"
+            },
+            "mailingAddress": "Mailing Address",
+            "mailingPlaceholder": "123 Main St...",
+            "contactQuestion": "Who should they contact?",
+            "contactOptions": {
+                "emergency": "My emergency contact",
+                "caseManager": "My case manager",
+                "other": "Other person"
+            },
+            "contactPlaceholder": "Name & phone",
+            "instructionsLabel": "Instructions",
+            "instructionsPlaceholder": "Please..."
+        },
+        "wizardFlow": {
+            "characterCount": "{count} / 200 characters",
+            "generateTooltip": "Generating creates an image stored only here. Regenerate to update."
         }
     },
     "es": {
@@ -634,7 +748,8 @@
             "basic": "Básico",
             "health": "Salud",
             "contacts": "Contactos",
-            "review": "Revisar"
+            "review": "Revisar",
+            "ifFound": "Si se encuentra"
         },
         "welcome": {
             "title": "Crea Tu iKey",
@@ -652,14 +767,15 @@
             "secureEmailLabel": "Correo Seguro *",
             "createAccount": "Crear Cuenta",
             "downloadKit": "Descargar Kit",
-            "kitInstructions": "Después de registrarte, guarda el kit y compártelo con tu administrador de casos o alguien de confianza."
+            "kitInstructions": "Después de registrarte, guarda el kit y compártelo con tu administrador de casos o alguien de confianza.",
+            "estimate": "Toma alrededor de 3 a 5 minutos"
         },
         "basic": {
             "title": "Información Básica",
             "fullName": "Nombre Completo *",
-            "pronouns": "Pronombres",
-            "dateOfBirth": "Fecha de Nacimiento",
-            "bloodType": "Tipo de Sangre",
+            "pronouns": "Pronombres (opcional)",
+            "dateOfBirth": "Fecha de nacimiento (opcional)",
+            "bloodType": "Tipo de sangre (opcional)",
             "bloodTypes": {
                 "unknown": "Desconocido / No Seguro",
                 "aPos": "A+",
@@ -671,7 +787,22 @@
                 "oPos": "O+",
                 "oNeg": "O-"
             },
-            "phoneNumber": "Tu Número de Teléfono"
+            "phoneNumber": "Tu número de teléfono (opcional)",
+            "tooltip": "Estos datos se quedan en tu dispositivo y solo van al código QR. Comparte solo lo que te haga sentir cómodo.",
+            "pronounsPlaceholder": "Ingresa pronombres",
+            "dobMonth": "MM",
+            "dobDay": "DD",
+            "dobYear": "AAAA",
+            "phonePlaceholder": "ej., 555-555-5555",
+            "phoneTitle": "Ingresa un número válido de 10 dígitos",
+            "photo": "Foto (opcional)",
+            "pronounOptions": {
+                "unspecified": "Prefiero no decirlo",
+                "he": "Él/Él",
+                "she": "Ella/Ella",
+                "they": "Elle/Elles",
+                "custom": "Personalizado"
+            }
         },
         "health": {
             "title": "Información de Salud",
@@ -682,7 +813,9 @@
             "medicationsPlaceholder": "ej., Metformina 500mg, Lisinopril 10mg",
             "conditions": "Condiciones de Salud",
             "conditionsPlaceholder": "ej., Diabetes Tipo 2, Hipertensión",
-            "characterLimit": "0 / 200 caracteres"
+            "characterLimit": "0 / 200 caracteres",
+            "tooltip": "Las notas médicas se guardan localmente y se codifican en el QR. Quien lo escanee podrá verlas.",
+            "note": "Déjalo en blanco si no aplica. La información solo se guarda en tu código QR."
         },
         "contacts": {
             "emergencyName": "Nombre del Contacto de Emergencia *",
@@ -697,17 +830,70 @@
                 "friend": "Amigo/a",
                 "other": "Otro"
             },
-            "caseManagerName": "Nombre del Administrador de Casos",
-            "organization": "Organización",
+            "caseManagerName": "Nombre del administrador de casos (opcional)",
+            "organization": "Organización (opcional)",
             "organizationPlaceholder": "Hospital o Agencia",
-            "caseManagerPhone": "Teléfono del Administrador de Casos"
+            "caseManagerPhone": "Teléfono del administrador de casos (opcional)",
+            "title": "Contactos",
+            "tooltip": "Los contactos de emergencia que ingreses aparecerán para cualquiera que escanee tu tarjeta.",
+            "documents": {
+                "title": "Documentos importantes (opcional)",
+                "instructions": "Súbelos a tu unidad segura y pega los enlaces públicos abajo.",
+                "document1": "Documento 1",
+                "document2": "Documento 2",
+                "document3": "Documento 3",
+                "select": "Selecciona documento",
+                "typeLabel": "Tipo de documento",
+                "typePlaceholder": "ej., Tarjeta de seguro",
+                "linkLabel": "Enlace",
+                "linkPlaceholder": "https://ejemplo.com/documento",
+                "options": {
+                    "medicalPower": "Poder notarial médico",
+                    "advanceDirective": "Directiva anticipada/Voluntad en vida",
+                    "dnr": "Orden DNR",
+                    "emergencyContact": "Lista de contactos de emergencia",
+                    "currentMeds": "Lista de medicamentos actuales",
+                    "allergyCard": "Tarjeta de alergias y condiciones médicas",
+                    "bloodType": "Tarjeta de tipo de sangre",
+                    "temporaryGuardianship": "Autorización temporal de tutoría",
+                    "petInstructions": "Instrucciones de cuidado de emergencia para mascotas",
+                    "organDonor": "Designación de donante de órganos",
+                    "doctorContact": "Hoja de contactos de médicos y especialistas",
+                    "cashEnvelope": "Nota de sobre de efectivo de emergencia",
+                    "other": "Otro"
+                }
+            }
         },
         "review": {
             "title": "Revisa Tu Información",
             "warning": "⚠️ Atención:",
             "warningText": "Cualquiera que escanee este código QR podrá ver la información que proporciones.",
             "ready": "✅ Listo para Generar:",
-            "readyText": "Tu código QR es permanente una vez creado. Para hacer cambios, necesitarás crear uno nuevo."
+            "readyText": "Tu código QR es permanente una vez creado. Para hacer cambios, necesitarás crear uno nuevo.",
+            "warningTooltip": "Cualquiera con la imagen puede leer lo que incluyas.",
+            "ifFoundLabel": "📍 SI SE ENCUENTRA",
+            "labels": {
+                "name": "Nombre",
+                "notProvided": "No proporcionado",
+                "secureEmail": "Correo seguro",
+                "pronouns": "Pronombres",
+                "phoneNumber": "Número de teléfono",
+                "dateOfBirth": "Fecha de nacimiento",
+                "bloodType": "Tipo de sangre",
+                "allergies": "Alergias",
+                "medications": "Medicamentos",
+                "conditions": "Condiciones de salud",
+                "emergencyContact": "Contacto de emergencia",
+                "caseManager": "Administrador de casos",
+                "documents": "Documentos"
+            },
+            "ifFound": {
+                "destroy": "Por favor destruye esta tarjeta por privacidad",
+                "mail": "Por favor envía por correo a:",
+                "contactEmergency": "Por favor contacta al contacto de emergencia:",
+                "contactCaseManager": "Por favor contacta al administrador de casos:",
+                "contactOther": "Por favor contacta:"
+            }
         },
         "buttons": {
             "back": "← Atrás",
@@ -726,7 +912,8 @@
             "copy": "📋 Copiar",
             "text": "💬 Texto",
             "shareQR": "🔳 Compartir QR",
-            "close": "Cerrar"
+            "close": "Cerrar",
+            "start": "Comenzar →"
         },
         "qrReady": {
             "title": "¡Tu iKey está Listo!",
@@ -959,7 +1146,13 @@
             "removeBookmark": "¿Eliminar este marcador?",
             "clearShareHistory": "¿Borrar todo el historial de compartir?",
             "enterNewKeyName": "Ingresa nuevo nombre de clave",
-            "newKeyCreated": "Nueva clave creada. Vuelve a imprimir y distribuye tu tarjeta."
+            "newKeyCreated": "Nueva clave creada. Vuelve a imprimir y distribuye tu tarjeta.",
+            "enterValidDob": "Por favor ingresa una fecha de nacimiento válida",
+            "enterMailingAddress": "Por favor ingresa una dirección postal",
+            "enterContactInfo": "Por favor ingresa información de contacto",
+            "enterInstructions": "Por favor ingresa instrucciones",
+            "enterValidPhone": "Por favor ingresa un número válido de 10 dígitos",
+            "qrTooLarge": "Advertencia: los datos del código QR pueden ser demasiado grandes para escanearse correctamente."
         },
         "resources": {
             "wttin": "Where To Turn in Nashville",
@@ -1100,6 +1293,41 @@
             "reading": "lectura",
             "whats": "qué",
             "grandma": "abuela"
+        },
+        "secure": {
+            "title": "Correo seguro",
+            "titleTooltip": "iKey usa tu correo como identificador. Proton es una opción enfocada en privacidad, pero cualquier dirección funciona.",
+            "labelTooltip": "iKey nunca lee tu correo ni contacta a tu proveedor. Elegir un servicio cifrado mantiene privada tu dirección.",
+            "emailPlaceholder": "tu@ejemplo.com",
+            "buttonTooltip": "Puedes usar cualquier proveedor de correo; Proton se sugiere por sus beneficios de cifrado."
+        },
+        "ifFound": {
+            "title": "Instrucciones si se encuentra",
+            "question": "¿Qué debe hacer alguien si encuentra tu iKey ID de emergencia?",
+            "warning": "⚠️ Esta información será visible para cualquiera que encuentre tu tarjeta",
+            "chooseAction": "Elige una acción",
+            "actions": {
+                "none": "Sin instrucciones especiales",
+                "destroy": "Destrúyelo por mi privacidad",
+                "mail": "Envíalo por correo a esta dirección",
+                "contact": "Contacta a alguien",
+                "other": "Otras instrucciones"
+            },
+            "mailingAddress": "Dirección postal",
+            "mailingPlaceholder": "Calle 123...",
+            "contactQuestion": "¿A quién deben contactar?",
+            "contactOptions": {
+                "emergency": "Mi contacto de emergencia",
+                "caseManager": "Mi administrador de casos",
+                "other": "Otra persona"
+            },
+            "contactPlaceholder": "Nombre y teléfono",
+            "instructionsLabel": "Instrucciones",
+            "instructionsPlaceholder": "Por favor..."
+        },
+        "wizardFlow": {
+            "characterCount": "{count} / 200 caracteres",
+            "generateTooltip": "Generar crea una imagen almacenada solo aquí. Vuelve a generar para actualizar."
         }
     },
     "ar": {
@@ -1131,7 +1359,8 @@
             "basic": "أساسي",
             "health": "الصحة",
             "contacts": "جهات الاتصال",
-            "review": "مراجعة"
+            "review": "مراجعة",
+            "ifFound": "في حال العثور"
         },
         "welcome": {
             "title": "أنشئ iKey الخاص بك",
@@ -1149,14 +1378,15 @@
             "secureEmailLabel": "البريد الآمن *",
             "createAccount": "إنشاء حساب",
             "downloadKit": "تحميل المجموعة",
-            "kitInstructions": "بعد التسجيل، احفظ المجموعة وشاركها مع مدير حالتك أو شخص تثق به."
+            "kitInstructions": "بعد التسجيل، احفظ المجموعة وشاركها مع مدير حالتك أو شخص تثق به.",
+            "estimate": "يستغرق حوالي 3-5 دقائق"
         },
         "basic": {
             "title": "المعلومات الأساسية",
             "fullName": "الاسم الكامل *",
-            "pronouns": "الضمائر",
-            "dateOfBirth": "تاريخ الميلاد",
-            "bloodType": "فصيلة الدم",
+            "pronouns": "الضمائر (اختياري)",
+            "dateOfBirth": "تاريخ الميلاد (اختياري)",
+            "bloodType": "فصيلة الدم (اختياري)",
             "bloodTypes": {
                 "unknown": "غير معروف / غير متأكد",
                 "aPos": "A+",
@@ -1168,7 +1398,22 @@
                 "oPos": "O+",
                 "oNeg": "O-"
             },
-            "phoneNumber": "رقم هاتفك"
+            "phoneNumber": "رقم هاتفك (اختياري)",
+            "tooltip": "تبقى هذه التفاصيل على جهازك وتدخل فقط في رمز QR. شارك ما تشعر بالراحة بمشاركته.",
+            "pronounsPlaceholder": "أدخل الضمائر",
+            "dobMonth": "شهر",
+            "dobDay": "يوم",
+            "dobYear": "سنة",
+            "phonePlaceholder": "مثال: 555-555-5555",
+            "phoneTitle": "أدخل رقم هاتف صالح مكوّن من 10 أرقام",
+            "photo": "صورة (اختياري)",
+            "pronounOptions": {
+                "unspecified": "أفضل عدم القول",
+                "he": "هو/له",
+                "she": "هي/لها",
+                "they": "هم/لهم",
+                "custom": "مخصص"
+            }
         },
         "health": {
             "title": "المعلومات الصحية",
@@ -1179,7 +1424,9 @@
             "medicationsPlaceholder": "مثال: ميتفورمين 500 ملغ، ليسينوبريل 10 ملغ",
             "conditions": "الحالات الصحية",
             "conditionsPlaceholder": "مثال: السكري من النوع 2، ارتفاع ضغط الدم",
-            "characterLimit": "0 / 200 حرف"
+            "characterLimit": "0 / 200 حرف",
+            "tooltip": "يتم حفظ الملاحظات الطبية محلياً وترميزها داخل رمز QR. أي شخص يقوم بالمسح يمكنه رؤيتها.",
+            "note": "اتركه فارغاً إذا لم يكن مناسباً. يتم حفظ المعلومات فقط في رمز QR الخاص بك."
         },
         "contacts": {
             "emergencyName": "اسم جهة اتصال الطوارئ *",
@@ -1194,17 +1441,70 @@
                 "friend": "صديق",
                 "other": "آخر"
             },
-            "caseManagerName": "اسم مدير الحالة",
-            "organization": "المنظمة",
+            "caseManagerName": "اسم مدير الحالة (اختياري)",
+            "organization": "المنظمة (اختياري)",
             "organizationPlaceholder": "المستشفى أو الوكالة",
-            "caseManagerPhone": "هاتف مدير الحالة"
+            "caseManagerPhone": "هاتف مدير الحالة (اختياري)",
+            "title": "جهات الاتصال",
+            "tooltip": "ستظهر جهات الاتصال في الطوارئ التي تدخلها لأي شخص يمسح بطاقتك.",
+            "documents": {
+                "title": "مستندات مهمة (اختياري)",
+                "instructions": "ارفعها إلى التخزين الآمن لديك والصق روابط المشاركة العامة أدناه.",
+                "document1": "المستند 1",
+                "document2": "المستند 2",
+                "document3": "المستند 3",
+                "select": "اختر المستند",
+                "typeLabel": "نوع المستند",
+                "typePlaceholder": "مثال: بطاقة التأمين",
+                "linkLabel": "الرابط",
+                "linkPlaceholder": "https://example.com/document",
+                "options": {
+                    "medicalPower": "تفويض طبي رسمي",
+                    "advanceDirective": "توجيه مسبق/الوصية الحية",
+                    "dnr": "أمر عدم الإنعاش (DNR)",
+                    "emergencyContact": "قائمة جهات الاتصال في الطوارئ",
+                    "currentMeds": "قائمة الأدوية الحالية",
+                    "allergyCard": "بطاقة الحساسية والحالات الطبية",
+                    "bloodType": "بطاقة فصيلة الدم",
+                    "temporaryGuardianship": "تفويض وصاية مؤقت",
+                    "petInstructions": "تعليمات رعاية الطوارئ للحيوانات الأليفة",
+                    "organDonor": "تعيين متبرع بالأعضاء",
+                    "doctorContact": "ورقة جهات اتصال الأطباء والاختصاصيين",
+                    "cashEnvelope": "ملاحظة ظرف النقود للطوارئ",
+                    "other": "أخرى"
+                }
+            }
         },
         "review": {
             "title": "راجع معلوماتك",
             "warning": "⚠️ تنبيه:",
             "warningText": "أي شخص يمسح رمز QR هذا سيتمكن من رؤية المعلومات التي تقدمها.",
             "ready": "✅ جاهز للإنشاء:",
-            "readyText": "رمز QR الخاص بك دائم بمجرد إنشائه. لإجراء تغييرات، ستحتاج لإنشاء واحد جديد."
+            "readyText": "رمز QR الخاص بك دائم بمجرد إنشائه. لإجراء تغييرات، ستحتاج لإنشاء واحد جديد.",
+            "warningTooltip": "أي شخص لديه الصورة يمكنه قراءة ما تدرجه.",
+            "ifFoundLabel": "📍 في حال العثور",
+            "labels": {
+                "name": "الاسم",
+                "notProvided": "غير متوفر",
+                "secureEmail": "البريد الآمن",
+                "pronouns": "الضمائر",
+                "phoneNumber": "رقم الهاتف",
+                "dateOfBirth": "تاريخ الميلاد",
+                "bloodType": "فصيلة الدم",
+                "allergies": "الحساسيات",
+                "medications": "الأدوية",
+                "conditions": "الحالات الصحية",
+                "emergencyContact": "جهة اتصال الطوارئ",
+                "caseManager": "مدير الحالة",
+                "documents": "المستندات"
+            },
+            "ifFound": {
+                "destroy": "يرجى إتلاف هذه البطاقة للحفاظ على الخصوصية",
+                "mail": "يرجى إرسالها إلى:",
+                "contactEmergency": "يرجى التواصل مع جهة الاتصال في الطوارئ:",
+                "contactCaseManager": "يرجى التواصل مع مدير الحالة:",
+                "contactOther": "يرجى التواصل مع:"
+            }
         },
         "buttons": {
             "back": "← رجوع",
@@ -1223,7 +1523,8 @@
             "copy": "📋 نسخ",
             "text": "💬 رسالة نصية",
             "shareQR": "🔳 مشاركة QR",
-            "close": "إغلاق"
+            "close": "إغلاق",
+            "start": "ابدأ →"
         },
         "qrReady": {
             "title": "iKey الخاص بك جاهز!",
@@ -1456,7 +1757,13 @@
             "removeBookmark": "إزالة هذه الإشارة؟",
             "clearShareHistory": "مسح كل سجل المشاركة؟",
             "enterNewKeyName": "أدخل اسم مفتاح جديد",
-            "newKeyCreated": "تم إنشاء مفتاح جديد. أعد الطباعة ووزع بطاقتك."
+            "newKeyCreated": "تم إنشاء مفتاح جديد. أعد الطباعة ووزع بطاقتك.",
+            "enterValidDob": "يرجى إدخال تاريخ ميلاد صالح",
+            "enterMailingAddress": "يرجى إدخال عنوان بريد",
+            "enterContactInfo": "يرجى إدخال معلومات الاتصال",
+            "enterInstructions": "يرجى إدخال التعليمات",
+            "enterValidPhone": "يرجى إدخال رقم هاتف صالح مكوّن من 10 أرقام",
+            "qrTooLarge": "تحذير: قد تكون بيانات رمز QR كبيرة جداً بحيث لا يمكن قراءتها بشكل موثوق."
         },
         "resources": {
             "wttin": "Where To Turn in Nashville",
@@ -1597,6 +1904,41 @@
             "reading": "قراءة",
             "whats": "ماذا",
             "grandma": "جدة"
+        },
+        "secure": {
+            "title": "البريد الآمن",
+            "titleTooltip": "يستخدم iKey بريدك الإلكتروني كمُعرّف. Proton خيار يركز على الخصوصية، لكن أي عنوان يعمل.",
+            "labelTooltip": "iKey لا يقرأ بريدك ولا يتواصل مع مزودك. اختيار خدمة مشفرة يحافظ على خصوصية عنوانك.",
+            "emailPlaceholder": "you@example.com",
+            "buttonTooltip": "يمكنك استخدام أي مزود بريد؛ يُنصح بـ Proton بسبب مزاياه في التشفير."
+        },
+        "ifFound": {
+            "title": "تعليمات في حال العثور",
+            "question": "ماذا يجب أن يفعل شخص ما إذا وجد هوية الطوارئ iKey الخاصة بك؟",
+            "warning": "⚠️ ستكون هذه المعلومات مرئية لأي شخص يجد بطاقتك",
+            "chooseAction": "اختر إجراءً",
+            "actions": {
+                "none": "لا توجد تعليمات خاصة",
+                "destroy": "أتلفها للحفاظ على خصوصيتي",
+                "mail": "أرسلها بالبريد إلى هذا العنوان",
+                "contact": "اتصل بشخص ما",
+                "other": "تعليمات أخرى"
+            },
+            "mailingAddress": "عنوان البريد",
+            "mailingPlaceholder": "123 الشارع الرئيسي...",
+            "contactQuestion": "بمن يجب أن يتواصلوا؟",
+            "contactOptions": {
+                "emergency": "جهة الاتصال في الطوارئ الخاصة بي",
+                "caseManager": "مدير حالتي",
+                "other": "شخص آخر"
+            },
+            "contactPlaceholder": "الاسم ورقم الهاتف",
+            "instructionsLabel": "تعليمات",
+            "instructionsPlaceholder": "من فضلك..."
+        },
+        "wizardFlow": {
+            "characterCount": "{count} / 200 حرفاً",
+            "generateTooltip": "يؤدي التوليد إلى إنشاء صورة مخزنة هنا فقط. أعد التوليد للتحديث."
         }
     },
     "ku": {
@@ -1628,7 +1970,8 @@
             "basic": "Bingehîn",
             "health": "Tenduristî",
             "contacts": "Têkilî",
-            "review": "Nirxandin"
+            "review": "Nirxandin",
+            "ifFound": "Heke Hat Dîtin"
         },
         "welcome": {
             "title": "iKey-a Xwe Biafirîne",
@@ -1646,14 +1989,15 @@
             "secureEmailLabel": "E-nameya Ewledar *",
             "createAccount": "Hesab Biafirîne",
             "downloadKit": "Kîtê Daxîne",
-            "kitInstructions": "Piştî qeydkirinê, kîtê tomar bikin û bi rêveberê doza xwe yan kesek ku hûn pê bawer in parve bikin."
+            "kitInstructions": "Piştî qeydkirinê, kîtê tomar bikin û bi rêveberê doza xwe yan kesek ku hûn pê bawer in parve bikin.",
+            "estimate": "Bi hejmara 3–5 xulekê tê dawî"
         },
         "basic": {
             "title": "Agahdariya Bingehîn",
             "fullName": "Navê Tevahî *",
-            "pronouns": "Cînav",
-            "dateOfBirth": "Roja Jidayikbûnê",
-            "bloodType": "Tîpa Xwînê",
+            "pronouns": "Zamîr (xwestekî)",
+            "dateOfBirth": "Dîroka jidayikbûnê (xwestekî)",
+            "bloodType": "Tîpa xwînê (xwestekî)",
             "bloodTypes": {
                 "unknown": "Nenas / Ne Diyar",
                 "aPos": "A+",
@@ -1665,7 +2009,22 @@
                 "oPos": "O+",
                 "oNeg": "O-"
             },
-            "phoneNumber": "Hejmara Telefona We"
+            "phoneNumber": "Hejmara telefona te (xwestekî)",
+            "tooltip": "Ev hûrguliyan di ser cîhaza te de dimînin û tenê di koda QR de derdikin. Tenê tiştên ku hêsan dibînî parve bike.",
+            "pronounsPlaceholder": "Zamîr binivîse",
+            "dobMonth": "Meh",
+            "dobDay": "Roj",
+            "dobYear": "Sal",
+            "phonePlaceholder": "mînak: 555-555-5555",
+            "phoneTitle": "Ji kerema xwe hejmara telefonê ya rast a 10 hejmarî binivîse",
+            "photo": "Wêne (xwestekî)",
+            "pronounOptions": {
+                "unspecified": "Na dixwazim bêjim",
+                "he": "Ew/Wî",
+                "she": "Ew/Wê",
+                "they": "Wan/Wan",
+                "custom": "Taybet"
+            }
         },
         "health": {
             "title": "Agahdariya Tenduristiyê",
@@ -1676,7 +2035,9 @@
             "medicationsPlaceholder": "mînak, Metformîn 500mg, Lîsînoprîl 10mg",
             "conditions": "Rewşên Tenduristiyê",
             "conditionsPlaceholder": "mînak, Şekirê Tîp 2, Tansiyona Bilind",
-            "characterLimit": "0 / 200 tîp"
+            "characterLimit": "0 / 200 tîp",
+            "tooltip": "Têbînîyên tebijî di nav cîhazê de tên tomarkirin û di kodê QR de tên şîfrekirin. Her kesê ku kodê dixwîne dikare wan bibîne.",
+            "note": "Heke ne girîng be vala bihêle. Agahî tenê di kodê QR ya te de dihêle."
         },
         "contacts": {
             "emergencyName": "Navê Têkiliya Lezgîn *",
@@ -1691,17 +2052,70 @@
                 "friend": "Heval",
                 "other": "Yên din"
             },
-            "caseManagerName": "Navê Rêveberê Dozê",
-            "organization": "Rêxistin",
+            "caseManagerName": "Navê rêveberê dozê (xwestekî)",
+            "organization": "Rêxistin (xwestekî)",
             "organizationPlaceholder": "Nexweşxane yan Ajans",
-            "caseManagerPhone": "Telefona Rêveberê Dozê"
+            "caseManagerPhone": "Telefona rêveberê dozê (xwestekî)",
+            "title": "Têkilî",
+            "tooltip": "Her kesê ku kartê te dixwîne wê têkilîyên lezgîn bibîne ku te nivîsî.",
+            "documents": {
+                "title": "Belgeyên girîng (xwestekî)",
+                "instructions": "Van belgan li ajansa ewledar bar bike û girêdankan ya parvekirî li jêr bike.",
+                "document1": "Belge 1",
+                "document2": "Belge 2",
+                "document3": "Belge 3",
+                "select": "Belge hilbijêre",
+                "typeLabel": "Cureyê belgeyê",
+                "typePlaceholder": "mînak: karta sigorteyê",
+                "linkLabel": "Girêdan",
+                "linkPlaceholder": "https://example.com/document",
+                "options": {
+                    "medicalPower": "Erêkirina hêza tibbî",
+                    "advanceDirective": "Rêwerzeya pêşîn / wasîyeta zindî",
+                    "dnr": "Fermana DNR",
+                    "emergencyContact": "Lîsteya têkilîyên lezgîn",
+                    "currentMeds": "Lîsteya dermanên rojane",
+                    "allergyCard": "Kartê alergî û rewşên tebijî",
+                    "bloodType": "Kartê tîpa xwînê",
+                    "temporaryGuardianship": "Destûra demorandina demkî",
+                    "petInstructions": "Rêwerzên alîkariyê ji bo heywanan di lezgîn de",
+                    "organDonor": "Daxuyaniya bexşdana organan",
+                    "doctorContact": "Rûpela têkilîya bijîşk û spesîalist",
+                    "cashEnvelope": "Têbîna zarfê pereya lezgîn",
+                    "other": "Yên din"
+                }
+            }
         },
         "review": {
             "title": "Agahdariya Xwe Binirxînin",
             "warning": "⚠️ Hişyarî:",
             "warningText": "Her kesê ku vê koda QR bişopîne dê karibin agahdariya ku hûn pêşkêş dikin bibînin.",
             "ready": "✅ Amade ye ji bo Afirandinê:",
-            "readyText": "Koda weya QR piştî afirandinê mayînde ye. Ji bo guhertinan, hûn ê hewce bikin ku yek nû biafirînin."
+            "readyText": "Koda weya QR piştî afirandinê mayînde ye. Ji bo guhertinan, hûn ê hewce bikin ku yek nû biafirînin.",
+            "warningTooltip": "Her kesê ku wêne heye dikare tiştên ku tê de hene bixwîne.",
+            "ifFoundLabel": "📍 HEKE HAT DÎTIN",
+            "labels": {
+                "name": "Nav",
+                "notProvided": "Ne hat peyda kirin",
+                "secureEmail": "E-nameya ewledar",
+                "pronouns": "Zamîr",
+                "phoneNumber": "Hejmara telefonê",
+                "dateOfBirth": "Dîroka jidayikbûnê",
+                "bloodType": "Tîpa xwînê",
+                "allergies": "Alerjî",
+                "medications": "Derman",
+                "conditions": "Rewşên tebijî",
+                "emergencyContact": "Têkiliya lezgîn",
+                "caseManager": "Rêveberê dozê",
+                "documents": "Belge"
+            },
+            "ifFound": {
+                "destroy": "Ji kerema xwe vê kartê ji bo taybetiyê xerab bike",
+                "mail": "Ji kerema xwe bişîne bo:",
+                "contactEmergency": "Ji kerema xwe bi têkiliya lezgîn re bike:",
+                "contactCaseManager": "Ji kerema xwe bi rêveberê dozê re bike:",
+                "contactOther": "Ji kerema xwe bi vê re bike:"
+            }
         },
         "buttons": {
             "back": "← Paşve",
@@ -1720,7 +2134,8 @@
             "copy": "📋 Kopî",
             "text": "💬 Nivîs",
             "shareQR": "🔳 QR Parve Bike",
-            "close": "Bigire"
+            "close": "Bigire",
+            "start": "Dest pê bike →"
         },
         "qrReady": {
             "title": "iKey-a We Amade ye!",
@@ -1947,7 +2362,13 @@
             "removeBookmark": "Ev nîşanê jê bibe?",
             "clearShareHistory": "Hemû dîroka parvekirinê paqij bike?",
             "enterNewKeyName": "Navê mifteyê nû binivîse",
-            "newKeyCreated": "Mifteya nû hat afirandin. Kartê xwe ji nû ve çap û belav bike."
+            "newKeyCreated": "Mifteya nû hat afirandin. Kartê xwe ji nû ve çap û belav bike.",
+            "enterValidDob": "Ji kerema xwe dîroka jidayikbûnê ya rast binivîse",
+            "enterMailingAddress": "Ji kerema xwe navnîşana postê binivîse",
+            "enterContactInfo": "Ji kerema xwe agahiyên têkiliyê binivîse",
+            "enterInstructions": "Ji kerema xwe talîmat binivîse",
+            "enterValidPhone": "Ji kerema xwe hejmara telefonê ya derbasdar a 10 hejmarî binivîse",
+            "qrTooLarge": "Hişyarî: Dibe ku daneyên koda QR pir mezintir bin û sax neyên xwendin."
         },
         "resources": {
             "wttin": "Where To Turn in Nashville",
@@ -1987,6 +2408,41 @@
             "reading": "xwendin",
             "whats": "çi",
             "grandma": "dapîr"
+        },
+        "secure": {
+            "title": "E-nameya ewledar",
+            "titleTooltip": "iKey e-nameya te wek nasnameyê diyar dike. Proton bijareyek taybetmendî li parastinê ye, lê her navnîşekê dixebite.",
+            "labelTooltip": "iKey qet e-nameya te naxwîne an jî bi peydakerekê te re têkilî nade. Hilbijartina servîsa şîfrekirî navnîşa te taybetî digire.",
+            "emailPlaceholder": "tu@example.com",
+            "buttonTooltip": "Tu dikarî her peydakerekî e-nameyê bi kar bînî; Proton ji bo feydeyên şîfrekirinê tê pêşniyar kirin."
+        },
+        "ifFound": {
+            "title": "Talîmatên heke hate dîtin",
+            "question": "Ger kesek iKey ID-ya lezgînê ya te bibîne çi bike?",
+            "warning": "⚠️ Ev agahî ji her kesê ku kartê te dît bibe wê derkete",
+            "chooseAction": "Çalakîyek hilbijêre",
+            "actions": {
+                "none": "Talîmatên taybet tuneye",
+                "destroy": "Ji bo veşartinê wê were xirab kirin",
+                "mail": "Bi postê bi vê navnîşanê bişîne",
+                "contact": "Bi kesek re têkilî bide",
+                "other": "Talîmatên din"
+            },
+            "mailingAddress": "Navnîşana postê",
+            "mailingPlaceholder": "Navnîşana 123 Sînor...",
+            "contactQuestion": "Divê bi kê re têkilî bide?",
+            "contactOptions": {
+                "emergency": "Têkiliya lezgîn a min",
+                "caseManager": "Rêveberê dozê ya min",
+                "other": "Kesekê din"
+            },
+            "contactPlaceholder": "Nav û telefon",
+            "instructionsLabel": "Talîmat",
+            "instructionsPlaceholder": "Ji kerema xwe..."
+        },
+        "wizardFlow": {
+            "characterCount": "{count} / 200 tîpan",
+            "generateTooltip": "Afirandin tenê li vir wêneyek diafirîne. Ji bo rojanekirinê ji nû ve biafirîne."
         }
     },
     "so": {
@@ -2018,7 +2474,8 @@
             "basic": "Aasaasi",
             "health": "Caafimaad",
             "contacts": "Xiriirrada",
-            "review": "Dib u eeg"
+            "review": "Dib u eeg",
+            "ifFound": "Haddii la helo"
         },
         "welcome": {
             "title": "Samee iKey-gaaga",
@@ -2036,14 +2493,15 @@
             "secureEmailLabel": "Iimaylka Ammaan *",
             "createAccount": "Samee Akoon",
             "downloadKit": "Soo deji Xirmada",
-            "kitInstructions": "Ka dib isdiiwaangelinta, kaydi xirmada oo la wadaag maareeyaha kiiskaaga ama qof aad ku kalsoon tahay."
+            "kitInstructions": "Ka dib isdiiwaangelinta, kaydi xirmada oo la wadaag maareeyaha kiiskaaga ama qof aad ku kalsoon tahay.",
+            "estimate": "Waxay qaadanaysaa qiyaastii 3–5 daqiiqo"
         },
         "basic": {
             "title": "Macluumaadka Aasaasiga ah",
             "fullName": "Magaca Buuxa *",
-            "pronouns": "Magacyada",
-            "dateOfBirth": "Taariikhda Dhalashada",
-            "bloodType": "Nooca Dhiigga",
+            "pronouns": "Magacyo la adeegsado (ikhtiyaari)",
+            "dateOfBirth": "Taariikhda dhalashada (ikhtiyaari)",
+            "bloodType": "Nooca dhiigga (ikhtiyaari)",
             "bloodTypes": {
                 "unknown": "Aan la garanayn / Aan hubin",
                 "aPos": "A+",
@@ -2055,7 +2513,22 @@
                 "oPos": "O+",
                 "oNeg": "O-"
             },
-            "phoneNumber": "Lambarkaaga Telefoonka"
+            "phoneNumber": "Lambarkaaga telefoonka (ikhtiyaari)",
+            "tooltip": "Faahfaahintan waxay ku hadhayaan qalabkaaga waxayna galaan oo keliya koodhka QR. La wadaag waxa aad diyaar u tahay oo keliya.",
+            "pronounsPlaceholder": "Geli magacyo la adeegsado",
+            "dobMonth": "BB",
+            "dobDay": "MD",
+            "dobYear": "SN",
+            "phonePlaceholder": "tusaale: 555-555-5555",
+            "phoneTitle": "Geli lambarka saxda ah ee 10-god ah",
+            "photo": "Sawir (ikhtiyaari)",
+            "pronounOptions": {
+                "unspecified": "Ma doonayo inaan sheego",
+                "he": "Isaga/Isaga",
+                "she": "Iyadu/Iyadeeda",
+                "they": "Iyaga/Iyaga",
+                "custom": "Gaar ah"
+            }
         },
         "health": {
             "title": "Macluumaadka Caafimaadka",
@@ -2066,7 +2539,9 @@
             "medicationsPlaceholder": "tusaale, Metformin 500mg, Lisinopril 10mg",
             "conditions": "Xaaladaha Caafimaad",
             "conditionsPlaceholder": "tusaale, Sonkorowga Nooca 2, Dhiig-karka",
-            "characterLimit": "0 / 200 xaraf"
+            "characterLimit": "0 / 200 xaraf",
+            "tooltip": "Qoraallada caafimaadka waxaa lagu kaydiyaa gudaha qalabka oo lagu qariyaa koodhka QR. Qof kasta oo iskaan gareeya wuu arki karaa.",
+            "note": "Ka tag madhan haddii uusan khusayn. Macluumaadku wuxuu ku jiraa oo keliya koodhkaaga QR."
         },
         "contacts": {
             "emergencyName": "Magaca Xiriirka Degdegga *",
@@ -2081,17 +2556,70 @@
                 "friend": "Saaxiib",
                 "other": "Kale"
             },
-            "caseManagerName": "Magaca Maareeyaha Kiiska",
-            "organization": "Ururka",
+            "caseManagerName": "Magaca maareeyaha kiiska (ikhtiyaari)",
+            "organization": "Urur (ikhtiyaari)",
             "organizationPlaceholder": "Isbitaal ama Wakaalad",
-            "caseManagerPhone": "Telefoonka Maareeyaha Kiiska"
+            "caseManagerPhone": "Telefoonka maareeyaha kiiska (ikhtiyaari)",
+            "title": "Xiriirrada",
+            "tooltip": "Xiriirrada degdegga ah ee aad geliso waxaa arki kara qof kasta oo iskaanka kaaga akhriya.",
+            "documents": {
+                "title": "Dukumeentiyo muhiim ah (ikhtiyaari)",
+                "instructions": "Ku shub meel kaydin ammaan ah oo hoos ku dhaji isku xirayaasha la wadaagi karo.",
+                "document1": "Dukumeenti 1",
+                "document2": "Dukumeenti 2",
+                "document3": "Dukumeenti 3",
+                "select": "Dooro dukumeenti",
+                "typeLabel": "Nooca dukumeentiga",
+                "typePlaceholder": "tusaale: Kaarka caymiska",
+                "linkLabel": "Isku xidh",
+                "linkPlaceholder": "https://example.com/document",
+                "options": {
+                    "medicalPower": "Awoodda qareenka caafimaadka",
+                    "advanceDirective": "Tilmaamaha hore/wiil qoran",
+                    "dnr": "Amarka DNR",
+                    "emergencyContact": "Liiska xiriirrada degdegga ah",
+                    "currentMeds": "Liiska daawooyinka hadda",
+                    "allergyCard": "Kaarka xasaasiyadda iyo xaaladaha caafimaad",
+                    "bloodType": "Kaarka nooca dhiigga",
+                    "temporaryGuardianship": "Oggolaanshaha mas’uuliyad ku-meelgaar ah",
+                    "petInstructions": "Tilmaamo daryeel degdeg ah oo xoolaha ah",
+                    "organDonor": "Magaca bixiyaha xubin",
+                    "doctorContact": "Warqad xiriirka dhakhaatiirta iyo takhaatiirta",
+                    "cashEnvelope": "Qoraal baqshad lacag degdeg ah",
+                    "other": "Kale"
+                }
+            }
         },
         "review": {
             "title": "Dib u eeg Macluumaadkaaga",
             "warning": "⚠️ Digniin:",
             "warningText": "Qof kasta oo sawira koodkan QR wuu awood u yeelan doonaa inuu arko macluumaadka aad bixiso.",
             "ready": "✅ Diyaar u ah Sameynta:",
-            "readyText": "Koodkaaga QR waa joogto ah marka la sameeyo. Si aad wax u beddesho, waxaad u baahan doontaa inaad sameyso mid cusub."
+            "readyText": "Koodkaaga QR waa joogto ah marka la sameeyo. Si aad wax u beddesho, waxaad u baahan doontaa inaad sameyso mid cusub.",
+            "warningTooltip": "Qof kasta oo haysta sawirka wuu akhrin karaa waxa aad gelisay.",
+            "ifFoundLabel": "📍 HADDII LA HELO",
+            "labels": {
+                "name": "Magac",
+                "notProvided": "Lama bixin",
+                "secureEmail": "Email ammaan ah",
+                "pronouns": "Magacyo la adeegsado",
+                "phoneNumber": "Lambarka telefoonka",
+                "dateOfBirth": "Taariikhda dhalashada",
+                "bloodType": "Nooca dhiigga",
+                "allergies": "Xasaasiyado",
+                "medications": "Daawooyin",
+                "conditions": "Xaaladaha caafimaad",
+                "emergencyContact": "Xiriir degdeg ah",
+                "caseManager": "Maareeyaha kiiska",
+                "documents": "Dukumeentiyo"
+            },
+            "ifFound": {
+                "destroy": "Fadlan kaarka ku burburi si asturnaanta loo ilaaliyo",
+                "mail": "Fadlan ku dir:",
+                "contactEmergency": "Fadlan la xidhiidh xiriirka degdegga ah:",
+                "contactCaseManager": "Fadlan la xidhiidh maareeyaha kiiska:",
+                "contactOther": "Fadlan la xidhiidh:"
+            }
         },
         "buttons": {
             "back": "← Dib",
@@ -2110,7 +2638,8 @@
             "copy": "📋 Koobi",
             "text": "💬 Qoraal",
             "shareQR": "🔳 Wadaag QR",
-            "close": "Xidh"
+            "close": "Xidh",
+            "start": "Bilow →"
         },
         "qrReady": {
             "title": "iKey-gaagu Waa Diyaar!",
@@ -2337,7 +2866,13 @@
             "removeBookmark": "Ka saar calaamaddan?",
             "clearShareHistory": "Tirtir dhammaan taariikhda la wadaagga?",
             "enterNewKeyName": "Geli magac furaha cusub",
-            "newKeyCreated": "Fure cusub waa la sameeyay. Ka dib dib u daabac oo qaybi kaarkaaga."
+            "newKeyCreated": "Fure cusub waa la sameeyay. Ka dib dib u daabac oo qaybi kaarkaaga.",
+            "enterValidDob": "Fadlan geli taariikh dhalasho sax ah",
+            "enterMailingAddress": "Fadlan geli cinwaanka boostada",
+            "enterContactInfo": "Fadlan geli macluumaadka xiriirka",
+            "enterInstructions": "Fadlan geli tilmaamaha",
+            "enterValidPhone": "Fadlan geli lambarka telefoonka saxda ah ee 10-god ah",
+            "qrTooLarge": "Digniin: Xogta koodhka QR waxa ay noqon kartaa mid aad u weyn si si kalsooni leh loo iskaanno."
         },
         "resources": {
             "wttin": "Where To Turn in Nashville",
@@ -2377,6 +2912,41 @@
             "reading": "akhrinta",
             "whats": "maxay",
             "grandma": "ayeeyo"
+        },
+        "secure": {
+            "title": "Email Ammaan ah",
+            "titleTooltip": "iKey waxa uu isticmaalaa email-kaaga sida aqoonsi. Proton waa ikhtiyaar diiradda saaraya asturnaanta, laakiin cinwaan kasta wuu shaqaynayaa.",
+            "labelTooltip": "iKey marnaba ma akhristo email-kaaga mana la xiriiro adeeg bixiyahaaga. Adeeg sirgaxan oo aad doorato waxa uu ilaalinayaa cinwaankaaga.",
+            "emailPlaceholder": "adiga@example.com",
+            "buttonTooltip": "Waxaad isticmaali kartaa adeeg bixiye email kasta; Proton ayaa lagu taliyay faa’iidooyinka sirgaxnaanta awgeed."
+        },
+        "ifFound": {
+            "title": "Haddii la helo",
+            "question": "Qofkii helo aqoonsigaaga degdegga ah ee iKey muxuu sameeyaa?",
+            "warning": "⚠️ Macluumaadkani waxa uu muuqanayaa qof kasta oo helo kaarkaaga",
+            "chooseAction": "Dooro tallaabo",
+            "actions": {
+                "none": "Tilmaamo gaar ah ma jiraan",
+                "destroy": "Ku burburi si asturnaanta loo ilaaliyo",
+                "mail": "Ku dir cinwaankan",
+                "contact": "La xidhiidh qof",
+                "other": "Tilmaamo kale"
+            },
+            "mailingAddress": "Cinwaanka boostada",
+            "mailingPlaceholder": "123 Waddada Main...",
+            "contactQuestion": "Yaa ay tahay in lala xidhiidho?",
+            "contactOptions": {
+                "emergency": "Xiriirka degdegga ah ee aniga",
+                "caseManager": "Maareeyaha kiiskayga",
+                "other": "Qof kale"
+            },
+            "contactPlaceholder": "Magac & telefoon",
+            "instructionsLabel": "Tilmaamo",
+            "instructionsPlaceholder": "Fadlan..."
+        },
+        "wizardFlow": {
+            "characterCount": "{count} / 200 xaraf",
+            "generateTooltip": "Abuuristu waxay sameysaa sawir kaliya halkan lagu kaydiyo. Si aad u cusboonaysiiso dib u abuuro."
         }
     },
     "zh": {
@@ -2408,7 +2978,8 @@
             "basic": "基本信息",
             "health": "健康",
             "contacts": "联系人",
-            "review": "检查"
+            "review": "检查",
+            "ifFound": "找到时"
         },
         "welcome": {
             "title": "创建您的iKey",
@@ -2426,14 +2997,15 @@
             "secureEmailLabel": "安全邮箱 *",
             "createAccount": "创建账户",
             "downloadKit": "下载工具包",
-            "kitInstructions": "注册后，保存工具包并与您的个案管理员或信任的人分享。"
+            "kitInstructions": "注册后，保存工具包并与您的个案管理员或信任的人分享。",
+            "estimate": "大约需要 3–5 分钟"
         },
         "basic": {
             "title": "基本信息",
             "fullName": "全名 *",
-            "pronouns": "代词",
-            "dateOfBirth": "出生日期",
-            "bloodType": "血型",
+            "pronouns": "代词（可选）",
+            "dateOfBirth": "出生日期（可选）",
+            "bloodType": "血型（可选）",
             "bloodTypes": {
                 "unknown": "未知 / 不确定",
                 "aPos": "A+",
@@ -2445,7 +3017,22 @@
                 "oPos": "O+",
                 "oNeg": "O-"
             },
-            "phoneNumber": "您的电话号码"
+            "phoneNumber": "你的电话号码（可选）",
+            "tooltip": "这些信息仅保存在你的设备上，并写入 QR 码。只填写你愿意分享的内容。",
+            "pronounsPlaceholder": "填写代词",
+            "dobMonth": "月",
+            "dobDay": "日",
+            "dobYear": "年",
+            "phonePlaceholder": "例如：555-555-5555",
+            "phoneTitle": "请输入有效的 10 位电话号码",
+            "photo": "照片（可选）",
+            "pronounOptions": {
+                "unspecified": "不想说明",
+                "he": "他/他的",
+                "she": "她/她的",
+                "they": "TA/TA的",
+                "custom": "自定义"
+            }
         },
         "health": {
             "title": "健康信息",
@@ -2456,7 +3043,9 @@
             "medicationsPlaceholder": "例如：二甲双胍 500mg、赖诺普利 10mg",
             "conditions": "健康状况",
             "conditionsPlaceholder": "例如：2型糖尿病、高血压",
-            "characterLimit": "0 / 200 字符"
+            "characterLimit": "0 / 200 字符",
+            "tooltip": "医疗备注会本地存储并写入 QR 码。任何扫描者都能看到。",
+            "note": "若不适用可留空。信息仅保存在你的 QR 码中。"
         },
         "contacts": {
             "emergencyName": "紧急联系人姓名 *",
@@ -2471,17 +3060,70 @@
                 "friend": "朋友",
                 "other": "其他"
             },
-            "caseManagerName": "个案管理员姓名",
-            "organization": "组织",
+            "caseManagerName": "个案管理员姓名（可选）",
+            "organization": "组织（可选）",
             "organizationPlaceholder": "医院或机构",
-            "caseManagerPhone": "个案管理员电话"
+            "caseManagerPhone": "个案管理员电话（可选）",
+            "title": "联系人",
+            "tooltip": "你填写的紧急联系人将对任何扫描此卡的人可见。",
+            "documents": {
+                "title": "重要文件（可选）",
+                "instructions": "上传至你的安全网盘，并在下方粘贴公开分享链接。",
+                "document1": "文件 1",
+                "document2": "文件 2",
+                "document3": "文件 3",
+                "select": "选择文件",
+                "typeLabel": "文件类型",
+                "typePlaceholder": "例如：保险卡",
+                "linkLabel": "链接",
+                "linkPlaceholder": "https://example.com/document",
+                "options": {
+                    "medicalPower": "医疗授权委托书",
+                    "advanceDirective": "预先医疗指示/生前遗嘱",
+                    "dnr": "不施行心肺复苏指令",
+                    "emergencyContact": "紧急联系人列表",
+                    "currentMeds": "当前用药清单",
+                    "allergyCard": "过敏和病史卡",
+                    "bloodType": "血型卡",
+                    "temporaryGuardianship": "临时监护授权书",
+                    "petInstructions": "宠物紧急照护说明",
+                    "organDonor": "器官捐赠指定书",
+                    "doctorContact": "医生与专科医生联系表",
+                    "cashEnvelope": "紧急备用金说明",
+                    "other": "其他"
+                }
+            }
         },
         "review": {
             "title": "检查您的信息",
             "warning": "⚠️ 注意：",
             "warningText": "任何扫描此二维码的人都能查看您提供的信息。",
             "ready": "✅ 准备生成：",
-            "readyText": "您的二维码一旦创建就是永久的。要进行更改，您需要创建一个新的。"
+            "readyText": "您的二维码一旦创建就是永久的。要进行更改，您需要创建一个新的。",
+            "warningTooltip": "任何拥有该图片的人都能查看你填写的内容。",
+            "ifFoundLabel": "📍 拾获信息",
+            "labels": {
+                "name": "姓名",
+                "notProvided": "未填写",
+                "secureEmail": "安全邮箱",
+                "pronouns": "代词",
+                "phoneNumber": "电话号码",
+                "dateOfBirth": "出生日期",
+                "bloodType": "血型",
+                "allergies": "过敏",
+                "medications": "药物",
+                "conditions": "健康状况",
+                "emergencyContact": "紧急联系人",
+                "caseManager": "个案管理员",
+                "documents": "文件"
+            },
+            "ifFound": {
+                "destroy": "请销毁此卡以保护隐私",
+                "mail": "请邮寄至：",
+                "contactEmergency": "请联系紧急联系人：",
+                "contactCaseManager": "请联系个案管理员：",
+                "contactOther": "请联系："
+            }
         },
         "buttons": {
             "back": "← 返回",
@@ -2500,7 +3142,8 @@
             "copy": "📋 复制",
             "text": "💬 短信",
             "shareQR": "🔳 分享二维码",
-            "close": "关闭"
+            "close": "关闭",
+            "start": "开始 →"
         },
         "qrReady": {
             "title": "您的iKey已准备好！",
@@ -2727,7 +3370,13 @@
             "removeBookmark": "移除此书签？",
             "clearShareHistory": "清除所有分享历史？",
             "enterNewKeyName": "输入新的密钥名称",
-            "newKeyCreated": "已创建新密钥。请重新打印并分发你的卡片。"
+            "newKeyCreated": "已创建新密钥。请重新打印并分发你的卡片。",
+            "enterValidDob": "请输入有效的出生日期",
+            "enterMailingAddress": "请输入邮寄地址",
+            "enterContactInfo": "请输入联系信息",
+            "enterInstructions": "请输入说明",
+            "enterValidPhone": "请输入有效的 10 位电话号码",
+            "qrTooLarge": "警告：QR 码数据可能过大，扫描可能不稳定。"
         },
         "resources": {
             "wttin": "Where To Turn in Nashville",
@@ -2767,6 +3416,41 @@
             "reading": "阅读",
             "whats": "什么",
             "grandma": "奶奶"
+        },
+        "secure": {
+            "title": "安全邮箱",
+            "titleTooltip": "iKey 使用你的邮箱作为标识。Proton 专注隐私，但任何邮箱都可以。",
+            "labelTooltip": "iKey 不会读取你的邮件，也不会联系服务商。选择加密服务可保护你的地址隐私。",
+            "emailPlaceholder": "you@example.com",
+            "buttonTooltip": "你可以使用任何邮箱服务；推荐 Proton，因为它具备加密优势。"
+        },
+        "ifFound": {
+            "title": "拾获说明",
+            "question": "若有人捡到你的 iKey 紧急 ID，应如何处理？",
+            "warning": "⚠️ 这些信息将对找到你卡片的任何人可见",
+            "chooseAction": "选择操作",
+            "actions": {
+                "none": "无特别说明",
+                "destroy": "为保护隐私请销毁",
+                "mail": "邮寄至此地址",
+                "contact": "联系某人",
+                "other": "其他说明"
+            },
+            "mailingAddress": "邮寄地址",
+            "mailingPlaceholder": "示例：123 Main St...",
+            "contactQuestion": "他们应该联系谁？",
+            "contactOptions": {
+                "emergency": "我的紧急联系人",
+                "caseManager": "我的个案管理员",
+                "other": "其他人"
+            },
+            "contactPlaceholder": "姓名和电话",
+            "instructionsLabel": "说明",
+            "instructionsPlaceholder": "请..."
+        },
+        "wizardFlow": {
+            "characterCount": "{count} / 200 个字符",
+            "generateTooltip": "生成的图片仅存于此。若需更新，请重新生成。"
         }
     }
 }
