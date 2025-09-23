@@ -14,6 +14,7 @@
             "dispatch": "Dispatch",
             "emergency": "Emergency",
             "share": "Share",
+            "resources": "Resources",
             "settings": "Settings"
         },
         "header": {
@@ -841,6 +842,7 @@
             "dispatch": "Despacho",
             "emergency": "Emergencia",
             "share": "Compartir",
+            "resources": "Recursos",
             "settings": "Configuración"
         },
         "header": {
@@ -1594,6 +1596,7 @@
             "dispatch": "الإرسال",
             "emergency": "الطوارئ",
             "share": "مشاركة",
+            "resources": "الموارد",
             "settings": "الإعدادات"
         },
         "header": {
@@ -2347,6 +2350,7 @@
             "dispatch": "Şandin",
             "emergency": "Emergency",
             "share": "Parvekirin",
+            "resources": "Çavkaniyên",
             "settings": "Mîheng"
         },
         "header": {
@@ -2993,6 +2997,7 @@
             "dispatch": "Dirista",
             "emergency": "Emergency",
             "share": "Wadaag",
+            "resources": "Kheyraad",
             "settings": "Dejinta"
         },
         "header": {
@@ -3639,6 +3644,7 @@
             "dispatch": "调度",
             "emergency": "紧急",
             "share": "分享",
+            "resources": "资源",
             "settings": "设置"
         },
         "header": {
