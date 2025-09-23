@@ -713,6 +713,26 @@
             display: block;
         }
 
+        .quick-setup {
+            margin-top: 24px;
+            padding: 20px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #eef2ff, #e0f2fe);
+            box-shadow: var(--shadow-md);
+            text-align: center;
+        }
+
+        .quick-setup__title {
+            font-size: 1.25rem;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+
+        .quick-setup__copy {
+            margin-bottom: 16px;
+            color: var(--secondary);
+        }
+
         .form-group {
             margin-bottom: 20px;
         }
@@ -2046,6 +2066,49 @@
             display: none;
         }
 
+        .quick-setup-modal {
+            max-width: 480px;
+            width: 100%;
+            padding: 0;
+        }
+
+        .quick-setup-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 0 24px 24px 24px;
+        }
+
+        .quick-setup-form__intro {
+            margin: 0 0 4px 0;
+            color: var(--secondary);
+        }
+
+        .quick-setup-form label {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .quick-setup-form input,
+        .quick-setup-form textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        .quick-setup-form textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .quick-setup-modal .modal-header {
+            padding: 20px 24px 0 24px;
+            border-bottom: none;
+        }
+
         /* Dark mode styles removed to maintain accessible contrast */
 
         </style>
@@ -2089,6 +2152,32 @@
     <div id="key-banner" class="key-banner hidden">
         <span id="key-banner-text"></span>
         <button id="back-to-my-key" class="btn btn-secondary hidden" onclick="returnToMyKey()" data-i18n="home.backToMyKey">Back to My iKey</button>
+    </div>
+
+    <div id="quick-setup-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="quick-setup-title" aria-hidden="true" tabindex="-1">
+        <div class="modal-content quick-setup-modal">
+            <div class="modal-header">
+                <h2 id="quick-setup-title">1-minute setup</h2>
+                <button class="modal-close" type="button" onclick="closeQuickSetupModal()" aria-label="Close quick setup">×</button>
+            </div>
+            <form class="quick-setup-form" onsubmit="handleQuickSetupSubmit(event)">
+                <p class="quick-setup-form__intro">Add only what you need right now. You can finish the full setup later.</p>
+                <label for="quick-name">Name *</label>
+                <input id="quick-name" type="text" required placeholder="Casey Lee" autocomplete="name">
+                <label for="quick-email">Contact email</label>
+                <input id="quick-email" type="email" placeholder="you@example.com" autocomplete="email">
+                <label for="quick-contact-name">Emergency contact</label>
+                <input id="quick-contact-name" type="text" placeholder="Taylor (sister)" autocomplete="off">
+                <label for="quick-contact-phone">Contact phone</label>
+                <input id="quick-contact-phone" type="tel" placeholder="555-123-4567" autocomplete="tel">
+                <label for="quick-note">Important info</label>
+                <textarea id="quick-note" placeholder="Allergies, medical notes, access instructions..."></textarea>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeQuickSetupModal()">Cancel</button>
+                    <button type="submit" class="btn btn-success">Generate my QR</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- Tab Navigation -->
@@ -2221,6 +2310,11 @@
                         </ul>
                         <div style="background: #eff6ff; border: 1px solid #3b82f6; border-radius: 10px; padding: 15px; margin-top: 20px;">
                             <strong data-i18n="welcome.privacy">🔒 Privacy First:</strong> <span data-i18n="welcome.privacyDesc">Your data is encoded directly in the QR code. No cloud storage, no accounts needed.</span>
+                        </div>
+                        <div class="quick-setup" aria-live="polite">
+                            <h3 class="quick-setup__title">Need it fast?</h3>
+                            <p class="quick-setup__copy">Use the 1-minute setup to make a QR with just the basics. You can add more details later.</p>
+                            <button id="quick-setup-btn" class="btn btn-primary" type="button">✨ 1-minute setup</button>
                         </div>
                     </div>
 
@@ -2568,6 +2662,7 @@
                         <button class="btn btn-success" onclick="printCard('wallet')">🖨️ Wallet Print</button>
                         <button class="btn btn-success" onclick="printCard('full')">🖨️ Full Page Print</button>
                         <button class="btn btn-primary" onclick="generatePhysicalCard()">💳 Physical Card</button>
+                        <button class="btn btn-primary" onclick="openFullScreenQR()">📲 Full-Screen QR</button>
                         <button class="btn btn-primary" onclick="copyURL()">📋 Copy Link</button>
                         <button class="btn btn-primary" onclick="smartCopy()">📋 Copy</button>
                     </div>
@@ -3421,6 +3516,7 @@ let formData = {};
 const baseURL = window.location.origin + window.location.pathname;
 const photoKey = 'ikey_photo';
 let currentQRCodeURL = '';
+let currentQRHash = '';
 let lastGeneratedDataString = null;
 let lastGeneratedPhoto = '';
 let dataListenersSet = false;
@@ -3912,6 +4008,13 @@ function handleSetMyKeyConfirm() {
                 }
             });
 
+            if (Array.isArray(cleanData.docs) && cleanData.docs.length === 0) {
+                delete cleanData.docs;
+            }
+            if (cleanData.ifFound && cleanData.ifFound.action === 'none') {
+                delete cleanData.ifFound;
+            }
+
             const jsonStr = JSON.stringify(cleanData);
             const compressed = compressData(jsonStr);
             const dataSize = new Blob([compressed]).size;
@@ -3921,6 +4024,7 @@ function handleSetMyKeyConfirm() {
             const url = `${baseURL}#${compressed}`;
             const encodedUrl = encodeURI(url);
             currentQRCodeURL = encodedUrl;
+            currentQRHash = compressed;
 
             window.history.replaceState(null, '', url);
 
@@ -3978,6 +4082,105 @@ function handleSetMyKeyConfirm() {
             } else {
                 ifFoundEl.style.display = 'none';
             }
+        }
+
+        function openQuickSetupModal() {
+            const modal = document.getElementById('quick-setup-modal');
+            if (!modal) return;
+            const nameInput = document.getElementById('name');
+            const emailInput = document.getElementById('secure-email');
+            const ecNameInput = document.getElementById('ec-name');
+            const ecPhoneInput = document.getElementById('ec-phone');
+            const conditionsInput = document.getElementById('conditions');
+
+            const quickName = document.getElementById('quick-name');
+            if (quickName) quickName.value = (nameInput && nameInput.value) || (displayData && displayData.n) || formData.n || '';
+            const quickEmail = document.getElementById('quick-email');
+            if (quickEmail) quickEmail.value = (emailInput && emailInput.value) || getUserEmail() || '';
+            const quickContactName = document.getElementById('quick-contact-name');
+            if (quickContactName) quickContactName.value = (ecNameInput && ecNameInput.value) || (displayData && displayData.ec) || formData.ec || '';
+            const quickContactPhone = document.getElementById('quick-contact-phone');
+            if (quickContactPhone) quickContactPhone.value = (ecPhoneInput && ecPhoneInput.value) || (displayData && displayData.ep) || formData.ep || '';
+            const quickNote = document.getElementById('quick-note');
+            if (quickNote) quickNote.value = (conditionsInput && conditionsInput.value) || (displayData && displayData.c) || formData.c || '';
+
+            lastFocusedElement = document.activeElement;
+            modal.classList.remove('hidden');
+            modal.setAttribute('aria-hidden', 'false');
+            const nameField = document.getElementById('quick-name');
+            if (nameField) {
+                nameField.focus();
+            }
+            trapFocus(modal, closeQuickSetupModal);
+        }
+
+        function closeQuickSetupModal() {
+            const modal = document.getElementById('quick-setup-modal');
+            if (!modal) return;
+            modal.classList.add('hidden');
+            modal.setAttribute('aria-hidden', 'true');
+            releaseFocus(modal);
+        }
+
+        function handleQuickSetupSubmit(event) {
+            event.preventDefault();
+            const name = document.getElementById('quick-name').value.trim();
+            if (!name) {
+                alert('Please enter your name');
+                return;
+            }
+
+            const email = document.getElementById('quick-email').value.trim();
+            const contactName = document.getElementById('quick-contact-name').value.trim();
+            const contactPhone = document.getElementById('quick-contact-phone').value.trim();
+            const note = document.getElementById('quick-note').value.trim();
+
+            const relationship = contactName ? 'Other' : '';
+
+            formData = {
+                v: 3,
+                n: name,
+                pe: email,
+                ec: contactName,
+                ep: contactPhone,
+                er: relationship,
+                c: note,
+                docs: [],
+                ifFound: { action: 'none' }
+            };
+
+            const emailInput = document.getElementById('secure-email');
+            if (emailInput) emailInput.value = email;
+            const nameInput = document.getElementById('name');
+            if (nameInput) nameInput.value = name;
+            const ecNameInput = document.getElementById('ec-name');
+            if (ecNameInput) ecNameInput.value = contactName;
+            const ecPhoneInput = document.getElementById('ec-phone');
+            if (ecPhoneInput) ecPhoneInput.value = contactPhone;
+            const ecRelationship = document.getElementById('ec-relationship');
+            if (ecRelationship) ecRelationship.value = relationship;
+            const conditionsInput = document.getElementById('conditions');
+            if (conditionsInput) conditionsInput.value = note;
+
+            closeQuickSetupModal();
+            generateQR();
+        }
+
+        function getUserEmail() {
+            const candidates = [
+                displayData && (displayData.pe || displayData.e),
+                formData && (formData.pe || formData.e),
+                (document.getElementById('secure-email') || {}).value,
+                localStorage.getItem('myKeyEmail')
+            ];
+
+            for (const candidate of candidates) {
+                if (candidate && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(candidate.trim())) {
+                    return candidate.trim();
+                }
+            }
+
+            return '';
         }
 
         function generateCardPreview(data = formData) {
@@ -4193,8 +4396,29 @@ function handleSetMyKeyConfirm() {
             const url = window.location.href;
             const subject = 'My Emergency Info';
             const body = `Access my emergency info: ${url}`;
-            window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            logShare('qr_code', null, 'email');
+            const email = getUserEmail();
+
+            if (email) {
+                window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                logShare('qr_code', null, 'email');
+                return;
+            }
+
+            if (navigator.share) {
+                navigator.share({
+                    title: subject,
+                    text: body,
+                    url
+                }).then(() => {
+                    logShare('qr_code', null, 'share');
+                }).catch(err => {
+                    if (err.name !== 'AbortError') {
+                        copyURLWithFeedback();
+                    }
+                });
+            } else {
+                copyURLWithFeedback();
+            }
         }
 
         function smsInfo() {
@@ -4221,8 +4445,9 @@ function handleSetMyKeyConfirm() {
             const text = JSON.stringify(backup, null, 2);
             const sendEmail = confirm(t('messages.sendBackupEmail'));
             const method = sendEmail ? 'email' : 'sms';
+            const email = getUserEmail();
             const uri = sendEmail
-                ? `mailto:?subject=${encodeURIComponent('iKey Backup')}&body=${encodeURIComponent(text)}`
+                ? `mailto:${email || ''}?subject=${encodeURIComponent('iKey Backup')}&body=${encodeURIComponent(text)}`
                 : (/iPhone|iPad|iPod/.test(navigator.userAgent)
                     ? `sms:&body=${encodeURIComponent(text)}`
                     : `sms:?body=${encodeURIComponent(text)}`);
@@ -4348,6 +4573,15 @@ function handleSetMyKeyConfirm() {
             const jsonStr = JSON.stringify(data);
             const compressed = compressData(jsonStr);
             const cardUrl = `card.html#${compressed}`;
+            window.open(cardUrl, '_blank');
+        }
+
+        function openFullScreenQR() {
+            if (!currentQRHash) {
+                showToast('Generate your QR first.');
+                return;
+            }
+            const cardUrl = `card.html#${currentQRHash}`;
             window.open(cardUrl, '_blank');
         }
 
@@ -5264,13 +5498,15 @@ END:VCALENDAR`;
 
         function copyAll() {
             if (currentLocation) {
+                const sourceData = displayData || formData || {};
+                const email = getUserEmail();
                 const allInfo = `📍 LOCATION INFO
 
 GPS: ${currentLocation.latitude}, ${currentLocation.longitude}
 ADDRESS: ${currentLocation.address}
 INTERSECTION: ${currentLocation.crossStreets}
 PLUS CODE: ${currentLocation.plusCode}
-MAPS: https://maps.google.com/?q=${currentLocation.latitude},${currentLocation.longitude}${formData.pe ? `\nPROTON EMAIL: ${formData.pe}` : ''}
+MAPS: https://maps.google.com/?q=${currentLocation.latitude},${currentLocation.longitude}${email ? `\nEMAIL: ${email}` : ''}${sourceData.ec ? `\nEMERGENCY CONTACT: ${sourceData.ec}${sourceData.ep ? ` (${sourceData.ep})` : ''}` : ''}
 
 Generated: ${new Date().toLocaleString()}`;
 
@@ -5282,10 +5518,20 @@ Generated: ${new Date().toLocaleString()}`;
         async function shareLocation() {
             if (!currentLocation) return;
 
+            const mapUrl = `https://maps.google.com/?q=${currentLocation.latitude},${currentLocation.longitude}`;
+            const message = `📍 My Location\n\n${currentLocation.address}\nGPS: ${currentLocation.latitude}, ${currentLocation.longitude}\n${mapUrl}`;
+            const email = getUserEmail();
+
+            if (email) {
+                window.location.href = `mailto:${email}?subject=${encodeURIComponent('My Location')}&body=${encodeURIComponent(message)}`;
+                logShare('emergency', null, 'email');
+                return;
+            }
+
             const shareData = {
                 title: 'My Location',
-                text: `Location: ${currentLocation.address}\nGPS: ${currentLocation.latitude}, ${currentLocation.longitude}`,
-                url: `https://maps.google.com/?q=${currentLocation.latitude},${currentLocation.longitude}`
+                text: message,
+                url: mapUrl
             };
 
             try {
@@ -6025,8 +6271,17 @@ Generated: ${new Date().toLocaleString()}`;
                 if (modal && !modal.classList.contains('hidden')) {
                     closeEmergencyModal();
                 }
+                const quickModal = document.getElementById('quick-setup-modal');
+                if (quickModal && !quickModal.classList.contains('hidden')) {
+                    closeQuickSetupModal();
+                }
             }
         });
+
+        const quickSetupButton = document.getElementById('quick-setup-btn');
+        if (quickSetupButton) {
+            quickSetupButton.addEventListener('click', openQuickSetupModal);
+        }
 
         function renderHomeStatus() {
             const container = document.getElementById('status-cards');
@@ -6191,6 +6446,8 @@ Generated: ${new Date().toLocaleString()}`;
                 try {
                     const data = JSON.parse(decompressData(myHash));
                     displayData = data;
+                    currentQRHash = myHash;
+                    currentQRCodeURL = `${baseURL}#${myHash}`;
                     initializeDisplayView(data);
                 } catch (e) {
                     console.error('Failed to load my key:', e);
@@ -6222,6 +6479,8 @@ Generated: ${new Date().toLocaleString()}`;
                 localStorage.removeItem('myKeyName');
                 localStorage.removeItem(photoKey);
                 displayData = null;
+                currentQRHash = '';
+                currentQRCodeURL = '';
                 window.history.replaceState(null, '', baseURL);
                 renderHomeStatus();
                 updateKeyBanner();
@@ -6423,9 +6682,15 @@ Generated: ${new Date().toLocaleString()}`;
                     break;
                 case 'email':
                     const subject = note ? `Location: ${note.substring(0, 50)}` : 'My Current Location';
-                    const mailtoLink = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
-                    window.location.href = mailtoLink;
-                    saveShareToHistory(method, note);
+                    const email = getUserEmail();
+                    if (email) {
+                        const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
+                        window.location.href = mailtoLink;
+                        saveShareToHistory('email', note);
+                    } else {
+                        showShareToast('ℹ️ Add an email to send directly. Sharing instead.', 'info');
+                        shareLocationWithNote('share');
+                    }
                     break;
                 case 'share':
                     if (navigator.share) {
@@ -6438,6 +6703,7 @@ Generated: ${new Date().toLocaleString()}`;
                         }).catch(err => {
                             if (err.name !== 'AbortError') {
                                 console.error('Share failed:', err);
+                                shareLocationWithNote('copy');
                             }
                         });
                     } else {
@@ -6550,6 +6816,9 @@ Generated: ${new Date().toLocaleString()}`;
                 toast.style.background = 'var(--warning)';
             } else if (type === 'error') {
                 toast.style.background = 'var(--danger)';
+            } else if (type === 'info') {
+                toast.style.background = 'var(--secondary)';
+                toast.style.color = '#fff';
             }
 
             document.body.appendChild(toast);
@@ -6580,7 +6849,7 @@ Generated: ${new Date().toLocaleString()}`;
 
 
 
-            ['phone','ec-phone','cm-phone','custom-phone'].forEach(setupPhoneInput);
+            ['phone','ec-phone','cm-phone','custom-phone','quick-contact-phone'].forEach(setupPhoneInput);
 
             const pronounsSelect = document.getElementById('pronouns-select');
             const pronounsCustom = document.getElementById('pronouns-custom');
@@ -6683,6 +6952,8 @@ Generated: ${new Date().toLocaleString()}`;
 
                     displayData = data;
                     pendingMyKeyHash = hash;
+                    currentQRHash = hash;
+                    currentQRCodeURL = window.location.href;
 
                     const scanKey = `scanned_${hash}`;
                     if (!localStorage.getItem(scanKey)) {

@@ -568,7 +568,7 @@
             }
         },
         "placeholders": {
-            "email": "you@proton.me",
+            "email": "you@example.com",
             "name": "John Smith",
             "pronouns": "they/them",
             "phone": "+1-555-0123",
@@ -576,7 +576,7 @@
             "relationship": "Spouse",
             "caseManager": "Dr. Jones",
             "enterCity": "Enter city...",
-            "organizerEmail": "your-email@proton.me",
+            "organizerEmail": "your-email@example.com",
             "additionalEmails": "attendee1@example.com, attendee2@example.com",
             "emergencyPhone": "+1-555-0123",
             "allergies": "Penicillin, Peanuts",
@@ -1220,7 +1220,7 @@
             "clearForm": "Limpiar Formulario"
         },
         "placeholders": {
-            "email": "tu@proton.me",
+            "email": "tu@example.com",
             "name": "Juan Pérez",
             "pronouns": "él/ella",
             "phone": "+1-555-0123",
@@ -1228,7 +1228,7 @@
             "relationship": "Cónyuge",
             "caseManager": "Dr. López",
             "enterCity": "Ingresa ciudad...",
-            "organizerEmail": "tu-correo@proton.me",
+            "organizerEmail": "tu-correo@example.com",
             "additionalEmails": "asistente1@ejemplo.com, asistente2@ejemplo.com",
             "emergencyPhone": "+1-555-0123",
             "allergies": "Penicilina, Cacahuetes",
@@ -1973,7 +1973,7 @@
             "clearForm": "مسح النموذج"
         },
         "placeholders": {
-            "email": "you@proton.me",
+            "email": "you@example.com",
             "name": "أحمد محمد",
             "pronouns": "هو/هي",
             "phone": "+1-555-0123",
@@ -1981,7 +1981,7 @@
             "relationship": "زوج/زوجة",
             "caseManager": "د. حسن",
             "enterCity": "أدخل المدينة...",
-            "organizerEmail": "your-email@proton.me",
+            "organizerEmail": "your-email@example.com",
             "additionalEmails": "attendee1@example.com, attendee2@example.com",
             "emergencyPhone": "+1-555-0123",
             "allergies": "البنسلين، الفول السوداني",
@@ -2726,7 +2726,7 @@
             "clearForm": "Formê Paqij Bike"
         },
         "placeholders": {
-            "email": "tu@proton.me",
+            "email": "tu@example.com",
             "name": "Azad Hesen",
             "pronouns": "ew/wî",
             "phone": "+1-555-0123",
@@ -2734,7 +2734,7 @@
             "relationship": "Hevjîn",
             "caseManager": "Dr. Mustafa",
             "enterCity": "Bajarê binivîse...",
-            "organizerEmail": "e-nameya-we@proton.me",
+            "organizerEmail": "e-nameya-we@example.com",
             "additionalEmails": "beşdar1@mînak.com, beşdar2@mînak.com",
             "eventTitle": "Mînak: Kontrola gihîştinê",
             "location": "Mînak: Navenda civakê"
@@ -3373,14 +3373,14 @@
             "clearForm": "Nadiifi Foomka"
         },
         "placeholders": {
-            "email": "adiga@proton.me",
+            "email": "adiga@example.com",
             "name": "Maxamed Cali",
             "pronouns": "isaga/waxay",
             "emergencyName": "Faadumo Axmed",
             "relationship": "Xaas",
             "caseManager": "Dr. Xasan",
             "enterCity": "Geli magaalada...",
-            "organizerEmail": "iimaylkaaga@proton.me",
+            "organizerEmail": "iimaylkaaga@example.com",
             "additionalEmails": "kaqaybgale1@tusaale.com, kaqaybgale2@tusaale.com",
             "eventTitle": "Tusaale: Hubinta Outreach",
             "location": "Tusaale: Xarunta Bulshada"
@@ -4019,14 +4019,14 @@
             "clearForm": "清除表单"
         },
         "placeholders": {
-            "email": "你@proton.me",
+            "email": "你@example.com",
             "name": "张三",
             "pronouns": "他们/他们的",
             "emergencyName": "李四",
             "relationship": "配偶",
             "caseManager": "王医生",
             "enterCity": "输入城市...",
-            "organizerEmail": "你的邮箱@proton.me",
+            "organizerEmail": "你的邮箱@example.com",
             "additionalEmails": "参与者1@example.com, 参与者2@example.com",
             "eventTitle": "示例：外展签到",
             "location": "示例：社区中心"
