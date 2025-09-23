@@ -61,16 +61,22 @@ async function promptPassword(messageKey) {
   return cachedPassword;
 }
 
-async function secureSet(key, value) {
-  const pw = await promptPassword('security.set');
+async function secureSet(key, value, password = null) {
+  if (password) {
+    cachedPassword = password;
+  }
+  const pw = password ?? await promptPassword('security.set');
   const payload = await encrypt(pw, JSON.stringify(value));
   localStorage.setItem(key, JSON.stringify(payload));
 }
 
-async function secureGet(key) {
+async function secureGet(key, password = null) {
   const item = localStorage.getItem(key);
   if (!item) return null;
-  const pw = await promptPassword('security.prompt');
+  if (password) {
+    cachedPassword = password;
+  }
+  const pw = password ?? await promptPassword('security.prompt');
   try {
     const data = await decrypt(pw, JSON.parse(item));
     return JSON.parse(data);
@@ -80,5 +86,9 @@ async function secureGet(key) {
   }
 }
 
+function clearSecurePassword() {
+  cachedPassword = null;
+}
+
 window.resourceLoader = { city: RESOURCE_CITY, loadResource };
-window.secureStore = { get: secureGet, set: secureSet };
+window.secureStore = { get: secureGet, set: secureSet, clear: clearSecurePassword };

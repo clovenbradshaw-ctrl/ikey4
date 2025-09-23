@@ -2,591 +2,271 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title data-i18n="homeTitle">iKey Home</title>
-  <script src="scripts/translate.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>iKey Home</title>
+  <meta name="theme-color" content="#4f46e5">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="https://storage.googleapis.com/art_homelessness/favicon-32x32.png" type="image/png">
+  <link rel="apple-touch-icon" href="https://storage.googleapis.com/art_homelessness/favicon-32x32.png">
   <style>
     :root {
-      --permanent-color: #10b981;
-      --temporary-color: #64748b;
-      --live-color: #3b82f6;
-      --emergency-color: #f87171;
-      --secondary: #666;
-      --primary: var(--live-color);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      --bg: #0f172a;
+      --panel: rgba(17, 24, 39, 0.85);
+      --accent: #4f46e5;
+      --muted: #94a3b8;
+      --text: #f8fafc;
+      --radius: 18px;
     }
+
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      font-family: inherit;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: radial-gradient(circle at top, #1f2937 0%, #0f172a 60%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
+
+    a { color: inherit; }
 
     .skip-link {
       position: absolute;
-      top: -40px;
-      left: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      top: -48px;
       background: #fff;
       color: #000;
-      padding: 8px 16px;
-      z-index: 1000;
-    }
-    .skip-link:focus {
-      top: 0;
+      padding: 10px 16px;
+      border-radius: 999px;
+      transition: top 0.2s ease;
+      z-index: 999;
     }
 
-    .home-container {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 16px;
-      padding: 16px;
-      max-width: 600px;
+    .skip-link:focus { top: 16px; }
+
+    header {
+      padding: 20px;
+      max-width: 900px;
+      width: 100%;
       margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
     }
 
-    .card {
-      background: white;
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 16px;
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
-
-    button, a, .clickable {
-      min-height: 44px;
-      min-width: 44px;
+    .brand-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: rgba(79, 70, 229, 0.2);
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 1.4rem;
     }
 
-    .button-group > * + * {
-      margin-left: 12px;
+    main {
+      flex: 1;
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 20px 60px;
+      display: grid;
+      gap: 24px;
     }
 
-    .qr-data { border-left: 4px solid var(--permanent-color); }
-    .device-data { border-left: 4px solid var(--temporary-color); }
-    .live-data { border-left: 4px solid var(--live-color); }
-
-    .data-badge { display: flex; align-items: center; margin-bottom: 8px; }
-    .badge-icon { margin-right: 4px; }
-    .badge.green { color: var(--permanent-color); }
-    .badge.gray { color: var(--temporary-color); }
-    .badge.blue { color: var(--live-color); }
-
-    .error-card {
-      background: #fee2e2;
-      border: 2px solid var(--emergency-color);
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 16px;
+    .actions {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     }
 
-    .medical-card .always-visible { font-weight: 600; }
-    .medical-card details { margin-top: 8px; }
-
-    .text-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
-    .text-body { font-size: 16px; line-height: 1.5; }
-    .text-caption { font-size: 14px; color: var(--secondary); }
-
-    .favorites { display: flex; flex-wrap: wrap; gap: 12px; }
-    .favorite {
-      position: relative;
-      width: 60px;
-      height: 60px;
-      border-radius: 12px;
-      background: #f0f0f0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+    .card-button {
+      background: var(--panel);
+      border-radius: var(--radius);
+      padding: 24px;
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      display: grid;
+      gap: 10px;
       cursor: pointer;
+      text-align: left;
+      color: var(--text);
+      min-height: 140px;
+    }
+
+    .card-button strong {
+      font-size: 1.25rem;
+    }
+
+    .card-button span {
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .card-button:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    button.card-button {
       border: none;
-      padding: 0;
     }
-    .favorite .delete {
-      display: none;
-      position: absolute;
-      top: -8px;
-      right: -8px;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: var(--emergency-color);
-      color: white;
+
+    #home-summary {
+      color: var(--muted);
+    }
+
+    .panel {
+      background: var(--panel);
+      border-radius: var(--radius);
+      padding: 24px;
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      display: grid;
+      gap: 16px;
+    }
+
+    .panel h2 {
+      margin: 0;
+      font-size: 1.25rem;
+    }
+
+    .favorites-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .favorite-item {
+      background: rgba(15, 23, 42, 0.6);
+      color: var(--text);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 12px;
+      padding: 12px 16px;
       cursor: pointer;
-      align-items: center;
-      justify-content: center;
-    }
-    .favorites.editing .delete { display: flex; }
-    .favorite.add-favorite { font-size: 32px; }
-
-    .loading {
-      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-      background-size: 200% 100%;
-      animation: loading 1.5s infinite;
-      height: 100px;
-      border-radius: 16px;
-    }
-
-    @keyframes loading {
-      from { background-position: 200% 0; }
-      to { background-position: -200% 0; }
-    }
-
-    .empty-state {
+      min-width: 80px;
       text-align: center;
-      padding: 40px 20px;
-      color: var(--secondary);
     }
 
-    .empty-state .action {
-      margin-top: 20px;
+    .favorite-item.add {
+      border-style: dashed;
+    }
+
+    .favorite-remove {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      text-decoration: underline;
+      margin-right: 12px;
+      cursor: pointer;
+    }
+
+    .favorites-manage {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .resources {
+      display: grid;
+      gap: 12px;
+    }
+
+    .resources a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    footer {
+      text-align: center;
+      padding: 24px 20px 40px;
+      color: var(--muted);
+      font-size: 0.85rem;
     }
 
     .toast {
       position: fixed;
-      bottom: 20px;
+      bottom: 28px;
       left: 50%;
-      transform: translateX(-50%);
-      background: #333;
-      color: white;
+      transform: translateX(-50%) translateY(120%);
+      background: rgba(17, 24, 39, 0.9);
+      color: var(--text);
       padding: 12px 20px;
-      border-radius: 8px;
-      animation: slideUp 0.3s ease;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      transition: transform 0.3s ease;
+      z-index: 200;
     }
 
-    @keyframes slideUp {
-      from { transform: translate(-50%, 20px); opacity: 0; }
-      to { transform: translate(-50%, 0); opacity: 1; }
-    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
 
-    button:active {
-      transform: scale(0.95);
-      opacity: 0.8;
-    }
-
-    button:focus-visible {
-      outline: 3px solid var(--primary);
-      outline-offset: 2px;
-    }
-
-    @media (min-width: 600px) {
-      .home-container { padding: 24px; }
-      .card-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-    }
-
-    @media (min-width: 1024px) {
-      .home-container { max-width: 800px; }
+    @media (max-width: 640px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .actions {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
-<body>
-  <a href="#main-content" class="skip-link" data-i18n="accessibility.skipToContent">Skip to main content</a>
-  <main id="main-content">
-  <div id="card-container" class="home-container">
-    <div class="loading"></div>
+<body data-page="home">
+<a href="#main" class="skip-link">Skip to main content</a>
+<header>
+  <div class="brand">
+    <div class="brand-logo">🆘</div>
+    <div>
+      <h1 style="margin:0; font-size:1.5rem;">iKey</h1>
+      <p style="margin:0; color:var(--muted);">Quick actions &amp; offline kit</p>
+    </div>
   </div>
+  <a href="index.html" style="color:var(--accent); text-decoration:none;">Edit my QR →</a>
+</header>
+<main id="main">
+  <section class="actions" aria-label="Primary actions">
+    <button id="home-qr" class="card-button">
+      <strong>Show my QR</strong>
+      <span id="home-summary">Generate your emergency QR first.</span>
+    </button>
+    <button id="home-share" class="card-button">
+      <strong>Share my location</strong>
+      <span>Send GPS + address through your normal apps. Copies text if sharing isn’t supported.</span>
+    </button>
+  </section>
 
-  <div style="text-align:center; padding: 16px;">
-    <a href="about.html" data-i18n="home.aboutLink">About &amp; Privacy</a>
-  </div>
-  </main>
+  <section class="panel" aria-label="Favorites">
+    <h2>Favorites</h2>
+    <p style="margin:0; color:var(--muted);">Optional quick contacts. Add them when you need them.</p>
+    <div id="favorites"></div>
+  </section>
 
-  <div id="toast" class="toast" style="display: none" role="status" aria-live="polite"></div>
-
-  <script>
-    const CARD_PRIORITY = {
-      medical_alert: 0,
-      current_location: 1,
-      emergency_contacts: 2,
-      weather_alerts: 3,
-      quick_access: 4,
-      backup_restore: 5
-    };
-
-    const ERROR_MESSAGES = {
-      location_denied: () => t('home.error.locationDenied', 'Location access needed for emergency features'),
-      storage_full: () => t('home.error.storageFull', 'Device storage full - bookmarks may not save'),
-      offline: () => t('home.error.offline', 'Offline - showing cached information'),
-      qr_invalid: () => t('home.error.qrInvalid', 'QR code damaged - create a new one')
-    };
-
-    let editMode = false;
-    let favoriteApps = JSON.parse(localStorage.getItem('protonBookmarks') || '[]').filter(Boolean);
-
-    const PROTON_APPS = [
-      { id: 'mail', name: 'Proton Mail', url: 'https://account.proton.me/mail', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fmail_xxy4bg.svg' },
-      { id: 'drive', name: 'Proton Drive', url: 'https://drive.proton.me/', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fdrive_wo2nx4.svg' },
-      { id: 'vpn', name: 'Proton VPN', url: 'https://account.protonvpn.com/dashboard', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fvpn_f9embt.svg' },
-      { id: 'pass', name: 'Proton Pass', url: 'https://account.proton.me/pass', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fpass_wl1fk9.svg' },
-      { id: 'calendar', name: 'Proton Calendar', url: 'https://calendar.proton.me/', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fcalendar_ylg2jq.svg' },
-      { id: 'authenticator', name: 'Proton Authenticator', url: 'https://account.proton.me/authenticator', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fauthenticator.svg' },
-      { id: 'meet', name: 'Proton Meet', url: 'https://meet.proton.me/', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fmeet.svg' },
-      { id: 'wallet', name: 'Proton Wallet', url: 'https://account.proton.me/wallet', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Fwallet_hnlslt.svg' },
-      { id: 'simplelogin', name: 'SimpleLogin', url: 'https://app.simplelogin.io/dashboard/', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fv1741968746%2Fstatic%2Flogos%2Fside-products%2Fsimple-login_cozggp.svg' },
-      { id: 'standardnotes', name: 'Standard Notes', url: 'https://app.standardnotes.com/', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fv1741972455%2Fstatic%2Flogos%2Fside-products%2Fstandard-notes_h81doh.svg' },
-      { id: 'lumo', name: 'Lumo', url: 'https://lumo.proton.me/', icon: 'https://pmecdn.protonweb.com/image-transformation/?s=c&image=image%2Fupload%2Fstatic%2Flogos%2Ficons%2Flumo_k0nljk.svg' }
-    ];
-
-    const INTERNAL_APPS = [
-      { id: 'weather', name: 'Weather', url: '#weather', icon: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/2600.svg' },
-      { id: 'dispatch', name: 'Police Dispatch', url: '#dispatch', icon: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f6a8.svg' }
-    ];
-
-    const CONTACT_ICONS = {
-      call: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4de.svg',
-      text: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/1f4f2.svg',
-      email: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/svg/2709.svg'
-    };
-
-    function getBookmarkDetails(entry) {
-      let app = null, url = '', name = '', icon = '';
-      if (!entry) return null;
-      if (typeof entry === 'string') {
-        app = PROTON_APPS.find(a => a.id === entry) || INTERNAL_APPS.find(a => a.id === entry);
-      } else if (entry.id) {
-        app = PROTON_APPS.find(a => a.id === entry.id) || INTERNAL_APPS.find(a => a.id === entry.id);
-      }
-      if (app) {
-        url = app.url;
-        name = app.name;
-        icon = app.icon;
-      } else if (entry.url) {
-        url = entry.url;
-        name = entry.name || entry.url;
-        icon = entry.icon || `https://www.google.com/s2/favicons?sz=64&domain_url=${entry.url}`;
-      } else if (entry.type) {
-        if (entry.type === 'call') url = `tel:${entry.value}`;
-        else if (entry.type === 'text') url = `sms:${entry.value}`;
-        else if (entry.type === 'email') url = `mailto:${entry.value}`;
-        name = entry.name || entry.value;
-        icon = entry.photo || CONTACT_ICONS[entry.type];
-      }
-      return { url, name, icon };
-    }
-
-    const cards = [
-      { type: 'medical_alert', source: 'qr', data: { allergies: 'Peanuts', bloodType: 'O+' } },
-      { type: 'current_location', source: 'live', data: 'Locating…' },
-      { type: 'quick_access', source: 'device', data: favoriteApps }
-    ];
-
-    function showToast(msg) {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      // Show toast after text updates so screen readers announce it
-      requestAnimationFrame(() => {
-        t.style.display = 'block';
-        setTimeout(() => t.style.display = 'none', 3000);
-      });
-    }
-
-    function renderContent(data, type) {
-      if (type === 'medical_alert') return renderMedicalInfo(data);
-      if (type === 'quick_access') return renderQuickAccess(data);
-      return `<div class="text-body">${data}</div>`;
-    }
-
-    function renderDataCard(card) {
-      const badges = {
-        qr: { icon: '🔒', text: t('home.badges.permanent', 'Permanent'), color: 'green', class: 'qr-data' },
-        device: { icon: '📱', text: t('home.badges.deviceOnly', 'Device Only'), color: 'gray', class: 'device-data' },
-        live: { icon: '🔄', text: t('home.badges.live', 'Live'), color: 'blue', class: 'live-data' }
-      };
-      const b = badges[card.source];
-      return `
-        <div class="card data-card ${b.class}" data-source="${card.source}">
-          <div class="data-badge badge ${b.color}">
-            <span class="badge-icon">${b.icon}</span>
-            <span class="badge-text">${b.text}</span>
-          </div>
-          <div class="data-content">
-            ${renderContent(card.data, card.type)}
-          </div>
-        </div>
-      `;
-    }
-
-    function renderMedicalInfo(data) {
-      const critical = data.allergies || data.bloodType;
-      return `
-        <div class="medical-card">
-          <div class="always-visible">
-            ${critical ? `⚠️ ${critical}` : t('home.noCriticalAlerts', 'No critical alerts')}
-          </div>
-          <details class="additional-info">
-            <summary>${t('home.viewAllMedical', 'View all medical info')}</summary>
-            ${renderFullMedical(data)}
-          </details>
-        </div>
-      `;
-    }
-
-    function renderFullMedical(data) {
-      return `<pre class="text-body">${JSON.stringify(data, null, 2)}</pre>`;
-    }
-
-    function renderQuickAccess(apps) {
-      const details = apps.map((app, index) => ({ info: getBookmarkDetails(app), index }))
-                          .filter(d => d.info);
-      if (details.length === 0 && !editMode) {
-        return `<div class="text-body">${t('home.noFavorites', 'No favorites yet')}</div>`;
-      }
-      const listHtml = details.map(d => `
-            <button class="favorite" type="button" draggable="${editMode}" data-index="${d.index}" data-url="${d.info.url}" aria-label="${d.info.name}">
-              <span class="icon"><img src="${d.info.icon}" alt="${d.info.name}" width="32" height="32"></span>
-              <span class="label">${d.info.name}</span>
-              <span class="delete" role="button" aria-label="${t('common.delete', 'Delete')}" tabindex="0">✕</span>
-            </button>
-          `).join('');
-      const addTile = editMode ? `<button type="button" class="favorite add-favorite" aria-label="${t('home.addFavorite', 'Add Favorite')}"><span aria-hidden="true">+</span></button>` : '';
-      return `
-        <div class="favorites ${editMode ? 'editing' : ''}" id="favorites">
-          ${listHtml}${addTile}
-        </div>
-        <div class="button-group">
-          <button type="button" class="export-btn">${t('home.exportBookmarks', 'Export Bookmarks')}</button>
-          <button type="button" class="import-btn">${t('home.importBookmarks', 'Import Bookmarks')}</button>
-          <button type="button" class="email-btn">${t('home.emailExport', 'Email Export')}</button>
-        </div>
-        ${editMode ? `<div class="button-group"><button type="button" class="done-btn">${t('common.done', 'Done')}</button></div>` : ''}
-      `;
-    }
-
-    function saveFavorites() {
-      localStorage.setItem('protonBookmarks', JSON.stringify(favoriteApps));
-    }
-
-    function exportFavorites() {
-      const data = JSON.stringify(favoriteApps, null, 2);
-      const blob = new Blob([data], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'bookmarks.json';
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-
-    function emailFavorites() {
-      const data = JSON.stringify(favoriteApps, null, 2);
-      const subject = encodeURIComponent(t('home.exportEmailSubject', 'Bookmarks Export'));
-      const body = encodeURIComponent(data);
-      window.location.href = `mailto:?subject=${subject}&body=${body}`;
-    }
-
-    function importFavorites() {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = 'application/json';
-      input.addEventListener('change', () => {
-        const file = input.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = e => {
-          try {
-            const data = JSON.parse(e.target.result);
-            if (Array.isArray(data)) {
-              favoriteApps = data;
-              saveFavorites();
-              renderHome();
-              showToast(t('home.importSuccess', 'Import successful'));
-            } else {
-              showToast(t('home.importInvalid', 'Invalid file'));
-            }
-          } catch {
-            showToast(t('home.importInvalid', 'Invalid file'));
-          }
-        };
-        reader.readAsText(file);
-      });
-      input.click();
-    }
-
-    function deleteFavorite(index) {
-      favoriteApps.splice(index, 1);
-      saveFavorites();
-      renderHome();
-    }
-
-    function moveFavorite(from, to) {
-      if (from === to) return;
-      const [moved] = favoriteApps.splice(from, 1);
-      favoriteApps.splice(to, 0, moved);
-      saveFavorites();
-      renderHome();
-    }
-
-    function exitEdit() {
-      editMode = false;
-      renderHome();
-    }
-
-    function attachFavoriteHandlers() {
-      const container = document.getElementById('favorites');
-      if (!container) return;
-
-      container.querySelectorAll('.favorite').forEach(item => {
-        if (item.classList.contains('add-favorite')) return;
-        let pressTimer;
-        const index = Number(item.dataset.index);
-
-        function startPress() {
-          pressTimer = setTimeout(() => { editMode = true; renderHome(); }, 500);
-        }
-
-        function cancelPress() { clearTimeout(pressTimer); }
-
-        item.addEventListener('mousedown', startPress);
-        item.addEventListener('touchstart', startPress);
-        item.addEventListener('mouseup', cancelPress);
-        item.addEventListener('mouseleave', cancelPress);
-        item.addEventListener('touchend', cancelPress);
-
-        const del = item.querySelector('.delete');
-        if (del) {
-          del.addEventListener('click', e => {
-            e.stopPropagation();
-            deleteFavorite(index);
-          });
-          del.addEventListener('keydown', e => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              e.stopPropagation();
-              deleteFavorite(index);
-            }
-          });
-        }
-
-        item.addEventListener('click', () => {
-          if (editMode) return;
-          const url = item.dataset.url;
-          if (url) {
-            if (url.startsWith('#')) {
-              window.location.href = url;
-            } else {
-              window.open(url, '_blank');
-            }
-          }
-        });
-
-        item.addEventListener('dragstart', e => {
-          e.dataTransfer.effectAllowed = 'move';
-          e.dataTransfer.setData('text/plain', index);
-        });
-
-        item.addEventListener('dragover', e => {
-          e.preventDefault();
-        });
-
-        item.addEventListener('drop', e => {
-          e.preventDefault();
-          const from = Number(e.dataTransfer.getData('text/plain'));
-          const to = Number(e.currentTarget.dataset.index);
-          moveFavorite(from, to);
-        });
-      });
-
-      const addBtn = container.querySelector('.add-favorite');
-      if (addBtn) {
-        addBtn.addEventListener('click', addFavorite);
-      }
-
-      const doneBtn = document.querySelector('.done-btn');
-      if (doneBtn) {
-        doneBtn.addEventListener('click', exitEdit);
-      }
-
-      const exportBtn = document.querySelector('.export-btn');
-      if (exportBtn) {
-        exportBtn.addEventListener('click', exportFavorites);
-      }
-
-      const importBtn = document.querySelector('.import-btn');
-      if (importBtn) {
-        importBtn.addEventListener('click', importFavorites);
-      }
-
-      const emailBtn = document.querySelector('.email-btn');
-      if (emailBtn) {
-        emailBtn.addEventListener('click', emailFavorites);
-      }
-    }
-
-    function addFavorite() {
-      const type = prompt(t('home.addPrompt', 'Add proton app id, "dispatch", "website", "call", "text", or "email"'));
-      if (!type) return;
-      if (PROTON_APPS.find(a => a.id === type)) {
-        favoriteApps.push(type);
-      } else if (INTERNAL_APPS.find(a => a.id === type)) {
-        favoriteApps.push(type);
-      } else if (type === 'website') {
-        let url = prompt(t('home.enterWebsite', 'Enter website URL (https:// optional)'));
-        if (!url) return;
-        if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
-        try {
-          const u = new URL(url);
-          const name = prompt(t('home.enterName', 'Enter name')) || u.hostname;
-          const icon = `https://www.google.com/s2/favicons?sz=64&domain=${u.hostname}`;
-          favoriteApps.push({ url: u.href, name, icon });
-        } catch (e) {
-          alert(t('home.invalidURL', 'Invalid URL'));
-          return;
-        }
-      } else if (['call','text','email'].includes(type)) {
-        const value = prompt(type === 'email' ? t('home.enterEmail', 'Enter email address') : t('home.enterPhone', 'Enter phone number'));
-        if (!value) return;
-        const name = prompt(t('home.enterName', 'Enter name')) || value;
-        favoriteApps.push({ type, value, name });
-      } else {
-        alert(t('home.unknownOption', 'Unknown option'));
-        return;
-      }
-      saveFavorites();
-      renderHome();
-    }
-
-    function renderHome() {
-      const container = document.getElementById('card-container');
-      container.innerHTML = '';
-      if (cards.length === 0) {
-        container.innerHTML = `
-          <div class="empty-state">
-            <p>${t('home.noData', 'No data yet')}</p>
-            <button class="action">${t('home.addInfo', 'Add Info')}</button>
-          </div>`;
-        return;
-      }
-      cards.find(c => c.type === 'quick_access').data = favoriteApps;
-      cards.sort((a, b) => CARD_PRIORITY[a.type] - CARD_PRIORITY[b.type]);
-      cards.forEach(card => { container.innerHTML += renderDataCard(card); });
-      attachFavoriteHandlers();
-    }
-
-    function showError(type) {
-      const container = document.getElementById('card-container');
-      container.innerHTML += `
-        <div class="error-card">
-          <p>${ERROR_MESSAGES[type]()}</p>
-          <button onclick="fix_${type}()">${t('home.fixThis', 'Fix This')}</button>
-        </div>`;
-    }
-
-    function fix_location_denied() { showToast(t('home.requestingLocation', 'Requesting location…')); }
-    function fix_storage_full() { showToast(t('home.openingSettings', 'Opening settings…')); }
-    function fix_offline() { showToast(t('home.retrying', 'Retrying…')); }
-    function fix_qr_invalid() { showToast(t('home.generatingQR', 'Generating new QR…')); }
-
-
-    function initHome() {
-      setTimeout(renderHome, 1000);
-    }
-
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initHome);
-    } else {
-      initHome();
-    }
-  </script>
+  <section class="panel resources" aria-label="Resources">
+    <h2>Resources</h2>
+    <a href="dispatch.html">Dispatch checklist</a>
+    <a href="facekey.html">Face key tips</a>
+    <a href="hotlines.html">Emergency hotlines</a>
+    <a href="resources/">Local resources</a>
+    <a href="about.html">About &amp; privacy</a>
+  </section>
+</main>
+<footer>
+  Add iKey to your home screen for instant offline access.
+</footer>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script src="scripts/qrcode.min.js" defer></script>
+<script src="scripts/lz-string.min.js" defer></script>
+<script src="scripts/resources.js" defer></script>
+<script src="scripts/translate.js" defer></script>
+<script src="scripts/app.js" defer></script>
 </body>
 </html>
