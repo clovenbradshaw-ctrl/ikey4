@@ -2415,12 +2415,12 @@
                     <div class="wizard-step" data-step="5">
                         <h2><span data-i18n="contacts.title">Contacts</span> <span class="info-icon" tabindex="0" data-tooltip="Emergency contacts you enter will appear to anyone who scans your card." data-i18n-tooltip="contacts.tooltip">ℹ️</span></h2>
                         <div class="form-group">
-                            <label for="ec-name" class="label-green" data-i18n="contacts.emergencyName">Emergency Contact Name *</label>
-                            <input type="text" id="ec-name" placeholder="Jane Smith" required data-i18n-placeholder="placeholders.emergencyName">
+                            <label for="ec-name" class="label-green" data-i18n="contacts.emergencyName">Emergency Contact Name (recommended)</label>
+                            <input type="text" id="ec-name" placeholder="Jane Smith" data-i18n-placeholder="placeholders.emergencyName">
                         </div>
                         <div class="form-group">
-                            <label for="ec-phone" class="label-green" data-i18n="contacts.emergencyPhone">Emergency Phone Number *</label>
-                            <input type="tel" id="ec-phone" placeholder="555-555-5555" pattern="\d{3}-?\d{3}-?\d{4}" inputmode="tel" title="Enter a 10-digit phone number" required data-i18n-placeholder="placeholders.emergencyPhone" data-i18n-title="basic.phoneTitle">
+                            <label for="ec-phone" class="label-green" data-i18n="contacts.emergencyPhone">Emergency Phone Number (recommended)</label>
+                            <input type="tel" id="ec-phone" placeholder="555-555-5555" pattern="\d{3}-?\d{3}-?\d{4}" inputmode="tel" title="Enter a 10-digit phone number" data-i18n-placeholder="placeholders.emergencyPhone" data-i18n-title="basic.phoneTitle">
                         </div>
                         <div class="form-group">
                             <label for="ec-relationship" class="label-green" data-i18n="contacts.relationship">Relationship</label>
@@ -3763,8 +3763,8 @@ function handleSetMyKeyConfirm() {
             if (step === 5) {
                 const ecName = document.getElementById('ec-name').value.trim();
                 const ecPhone = document.getElementById('ec-phone').value.trim();
-                if (!ecName || !ecPhone) {
-                    alert(t('messages.enterEmergencyContact', 'Please enter emergency contact name and phone'));
+                if ((ecName && !ecPhone) || (!ecName && ecPhone)) {
+                    alert(t('messages.enterEmergencyContact', 'Please enter both an emergency contact name and phone number, or leave both fields blank.'));
                     return false;
                 }
             }
@@ -3780,6 +3780,14 @@ function handleSetMyKeyConfirm() {
                 }
                 if (action === 'contact') {
                     const who = document.getElementById('contact-who').value;
+                    if (who === 'emergency') {
+                        const ecName = document.getElementById('ec-name').value.trim();
+                        const ecPhone = document.getElementById('ec-phone').value.trim();
+                        if (!ecName || !ecPhone) {
+                            alert(t('messages.emergencyContactRequiredForInstruction', 'Add an emergency contact name and phone, or choose a different contact option.'));
+                            return false;
+                        }
+                    }
                     if (who === 'other') {
                         const info = document.getElementById('contact-other').value.trim();
                         if (!info) {
@@ -3916,7 +3924,18 @@ function handleSetMyKeyConfirm() {
                         break;
                     case 'contact':
                         if (formData.ifFound.contactType === 'emergency') {
-                            ifFoundHTML += `<div style="font-weight: 600;"><span data-i18n="review.ifFound.contactEmergency">${t('review.ifFound.contactEmergency', 'Please contact emergency contact:')}</span><br>${formData.ec} - ${formData.ep}</div>`;
+                            if (formData.ec || formData.ep) {
+                                let emergencyLine = '';
+                                if (formData.ec) {
+                                    emergencyLine += formData.ec;
+                                }
+                                if (formData.ep) {
+                                    emergencyLine += `${emergencyLine ? '<br>' : ''}📞 ${formData.ep}`;
+                                }
+                                ifFoundHTML += `<div style="font-weight: 600;"><span data-i18n="review.ifFound.contactEmergency">${t('review.ifFound.contactEmergency', 'Please contact emergency contact:')}</span><br>${emergencyLine}</div>`;
+                            } else {
+                                ifFoundHTML += `<div style="font-weight: 600;" data-i18n="review.ifFound.missingEmergencyContact">${t('review.ifFound.missingEmergencyContact', 'Emergency contact information not provided')}</div>`;
+                            }
                         } else if (formData.ifFound.contactType === 'case-manager') {
                             ifFoundHTML += `<div style="font-weight: 600;"><span data-i18n="review.ifFound.contactCaseManager">${t('review.ifFound.contactCaseManager', 'Please contact case manager:')}</span><br>${formData.cm} - ${formData.cp}</div>`;
                         } else {
@@ -3931,6 +3950,20 @@ function handleSetMyKeyConfirm() {
             }
 
             const relationshipText = formData.er && relationshipMap[formData.er] ? relationshipMap[formData.er] : formData.er;
+            let emergencyContent = '';
+            if (formData.ec) {
+                emergencyContent += formData.ec;
+            }
+            if (formData.ep) {
+                emergencyContent += `${emergencyContent ? '<br>' : ''}📞 ${formData.ep}`;
+            }
+            if (relationshipText && (formData.ec || formData.ep)) {
+                emergencyContent += `${emergencyContent ? '<br>' : ''}<small>${relationshipText}</small>`;
+            }
+            if (!emergencyContent) {
+                emergencyContent = labels.notProvided;
+            }
+
             const reviewHTML = `
                 <div class="info-card">
                     <div class="subtitle-text" data-i18n="review.labels.name">${labels.name}</div>
@@ -3978,11 +4011,7 @@ function handleSetMyKeyConfirm() {
                 </div>` : ''}
                 <div class="info-card">
                     <div class="subtitle-text" data-i18n="review.labels.emergencyContact">${labels.emergencyContact}</div>
-                    <div style="font-weight: 600;">
-                        ${formData.ec}<br>
-                        📞 ${formData.ep}
-                        ${relationshipText ? `<br><small>${relationshipText}</small>` : ''}
-                    </div>
+                    <div style="font-weight: 600;">${emergencyContent}</div>
                 </div>
                 ${formData.cm ? `
                 <div class="info-card">
@@ -4066,7 +4095,18 @@ function handleSetMyKeyConfirm() {
                         break;
                     case 'contact':
                         if (formData.ifFound.contactType === 'emergency') {
-                            text = `<div style="font-weight: 600;">${t('review.ifFound.contactEmergency', 'Please contact emergency contact:')}<br>${formData.ec} - ${formData.ep}</div>`;
+                            if (formData.ec || formData.ep) {
+                                let emergencyLine = '';
+                                if (formData.ec) {
+                                    emergencyLine += formData.ec;
+                                }
+                                if (formData.ep) {
+                                    emergencyLine += `${emergencyLine ? '<br>' : ''}📞 ${formData.ep}`;
+                                }
+                                text = `<div style="font-weight: 600;">${t('review.ifFound.contactEmergency', 'Please contact emergency contact:')}<br>${emergencyLine}</div>`;
+                            } else {
+                                text = `<div style="font-weight: 600;">${t('review.ifFound.missingEmergencyContact', 'Emergency contact information not provided')}</div>`;
+                            }
                         } else if (formData.ifFound.contactType === 'case-manager') {
                             text = `<div style="font-weight: 600;">${t('review.ifFound.contactCaseManager', 'Please contact case manager:')}<br>${formData.cm} - ${formData.cp}</div>`;
                         } else {
@@ -4365,11 +4405,16 @@ function handleSetMyKeyConfirm() {
             if (data.a) lines.push(`Allergies: ${data.a}`);
             if (data.m) lines.push(`Medications: ${data.m}`);
             if (data.c) lines.push(`Health Conditions: ${data.c}`);
-            if (data.ec) {
-                let ecLine = `Emergency Contact: ${data.ec}`;
-                if (data.ep) ecLine += ` (${data.ep})`;
+            if (data.ec || data.ep) {
+                let ecLine = 'Emergency Contact:';
+                if (data.ec) {
+                    ecLine += ` ${data.ec}`;
+                }
+                if (data.ep) {
+                    ecLine += data.ec ? ` (${data.ep})` : ` ${data.ep}`;
+                }
                 if (data.er) ecLine += ` - ${data.er}`;
-                lines.push(ecLine);
+                lines.push(ecLine.trim());
             }
             if (data.cm) {
                 let cmLine = `Case Manager: ${data.cm}`;
@@ -5950,6 +5995,8 @@ Generated: ${new Date().toLocaleString()}`;
             if (!modal || !content) return;
             lastFocusedElement = document.activeElement;
 
+            const notProvidedText = t('review.labels.notProvided', 'Not provided');
+
             // Build the emergency info HTML
             let html = '';
 
@@ -5973,12 +6020,18 @@ Generated: ${new Date().toLocaleString()}`;
             html += `</div>`;
 
             // Priority 2: Emergency Contact
-            if (data.ec) {
+            if (data.ec || data.ep) {
                 html += `<div class="emergency-card" style="background: #dcfce7; border: 2px solid var(--success); margin-bottom: 20px;">`;
                 html += `<h4 style="margin: 0 0 10px 0; color: var(--success);">📞 Emergency Contact</h4>`;
-                html += `<div style="font-size: 1.1rem; font-weight: 600;">${data.ec}</div>`;
-                html += `<a href="tel:${data.ep}" class="btn btn-success" style="margin-top: 10px; width: 100%; justify-content: center;">`;
-                html += `📱 Call ${data.ep}</a>`;
+                if (data.ec) {
+                    html += `<div style="font-size: 1.1rem; font-weight: 600;">${data.ec}</div>`;
+                }
+                if (data.ep) {
+                    html += `<a href="tel:${data.ep}" class="btn btn-success" style="margin-top: 10px; width: 100%; justify-content: center;">`;
+                    html += `📱 Call ${data.ep}</a>`;
+                } else {
+                    html += `<div style="margin-top: 10px; color: var(--secondary); font-style: italic;">${notProvidedText}</div>`;
+                }
                 if (data.er) {
                     html += `<div style="margin-top: 5px; color: var(--secondary);">Relationship: ${data.er}</div>`;
                 }
@@ -6190,14 +6243,17 @@ Generated: ${new Date().toLocaleString()}`;
                         </div>`;
             }
 
-            if (data.ec) {
+            if (data.ec || data.ep) {
                 html += `<div class="info-card" style="background: #dcfce7; border: 2px solid var(--success);">
                             <div class="subtitle-text">📞 <span data-i18n="review.labels.emergencyContact">${reviewLabels.emergencyContact}</span></div>
                             <div style="font-weight: 600; font-size: 1.2rem;">
-                                ${data.ec}<br>
-                                <a href="tel:${data.ep}" style="color: var(--primary); text-decoration: none;">
-                                    📱 ${data.ep}
-                                </a>
+                                ${(() => {
+                                    const parts = [];
+                                    if (data.ec) parts.push(data.ec);
+                                    if (data.ep) parts.push(`<a href="tel:${data.ep}" style="color: var(--primary); text-decoration: none;">📱 ${data.ep}</a>`);
+                                    if (data.er) parts.push(`<small>${data.er}</small>`);
+                                    return parts.join('<br>');
+                                })()}
                             </div>
                         </div>`;
             }
@@ -6239,7 +6295,14 @@ Generated: ${new Date().toLocaleString()}`;
                         break;
                     case 'contact':
                         if (data.ifFound.contactType === 'emergency') {
-                            html += `<div style="font-weight: 600;"><span data-i18n="review.ifFound.contactEmergency">${ifFoundTexts.contactEmergency}</span><br>${data.ec} - ${data.ep}</div>`;
+                            if (data.ec || data.ep) {
+                                const parts = [];
+                                if (data.ec) parts.push(data.ec);
+                                if (data.ep) parts.push(`📞 ${data.ep}`);
+                                html += `<div style="font-weight: 600;"><span data-i18n="review.ifFound.contactEmergency">${ifFoundTexts.contactEmergency}</span><br>${parts.join('<br>')}</div>`;
+                            } else {
+                                html += `<div style="font-weight: 600;" data-i18n="review.ifFound.missingEmergencyContact">${t('review.ifFound.missingEmergencyContact', 'Emergency contact information not provided')}</div>`;
+                            }
                         } else if (data.ifFound.contactType === 'case-manager') {
                             html += `<div style="font-weight: 600;"><span data-i18n="review.ifFound.contactCaseManager">${ifFoundTexts.contactCaseManager}</span><br>${data.cm} - ${data.cp}</div>`;
                         } else {

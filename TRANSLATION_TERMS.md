@@ -98,8 +98,8 @@
             "note": "Leave blank if not applicable. Info stored only in your QR code."
         },
         "contacts": {
-            "emergencyName": "Emergency Contact Name *",
-            "emergencyPhone": "Emergency Phone Number *",
+            "emergencyName": "Emergency Contact Name (recommended)",
+            "emergencyPhone": "Emergency Phone Number (recommended)",
             "relationship": "Relationship",
             "relationshipSelect": "Select...",
             "relationships": {
@@ -172,7 +172,8 @@
                 "mail": "Please mail to:",
                 "contactEmergency": "Please contact emergency contact:",
                 "contactCaseManager": "Please contact case manager:",
-                "contactOther": "Please contact:"
+                "contactOther": "Please contact:",
+                "missingEmergencyContact": "Emergency contact information not provided"
             }
         },
         "buttons": {
@@ -590,7 +591,8 @@
         "messages": {
             "enterValidEmail": "Please enter a valid secure email address",
             "enterName": "Please enter your name",
-            "enterEmergencyContact": "Please enter emergency contact name and phone",
+            "enterEmergencyContact": "Please enter both an emergency contact name and phone number, or leave both fields blank.",
+            "emergencyContactRequiredForInstruction": "Add an emergency contact name and phone, or choose a different contact option.",
             "linkCopied": "Link copied to clipboard!",
             "infoCopied": "iKey info copied!",
             "invalidURL": "Invalid URL",
@@ -925,8 +927,8 @@
             "note": "Déjalo en blanco si no aplica. La información solo se guarda en tu código QR."
         },
         "contacts": {
-            "emergencyName": "Nombre del Contacto de Emergencia *",
-            "emergencyPhone": "Número de Teléfono de Emergencia *",
+            "emergencyName": "Nombre del Contacto de Emergencia (recomendado)",
+            "emergencyPhone": "Número de Teléfono de Emergencia (recomendado)",
             "relationship": "Relación",
             "relationshipSelect": "Seleccionar...",
             "relationships": {
@@ -999,7 +1001,8 @@
                 "mail": "Por favor envía por correo a:",
                 "contactEmergency": "Por favor contacta al contacto de emergencia:",
                 "contactCaseManager": "Por favor contacta al administrador de casos:",
-                "contactOther": "Por favor contacta:"
+                "contactOther": "Por favor contacta:",
+                "missingEmergencyContact": "No se proporcionó información de contacto de emergencia"
             }
         },
         "buttons": {
@@ -1242,7 +1245,8 @@
         "messages": {
             "enterValidEmail": "Por favor ingresa una dirección de correo seguro válida",
             "enterName": "Por favor ingresa tu nombre",
-            "enterEmergencyContact": "Por favor ingresa el nombre y teléfono del contacto de emergencia",
+            "enterEmergencyContact": "Ingresa el nombre y el teléfono del contacto de emergencia, o deja ambos campos en blanco.",
+            "emergencyContactRequiredForInstruction": "Agrega nombre y teléfono de un contacto de emergencia o elige otra opción de contacto.",
             "linkCopied": "¡Enlace copiado al portapapeles!",
             "infoCopied": "¡Info de iKey copiada!",
             "invalidURL": "URL inválida",
@@ -1678,8 +1682,8 @@
             "note": "اتركه فارغاً إذا لم يكن مناسباً. يتم حفظ المعلومات فقط في رمز QR الخاص بك."
         },
         "contacts": {
-            "emergencyName": "اسم جهة اتصال الطوارئ *",
-            "emergencyPhone": "رقم هاتف الطوارئ *",
+            "emergencyName": "اسم جهة اتصال الطوارئ (موصى به)",
+            "emergencyPhone": "رقم هاتف الطوارئ (موصى به)",
             "relationship": "العلاقة",
             "relationshipSelect": "اختر...",
             "relationships": {
@@ -1752,7 +1756,8 @@
                 "mail": "يرجى إرسالها إلى:",
                 "contactEmergency": "يرجى التواصل مع جهة الاتصال في الطوارئ:",
                 "contactCaseManager": "يرجى التواصل مع مدير الحالة:",
-                "contactOther": "يرجى التواصل مع:"
+                "contactOther": "يرجى التواصل مع:",
+                "missingEmergencyContact": "لم يتم توفير معلومات جهة اتصال الطوارئ"
             }
         },
         "buttons": {
@@ -1995,7 +2000,8 @@
         "messages": {
             "enterValidEmail": "يرجى إدخال عنوان بريد آمن صالح",
             "enterName": "يرجى إدخال اسمك",
-            "enterEmergencyContact": "يرجى إدخال اسم وهاتف جهة اتصال الطوارئ",
+            "enterEmergencyContact": "يرجى إدخال اسم ورقم هاتف جهة اتصال الطوارئ أو ترك الحقلين فارغين.",
+            "emergencyContactRequiredForInstruction": "أضف اسمًا ورقم هاتف لجهة اتصال طوارئ، أو اختر خيار تواصل آخر.",
             "linkCopied": "تم نسخ الرابط!",
             "infoCopied": "تم نسخ معلومات iKey!",
             "invalidURL": "رابط غير صالح",
@@ -2431,8 +2437,8 @@
             "note": "Heke ne girîng be vala bihêle. Agahî tenê di kodê QR ya te de dihêle."
         },
         "contacts": {
-            "emergencyName": "Navê Têkiliya Lezgîn *",
-            "emergencyPhone": "Hejmara Telefona Lezgîn *",
+            "emergencyName": "Navê Têkiliya Lezgîn (pêşniyarkirî)",
+            "emergencyPhone": "Hejmara Telefona Lezgîn (pêşniyarkirî)",
             "relationship": "Têkilî",
             "relationshipSelect": "Hilbijêre...",
             "relationships": {
@@ -2505,7 +2511,8 @@
                 "mail": "Ji kerema xwe bişîne bo:",
                 "contactEmergency": "Ji kerema xwe bi têkiliya lezgîn re bike:",
                 "contactCaseManager": "Ji kerema xwe bi rêveberê dozê re bike:",
-                "contactOther": "Ji kerema xwe bi vê re bike:"
+                "contactOther": "Ji kerema xwe bi vê re bike:",
+                "missingEmergencyContact": "Agahdariya têkiliya lezgîn ne hat peyda kirin"
             }
         },
         "buttons": {
@@ -2742,7 +2749,8 @@
         "messages": {
             "enterValidEmail": "Ji kerema xwe navnîşana e-nameya ewledar a derbasdar binivîse",
             "enterName": "Ji kerema xwe navê xwe binivîse",
-            "enterEmergencyContact": "Ji kerema xwe nav û telefona têkiliya lezgîn binivîse",
+            "enterEmergencyContact": "Ji kerema xwe nav û hejmare telefona têkiliya lezgîn binivîse an jî her du qada vala bihêle.",
+            "emergencyContactRequiredForInstruction": "Ji kerema xwe nav û hejmare telefona têkiliya lezgîn zêde bike an jî vebijarka têkilîyek din hilbijêre.",
             "linkCopied": "Girêdan hat kopîkirin!",
             "infoCopied": "Agahdariya iKey hat kopîkirin!",
             "invalidURL": "Girêdana nederbasdar",
@@ -3077,8 +3085,8 @@
             "note": "Ka tag madhan haddii uusan khusayn. Macluumaadku wuxuu ku jiraa oo keliya koodhkaaga QR."
         },
         "contacts": {
-            "emergencyName": "Magaca Xiriirka Degdegga *",
-            "emergencyPhone": "Lambarka Telefoonka Degdegga *",
+            "emergencyName": "Magaca Xiriirka Degdegga (lagu taliyay)",
+            "emergencyPhone": "Lambarka Telefoonka Degdegga (lagu taliyay)",
             "relationship": "Xiriirka",
             "relationshipSelect": "Dooro...",
             "relationships": {
@@ -3151,7 +3159,8 @@
                 "mail": "Fadlan ku dir:",
                 "contactEmergency": "Fadlan la xidhiidh xiriirka degdegga ah:",
                 "contactCaseManager": "Fadlan la xidhiidh maareeyaha kiiska:",
-                "contactOther": "Fadlan la xidhiidh:"
+                "contactOther": "Fadlan la xidhiidh:",
+                "missingEmergencyContact": "Macluumaad xiriir degdegga ah lama bixin"
             }
         },
         "buttons": {
@@ -3388,7 +3397,8 @@
         "messages": {
             "enterValidEmail": "Fadlan geli cinwaan iimayl ammaan ah oo sax ah",
             "enterName": "Fadlan geli magacaaga",
-            "enterEmergencyContact": "Fadlan geli magaca iyo telefoonka xiriirka degdegga",
+            "enterEmergencyContact": "Fadlan geli magaca iyo lambarka telefoonka xiriirka degdegga, ama ka tag labada meelood madhan.",
+            "emergencyContactRequiredForInstruction": "Ku dar magaca iyo lambarka telefoonka xiriirka degdegga, ama dooro ikhtiyaar kale oo xiriir ah.",
             "linkCopied": "Xidhiidhka waa la koobiyay!",
             "infoCopied": "Macluumaadka iKey waa la koobiyay!",
             "invalidURL": "URL aan sax ahayn",
@@ -3723,8 +3733,8 @@
             "note": "若不适用可留空。信息仅保存在你的 QR 码中。"
         },
         "contacts": {
-            "emergencyName": "紧急联系人姓名 *",
-            "emergencyPhone": "紧急电话号码 *",
+            "emergencyName": "紧急联系人姓名（推荐填写）",
+            "emergencyPhone": "紧急电话号码（推荐填写）",
             "relationship": "关系",
             "relationshipSelect": "选择...",
             "relationships": {
@@ -3797,7 +3807,8 @@
                 "mail": "请邮寄至：",
                 "contactEmergency": "请联系紧急联系人：",
                 "contactCaseManager": "请联系个案管理员：",
-                "contactOther": "请联系："
+                "contactOther": "请联系：",
+                "missingEmergencyContact": "未提供紧急联系人信息"
             }
         },
         "buttons": {
@@ -4034,7 +4045,8 @@
         "messages": {
             "enterValidEmail": "请输入有效的安全邮箱地址",
             "enterName": "请输入您的姓名",
-            "enterEmergencyContact": "请输入紧急联系人姓名和电话",
+            "enterEmergencyContact": "请输入紧急联系人姓名和电话，或将两项留空。",
+            "emergencyContactRequiredForInstruction": "请添加紧急联系人的姓名和电话，或选择其他联系方式。",
             "linkCopied": "链接已复制到剪贴板！",
             "infoCopied": "iKey信息已复制！",
             "invalidURL": "无效的URL",
