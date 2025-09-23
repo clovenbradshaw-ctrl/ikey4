@@ -1,0 +1,31 @@
+{
+  "name": "iKey",
+  "short_name": "iKey",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "scope": "/",
+  "background_color": "#0f172a",
+  "theme_color": "#4f46e5",
+  "description": "Offline emergency QR and location sharing",
+  "icons": [
+    {
+      "src": "https://storage.googleapis.com/art_homelessness/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Show QR",
+      "short_name": "QR",
+      "description": "Open my emergency QR",
+      "url": "/card.html"
+    },
+    {
+      "name": "Share Location",
+      "short_name": "Share",
+      "description": "Share my current location",
+      "url": "/home.html#share"
+    }
+  ]
+}

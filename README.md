@@ -6,12 +6,12 @@ iKey is a lightweight, client‑side web app that keeps your location and key pe
 
 ## Features
 
-- **Current Location** – displays GPS coordinates and lets you quickly copy or share them by text or email.
-- **Emergency QR Code** – generate a QR code that embeds basic info for first responders. The data lives only inside the QR image.
-- **Favorites Grid** – customise a home screen with your own bookmarks, Proton tools, or quick actions like calling 911 or 988. Long‑press to edit and drag to reorder.
-- **Built‑in Tools** – access weather, a Nashville police dispatch feed, community resources, meal schedules, and an ICS event/ invite generator.
-- **Internationalization** – interface strings come from `TRANSLATION_TERMS.md` and can be switched between English, Español, العربية, Kurdî, Af‑Soomaali and 中文.
-- **Accessibility Settings** – adjustable text sizes and large touch targets make the interface usable on phones and tablets.
+- **Emergency QR** – create a versioned QR that contains only the info you enter. It’s stored locally, optional password protection included.
+- **Share My Location** – grab GPS coordinates on demand and send them with your own apps via email, the system share sheet, or the clipboard.
+- **Offline home screen** – open `card.html` for a full-screen QR that can be added to your phone’s home screen and works offline after the first load.
+- **Favorites grid** – add optional quick contacts or links for anything you need in an emergency.
+- **Built-in tools** – access dispatch checklists, hotlines, community resources, and more static references.
+- **Internationalization** – interface strings come from `TRANSLATION_TERMS.md` and can be switched between English, Español, العربية, Kurdî, Af-Soomaali and 中文.
 
 ## Privacy
 
